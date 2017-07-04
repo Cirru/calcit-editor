@@ -1,0 +1,23 @@
+
+{:source-paths ["src"]
+ :dependencies [[mvc-works/hsl          "0.1.2"]
+                [respo/message          "0.2.0"]
+                [mvc-works/shell-page   "0.1.2"]
+                [cumulo/recollect       "0.1.7"]
+                [respo/ui               "0.1.9"]
+                [respo                  "0.5.14"]
+                [org.clojure/core.async "0.3.443"]]
+ :builds {:browser {:output-dir "target/browser"
+                    :asset-path "/browser"
+                    :target :browser
+                    :modules {:main {:entries [app.main]
+                                     :depends-on #{:lib}}
+                              :lib {:entries [respo.core respo.macros
+                                              respo.comp.inspect]}}
+                    :devtools {:after-load app.main/reload!
+                               :preloads [shadow.cljs.devtools.client.hud]}
+                    :release {:output-dir "dist/"}}
+          :ssr {:target :node-script
+                :output-to "target/ssr.js"
+                :main app.render/main!
+                :devtools {:after-load app.render/main!}}}}

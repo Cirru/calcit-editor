@@ -1,0 +1,368 @@
+{:package "app",
+ :root {:ns "main", :def "main!"},
+ :files {"comp.container" {:ns ["ns"
+                                "app.comp.container"
+                                [":require-macros" ["[]" "respo.macros" ":refer" ["[]" "defcomp" "<>" "div" "span"]]]
+                                [":require"
+                                 ["[]" "hsl.core" ":refer" ["[]" "hsl"]]
+                                 ["[]" "respo-ui.style" ":as" "ui"]
+                                 ["[]" "respo-ui.style.colors" ":as" "colors"]
+                                 ["[]" "respo.core" ":refer" ["[]" "create-comp"]]
+                                 ["[]" "respo.comp.inspect" ":refer" ["[]" "comp-inspect"]]
+                                 ["[]" "app.comp.header" ":refer" ["[]" "comp-header"]]
+                                 ["[]" "app.comp.profile" ":refer" ["[]" "comp-profile"]]
+                                 ["[]" "app.comp.login" ":refer" ["[]" "comp-login"]]
+                                 ["[]" "respo-message.comp.msg-list" ":refer" ["[]" "comp-msg-list"]]]],
+                           :defs {"style-alert" ["def"
+                                                 "style-alert"
+                                                 ["{}"
+                                                  [":font-family" "|Josefin Sans"]
+                                                  [":font-weight" "100"]
+                                                  [":font-size" "40"]]],
+                                  "comp-container" ["defcomp"
+                                                    "comp-container"
+                                                    ["states" "store"]
+                                                    ["let"
+                                                     [["state" [":data" "states"]] ["session" [":session" "store"]]]
+                                                     ["if"
+                                                      ["nil?" "store"]
+                                                      ["div"
+                                                       ["{}"
+                                                        [":style" ["merge" "ui/global" "ui/fullscreen" "ui/center"]]]
+                                                       ["<>" "span" "|No connection!" "style-alert"]]
+                                                      ["div"
+                                                       ["{}"
+                                                        [":style" ["merge" "ui/global" "ui/fullscreen" "ui/column"]]]
+                                                       ["comp-header" [":logged-in?" "store"]]
+                                                       ["div"
+                                                        ["{}" [":style" "style-body"]]
+                                                        ["div"
+                                                         ["{}" [":style" ["merge" "ui/row" "style-body"]]]
+                                                         ["if"
+                                                          [":logged-in?" "store"]
+                                                          ["let"
+                                                           [["router" [":router" "store"]]]
+                                                           ["case"
+                                                            [":name" "router"]
+                                                            [":profile" ["comp-profile" [":user" "store"]]]
+                                                            ["div"
+                                                             ["{}"]
+                                                             ["<>"
+                                                              "span"
+                                                              ["str" "|404 page: " ["pr-str" "router"]]
+                                                              "nil"]]]]
+                                                          ["comp-login" "states"]]]]
+                                                       ["comp-inspect" "|Store" "store" "style-debugger"]
+                                                       ["comp-msg-list"
+                                                        ["get-in" "store" ["[]" ":session" ":notifications"]]
+                                                        ":session/remove-notification"]]]]],
+                                  "style-debugger" ["def"
+                                                    "style-debugger"
+                                                    ["{}" [":bottom" "0"] [":left" "0"] [":max-width" "|100%"]]],
+                                  "style-body" ["def" "style-body" ["{}" [":padding" "|8px 16px"]]]},
+                           :procs []},
+         "network" {:ns ["ns"
+                         "app.network"
+                         [":require-macros" ["[]" "cljs.core.async.macros" ":refer" ["[]" "go"]]]
+                         [":require"
+                          ["[]" "cljs.reader" ":as" "reader"]
+                          ["[]" "cljs.core.async" ":as" "a" ":refer" ["[]" ">!" "<!" "chan" "timeout"]]
+                          ["[]" "recollect.patch" ":refer" ["[]" "patch-bunch"]]]],
+                    :defs {"sender" ["defonce" "sender" ["chan"]],
+                           "send!" ["defn" "send!" ["op" "op-data"] ["go" [">!" "sender" ["[]" "op" "op-data"]]]],
+                           "setup-socket!" ["defn"
+                                            "setup-socket!"
+                                            ["*store" "configs"]
+                                            ["let"
+                                             [["ws-url" [":url" "configs"]]
+                                              ["ws" ["js/WebSocket." "ws-url"]]
+                                              ["handle-close!"
+                                               ["if"
+                                                ["fn?" [":on-close!" "configs"]]
+                                                [":on-close!" "configs"]
+                                                "identity"]]
+                                              ["handle-open!"
+                                               ["if" ["fn?" [":on-open!" "configs"]] [":on-open!" "configs"] "identity"]]]
+                                             ["set!" "ws.onopen" ["fn" ["event"] ["handle-open!" "event"]]]
+                                             ["set!" "ws.onclose" ["fn" ["event"] ["handle-close!" "event"]]]
+                                             ["set!"
+                                              "ws.onmessage"
+                                              ["fn"
+                                               ["event"]
+                                               ["let"
+                                                [["changes" ["reader/read-string" "event.data"]]]
+                                                [".log" "js/console" "|Changes" ["clj->js" "changes"]]
+                                                ["reset!" "*store" ["patch-bunch" "@*store" "changes"]]]]]
+                                             ["go" ["loop" ["[]"] [".send" "ws" ["pr-str" ["<!" "sender"]]] ["recur"]]]]]},
+                    :procs []},
+         "comp.login" {:ns ["ns"
+                            "app.comp.login"
+                            [":require-macros"
+                             ["[]" "respo.macros" ":refer" ["[]" "defcomp" "<>" "div" "input" "button" "span"]]]
+                            [":require"
+                             ["[]" "respo.core" ":refer" ["[]" "create-comp"]]
+                             ["[]" "respo.comp.space" ":refer" ["[]" "=<"]]
+                             ["[]" "respo.comp.inspect" ":refer" ["[]" "comp-inspect"]]
+                             ["[]" "respo-ui.style" ":as" "ui"]
+                             ["[]" "app.schema" ":as" "schema"]]],
+                       :defs {"on-submit" ["defn"
+                                           "on-submit"
+                                           ["username" "password" "signup?"]
+                                           ["fn"
+                                            ["e" "dispatch!"]
+                                            ["dispatch!"
+                                             ["if" "signup?" ":user/sign-up" ":user/log-in"]
+                                             ["[]" "username" "password"]]
+                                            [".setItem"
+                                             "js/localStorage"
+                                             [":storage-key" "schema/configs"]
+                                             ["[]" "username" "password"]]]],
+                              "on-input" ["defn"
+                                          "on-input"
+                                          ["state" "k"]
+                                          ["fn"
+                                           ["e" "dispatch!" "mutate!"]
+                                           ["mutate!" ["assoc" "state" "k" [":value" "e"]]]]],
+                              "comp-login" ["defcomp"
+                                            "comp-login"
+                                            ["states"]
+                                            ["let"
+                                             [["state" ["or" [":data" "states"] "initial-state"]]]
+                                             ["div"
+                                              ["{}"]
+                                              ["div"
+                                               ["{}" [":style" ["{}"]]]
+                                               ["div"
+                                                ["{}"]
+                                                ["input"
+                                                 ["{}"
+                                                  [":placeholder" "|Username"]
+                                                  [":value" [":username" "state"]]
+                                                  [":style" "ui/input"]
+                                                  [":on" ["{}" [":input" ["on-input" "state" ":username"]]]]]]]
+                                               ["=<" "nil" "8"]
+                                               ["div"
+                                                ["{}"]
+                                                ["input"
+                                                 ["{}"
+                                                  [":placeholder" "|Password"]
+                                                  [":value" [":password" "state"]]
+                                                  [":style" "ui/input"]
+                                                  [":on" ["{}" [":input" ["on-input" "state" ":password"]]]]]]]]
+                                              ["=<" "nil" "8"]
+                                              ["div"
+                                               ["{}" [":style" "ui/flex"]]
+                                               ["button"
+                                                ["{}"
+                                                 [":inner-text" "|Sign up"]
+                                                 [":style"
+                                                  ["merge" "ui/button" ["{}" [":outline" ":none"] [":border" ":none"]]]]
+                                                 [":on"
+                                                  ["{}"
+                                                   [":click"
+                                                    ["on-submit" [":username" "state"] [":password" "state"] "true"]]]]]]
+                                               ["=<" "8" "nil"]
+                                               ["button"
+                                                ["{}"
+                                                 [":inner-text" "|Sign in"]
+                                                 [":style"
+                                                  ["merge" "ui/button" ["{}" [":outline" ":none"] [":border" ":none"]]]]
+                                                 [":on"
+                                                  ["{}"
+                                                   [":click"
+                                                    ["on-submit" [":username" "state"] [":password" "state"] "false"]]]]]]]]]],
+                              "initial-state" ["def" "initial-state" ["{}" [":username" "|"] [":password" "|"]]]},
+                       :procs []},
+         "comp.profile" {:ns ["ns"
+                              "app.comp.profile"
+                              [":require-macros" ["[]" "respo.macros" ":refer" ["[]" "defcomp" "<>" "span" "div" "a"]]]
+                              [":require"
+                               ["[]" "hsl.core" ":refer" ["[]" "hsl"]]
+                               ["[]" "app.schema" ":as" "schema"]
+                               ["[]" "respo-ui.style" ":as" "ui"]
+                               ["[]" "respo-ui.style.colors" ":as" "colors"]
+                               ["[]" "respo.core" ":refer" ["[]" "create-comp"]]
+                               ["[]" "respo.comp.space" ":refer" ["[]" "=<"]]]],
+                         :defs {"on-log-out" ["defn"
+                                              "on-log-out"
+                                              ["e" "dispatch!"]
+                                              ["dispatch!" ":user/log-out" "nil"]
+                                              [".removeItem" "js/localStorage" [":storage-key" "schema/configs"]]],
+                                "comp-profile" ["defcomp"
+                                                "comp-profile"
+                                                ["user"]
+                                                ["div"
+                                                 ["{}" [":style" "ui/flex"]]
+                                                 ["<>" "span" ["str" "|Hello! " [":name" "user"]] "nil"]
+                                                 ["=<" "8" "nil"]
+                                                 ["a"
+                                                  ["{}"
+                                                   [":style" "style-trigger"]
+                                                   [":on" ["{}" [":click" "on-log-out"]]]]
+                                                  ["<>" "span" "|Log out" "nil"]]]],
+                                "style-trigger" ["def"
+                                                 "style-trigger"
+                                                 ["{}"
+                                                  [":font-size" "14"]
+                                                  [":cursor" ":pointer"]
+                                                  [":background-color" "colors/motif-light"]
+                                                  [":color" ":white"]
+                                                  [":padding" "|0 8px"]]]},
+                         :procs []},
+         "comp.header" {:ns ["ns"
+                             "app.comp.header"
+                             [":require-macros" ["[]" "respo.macros" ":refer" ["[]" "defcomp" "<>" "span" "div"]]]
+                             [":require"
+                              ["[]" "hsl.core" ":refer" ["[]" "hsl"]]
+                              ["[]" "respo-ui.style" ":as" "ui"]
+                              ["[]" "respo-ui.style.colors" ":as" "colors"]
+                              ["[]" "respo.core" ":refer" ["[]" "create-comp"]]]],
+                        :defs {"on-profile" ["defn"
+                                             "on-profile"
+                                             ["e" "dispatch!"]
+                                             ["dispatch!"
+                                              ":router/change"
+                                              ["{}" [":name" ":profile"] [":data" "nil"] [":router" "nil"]]]],
+                               "style-logo" ["def" "style-logo" ["{}" [":cursor" ":pointer"]]],
+                               "comp-header" ["defcomp"
+                                              "comp-header"
+                                              ["logged-in?"]
+                                              ["div"
+                                               ["{}" [":style" ["merge" "ui/row-center" "style-header"]]]
+                                               ["div"
+                                                ["{}" [":on" ["{}" [":click" "on-home"]]] [":style" "style-logo"]]
+                                                ["<>" "span" "|Cumulo" "nil"]]
+                                               ["div"
+                                                ["{}" [":style" "style-pointer"] [":on" ["{}" [":click" "on-profile"]]]]
+                                                ["<>" "span" ["if" "logged-in?" "|Me" "|Guest"] "nil"]]]],
+                               "style-pointer" ["def" "style-pointer" ["{}" [":cursor" "|pointer"]]],
+                               "style-header" ["def"
+                                               "style-header"
+                                               ["{}"
+                                                [":height" "48"]
+                                                [":background-color" "colors/motif"]
+                                                [":justify-content" ":space-between"]
+                                                [":padding" "|0 16px"]
+                                                [":font-size" "16"]
+                                                [":color" ":white"]]],
+                               "on-home" ["defn"
+                                          "on-home"
+                                          ["e" "dispatch!"]
+                                          ["dispatch!"
+                                           ":router/change"
+                                           ["{}" [":name" ":home"] [":data" "nil"] [":router" "nil"]]]]},
+                        :procs []},
+         "main" {:ns ["ns"
+                      "app.main"
+                      [":require"
+                       ["[]" "respo.core" ":refer" ["[]" "render!" "clear-cache!" "realize-ssr!"]]
+                       ["[]" "respo.cursor" ":refer" ["[]" "mutate"]]
+                       ["[]" "app.comp.container" ":refer" ["[]" "comp-container"]]
+                       ["[]" "cljs.reader" ":refer" ["[]" "read-string"]]
+                       ["[]" "app.network" ":refer" ["[]" "send!" "setup-socket!"]]
+                       ["[]" "app.schema" ":as" "schema"]]],
+                 :defs {"ssr?" ["def" "ssr?" ["some?" [".querySelector" "js/document" "|meta.respo-ssr"]]],
+                        "dispatch!" ["defn"
+                                     "dispatch!"
+                                     ["op" "op-data"]
+                                     [".info" "js/console" "|Dispatch" ["str" "op"] ["clj->js" "op-data"]]
+                                     ["if"
+                                      ["=" "op" ":states"]
+                                      ["reset!" "*states" [["mutate" "op-data"] "@*states"]]
+                                      ["send!" "op" "op-data"]]],
+                        "*store" ["defonce" "*store" ["atom" "nil"]],
+                        "main!" ["defn"
+                                 "main!"
+                                 []
+                                 ["if" "ssr?" ["render-app!" "realize-ssr!"]]
+                                 ["render-app!" "render!"]
+                                 ["setup-socket!"
+                                  "*store"
+                                  ["{}"
+                                   [":url"
+                                    ["str" "|ws://" [".-hostname" "js/location"] "|:" [":port" "schema/configs"]]]
+                                   [":on-close!"
+                                    ["fn"
+                                     ["event"]
+                                     ["reset!" "*store" "nil"]
+                                     [".error" "js/console" "|Lost connection!"]]]
+                                   [":on-open!" ["fn" ["event"] ["simulate-login!"]]]]]
+                                 ["add-watch" "*store" ":changes" ["fn" [] ["render-app!" "render!"]]]
+                                 ["add-watch" "*states" ":changes" ["fn" [] ["render-app!" "render!"]]]
+                                 ["println" "|App started!"]],
+                        "*states" ["defonce" "*states" ["atom" ["{}"]]],
+                        "simulate-login!" ["defn"
+                                           "simulate-login!"
+                                           []
+                                           ["let"
+                                            [["raw" [".getItem" "js/localStorage" [":storage-key" "schema/configs"]]]]
+                                            ["if"
+                                             ["some?" "raw"]
+                                             ["do"
+                                              ["println" "|Found storage."]
+                                              ["dispatch!" ":user/log-in" ["read-string" "raw"]]]
+                                             ["do" ["println" "|Found no storage."]]]]],
+                        "render-app!" ["defn"
+                                       "render-app!"
+                                       ["renderer"]
+                                       ["renderer" "mount-target" ["comp-container" "@*states" "@*store"] "dispatch!"]],
+                        "reload!" ["defn"
+                                   "reload!"
+                                   []
+                                   ["clear-cache!"]
+                                   ["render-app!" "render!"]
+                                   ["println" "|Code updated."]],
+                        "mount-target" ["def" "mount-target" [".querySelector" "js/document" "|.app"]]},
+                 :procs [["set!" "js/window.onload" "main!"]]},
+         "render" {:ns ["ns"
+                        "app.render"
+                        [":require"
+                         ["[]" "respo.render.html" ":refer" ["[]" "make-string"]]
+                         ["[]" "shell-page.core" ":refer" ["[]" "make-page" "spit" "slurp"]]
+                         ["[]" "app.comp.container" ":refer" ["[]" "comp-container"]]]],
+                   :defs {"main!" ["defn"
+                                   "main!"
+                                   []
+                                   ["if"
+                                    ["=" "js/process.env.env" "|dev"]
+                                    ["spit" "|target/index.html" ["dev-page"]]
+                                    ["spit" "|dist/index.html" ["prod-page"]]]],
+                          "base-info" ["def"
+                                       "base-info"
+                                       ["{}"
+                                        [":title" "|Cumulo"]
+                                        [":icon" "|http://logo.cumulo.org/cumulo.png"]
+                                        [":ssr" "nil"]
+                                        [":inner-html" "nil"]]],
+                          "dev-page" ["defn"
+                                      "dev-page"
+                                      []
+                                      ["make-page"
+                                       "|"
+                                       ["merge"
+                                        "base-info"
+                                        ["{}"
+                                         [":styles" ["[]"]]
+                                         [":scripts" ["[]" "|/main.js" "|/browser/lib.js" "|/browser/main.js"]]]]]],
+                          "prod-page" ["defn"
+                                       "prod-page"
+                                       []
+                                       ["let"
+                                        [["html-content" ["make-string" ["comp-container" ["{}"] "nil"]]]
+                                         ["manifest" [".parse" "js/JSON" ["slurp" "|dist/assets-manifest.json"]]]
+                                         ["cljs-manifest" [".parse" "js/JSON" ["slurp" "|dist/manifest.json"]]]]
+                                        ["make-page"
+                                         "html-content"
+                                         ["merge"
+                                          "base-info"
+                                          ["{}"
+                                           [":styles" ["[]" ["aget" "manifest" "|main.css"]]]
+                                           [":scripts"
+                                            ["[]"
+                                             ["aget" "manifest" "|main.js"]
+                                             ["->" "cljs-manifest" ["aget" "0"] ["aget" "|js-name"]]
+                                             ["->" "cljs-manifest" ["aget" "1"] ["aget" "|js-name"]]]]]]]]]},
+                   :procs []},
+         "schema" {:ns ["ns" "app.schema"],
+                   :defs {"configs" ["def" "configs" ["{}" [":storage-key" "|workflow-storage"] [":port" "5021"]]]},
+                   :procs []}}}
