@@ -31,7 +31,7 @@
 (defcomp
  comp-container
  (states store)
- (let [state (:data states), session (:session store)]
+ (let [state (:data states), session (:session store), writer (:writer session)]
    (if (nil? store)
      (div
       {:style (merge ui/global ui/fullscreen ui/center)}
@@ -46,13 +46,9 @@
            (case (:name router)
              :profile (comp-profile (:user store))
              :files
-               (cursor->
-                :files
-                comp-page-files
-                states
-                (get-in session [:writer :selected-ns])
-                (:data router))
-             :editor (cursor-> :editor comp-page-editor states)
+               (cursor-> :files comp-page-files states (:selected-ns writer) (:data router))
+             :editor
+               (cursor-> :editor comp-page-editor states (:stack writer) (:data router))
              :members (comp-page-members)
              (div {} (<> span (str "404 page: " (pr-str router)) nil))))
          (comp-login states)))

@@ -1,6 +1,54 @@
 {:package "app",
  :root {:ns "main", :def "main!"},
- :files {"comp.profile" {:ns ["ns"
+ :files {"comp.bookmark" {:ns ["ns"
+                               "app.comp.bookmark"
+                               [":require-macros" ["[]" "respo.macros" ":refer" ["[]" "defcomp" "<>" "span" "div" "a"]]]
+                               [":require"
+                                ["[]" "hsl.core" ":refer" ["[]" "hsl"]]
+                                ["[]" "respo-ui.style" ":as" "ui"]
+                                ["[]" "respo-ui.style.colors" ":as" "colors"]
+                                ["[]" "respo.core" ":refer" ["[]" "create-comp"]]
+                                ["[]" "respo.comp.space" ":refer" ["[]" "=<"]]]],
+                          :defs {"comp-bookmark" ["defcomp"
+                                                  "comp-bookmark"
+                                                  ["bookmark" "idx"]
+                                                  ["case"
+                                                   [":kind" "bookmark"]
+                                                   [":def"
+                                                    ["div"
+                                                     ["{}"
+                                                      [":style" "style-bookmark"]
+                                                      [":on" ["{}" [":click" ["on-pick" "idx"]]]]]
+                                                     ["div" ["{}"] ["<>" "span" [":extra" "bookmark"] "nil"]]
+                                                     ["div"
+                                                      ["{}"]
+                                                      ["<>" "span" "|def" "style-kind"]
+                                                      ["=<" "8" "nil"]
+                                                      ["<>" "span" [":ns" "bookmark"] "style-minor"]]]]
+                                                   ["div"
+                                                    ["{}"
+                                                     [":style" "style-bookmark"]
+                                                     [":on" ["{}" [":click" ["on-pick" "idx"]]]]]
+                                                    ["div" ["{}"] ["<>" "span" [":ns" "bookmark"] "nil"]]
+                                                    ["div"
+                                                     ["{}"]
+                                                     ["<>" "span" ["name" [":kind" "bookmark"]] "style-kind"]]]]],
+                                 "style-kind" ["def"
+                                               "style-kind"
+                                               ["{}" [":color" ["hsl" "0" "0" "50"]] [":font-family" "|Josefin Sans"]]],
+                                 "style-bookmark" ["def"
+                                                   "style-bookmark"
+                                                   ["{}"
+                                                    [":line-height" "|1.2em"]
+                                                    [":padding" "|4px 0"]
+                                                    [":cursor" ":pointer"]]],
+                                 "on-pick" ["defn"
+                                            "on-pick"
+                                            ["idx"]
+                                            ["fn" ["e" "d!" "m!"] ["d!" ":writer/point-to" "idx"]]],
+                                 "style-minor" ["def" "style-minor" ["{}" [":color" ["hsl" "0" "0" "50"]]]]},
+                          :procs []},
+         "comp.profile" {:ns ["ns"
                               "app.comp.profile"
                               [":require-macros" ["[]" "respo.macros" ":refer" ["[]" "defcomp" "<>" "span" "div" "a"]]]
                               [":require"
@@ -45,13 +93,26 @@
                                    ["[]" "respo-ui.style" ":as" "ui"]
                                    ["[]" "respo-ui.style.colors" ":as" "colors"]
                                    ["[]" "respo.core" ":refer" ["[]" "create-comp"]]
-                                   ["[]" "respo.comp.space" ":refer" ["[]" "=<"]]]],
+                                   ["[]" "respo.comp.space" ":refer" ["[]" "=<"]]
+                                   ["[]" "app.comp.bookmark" ":refer" ["[]" "comp-bookmark"]]]],
                              :defs {"comp-page-editor" ["defcomp"
                                                         "comp-page-editor"
-                                                        ["states"]
+                                                        ["states" "stack" "router-data"]
                                                         ["div"
-                                                         ["{}" [":style" "ui/flex"]]
-                                                         ["<>" "span" "|Editor" "nil"]]]},
+                                                         ["{}" [":style" ["merge" "ui/row" "ui/flex"]]]
+                                                         ["div"
+                                                          ["{}" [":style" "style-stack"]]
+                                                          ["->>"
+                                                           "stack"
+                                                           ["map-indexed"
+                                                            ["fn"
+                                                             ["idx" "bookmark"]
+                                                             ["[]" "idx" ["comp-bookmark" "bookmark" "idx"]]]]]]
+                                                         ["div"
+                                                          ["{}" [":style" "style-editor"]]
+                                                          ["<>" "span" "|editor" "nil"]]]],
+                                    "style-stack" ["def" "style-stack" ["{}" [":width" "240"]]],
+                                    "style-editor" ["def" "style-editor" ["merge" "ui/flex" ["{}"]]]},
                              :procs []},
          "schema" {:ns ["ns" "app.schema"],
                    :defs {"configs" ["def" "configs" ["{}" [":storage-key" "|workflow-storage"] [":port" "5021"]]]},
@@ -83,7 +144,9 @@
                                                     "comp-container"
                                                     ["states" "store"]
                                                     ["let"
-                                                     [["state" [":data" "states"]] ["session" [":session" "store"]]]
+                                                     [["state" [":data" "states"]]
+                                                      ["session" [":session" "store"]]
+                                                      ["writer" [":writer" "session"]]]
                                                      ["if"
                                                       ["nil?" "store"]
                                                       ["div"
@@ -113,10 +176,15 @@
                                                              ":files"
                                                              "comp-page-files"
                                                              "states"
-                                                             ["get-in" "session" ["[]" ":writer" ":selected-ns"]]
+                                                             [":selected-ns" "writer"]
                                                              [":data" "router"]]]
                                                            [":editor"
-                                                            ["cursor->" ":editor" "comp-page-editor" "states"]]
+                                                            ["cursor->"
+                                                             ":editor"
+                                                             "comp-page-editor"
+                                                             "states"
+                                                             [":stack" "writer"]
+                                                             [":data" "router"]]]
                                                            [":members" ["comp-page-members"]]
                                                            ["div"
                                                             ["{}"]
@@ -343,6 +411,7 @@
                                   ["[]" "respo-ui.style" ":as" "ui"]
                                   ["[]" "respo-ui.style.colors" ":as" "colors"]
                                   ["[]" "respo.core" ":refer" ["[]" "create-comp"]]
+                                  ["[]" "respo.comp.inspect" ":refer" ["[]" "comp-inspect"]]
                                   ["[]" "respo.comp.space" ":refer" ["[]" "=<"]]
                                   ["[]" "app.style" ":as" "style"]]],
                             :defs {"on-add" ["defn"
@@ -440,9 +509,16 @@
                                                           "state"
                                                           "selected-ns"
                                                           [":defs-set" "router-data"]]
-                                                         ["render-empty"]]]]],
+                                                         ["render-empty"]]
+                                                        ["comp-inspect" "selected-ns" "nil" "style-inspect"]]]],
                                    "render-empty" ["defn" "render-empty" [] ["div" ["{}"] ["<>" "span" "|Empty" "nil"]]],
                                    "initial-state" ["def" "initial-state" ["{}" [":ns-text" "|"] [":def-text" "|"]]],
+                                   "style-inspect" ["def"
+                                                    "style-inspect"
+                                                    ["{}"
+                                                     [":opacity" "1"]
+                                                     [":background-color" ["hsl" "0" "0" "100"]]
+                                                     [":color" ":black"]]],
                                    "style-def" ["def" "style-def" ["{}" [":cursor" ":pointer"]]],
                                    "on-add-def" ["defn"
                                                  "on-add-def"
@@ -459,7 +535,7 @@
                                    "on-edit-procs" ["defn"
                                                     "on-edit-procs"
                                                     ["e" "d!" "m!"]
-                                                    ["d!" ":session/edit-procs" "nil"]],
+                                                    ["d!" ":writer/edit" ["{}" [":kind" ":procs"]]]],
                                    "render-list" ["defn"
                                                   "render-list"
                                                   ["ns-set" "state"]
@@ -497,11 +573,16 @@
                                                       [":style" "style/button"]
                                                       [":on" ["{}" [":click" ["on-add" "state"]]]]]]]]],
                                    "style-link" ["def" "style-link" ["{}" [":cursor" ":pointer"]]],
-                                   "on-edit-ns" ["defn" "on-edit-ns" ["e" "d!" "m!"] ["d!" ":session/edit-ns" "nil"]],
+                                   "on-edit-ns" ["defn"
+                                                 "on-edit-ns"
+                                                 ["e" "d!" "m!"]
+                                                 ["d!" ":writer/edit" ["{}" [":kind" ":ns"]]]],
                                    "on-edit-def" ["defn"
                                                   "on-edit-def"
                                                   ["text"]
-                                                  ["fn" ["e" "d!" "m!"] ["d!" ":session/edit-def" "text"]]]},
+                                                  ["fn"
+                                                   ["e" "d!" "m!"]
+                                                   ["d!" ":writer/edit" ["{}" [":kind" ":def"] [":extra" "text"]]]]]},
                             :procs []},
          "render" {:ns ["ns"
                         "app.render"

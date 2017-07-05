@@ -25,4 +25,4 @@
 
 (def notification {:id nil, :kind nil, :text nil})
 
-(def page-data {:files {:ns-set #{}, :defs-set #{}}})
+(def page-data {:files {:ns-set #{}, :defs-set #{}}, :editor nil})

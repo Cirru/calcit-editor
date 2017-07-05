@@ -6,6 +6,7 @@
             [respo-ui.style :as ui]
             [respo-ui.style.colors :as colors]
             [respo.core :refer [create-comp]]
+            [respo.comp.inspect :refer [comp-inspect]]
             [respo.comp.space :refer [=<]]
             [app.style :as style]))
 
@@ -24,13 +25,13 @@
       (if (not (string/blank? text))
         (do (d! :ir/add-def text) (m! (assoc state :def-text "")))))))
 
-(defn on-edit-procs [e d! m!] (d! :session/edit-procs nil))
+(defn on-edit-procs [e d! m!] (d! :writer/edit {:kind :procs}))
 
 (def style-link {:cursor :pointer})
 
-(defn on-edit-ns [e d! m!] (d! :session/edit-ns nil))
+(defn on-edit-ns [e d! m!] (d! :writer/edit {:kind :ns}))
 
-(defn on-edit-def [text] (fn [e d! m!] (d! :session/edit-def text)))
+(defn on-edit-def [text] (fn [e d! m!] (d! :writer/edit {:kind :def, :extra text})))
 
 (defn render-file [state selected-ns defs-set]
   (div
@@ -72,6 +73,8 @@
 
 (def initial-state {:ns-text "", :def-text ""})
 
+(def style-inspect {:opacity 1, :background-color (hsl 0 0 100), :color :black})
+
 (defn render-list [ns-set state]
   (div
    {:style style-list}
@@ -104,4 +107,5 @@
     (render-list (:ns-set router-data) state)
     (if (some? selected-ns)
       (render-file state selected-ns (:defs-set router-data))
-      (render-empty)))))
+      (render-empty))
+    (comp-inspect selected-ns nil style-inspect))))

@@ -11,7 +11,8 @@
                                 [":require"
                                  ["[]" "recollect.bunch" ":refer" ["[]" "create-twig"]]
                                  ["[]" "server.twig.user" ":refer" ["[]" "twig-user"]]
-                                 ["[]" "server.twig.page-files" ":refer" ["[]" "twig-page-files"]]]],
+                                 ["[]" "server.twig.page-files" ":refer" ["[]" "twig-page-files"]]
+                                 ["[]" "server.twig.page-editor" ":refer" ["[]" "twig-page-editor"]]]],
                            :defs {"twig-container" ["def"
                                                     "twig-container"
                                                     ["create-twig"
@@ -21,6 +22,7 @@
                                                       ["let"
                                                        [["logged-in?" ["some?" [":user-id" "session"]]]
                                                         ["router" [":router" "session"]]
+                                                        ["writer" [":writer" "session"]]
                                                         ["ir" [":ir" "db"]]]
                                                        ["if"
                                                         "logged-in?"
@@ -40,14 +42,50 @@
                                                              ["twig-page-files"
                                                               [":files" "ir"]
                                                               ["get-in" "session" ["[]" ":writer" ":selected-ns"]]]]
+                                                            [":editor" ["twig-page-editor" [":files" "ir"] "writer"]]
                                                             "nil"]]]]
                                                         ["{}" [":session" "session"] [":logged-in?" "false"]]]]]]]},
+                           :procs []},
+         "updater.writer" {:ns ["ns" "server.updater.writer"],
+                           :defs {"edit" ["defn"
+                                          "edit"
+                                          ["db" "op-data" "session-id" "op-id" "op-time"]
+                                          ["let"
+                                           [["ns-text"
+                                             ["get-in" "db" ["[]" ":sessions" "session-id" ":writer" ":selected-ns"]]]
+                                            ["bookmark" ["assoc" "op-data" ":ns" "ns-text" ":focus" ["[]"]]]]
+                                           ["->"
+                                            "db"
+                                            ["update-in"
+                                             ["[]" ":sessions" "session-id" ":writer"]
+                                             ["fn"
+                                              ["writer"]
+                                              ["let"
+                                               [[["{}" ["stack" ":stack"] ["pointer" ":pointer"]] "writer"]]
+                                               ["assoc"
+                                                "writer"
+                                                ":stack"
+                                                ["conj" "stack" "bookmark"]
+                                                ":pointer"
+                                                ["count" "stack"]]]]]
+                                            ["assoc-in"
+                                             ["[]" ":sessions" "session-id" ":router"]
+                                             ["{}" [":name" ":editor"]]]]]],
+                                  "point-to" ["defn"
+                                              "point-to"
+                                              ["db" "op-data" "session-id" "op-id" "op-time"]
+                                              ["assoc-in"
+                                               "db"
+                                               ["[]" ":sessions" "session-id" ":writer" ":pointer"]
+                                               "op-data"]]},
                            :procs []},
          "util" {:ns ["ns" "server.util"],
                  :defs {"find-first" ["defn"
                                       "find-first"
                                       ["f" "xs"]
-                                      ["reduce" ["fn" ["_" "x"] ["when" ["f" "x"] ["reduced" "x"]]] "nil" "xs"]]},
+                                      ["reduce" ["fn" ["_" "x"] ["when" ["f" "x"] ["reduced" "x"]]] "nil" "xs"]],
+                        "expr?" ["defn" "expr?" ["x"] ["=" ":expr" [":type" "x"]]],
+                        "leaf?" ["defn" "leaf?" ["x"] ["=" ":leaf" [":type" "x"]]]},
                  :procs []},
          "schema" {:ns ["ns" "server.schema"],
                    :defs {"ir-file" ["def" "ir-file" ["{}" [":pkg" "|app"] [":files" ["{}"]]]],
@@ -84,7 +122,9 @@
                           "notification" ["def" "notification" ["{}" [":id" "nil"] [":kind" "nil"] [":text" "nil"]]],
                           "page-data" ["def"
                                        "page-data"
-                                       ["{}" [":files" ["{}" [":ns-set" ["#{}"]] [":defs-set" ["#{}"]]]]]]},
+                                       ["{}"
+                                        [":files" ["{}" [":ns-set" ["#{}"]] [":defs-set" ["#{}"]]]]
+                                        [":editor" "nil"]]]},
                    :procs []},
          "updater.user" {:ns ["ns" "server.updater.user" [":require" ["[]" "server.util" ":refer" ["[]" "find-first"]]]],
                          :defs {"sign-up" ["defn"
@@ -392,7 +432,8 @@
                                ["[]" "server.updater.session" ":as" "session"]
                                ["[]" "server.updater.user" ":as" "user"]
                                ["[]" "server.updater.router" ":as" "router"]
-                               ["[]" "server.updater.ir" ":as" "ir"]]],
+                               ["[]" "server.updater.ir" ":as" "ir"]
+                               ["[]" "server.updater.writer" ":as" "writer"]]],
                          :defs {"updater" ["defn"
                                            "updater"
                                            ["db" "op" "op-data" "session-id" "op-id" "op-time"]
@@ -419,10 +460,42 @@
                                              ["session/select-ns" "db" "op-data" "session-id" "op-id" "op-time"]]
                                             [":router/change"
                                              ["router/change" "db" "op-data" "session-id" "op-id" "op-time"]]
+                                            [":writer/edit"
+                                             ["writer/edit" "db" "op-data" "session-id" "op-id" "op-time"]]
+                                            [":writer/point-to"
+                                             ["writer/point-to" "db" "op-data" "session-id" "op-id" "op-time"]]
                                             [":ir/add-ns" ["ir/add-ns" "db" "op-data" "session-id" "op-id" "op-time"]]
                                             [":ir/add-def" ["ir/add-def" "db" "op-data" "session-id" "op-id" "op-time"]]
                                             "db"]]},
                          :procs []},
+         "twig.page-editor" {:ns ["ns"
+                                  "server.twig.page-editor"
+                                  [":require" ["[]" "recollect.bunch" ":refer" ["[]" "create-twig"]]]],
+                             :defs {"twig-page-editor" ["def"
+                                                        "twig-page-editor"
+                                                        ["create-twig"
+                                                         ":page-editor"
+                                                         ["fn"
+                                                          ["files" "writer"]
+                                                          ["let"
+                                                           [["pointer" [":pointer" "writer"]]
+                                                            ["stack" [":stack" "writer"]]
+                                                            ["bookmark" ["get" "stack" "pointer"]]]
+                                                           ["if"
+                                                            ["some?" "bookmark"]
+                                                            ["let"
+                                                             [["ns-text" [":ns" "bookmark"]]]
+                                                             ["case"
+                                                              [":kind" "bookmark"]
+                                                              [":ns" ["get-in" "files" ["[]" "ns-text" ":ns"]]]
+                                                              [":procs" ["get-in" "files" ["[]" "ns-text" ":procs"]]]
+                                                              [":def"
+                                                               ["get-in"
+                                                                "files"
+                                                                ["[]" "ns-text" ":defs" [":extra" "bookmark"]]]]
+                                                              "nil"]]
+                                                            "nil"]]]]]},
+                             :procs []},
          "updater.ir" {:ns ["ns" "server.updater.ir" [":require" ["[]" "server.schema" ":as" "schema"]]],
                        :defs {"add-ns" ["defn"
                                         "add-ns"
