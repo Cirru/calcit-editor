@@ -12,5 +12,5 @@
           :logged-in? true,
           :user (twig-user (get-in db [:users (:user-id session)])),
           :router router,
-          :statistics {}}
+          :ir (:ir db)}
          {:session session, :logged-in? false})))))

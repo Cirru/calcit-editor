@@ -29,7 +29,7 @@
                                                           ["twig-user"
                                                            ["get-in" "db" ["[]" ":users" [":user-id" "session"]]]]]
                                                          [":router" "router"]
-                                                         [":statistics" ["{}"]]]
+                                                         [":ir" [":ir" "db"]]]
                                                         ["{}" [":session" "session"] [":logged-in?" "false"]]]]]]]},
                            :procs []},
          "util" {:ns ["ns" "server.util"],
@@ -52,17 +52,24 @@
                                     ["{}" [":name" "nil"] [":title" "nil"] [":data" ["{}"]] [":router" "nil"]]],
                           "configs" ["def"
                                      "configs"
-                                     ["{}" [":storage-key" "|/data/cumulo/workflow-storage.edn"] [":port" "5021"]]],
-                          "database" ["def" "database" ["{}" [":sessions" ["{}"]] [":users" ["{}"]] [":topics" ["{}"]]]],
+                                     ["{}"
+                                      [":storage-key" "|coir.edn"]
+                                      [":port" ["or" [".-port" "js/process.env"] "5021"]]]],
+                          "database" ["def" "database" ["{}" [":sessions" ["{}"]] [":users" ["{}"]] [":ir" "ir-file"]]],
                           "session" ["def"
                                      "session"
                                      ["{}"
                                       [":user-id" "nil"]
                                       [":id" "nil"]
                                       [":nickname" "nil"]
-                                      [":router" ["{}" [":name" ":home"] [":data" "nil"] [":router" "nil"]]]
-                                      [":notifications" ["[]"]]]],
-                          "notification" ["def" "notification" ["{}" [":id" "nil"] [":kind" "nil"] [":text" "nil"]]]},
+                                      [":router" ["{}" [":name" ":files"] [":data" "nil"] [":router" "nil"]]]
+                                      [":notifications" ["[]"]]
+                                      [":writer" ["{}" [":pointer" "0"] [":stack" ["[]"]]]]]],
+                          "notification" ["def" "notification" ["{}" [":id" "nil"] [":kind" "nil"] [":text" "nil"]]],
+                          "ir-file" ["def" "ir-file" ["{}" [":pkg" "|app"] [":files" ["{}"]]]],
+                          "focus" ["def"
+                                   "focus"
+                                   ["{}" [":ns" "nil"] [":kind" ":def"] [":extra" "nil"] [":coord" ["[]"]]]]},
                    :procs []},
          "updater.user" {:ns ["ns" "server.updater.user" [":require" ["[]" "server.util" ":refer" ["[]" "find-first"]]]],
                          :defs {"sign-up" ["defn"
@@ -190,6 +197,7 @@
                         "main!" ["defn"
                                  "main!"
                                  []
+                                 ["println" "|Loading configs:" ["pr-str" "schema/configs"]]
                                  ["let"
                                   [["server-ch" ["run-server!" ["{}" [":port" [":port" "schema/configs"]]]]]]
                                   ["go-loop"

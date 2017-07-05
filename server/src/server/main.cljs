@@ -32,6 +32,7 @@
   (js/setTimeout render-loop! 300))
 
 (defn main! []
+  (println "Loading configs:" (pr-str schema/configs))
   (let [server-ch (run-server! {:port (:port schema/configs)})]
     (go-loop
      []

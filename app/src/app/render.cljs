@@ -5,7 +5,7 @@
             [app.comp.container :refer [comp-container]]))
 
 (def base-info
-  {:title "Cumulo", :icon "http://logo.cumulo.org/cumulo.png", :ssr nil, :inner-html nil})
+  {:title "Editor", :icon "http://logo.cumulo.org/cumulo.png", :ssr nil, :inner-html nil})
 
 (defn dev-page []
   (make-page
