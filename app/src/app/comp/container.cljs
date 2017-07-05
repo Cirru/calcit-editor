@@ -24,7 +24,7 @@
   {:bottom 0,
    :left 0,
    :max-width "100%",
-   :background-color (hsl 0 0 90),
+   :background-color (hsl 0 0 50),
    :color :black,
    :opacity 1})
 
@@ -40,17 +40,21 @@
       {:style (merge ui/global ui/fullscreen ui/column style-container)}
       (comp-header (:logged-in? store))
       (div
-       {:style style-body}
-       (div
-        {:style (merge ui/row style-body)}
-        (if (:logged-in? store)
-          (let [router (:router store)]
-            (case (:name router)
-              :profile (comp-profile (:user store))
-              :files (cursor-> :files comp-page-files states (get-in store [:ir :files]))
-              :editor (cursor-> :editor comp-page-editor states)
-              :members (comp-page-members)
-              (div {} (<> span (str "404 page: " (pr-str router)) nil))))
-          (comp-login states))))
+       {:style (merge ui/row ui/flex style-body)}
+       (if (:logged-in? store)
+         (let [router (:router store)]
+           (case (:name router)
+             :profile (comp-profile (:user store))
+             :files
+               (cursor->
+                :files
+                comp-page-files
+                states
+                (get-in session [:writer :selected-ns])
+                (:data router))
+             :editor (cursor-> :editor comp-page-editor states)
+             :members (comp-page-members)
+             (div {} (<> span (str "404 page: " (pr-str router)) nil))))
+         (comp-login states)))
       (comp-inspect "Store" store style-inspector)
       (comp-msg-list (get-in store [:session :notifications]) :session/remove-notification)))))

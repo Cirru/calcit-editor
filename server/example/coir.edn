@@ -1,0 +1,1 @@
+{:sessions {}, :users {"B1BTN1qEZ" {:id "B1BTN1qEZ", :name "chen", :nickname "chen", :password "", :avatar nil}}, :ir {:pkg "app", :files {"app.main" {:ns {}, :defs {"main!" {}}, :procs {}}, "app.comp.container" {:ns {}, :defs {}, :procs {}}}}}

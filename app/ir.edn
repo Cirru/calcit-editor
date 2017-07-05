@@ -100,32 +100,31 @@
                                                           "style-container"]]]
                                                        ["comp-header" [":logged-in?" "store"]]
                                                        ["div"
-                                                        ["{}" [":style" "style-body"]]
-                                                        ["div"
-                                                         ["{}" [":style" ["merge" "ui/row" "style-body"]]]
-                                                         ["if"
-                                                          [":logged-in?" "store"]
-                                                          ["let"
-                                                           [["router" [":router" "store"]]]
-                                                           ["case"
-                                                            [":name" "router"]
-                                                            [":profile" ["comp-profile" [":user" "store"]]]
-                                                            [":files"
-                                                             ["cursor->"
-                                                              ":files"
-                                                              "comp-page-files"
-                                                              "states"
-                                                              ["get-in" "store" ["[]" ":ir" ":files"]]]]
-                                                            [":editor"
-                                                             ["cursor->" ":editor" "comp-page-editor" "states"]]
-                                                            [":members" ["comp-page-members"]]
-                                                            ["div"
-                                                             ["{}"]
-                                                             ["<>"
-                                                              "span"
-                                                              ["str" "|404 page: " ["pr-str" "router"]]
-                                                              "nil"]]]]
-                                                          ["comp-login" "states"]]]]
+                                                        ["{}" [":style" ["merge" "ui/row" "ui/flex" "style-body"]]]
+                                                        ["if"
+                                                         [":logged-in?" "store"]
+                                                         ["let"
+                                                          [["router" [":router" "store"]]]
+                                                          ["case"
+                                                           [":name" "router"]
+                                                           [":profile" ["comp-profile" [":user" "store"]]]
+                                                           [":files"
+                                                            ["cursor->"
+                                                             ":files"
+                                                             "comp-page-files"
+                                                             "states"
+                                                             ["get-in" "session" ["[]" ":writer" ":selected-ns"]]
+                                                             [":data" "router"]]]
+                                                           [":editor"
+                                                            ["cursor->" ":editor" "comp-page-editor" "states"]]
+                                                           [":members" ["comp-page-members"]]
+                                                           ["div"
+                                                            ["{}"]
+                                                            ["<>"
+                                                             "span"
+                                                             ["str" "|404 page: " ["pr-str" "router"]]
+                                                             "nil"]]]]
+                                                         ["comp-login" "states"]]]
                                                        ["comp-inspect" "|Store" "store" "style-inspector"]
                                                        ["comp-msg-list"
                                                         ["get-in" "store" ["[]" ":session" ":notifications"]]
@@ -140,7 +139,7 @@
                                                       [":bottom" "0"]
                                                       [":left" "0"]
                                                       [":max-width" "|100%"]
-                                                      [":background-color" ["hsl" "0" "0" "90"]]
+                                                      [":background-color" ["hsl" "0" "0" "50"]]
                                                       [":color" ":black"]
                                                       [":opacity" "1"]]]},
                            :procs []},
@@ -149,13 +148,13 @@
                        [":require" ["[]" "respo-ui.style" ":as" "ui"] ["[]" "hsl.core" ":refer" ["[]" "hsl"]]]],
                   :defs {"input" ["def" "input" ["merge" "ui/input" ["{}"]]],
                          "button" ["def" "button" ["merge" "ui/button" ["{}"]]],
-                         "header" ["def"
-                                   "header"
-                                   ["{}"
-                                    [":font-family" "|Josefin Sans"]
-                                    [":font-size" "16"]
-                                    [":font-weight" "100"]
-                                    [":color" ["hsl" "0" "0" "80"]]]]},
+                         "title" ["def"
+                                  "title"
+                                  ["{}"
+                                   [":font-family" "|Josefin Sans"]
+                                   [":font-size" "20"]
+                                   [":font-weight" "100"]
+                                   [":color" ["hsl" "0" "0" "80"]]]]},
                   :procs []},
          "main" {:ns ["ns"
                       "app.main"
@@ -339,37 +338,170 @@
                                    ":refer"
                                    ["[]" "defcomp" "<>" "span" "div" "pre" "input" "button" "a"]]]
                                  [":require"
+                                  ["[]" "clojure.string" ":as" "string"]
                                   ["[]" "hsl.core" ":refer" ["[]" "hsl"]]
                                   ["[]" "respo-ui.style" ":as" "ui"]
                                   ["[]" "respo-ui.style.colors" ":as" "colors"]
                                   ["[]" "respo.core" ":refer" ["[]" "create-comp"]]
                                   ["[]" "respo.comp.space" ":refer" ["[]" "=<"]]
                                   ["[]" "app.style" ":as" "style"]]],
-                            :defs {"comp-page-files" ["defcomp"
+                            :defs {"on-add" ["defn"
+                                             "on-add"
+                                             ["state"]
+                                             ["fn"
+                                              ["e" "d!" "m!"]
+                                              ["let"
+                                               [["text" ["string/trim" [":ns-text" "state"]]]]
+                                               ["if"
+                                                ["not" ["string/blank?" "text"]]
+                                                ["do"
+                                                 ["d!" ":ir/add-ns" "text"]
+                                                 ["m!" ["assoc" "state" ":ns-text" "|"]]]]]]],
+                                   "render-file" ["defn"
+                                                  "render-file"
+                                                  ["state" "selected-ns" "defs-set"]
+                                                  ["div"
+                                                   ["{}" [":style" "ui/flex"]]
+                                                   ["div"
+                                                    ["{}"]
+                                                    ["<>" "span" "|File" "style/title"]
+                                                    ["=<" "16" "nil"]
+                                                    ["<>" "span" "selected-ns" "nil"]]
+                                                   ["div"
+                                                    ["{}"]
+                                                    ["span"
+                                                     ["{}"
+                                                      [":inner-text" "|ns"]
+                                                      [":style" "style-link"]
+                                                      [":on" ["{}" [":click" "on-edit-ns"]]]]]
+                                                    ["=<" "16" "nil"]
+                                                    ["span"
+                                                     ["{}"
+                                                      [":inner-text" "|procs"]
+                                                      [":style" "style-link"]
+                                                      [":on" ["{}" [":click" "on-edit-procs"]]]]]]
+                                                   ["div"
+                                                    ["{}"]
+                                                    ["->>"
+                                                     "defs-set"
+                                                     ["map"
+                                                      ["fn"
+                                                       ["def-text"]
+                                                       ["[]"
+                                                        "def-text"
+                                                        ["div"
+                                                         ["{}"
+                                                          [":style" "style-def"]
+                                                          [":on" ["{}" [":click" ["on-edit-def" "def-text"]]]]]
+                                                         ["<>" "span" "def-text" "nil"]]]]]]]
+                                                   ["div"
+                                                    ["{}"]
+                                                    ["input"
+                                                     ["{}"
+                                                      [":value" [":def-text" "state"]]
+                                                      [":placeholder" "|a def"]
+                                                      [":style" "style/input"]
+                                                      [":on" ["{}" [":input" ["on-input-def" "state"]]]]]]
+                                                    ["=<" "8" "nil"]
+                                                    ["button"
+                                                     ["{}"
+                                                      [":inner-text" "|Add def"]
+                                                      [":style" "style/button"]
+                                                      [":on" ["{}" [":click" ["on-add-def" "state"]]]]]]]]],
+                                   "on-input-def" ["defn"
+                                                   "on-input-def"
+                                                   ["state"]
+                                                   ["fn"
+                                                    ["e" "d!" "m!"]
+                                                    ["m!" ["assoc" "state" ":def-text" [":value" "e"]]]]],
+                                   "style-ns" ["def" "style-ns" ["{}" [":cursor" ":pointer"]]],
+                                   "style-list" ["def" "style-list" ["{}" [":width" "320"]]],
+                                   "on-checkout" ["defn"
+                                                  "on-checkout"
+                                                  ["state" "ns-text"]
+                                                  ["fn" ["e" "d!" "m!"] ["d!" ":session/select-ns" "ns-text"]]],
+                                   "on-input-ns" ["defn"
+                                                  "on-input-ns"
+                                                  ["state"]
+                                                  ["fn"
+                                                   ["e" "d!" "m!"]
+                                                   ["m!" ["assoc" "state" ":ns-text" [":value" "e"]]]]],
+                                   "comp-page-files" ["defcomp"
                                                       "comp-page-files"
-                                                      ["states" "files"]
-                                                      ["div"
-                                                       ["{}" [":style" ["merge" "ui/flex" "ui/row"]]]
+                                                      ["states" "selected-ns" "router-data"]
+                                                      ["let"
+                                                       [["state" ["or" [":data" "states"] "initial-state"]]]
                                                        ["div"
-                                                        ["{}" [":style" "style-list"]]
+                                                        ["{}" [":style" ["merge" "ui/flex" "ui/row"]]]
+                                                        ["render-list" [":ns-set" "router-data"] "state"]
+                                                        ["if"
+                                                         ["some?" "selected-ns"]
+                                                         ["render-file"
+                                                          "state"
+                                                          "selected-ns"
+                                                          [":defs-set" "router-data"]]
+                                                         ["render-empty"]]]]],
+                                   "render-empty" ["defn" "render-empty" [] ["div" ["{}"] ["<>" "span" "|Empty" "nil"]]],
+                                   "initial-state" ["def" "initial-state" ["{}" [":ns-text" "|"] [":def-text" "|"]]],
+                                   "style-def" ["def" "style-def" ["{}" [":cursor" ":pointer"]]],
+                                   "on-add-def" ["defn"
+                                                 "on-add-def"
+                                                 ["state"]
+                                                 ["fn"
+                                                  ["e" "d!" "m!"]
+                                                  ["let"
+                                                   [["text" ["string/trim" [":def-text" "state"]]]]
+                                                   ["if"
+                                                    ["not" ["string/blank?" "text"]]
+                                                    ["do"
+                                                     ["d!" ":ir/add-def" "text"]
+                                                     ["m!" ["assoc" "state" ":def-text" "|"]]]]]]],
+                                   "on-edit-procs" ["defn"
+                                                    "on-edit-procs"
+                                                    ["e" "d!" "m!"]
+                                                    ["d!" ":session/edit-procs" "nil"]],
+                                   "render-list" ["defn"
+                                                  "render-list"
+                                                  ["ns-set" "state"]
+                                                  ["div"
+                                                   ["{}" [":style" "style-list"]]
+                                                   ["div"
+                                                    ["{}" [":style" "style/title"]]
+                                                    ["<>" "span" "|Namespaces" "nil"]]
+                                                   ["div"
+                                                    ["{}"]
+                                                    ["->>"
+                                                     "ns-set"
+                                                     ["map"
+                                                      ["fn"
+                                                       ["ns-text"]
+                                                       ["[]"
+                                                        "ns-text"
                                                         ["div"
-                                                         ["{}" [":style" "style/header"]]
-                                                         ["<>" "span" "|Namespaces" "nil"]]
-                                                        ["div" ["{}"] ["<>" "pre" "files" "nil"]]]
-                                                       ["div"
-                                                        ["{}" [":style" "ui/flex"]]
-                                                        ["div"
-                                                         ["{}"]
-                                                         ["input"
-                                                          ["{}"
-                                                           [":value" "|demo"]
-                                                           [":placeholder" "|a namespace"]
-                                                           [":style" "style/input"]]]
-                                                         ["=<" "8" "nil"]
-                                                         ["button"
-                                                          ["{}" [":inner-text" "|Add ns"] [":style" "style/button"]]]]
-                                                        ["div" ["{}"]]]]],
-                                   "style-list" ["def" "style-list" ["{}" [":width" "200"]]]},
+                                                         ["{}"
+                                                          [":style" "style-ns"]
+                                                          [":on" ["{}" [":click" ["on-checkout" "state" "ns-text"]]]]]
+                                                         ["<>" "span" "ns-text" "nil"]]]]]]]
+                                                   ["div"
+                                                    ["{}"]
+                                                    ["input"
+                                                     ["{}"
+                                                      [":value" [":ns-text" "state"]]
+                                                      [":placeholder" "|a namespace"]
+                                                      [":style" "style/input"]
+                                                      [":on" ["{}" [":input" ["on-input-ns" "state"]]]]]]
+                                                    ["=<" "8" "nil"]
+                                                    ["button"
+                                                     ["{}"
+                                                      [":inner-text" "|Add ns"]
+                                                      [":style" "style/button"]
+                                                      [":on" ["{}" [":click" ["on-add" "state"]]]]]]]]],
+                                   "style-link" ["def" "style-link" ["{}" [":cursor" ":pointer"]]],
+                                   "on-edit-ns" ["defn" "on-edit-ns" ["e" "d!" "m!"] ["d!" ":session/edit-ns" "nil"]],
+                                   "on-edit-def" ["defn"
+                                                  "on-edit-def"
+                                                  ["text"]
+                                                  ["fn" ["e" "d!" "m!"] ["d!" ":session/edit-def" "text"]]]},
                             :procs []},
          "render" {:ns ["ns"
                         "app.render"
