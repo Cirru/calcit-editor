@@ -3,11 +3,15 @@
 
 (def ir-file {:pkg "app", :files {}})
 
+(def expr {:type :expr, :author nil, :time nil, :data {}})
+
 (def configs {:storage-key "coir.edn", :port (or (.-port js/process.env) 5021)})
 
 (def user {:name nil, :id nil, :nickname nil, :avatar nil, :password nil})
 
 (def anchor {:kind :def, :ns nil, :extra nil, :focus []})
+
+(def leaf {:type :leaf, :author nil, :time nil, :text ""})
 
 (def database {:sessions {}, :users {}, :ir ir-file})
 

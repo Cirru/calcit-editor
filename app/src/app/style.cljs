@@ -7,3 +7,5 @@
 
 (def title
   {:font-family "Josefin Sans", :font-size 20, :font-weight 100, :color (hsl 0 0 80)})
+
+(def click {:text-decoration :underline})

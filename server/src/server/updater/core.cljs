@@ -21,4 +21,5 @@
     :writer/point-to (writer/point-to db op-data session-id op-id op-time)
     :ir/add-ns (ir/add-ns db op-data session-id op-id op-time)
     :ir/add-def (ir/add-def db op-data session-id op-id op-time)
+    :ir/remove-def (ir/remove-def db op-data session-id op-id op-time)
     db))

@@ -84,6 +84,7 @@
                                                   [":color" ":white"]
                                                   [":padding" "|0 8px"]]]},
                          :procs []},
+         "util.keycode" {:ns ["ns" "app.util.keycode"], :defs {"enter" ["def" "enter" "13"]}, :procs []},
          "comp.page-editor" {:ns ["ns"
                                   "app.comp.page-editor"
                                   [":require-macros"
@@ -94,7 +95,8 @@
                                    ["[]" "respo-ui.style.colors" ":as" "colors"]
                                    ["[]" "respo.core" ":refer" ["[]" "create-comp"]]
                                    ["[]" "respo.comp.space" ":refer" ["[]" "=<"]]
-                                   ["[]" "app.comp.bookmark" ":refer" ["[]" "comp-bookmark"]]]],
+                                   ["[]" "app.comp.bookmark" ":refer" ["[]" "comp-bookmark"]]
+                                   ["[]" "app.comp.expr" ":refer" ["[]" "comp-expr"]]]],
                              :defs {"comp-page-editor" ["defcomp"
                                                         "comp-page-editor"
                                                         ["states" "stack" "router-data"]
@@ -110,7 +112,7 @@
                                                              ["[]" "idx" ["comp-bookmark" "bookmark" "idx"]]]]]]
                                                          ["div"
                                                           ["{}" [":style" "style-editor"]]
-                                                          ["<>" "span" "|editor" "nil"]]]],
+                                                          ["comp-expr" "router-data" ["[]"]]]]],
                                     "style-stack" ["def" "style-stack" ["{}" [":width" "240"]]],
                                     "style-editor" ["def" "style-editor" ["merge" "ui/flex" ["{}"]]]},
                              :procs []},
@@ -222,7 +224,8 @@
                                    [":font-family" "|Josefin Sans"]
                                    [":font-size" "20"]
                                    [":font-weight" "100"]
-                                   [":color" ["hsl" "0" "0" "80"]]]]},
+                                   [":color" ["hsl" "0" "0" "80"]]]],
+                         "click" ["def" "click" ["{}" [":text-decoration" ":underline"]]]},
                   :procs []},
          "main" {:ns ["ns"
                       "app.main"
@@ -459,10 +462,18 @@
                                                        ["[]"
                                                         "def-text"
                                                         ["div"
-                                                         ["{}"
-                                                          [":style" "style-def"]
-                                                          [":on" ["{}" [":click" ["on-edit-def" "def-text"]]]]]
-                                                         ["<>" "span" "def-text" "nil"]]]]]]]
+                                                         ["{}"]
+                                                         ["span"
+                                                          ["{}"
+                                                           [":inner-text" "def-text"]
+                                                           [":style" "style-def"]
+                                                           [":on" ["{}" [":click" ["on-edit-def" "def-text"]]]]]]
+                                                         ["=<" "8" "nil"]
+                                                         ["span"
+                                                          ["{}"
+                                                           [":class-name" "|ion-md-close"]
+                                                           [":style" "style-remove"]
+                                                           [":on" ["{}" [":click" ["on-remove-def" "def-text"]]]]]]]]]]]]
                                                    ["div"
                                                     ["{}"]
                                                     ["input"
@@ -484,6 +495,10 @@
                                                     ["e" "d!" "m!"]
                                                     ["m!" ["assoc" "state" ":def-text" [":value" "e"]]]]],
                                    "style-ns" ["def" "style-ns" ["{}" [":cursor" ":pointer"]]],
+                                   "on-remove-def" ["defn"
+                                                    "on-remove-def"
+                                                    ["def-text"]
+                                                    ["fn" ["e" "d!" "m!"] ["d!" ":ir/remove-def" "def-text"]]],
                                    "style-list" ["def" "style-list" ["{}" [":width" "320"]]],
                                    "on-checkout" ["defn"
                                                   "on-checkout"
@@ -510,7 +525,7 @@
                                                           "selected-ns"
                                                           [":defs-set" "router-data"]]
                                                          ["render-empty"]]
-                                                        ["comp-inspect" "selected-ns" "nil" "style-inspect"]]]],
+                                                        ["--" "comp-inspect" "selected-ns" "nil" "style-inspect"]]]],
                                    "render-empty" ["defn" "render-empty" [] ["div" ["{}"] ["<>" "span" "|Empty" "nil"]]],
                                    "initial-state" ["def" "initial-state" ["{}" [":ns-text" "|"] [":def-text" "|"]]],
                                    "style-inspect" ["def"
@@ -519,7 +534,15 @@
                                                      [":opacity" "1"]
                                                      [":background-color" ["hsl" "0" "0" "100"]]
                                                      [":color" ":black"]]],
-                                   "style-def" ["def" "style-def" ["{}" [":cursor" ":pointer"]]],
+                                   "style-def" ["def"
+                                                "style-def"
+                                                ["{}" [":cursor" ":pointer"] [":vertical-align" ":middle"]]],
+                                   "style-remove" ["def"
+                                                   "style-remove"
+                                                   ["{}"
+                                                    [":color" ["hsl" "0" "0" "80"]]
+                                                    [":cursor" ":pointer"]
+                                                    [":vertical-align" ":middle"]]],
                                    "on-add-def" ["defn"
                                                  "on-add-def"
                                                  ["state"]
@@ -712,4 +735,43 @@
                                                           ["div"
                                                            ["{}" [":style" "ui/flex"]]
                                                            ["<>" "span" "|Members" "nil"]]]},
-                              :procs []}}}
+                              :procs []},
+         "comp.expr" {:ns ["ns"
+                           "app.comp.expr"
+                           [":require-macros" ["[]" "respo.macros" ":refer" ["[]" "defcomp" "<>" "span" "div" "a"]]]
+                           [":require"
+                            ["[]" "hsl.core" ":refer" ["[]" "hsl"]]
+                            ["[]" "respo-ui.style" ":as" "ui"]
+                            ["[]" "respo-ui.style.colors" ":as" "colors"]
+                            ["[]" "respo.core" ":refer" ["[]" "create-comp"]]
+                            ["[]" "respo.comp.space" ":refer" ["[]" "=<"]]
+                            ["[]" "app.util.keycode" ":as" "keycode"]]],
+                      :defs {"comp-expr" ["defcomp"
+                                          "comp-expr"
+                                          ["expr" "coord"]
+                                          ["div"
+                                           ["{}"
+                                            [":tab-index" "0"]
+                                            [":style" "style-expr"]
+                                            [":on" ["{}" [":keydown" ["on-keydown" "coord"]]]]]]],
+                             "style-expr" ["def"
+                                           "style-expr"
+                                           ["{}"
+                                            [":border-left" ["str" "|1px solid " ["hsl" "0" "0" "70"]]]
+                                            [":min-height" "24"]
+                                            [":outline" ":none"]]],
+                             "on-keydown" ["defn"
+                                           "on-keydown"
+                                           ["coord"]
+                                           ["fn"
+                                            ["e" "d!" "m!"]
+                                            ["let"
+                                             [["event" [":original-event" "e"]]
+                                              ["shift?" [".-shiftKey" "event"]]
+                                              ["meta?" [".-metaKey" "event"]]
+                                              ["ctrl?" [".-ctrlKey" "event"]]]
+                                             ["case"
+                                              [":key-code" "e"]
+                                              ["keycode/enter" ["d!" ":ir/insert-token" "nil"]]
+                                              ["println" "|Keydown" "coord" [":key-code" "e"]]]]]]},
+                      :procs []}}}

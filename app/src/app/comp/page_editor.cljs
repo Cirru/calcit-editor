@@ -6,7 +6,8 @@
             [respo-ui.style.colors :as colors]
             [respo.core :refer [create-comp]]
             [respo.comp.space :refer [=<]]
-            [app.comp.bookmark :refer [comp-bookmark]]))
+            [app.comp.bookmark :refer [comp-bookmark]]
+            [app.comp.expr :refer [comp-expr]]))
 
 (def style-stack {:width 240})
 
@@ -20,4 +21,4 @@
   (div
    {:style style-stack}
    (->> stack (map-indexed (fn [idx bookmark] [idx (comp-bookmark bookmark idx)]))))
-  (div {:style style-editor} (<> span "editor" nil))))
+  (div {:style style-editor} (comp-expr router-data []))))

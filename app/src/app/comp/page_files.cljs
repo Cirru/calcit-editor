@@ -17,7 +17,11 @@
 
 (defn on-input-def [state] (fn [e d! m!] (m! (assoc state :def-text (:value e)))))
 
-(def style-def {:cursor :pointer})
+(defn on-remove-def [def-text] (fn [e d! m!] (d! :ir/remove-def def-text)))
+
+(def style-def {:cursor :pointer, :vertical-align :middle})
+
+(def style-remove {:color (hsl 0 0 80), :cursor :pointer, :vertical-align :middle})
 
 (defn on-add-def [state]
   (fn [e d! m!]
@@ -49,8 +53,14 @@
           (fn [def-text]
             [def-text
              (div
-              {:style style-def, :on {:click (on-edit-def def-text)}}
-              (<> span def-text nil))]))))
+              {}
+              (span
+               {:inner-text def-text, :style style-def, :on {:click (on-edit-def def-text)}})
+              (=< 8 nil)
+              (span
+               {:class-name "ion-md-close",
+                :style style-remove,
+                :on {:click (on-remove-def def-text)}}))]))))
    (div
     {}
     (input
@@ -108,4 +118,4 @@
     (if (some? selected-ns)
       (render-file state selected-ns (:defs-set router-data))
       (render-empty))
-    (comp-inspect selected-ns nil style-inspect))))
+    (comment comp-inspect selected-ns nil style-inspect))))

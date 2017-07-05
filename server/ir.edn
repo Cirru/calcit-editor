@@ -89,6 +89,9 @@
                  :procs []},
          "schema" {:ns ["ns" "server.schema"],
                    :defs {"ir-file" ["def" "ir-file" ["{}" [":pkg" "|app"] [":files" ["{}"]]]],
+                          "expr" ["def"
+                                  "expr"
+                                  ["{}" [":type" ":expr"] [":author" "nil"] [":time" "nil"] [":data" ["{}"]]]],
                           "configs" ["def"
                                      "configs"
                                      ["{}"
@@ -105,6 +108,7 @@
                           "anchor" ["def"
                                     "anchor"
                                     ["{}" [":kind" ":def"] [":ns" "nil"] [":extra" "nil"] [":focus" ["[]"]]]],
+                          "leaf" ["def" "leaf" ["{}" [":type" ":leaf"] [":author" "nil"] [":time" "nil"] [":text" "|"]]],
                           "database" ["def" "database" ["{}" [":sessions" ["{}"]] [":users" ["{}"]] [":ir" "ir-file"]]],
                           "router" ["def"
                                     "router"
@@ -466,6 +470,8 @@
                                              ["writer/point-to" "db" "op-data" "session-id" "op-id" "op-time"]]
                                             [":ir/add-ns" ["ir/add-ns" "db" "op-data" "session-id" "op-id" "op-time"]]
                                             [":ir/add-def" ["ir/add-def" "db" "op-data" "session-id" "op-id" "op-time"]]
+                                            [":ir/remove-def"
+                                             ["ir/remove-def" "db" "op-data" "session-id" "op-id" "op-time"]]
                                             "db"]]},
                          :procs []},
          "twig.page-editor" {:ns ["ns"
@@ -506,6 +512,20 @@
                                          ["db" "op-data" "session-id" "op-id" "op-time"]
                                          ["let"
                                           [["selected-ns"
-                                            ["get-in" "db" ["[]" ":sessions" "session-id" ":writer" ":selected-ns"]]]]
-                                          ["assoc-in" "db" ["[]" ":ir" ":files" "selected-ns" ":defs" "op-data"] ["{}"]]]]},
+                                            ["get-in" "db" ["[]" ":sessions" "session-id" ":writer" ":selected-ns"]]]
+                                           ["user-id" ["get-in" "db" ["[]" ":sessions" "session-id" ":user-id"]]]]
+                                          ["assoc-in"
+                                           "db"
+                                           ["[]" ":ir" ":files" "selected-ns" ":defs" "op-data"]
+                                           ["assoc" "schema/expr" ":time" "op-time" ":author" "user-id"]]]],
+                              "remove-def" ["defn"
+                                            "remove-def"
+                                            ["db" "op-data" "session-id" "op-id" "op-time"]
+                                            ["let"
+                                             [["selected-ns"
+                                               ["get-in" "db" ["[]" ":sessions" "session-id" ":writer" ":selected-ns"]]]]
+                                             ["update-in"
+                                              "db"
+                                              ["[]" ":ir" ":files" "selected-ns" ":defs"]
+                                              ["fn" ["defs"] ["dissoc" "defs" "op-data"]]]]]},
                        :procs []}}}
