@@ -77,7 +77,22 @@
                                               ["assoc-in"
                                                "db"
                                                ["[]" ":sessions" "session-id" ":writer" ":pointer"]
-                                               "op-data"]]},
+                                               "op-data"]],
+                                  "focus" ["defn"
+                                           "focus"
+                                           ["db" "op-data" "session-id" "op-id" "op-time"]
+                                           ["let"
+                                            [["writer" ["get-in" "db" ["[]" ":sessions" "session-id" ":writer"]]]]
+                                            ["assoc-in"
+                                             "db"
+                                             ["[]"
+                                              ":sessions"
+                                              "session-id"
+                                              ":writer"
+                                              ":stack"
+                                              [":pointer" "writer"]
+                                              ":focus"]
+                                             "op-data"]]]},
                            :procs []},
          "util" {:ns ["ns" "server.util"],
                  :defs {"find-first" ["defn"
@@ -85,7 +100,19 @@
                                       ["f" "xs"]
                                       ["reduce" ["fn" ["_" "x"] ["when" ["f" "x"] ["reduced" "x"]]] "nil" "xs"]],
                         "expr?" ["defn" "expr?" ["x"] ["=" ":expr" [":type" "x"]]],
-                        "leaf?" ["defn" "leaf?" ["x"] ["=" ":leaf" [":type" "x"]]]},
+                        "leaf?" ["defn" "leaf?" ["x"] ["=" ":leaf" [":type" "x"]]],
+                        "bookmark->path" ["defn"
+                                          "bookmark->path"
+                                          ["bookmark"]
+                                          ["if"
+                                           ["=" ":def" [":kind" "bookmark"]]
+                                           ["concat"
+                                            ["[]" ":ir" ":files" [":ns" "bookmark"] ":defs" [":extra" "bookmark"]]
+                                            ["mapcat" "prepend-data" [":focus" "bookmark"]]]
+                                           ["concat"
+                                            ["[]" ":ir" ":files" [":ns" "bookmark"] ":ns"]
+                                            ["mapcat" "prepend-data" [":focus" "bookmark"]]]]],
+                        "prepend-data" ["defn" "prepend-data" ["x"] ["[]" ":data" "x"]]},
                  :procs []},
          "schema" {:ns ["ns" "server.schema"],
                    :defs {"ir-file" ["def" "ir-file" ["{}" [":pkg" "|app"] [":files" ["{}"]]]],
@@ -105,15 +132,15 @@
                                    [":nickname" "nil"]
                                    [":avatar" "nil"]
                                    [":password" "nil"]]],
-                          "anchor" ["def"
-                                    "anchor"
-                                    ["{}" [":kind" ":def"] [":ns" "nil"] [":extra" "nil"] [":focus" ["[]"]]]],
+                          "bookmark" ["def"
+                                      "bookmark"
+                                      ["{}" [":kind" ":def"] [":ns" "nil"] [":extra" "nil"] [":focus" ["[]"]]]],
                           "leaf" ["def" "leaf" ["{}" [":type" ":leaf"] [":author" "nil"] [":time" "nil"] [":text" "|"]]],
                           "database" ["def" "database" ["{}" [":sessions" ["{}"]] [":users" ["{}"]] [":ir" "ir-file"]]],
                           "router" ["def"
                                     "router"
                                     ["{}" [":name" "nil"] [":title" "nil"] [":data" ["{}"]] [":router" "nil"]]],
-                          "file" ["def" "file" ["{}" [":ns" ["{}"]] [":defs" ["{}"]] [":procs" ["{}"]]]],
+                          "file" ["def" "file" ["{}" [":ns" ["{}"]] [":defs" ["{}"]] [":proc" ["{}"]]]],
                           "session" ["def"
                                      "session"
                                      ["{}"
@@ -468,10 +495,14 @@
                                              ["writer/edit" "db" "op-data" "session-id" "op-id" "op-time"]]
                                             [":writer/point-to"
                                              ["writer/point-to" "db" "op-data" "session-id" "op-id" "op-time"]]
+                                            [":writer/focus"
+                                             ["writer/focus" "db" "op-data" "session-id" "op-id" "op-time"]]
                                             [":ir/add-ns" ["ir/add-ns" "db" "op-data" "session-id" "op-id" "op-time"]]
                                             [":ir/add-def" ["ir/add-def" "db" "op-data" "session-id" "op-id" "op-time"]]
                                             [":ir/remove-def"
                                              ["ir/remove-def" "db" "op-data" "session-id" "op-id" "op-time"]]
+                                            [":ir/insert-leaf"
+                                             ["ir/insert-leaf" "db" "op-data" "session-id" "op-id" "op-time"]]
                                             "db"]]},
                          :procs []},
          "twig.page-editor" {:ns ["ns"
@@ -502,7 +533,12 @@
                                                               "nil"]]
                                                             "nil"]]]]]},
                              :procs []},
-         "updater.ir" {:ns ["ns" "server.updater.ir" [":require" ["[]" "server.schema" ":as" "schema"]]],
+         "updater.ir" {:ns ["ns"
+                            "server.updater.ir"
+                            [":require"
+                             ["[]" "server.schema" ":as" "schema"]
+                             ["[]" "bisection-key.core" ":as" "bisection"]
+                             ["[]" "server.util" ":refer" ["[]" "expr?" "leaf?" "bookmark->path"]]]],
                        :defs {"add-ns" ["defn"
                                         "add-ns"
                                         ["db" "op-data" "session-id" "op-id" "op-time"]
@@ -527,5 +563,48 @@
                                              ["update-in"
                                               "db"
                                               ["[]" ":ir" ":files" "selected-ns" ":defs"]
-                                              ["fn" ["defs"] ["dissoc" "defs" "op-data"]]]]]},
+                                              ["fn" ["defs"] ["dissoc" "defs" "op-data"]]]]],
+                              "insert-leaf" ["defn"
+                                             "insert-leaf"
+                                             ["db" "op-data" "session-id" "op-id" "op-time"]
+                                             ["let"
+                                              [["writer" ["get-in" "db" ["[]" ":sessions" "session-id" ":writer"]]]
+                                               [["{}" ["stack" ":stack"] ["pointer" ":pointer"]] "writer"]
+                                               ["bookmark" ["get" "stack" "pointer"]]
+                                               ["focus" [":focus" "bookmark"]]
+                                               ["user-id" ["get-in" "db" ["[]" ":sessions" "session-id" ":user-id"]]]
+                                               ["new-leaf"
+                                                ["assoc" "schema/leaf" ":author" "user-id" ":time" "op-time"]]
+                                               ["expr-path" ["bookmark->path" "bookmark"]]
+                                               ["target-expr" ["get-in" "db" "expr-path"]]
+                                               ["new-id"
+                                                ["if"
+                                                 ["empty?" [":data" "target-expr"]]
+                                                 "bisection/mid-id"
+                                                 ["let"
+                                                  [["max-entry" ["apply" "max" ["keys" [":data" "target-expr"]]]]]
+                                                  ["println" "|max-entry" "max-entry"]
+                                                  ["bisection/bisect" "max-entry" "bisection/max-id"]]]]]
+                                              ["println" "|bookmark" "bookmark"]
+                                              ["println" "|new path" "expr-path"]
+                                              ["println" "|new id" "new-id"]
+                                              ["->"
+                                               "db"
+                                               ["update-in"
+                                                "expr-path"
+                                                ["fn"
+                                                 ["expr"]
+                                                 ["if"
+                                                  ["expr?" "expr"]
+                                                  ["assoc-in" "expr" ["[]" ":data" "new-id"] "new-leaf"]
+                                                  "expr"]]]
+                                               ["update-in"
+                                                ["[]"
+                                                 ":sessions"
+                                                 "session-id"
+                                                 ":writer"
+                                                 ":stack"
+                                                 [":pointer" "writer"]
+                                                 ":focus"]
+                                                ["fn" ["focus"] ["conj" "focus" "new-id"]]]]]]},
                        :procs []}}}

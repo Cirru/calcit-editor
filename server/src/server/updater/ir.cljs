@@ -1,5 +1,8 @@
 
-(ns server.updater.ir (:require [server.schema :as schema]))
+(ns server.updater.ir
+  (:require [server.schema :as schema]
+            [bisection-key.core :as bisection]
+            [server.util :refer [expr? leaf? bookmark->path]]))
 
 (defn add-ns [db op-data session-id op-id op-time]
   (assoc-in db [:ir :files op-data] schema/file))
@@ -15,3 +18,28 @@
 (defn remove-def [db op-data session-id op-id op-time]
   (let [selected-ns (get-in db [:sessions session-id :writer :selected-ns])]
     (update-in db [:ir :files selected-ns :defs] (fn [defs] (dissoc defs op-data)))))
+
+(defn insert-leaf [db op-data session-id op-id op-time]
+  (let [writer (get-in db [:sessions session-id :writer])
+        {stack :stack, pointer :pointer} writer
+        bookmark (get stack pointer)
+        focus (:focus bookmark)
+        user-id (get-in db [:sessions session-id :user-id])
+        new-leaf (assoc schema/leaf :author user-id :time op-time)
+        expr-path (bookmark->path bookmark)
+        target-expr (get-in db expr-path)
+        new-id (if (empty? (:data target-expr))
+                 bisection/mid-id
+                 (let [max-entry (apply max (keys (:data target-expr)))]
+                   (println "max-entry" max-entry)
+                   (bisection/bisect max-entry bisection/max-id)))]
+    (println "bookmark" bookmark)
+    (println "new path" expr-path)
+    (println "new id" new-id)
+    (-> db
+        (update-in
+         expr-path
+         (fn [expr] (if (expr? expr) (assoc-in expr [:data new-id] new-leaf) expr)))
+        (update-in
+         [:sessions session-id :writer :stack (:pointer writer) :focus]
+         (fn [focus] (conj focus new-id))))))

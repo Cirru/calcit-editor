@@ -15,6 +15,8 @@
     (let [text (string/trim (:ns-text state))]
       (if (not (string/blank? text)) (do (d! :ir/add-ns text) (m! (assoc state :ns-text "")))))))
 
+(defn on-edit-proc [e d! m!] (d! :writer/edit {:kind :procs}))
+
 (defn on-input-def [state] (fn [e d! m!] (m! (assoc state :def-text (:value e)))))
 
 (defn on-remove-def [def-text] (fn [e d! m!] (d! :ir/remove-def def-text)))
@@ -28,8 +30,6 @@
     (let [text (string/trim (:def-text state))]
       (if (not (string/blank? text))
         (do (d! :ir/add-def text) (m! (assoc state :def-text "")))))))
-
-(defn on-edit-procs [e d! m!] (d! :writer/edit {:kind :procs}))
 
 (def style-link {:cursor :pointer})
 
@@ -45,7 +45,7 @@
     {}
     (span {:inner-text "ns", :style style-link, :on {:click on-edit-ns}})
     (=< 16 nil)
-    (span {:inner-text "procs", :style style-link, :on {:click on-edit-procs}}))
+    (span {:inner-text "proc", :style style-link, :on {:click on-edit-proc}}))
    (div
     {}
     (->> defs-set

@@ -9,7 +9,7 @@
 
 (def user {:name nil, :id nil, :nickname nil, :avatar nil, :password nil})
 
-(def anchor {:kind :def, :ns nil, :extra nil, :focus []})
+(def bookmark {:kind :def, :ns nil, :extra nil, :focus []})
 
 (def leaf {:type :leaf, :author nil, :time nil, :text ""})
 
@@ -17,7 +17,7 @@
 
 (def router {:name nil, :title nil, :data {}, :router nil})
 
-(def file {:ns {}, :defs {}, :procs {}})
+(def file {:ns {}, :defs {}, :proc {}})
 
 (def session
   {:user-id nil,
