@@ -15,6 +15,12 @@
 
 (def style-minor {:color (hsl 0 0 50)})
 
+(def style-remove {:color (hsl 0 0 80), :cursor :pointer, :vertical-align :middle})
+
+(def style-main {:vertical-align :middle})
+
+(defn on-remove [idx] (fn [e d! m!] (d! :writer/remove-idx idx)))
+
 (defcomp
  comp-bookmark
  (bookmark idx)
@@ -22,9 +28,18 @@
    :def
      (div
       {:style style-bookmark, :on {:click (on-pick idx)}}
-      (div {} (<> span (:extra bookmark) nil))
+      (div
+       {}
+       (span {:inner-text (:extra bookmark), :style style-main})
+       (=< 8 nil)
+       (span
+        {:class-name "ion-md-close", :style style-remove, :on {:click (on-remove idx)}}))
       (div {} (<> span "def" style-kind) (=< 8 nil) (<> span (:ns bookmark) style-minor)))
    (div
     {:style style-bookmark, :on {:click (on-pick idx)}}
-    (div {} (<> span (:ns bookmark) nil))
+    (div
+     {}
+     (<> span (:ns bookmark) nil)
+     (=< 16 nil)
+     (span {:class-name "ion-md-close", :style style-remove, :on {:click (on-remove idx)}}))
     (div {} (<> span (name (:kind bookmark)) style-kind)))))

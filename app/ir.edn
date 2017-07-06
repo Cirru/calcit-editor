@@ -131,7 +131,18 @@
                                                      ["{}"
                                                       [":style" "style-bookmark"]
                                                       [":on" ["{}" [":click" ["on-pick" "idx"]]]]]
-                                                     ["div" ["{}"] ["<>" "span" [":extra" "bookmark"] "nil"]]
+                                                     ["div"
+                                                      ["{}"]
+                                                      ["span"
+                                                       ["{}"
+                                                        [":inner-text" [":extra" "bookmark"]]
+                                                        [":style" "style-main"]]]
+                                                      ["=<" "8" "nil"]
+                                                      ["span"
+                                                       ["{}"
+                                                        [":class-name" "|ion-md-close"]
+                                                        [":style" "style-remove"]
+                                                        [":on" ["{}" [":click" ["on-remove" "idx"]]]]]]]
                                                      ["div"
                                                       ["{}"]
                                                       ["<>" "span" "|def" "style-kind"]
@@ -141,7 +152,15 @@
                                                     ["{}"
                                                      [":style" "style-bookmark"]
                                                      [":on" ["{}" [":click" ["on-pick" "idx"]]]]]
-                                                    ["div" ["{}"] ["<>" "span" [":ns" "bookmark"] "nil"]]
+                                                    ["div"
+                                                     ["{}"]
+                                                     ["<>" "span" [":ns" "bookmark"] "nil"]
+                                                     ["=<" "16" "nil"]
+                                                     ["span"
+                                                      ["{}"
+                                                       [":class-name" "|ion-md-close"]
+                                                       [":style" "style-remove"]
+                                                       [":on" ["{}" [":click" ["on-remove" "idx"]]]]]]]
                                                     ["div"
                                                      ["{}"]
                                                      ["<>" "span" ["name" [":kind" "bookmark"]] "style-kind"]]]]],
@@ -158,7 +177,18 @@
                                             "on-pick"
                                             ["idx"]
                                             ["fn" ["e" "d!" "m!"] ["d!" ":writer/point-to" "idx"]]],
-                                 "style-minor" ["def" "style-minor" ["{}" [":color" ["hsl" "0" "0" "50"]]]]},
+                                 "style-minor" ["def" "style-minor" ["{}" [":color" ["hsl" "0" "0" "50"]]]],
+                                 "style-remove" ["def"
+                                                 "style-remove"
+                                                 ["{}"
+                                                  [":color" ["hsl" "0" "0" "80"]]
+                                                  [":cursor" ":pointer"]
+                                                  [":vertical-align" ":middle"]]],
+                                 "style-main" ["def" "style-main" ["{}" [":vertical-align" ":middle"]]],
+                                 "on-remove" ["defn"
+                                              "on-remove"
+                                              ["idx"]
+                                              ["fn" ["e" "d!" "m!"] ["d!" ":writer/remove-idx" "idx"]]]},
                           :procs []},
          "comp.profile" {:ns ["ns"
                               "app.comp.profile"

@@ -77,3 +77,9 @@
              (conj
               (vec (butlast focus))
               (if (= idx (dec (count child-keys))) last-coord (get child-keys (inc idx))))))))))
+
+(defn remove-idx [db op-data session-id op-id op-time]
+  (-> db
+      (update-in
+       [:sessions session-id :writer :stack]
+       (fn [stack] (vec (concat (take op-data stack) (drop (inc op-data) stack)))))))
