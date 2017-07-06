@@ -58,3 +58,39 @@
         (update-in
          [:sessions session-id :writer :stack (:pointer writer) :focus]
          (fn [focus] (conj focus new-id))))))
+
+(defn leaf-after [db op-data session-id op-id op-time]
+  (let [writer (get-in db [:sessions session-id :writer])
+        {stack :stack, pointer :pointer} writer
+        bookmark (get stack pointer)
+        current-key (last (:focus bookmark))
+        parent-bookmark (update bookmark :focus butlast)
+        data-path (bookmark->path parent-bookmark)
+        target-expr (get-in db data-path)
+        child-keys (vec (sort (keys (:data target-expr))))
+        idx (.indexOf child-keys current-key)
+        next-id (bisection/bisect
+                 current-key
+                 (if (= idx (dec (count child-keys)))
+                   bisection/max-id
+                   (get child-keys (inc idx))))
+        user-id (get-in db [:sessions session-id :user-id])
+        new-leaf (assoc schema/leaf :time op-time :author user-id)]
+    (-> db
+        (update-in data-path (fn [expr] (assoc-in expr [:data next-id] new-leaf)))
+        (update-in
+         [:sessions session-id :writer :stack (:pointer writer) :focus]
+         (fn [focus] (conj (vec (butlast focus)) next-id))))))
+
+(defn indent [db op-data session-id op-id op-time]
+  (let [writer (get-in db [:sessions session-id :writer])
+        {stack :stack, pointer :pointer} writer
+        bookmark (get stack pointer)
+        data-path (bookmark->path bookmark)
+        user-id (get-in db [:sessions session-id :user-id])
+        new-expr (assoc schema/expr :time op-time :author user-id)]
+    (-> db
+        (update-in data-path (fn [node] (assoc-in new-expr [:data bisection/mid-id] node)))
+        (update-in
+         [:sessions session-id :writer :stack pointer :focus]
+         (fn [focus] (vec (concat (butlast focus) [bisection/mid-id (last focus)])))))))

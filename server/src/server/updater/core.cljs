@@ -25,4 +25,6 @@
     :ir/remove-def (ir/remove-def db op-data session-id op-id op-time)
     :ir/append-leaf (ir/append-leaf db op-data session-id op-id op-time)
     :ir/delete-leaf (ir/delete-leaf db op-data session-id op-id op-time)
+    :ir/leaf-after (ir/leaf-after db op-data session-id op-id op-time)
+    :ir/indent (ir/indent db op-data session-id op-id op-time)
     db))

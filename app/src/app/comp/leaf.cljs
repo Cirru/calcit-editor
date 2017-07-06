@@ -27,12 +27,14 @@
 
 (defn on-keydown [state leaf coord]
   (fn [e d! m!]
-    (let [event (:original-event e), code (:key-code e)]
+    (let [event (:original-event e), code (:key-code e), shift? (.-shiftKey event)]
       (cond
         (= code keycode/delete)
-          (do
-           (println (pr-str state) leaf)
-           (if (and (= "" (:text leaf)) (= "" (:text state))) (d! :ir/delete-leaf nil)))
+          (if (and (= "" (:text leaf)) (= "" (:text state))) (d! :ir/delete-leaf nil))
+        (and (not shift?) (= code keycode/space))
+          (do (d! :ir/leaf-after nil) (.preventDefault event))
+        (= code keycode/tab)
+          (do (d! (if shift? :ir/unindent :ir/indent) nil) (.preventDefault event))
         :else (println "Keydown leaf" code)))))
 
 (defn on-input [state coord]

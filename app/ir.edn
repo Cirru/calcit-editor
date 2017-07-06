@@ -69,14 +69,20 @@
                                            ["fn"
                                             ["e" "d!" "m!"]
                                             ["let"
-                                             [["event" [":original-event" "e"]] ["code" [":key-code" "e"]]]
+                                             [["event" [":original-event" "e"]]
+                                              ["code" [":key-code" "e"]]
+                                              ["shift?" [".-shiftKey" "event"]]]
                                              ["cond"
                                               [["=" "code" "keycode/delete"]
+                                               ["if"
+                                                ["and" ["=" "|" [":text" "leaf"]] ["=" "|" [":text" "state"]]]
+                                                ["d!" ":ir/delete-leaf" "nil"]]]
+                                              [["and" ["not" "shift?"] ["=" "code" "keycode/space"]]
+                                               ["do" ["d!" ":ir/leaf-after" "nil"] [".preventDefault" "event"]]]
+                                              [["=" "code" "keycode/tab"]
                                                ["do"
-                                                ["println" ["pr-str" "state"] "leaf"]
-                                                ["if"
-                                                 ["and" ["=" "|" [":text" "leaf"]] ["=" "|" [":text" "state"]]]
-                                                 ["d!" ":ir/delete-leaf" "nil"]]]]
+                                                ["d!" ["if" "shift?" ":ir/unindent" ":ir/indent"] "nil"]
+                                                [".preventDefault" "event"]]]
                                               [":else" ["println" "|Keydown leaf" "code"]]]]]],
                              "on-input" ["defn"
                                          "on-input"
@@ -171,7 +177,10 @@
                                                   [":padding" "|0 8px"]]]},
                          :procs []},
          "util.keycode" {:ns ["ns" "app.util.keycode"],
-                         :defs {"enter" ["def" "enter" "13"], "delete" ["def" "delete" "8"]},
+                         :defs {"enter" ["def" "enter" "13"],
+                                "delete" ["def" "delete" "8"],
+                                "space" ["def" "space" "32"],
+                                "tab" ["def" "tab" "9"]},
                          :procs []},
          "comp.page-editor" {:ns ["ns"
                                   "app.comp.page-editor"
@@ -317,15 +326,16 @@
                      :defs {"focus!" ["defn"
                                       "focus!"
                                       []
-                                      ["js/requestAnimationFrom"
+                                      ["js/requestAnimationFrame"
                                        ["fn"
                                         ["timestamp"]
+                                        ["println" "|focus!"]
                                         ["let"
                                          [["current-focused" [".-activeElement" "js/document"]]
                                           ["cirru-focused" [".querySelector" "js/document" "|.cirru-focused"]]]
                                          ["if"
                                           ["some?" "cirru-focused"]
-                                          ["if" ["not=" "current-focused" "cirru-focused"] [".focus" ["cirru-focused"]]]
+                                          ["if" ["not=" "current-focused" "cirru-focused"] [".focus" "cirru-focused"]]
                                           ["println" "|[Editor] .cirru-focused not found"]]]]]]},
                      :procs []},
          "style" {:ns ["ns"
