@@ -84,6 +84,7 @@
                                              [["event" [":original-event" "e"]]
                                               ["code" [":key-code" "e"]]
                                               ["shift?" [".-shiftKey" "event"]]
+                                              ["meta?" [".-metaKey" "event"]]
                                               ["text"
                                                ["if"
                                                 [">" [":time" "state"] [":time" "leaf"]]
@@ -116,6 +117,8 @@
                                                  ["println" "text-length"]
                                                  ["d!" ":writer/go-right" "nil"]
                                                  [".preventDefault" "event"]]]]
+                                              [["and" "meta?" "shift?" ["=" "code" "keycode/v"]]
+                                               ["do" ["d!" ":writer/paste" "nil"] [".preventDefault" "event"]]]
                                               [":else" ["println" "|Keydown leaf" "code"]]]]]],
                              "on-input" ["defn"
                                          "on-input"
@@ -241,14 +244,18 @@
                                                   [":padding" "|0 8px"]]]},
                          :procs []},
          "util.keycode" {:ns ["ns" "app.util.keycode"],
-                         :defs {"enter" ["def" "enter" "13"],
-                                "delete" ["def" "delete" "8"],
-                                "space" ["def" "space" "32"],
+                         :defs {"space" ["def" "space" "32"],
                                 "tab" ["def" "tab" "9"],
+                                "right" ["def" "right" "39"],
                                 "up" ["def" "up" "38"],
+                                "delete" ["def" "delete" "8"],
+                                "x" ["def" "x" "88"],
+                                "v" ["def" "v" "86"],
                                 "down" ["def" "down" "40"],
-                                "left" ["def" "left" "37"],
-                                "right" ["def" "right" "39"]},
+                                "b" ["def" "b" "66"],
+                                "enter" ["def" "enter" "13"],
+                                "c" ["def" "c" "67"],
+                                "left" ["def" "left" "37"]},
                          :procs []},
          "comp.page-editor" {:ns ["ns"
                                   "app.comp.page-editor"
@@ -1087,6 +1094,11 @@
                                                ["do" ["d!" ":writer/go-left" "nil"] [".preventDefault" "event"]]]
                                               [["=" "code" "keycode/right"]
                                                ["do" ["d!" ":writer/go-right" "nil"] [".preventDefault" "event"]]]
+                                              [["and" "meta?" ["=" "code" "keycode/c"]] ["d!" ":writer/copy" "nil"]]
+                                              [["and" "meta?" ["=" "code" "keycode/x"]] ["d!" ":writer/cut" "nil"]]
+                                              [["and" "meta?" ["=" "code" "keycode/v"]] ["d!" ":writer/paste" "nil"]]
+                                              [["and" "meta?" ["=" "code" "keycode/b"]]
+                                               ["d!" ":writer/duplicate" "nil"]]
                                               [":else" ["println" "|Keydown" [":key-code" "e"]]]]]]],
                              "on-focus" ["defn"
                                          "on-focus"

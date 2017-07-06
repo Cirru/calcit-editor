@@ -34,6 +34,7 @@
     (let [event (:original-event e)
           code (:key-code e)
           shift? (.-shiftKey event)
+          meta? (.-metaKey event)
           text (if (> (:time state) (:time leaf)) (:text state) (:text leaf))
           text-length (count text)]
       (cond
@@ -51,6 +52,8 @@
         (= code keycode/right)
           (if (= text-length event.target.selectionEnd)
             (do (println text-length) (d! :writer/go-right nil) (.preventDefault event)))
+        (and meta? shift? (= code keycode/v))
+          (do (d! :writer/paste nil) (.preventDefault event))
         :else (println "Keydown leaf" code)))))
 
 (defn on-input [state coord]

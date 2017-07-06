@@ -41,6 +41,10 @@
         (= code keycode/down) (do (d! :writer/go-down nil) (.preventDefault event))
         (= code keycode/left) (do (d! :writer/go-left nil) (.preventDefault event))
         (= code keycode/right) (do (d! :writer/go-right nil) (.preventDefault event))
+        (and meta? (= code keycode/c)) (d! :writer/copy nil)
+        (and meta? (= code keycode/x)) (d! :writer/cut nil)
+        (and meta? (= code keycode/v)) (d! :writer/paste nil)
+        (and meta? (= code keycode/b)) (d! :writer/duplicate nil)
         :else (println "Keydown" (:key-code e))))))
 
 (defn on-focus [coord] (fn [e d! m!] (d! :writer/focus coord)))
