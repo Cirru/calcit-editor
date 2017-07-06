@@ -36,6 +36,7 @@
         (= code keycode/delete) (if (and (= "" text)) (d! :ir/delete-node nil))
         (and (not shift?) (= code keycode/space))
           (do (d! :ir/leaf-after nil) (.preventDefault event))
+        (and shift? (= code keycode/enter)) (d! :ir/leaf-before nil)
         (= code keycode/tab)
           (do (d! (if shift? :ir/unindent-leaf :ir/indent) nil) (.preventDefault event))
         (= code keycode/up)

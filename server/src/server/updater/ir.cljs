@@ -12,6 +12,27 @@
      [:ir :files selected-ns :defs op-data]
      (assoc schema/expr :time op-time :author user-id))))
 
+(defn leaf-before [db op-data session-id op-id op-time]
+  (let [writer (get-in db [:sessions session-id :writer])
+        {stack :stack, pointer :pointer} writer
+        bookmark (get stack pointer)
+        current-key (last (:focus bookmark))
+        parent-bookmark (update bookmark :focus butlast)
+        data-path (bookmark->path parent-bookmark)
+        target-expr (get-in db data-path)
+        child-keys (vec (sort (keys (:data target-expr))))
+        idx (.indexOf child-keys current-key)
+        next-id (bisection/bisect
+                 (if (zero? idx) bisection/min-id (get child-keys (dec idx)))
+                 current-key)
+        user-id (get-in db [:sessions session-id :user-id])
+        new-leaf (assoc schema/leaf :time op-time :author user-id)]
+    (-> db
+        (update-in data-path (fn [expr] (assoc-in expr [:data next-id] new-leaf)))
+        (update-in
+         [:sessions session-id :writer :stack (:pointer writer) :focus]
+         (fn [focus] (conj (vec (butlast focus)) next-id))))))
+
 (defn leaf-after [db op-data session-id op-id op-time]
   (let [writer (get-in db [:sessions session-id :writer])
         {stack :stack, pointer :pointer} writer

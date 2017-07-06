@@ -32,6 +32,7 @@
     :ir/append-leaf (ir/append-leaf db op-data session-id op-id op-time)
     :ir/delete-node (ir/delete-node db op-data session-id op-id op-time)
     :ir/leaf-after (ir/leaf-after db op-data session-id op-id op-time)
+    :ir/leaf-before (ir/leaf-before db op-data session-id op-id op-time)
     :ir/indent (ir/indent db op-data session-id op-id op-time)
     :ir/unindent (ir/unindent db op-data session-id op-id op-time)
     :ir/unindent-leaf (ir/unindent-leaf db op-data session-id op-id op-time)

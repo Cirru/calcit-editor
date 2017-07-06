@@ -30,7 +30,7 @@
       (cond
         (= code keycode/enter) (d! :ir/append-leaf nil)
         (= code keycode/delete) (d! :ir/delete-node nil)
-        (= code keycode/space) (d! :ir/leaf-after nil)
+        (= code keycode/space) (d! (if shift? :ir/leaf-before :ir/leaf-after) nil)
         (= code keycode/tab)
           (do (d! (if shift? :ir/unindent :ir/indent) nil) (.preventDefault event))
         (= code keycode/up)
