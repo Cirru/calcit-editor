@@ -46,7 +46,6 @@
 (defcomp
  comp-expr
  (states expr focus coord others)
- (println "contains?" others coord)
  (let [focused? (= focus coord)]
    (div
     {:tab-index 0,
@@ -67,5 +66,12 @@
                                       (into #{}))]
               [k
                (if (= :leaf (:type child))
-                 (cursor-> k comp-leaf states child focus child-coord)
+                 (cursor->
+                  k
+                  comp-leaf
+                  states
+                  child
+                  focus
+                  child-coord
+                  (contains? partial-others child-coord))
                  (cursor-> k comp-expr states child focus child-coord partial-others))])))))))

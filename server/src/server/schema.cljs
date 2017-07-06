@@ -5,7 +5,7 @@
 
 (def expr {:type :expr, :author nil, :time nil, :data {}})
 
-(def configs {:storage-key "coir.edn", :port (or (.-port js/process.env) 5021)})
+(def configs {:storage-key "coir.edn", :port (or (.-port js/process.env) 6001)})
 
 (def user {:name nil, :id nil, :nickname nil, :avatar nil, :password nil})
 

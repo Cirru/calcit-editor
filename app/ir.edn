@@ -5,6 +5,7 @@
                            [":require-macros"
                             ["[]" "respo.macros" ":refer" ["[]" "defcomp" "<>" "span" "div" "input" "a"]]]
                            [":require"
+                            ["[]" "clojure.string" ":as" "string"]
                             ["[]" "hsl.core" ":refer" ["[]" "hsl"]]
                             ["[]" "respo-ui.style" ":as" "ui"]
                             ["[]" "respo-ui.style.colors" ":as" "colors"]
@@ -15,14 +16,16 @@
                             ["[]" "app.util" ":as" "util"]]],
                       :defs {"comp-leaf" ["defcomp"
                                           "comp-leaf"
-                                          ["states" "leaf" "focus" "coord"]
+                                          ["states" "leaf" "focus" "coord" "by-other?"]
                                           ["let"
                                            [["state" ["or" [":data" "states"] "initial-state"]]
                                             ["text"
                                              ["if"
                                               [">" [":time" "state"] [":time" "leaf"]]
                                               [":text" "state"]
-                                              [":text" "leaf"]]]]
+                                              [":text" "leaf"]]]
+                                            ["focused?" ["=" "focus" "coord"]]
+                                            ["has-blank?" ["or" ["=" "text" "|"] ["string/includes?" "text" "| "]]]]
                                            ["input"
                                             ["{}"
                                              [":value" "text"]
@@ -38,7 +41,11 @@
                                                   ["text-width*"
                                                    "text"
                                                    [":font-size" "style-leaf"]
-                                                   [":font-family" "style-leaf"]]]]]]]
+                                                   [":font-family" "style-leaf"]]]]]
+                                               ["if"
+                                                "has-blank?"
+                                                ["{}" [":background-color" ["hsl" "0" "0" "100" "0.3"]]]]
+                                               ["if" ["or" "focused?" "by-other?"] ["{}" [":opacity" "1"]]]]]
                                              [":on"
                                               ["{}"
                                                [":click" ["on-focus" "coord"]]
@@ -55,10 +62,11 @@
                                              [":padding" "|0 4px"]
                                              [":background-color" ":transparent"]
                                              [":min-width" "12"]
-                                             [":background-color" ["hsl" "0" "0" "100" "0.3"]]
                                              [":color" ":white"]
+                                             [":opacity" "0.7"]
                                              [":font-family" "|Menlo"]
-                                             [":font-size" "14"]]]],
+                                             [":font-size" "14"]
+                                             [":border-radius" "|4px"]]]],
                              "on-focus" ["defn"
                                          "on-focus"
                                          ["coord"]
@@ -298,7 +306,7 @@
                  :ns ["ns" "app.util"],
                  :procs []},
          "schema" {:ns ["ns" "app.schema"],
-                   :defs {"configs" ["def" "configs" ["{}" [":storage-key" "|workflow-storage"] [":port" "5021"]]]},
+                   :defs {"configs" ["def" "configs" ["{}" [":storage-key" "|workflow-storage"] [":port" "6001"]]]},
                    :procs []},
          "comp.container" {:ns ["ns"
                                 "app.comp.container"
@@ -968,7 +976,6 @@
                       :defs {"comp-expr" ["defcomp"
                                           "comp-expr"
                                           ["states" "expr" "focus" "coord" "others"]
-                                          ["println" "|contains?" "others" "coord"]
                                           ["let"
                                            [["focused?" ["=" "focus" "coord"]]]
                                            ["div"
@@ -1002,7 +1009,14 @@
                                                  "k"
                                                  ["if"
                                                   ["=" ":leaf" [":type" "child"]]
-                                                  ["cursor->" "k" "comp-leaf" "states" "child" "focus" "child-coord"]
+                                                  ["cursor->"
+                                                   "k"
+                                                   "comp-leaf"
+                                                   "states"
+                                                   "child"
+                                                   "focus"
+                                                   "child-coord"
+                                                   ["contains?" "partial-others" "child-coord"]]
                                                   ["cursor->"
                                                    "k"
                                                    "comp-expr"

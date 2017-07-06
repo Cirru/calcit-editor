@@ -266,7 +266,7 @@
                                      "configs"
                                      ["{}"
                                       [":storage-key" "|coir.edn"]
-                                      [":port" ["or" [".-port" "js/process.env"] "5021"]]]],
+                                      [":port" ["or" [".-port" "js/process.env"] "6001"]]]],
                           "user" ["def"
                                   "user"
                                   ["{}"

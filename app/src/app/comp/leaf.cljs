@@ -1,7 +1,8 @@
 
 (ns app.comp.leaf
   (:require-macros [respo.macros :refer [defcomp <> span div input a]])
-  (:require [hsl.core :refer [hsl]]
+  (:require [clojure.string :as string]
+            [hsl.core :refer [hsl]]
             [respo-ui.style :as ui]
             [respo-ui.style.colors :as colors]
             [respo.core :refer [create-comp]]
@@ -17,11 +18,13 @@
     :height 20,
     :margin "2px 4px",
     :padding "0 4px",
-    :background-color (hsl 0 0 100 0.3),
+    :background-color :transparent,
     :min-width 12,
     :color :white,
+    :opacity 0.7,
     :font-family "Menlo",
-    :font-size 14}))
+    :font-size 14,
+    :border-radius "4px"}))
 
 (defn on-focus [coord] (fn [e d! m!] (d! :writer/focus coord)))
 
@@ -58,9 +61,11 @@
 
 (defcomp
  comp-leaf
- (states leaf focus coord)
+ (states leaf focus coord by-other?)
  (let [state (or (:data states) initial-state)
-       text (if (> (:time state) (:time leaf)) (:text state) (:text leaf))]
+       text (if (> (:time state) (:time leaf)) (:text state) (:text leaf))
+       focused? (= focus coord)
+       has-blank? (or (= text "") (string/includes? text " "))]
    (input
     {:value text,
      :class-name (if (= focus coord) "cirru-focused" nil),
@@ -69,7 +74,9 @@
              style-leaf
              {:width (+
                       8
-                      (text-width* text (:font-size style-leaf) (:font-family style-leaf)))}),
+                      (text-width* text (:font-size style-leaf) (:font-family style-leaf)))}
+             (if has-blank? {:background-color (hsl 0 0 100 0.3)})
+             (if (or focused? by-other?) {:opacity 1})),
      :on {:click (on-focus coord),
           :keydown (on-keydown state leaf coord),
           :input (on-input state coord)}})))
