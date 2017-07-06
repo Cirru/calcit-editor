@@ -58,6 +58,26 @@
 (defn remove-ns [db op-data session-id op-id op-time]
   (-> db (update-in [:ir :files] (fn [files] (dissoc files op-data)))))
 
+(defn duplicate [db op-data session-id op-id op-time]
+  (let [writer (to-writer db session-id)
+        bookmark (to-bookmark writer)
+        target-expr (get-in db (bookmark->path bookmark))
+        parent-path (bookmark->path (update bookmark :focus butlast))
+        parent-expr (get-in db parent-path)
+        child-keys (to-keys parent-expr)
+        last-coord (last (:focus bookmark))
+        idx (.indexOf child-keys last-coord)
+        next-id (if (= idx (dec (count child-keys)))
+                  bisection/max-id
+                  (bisection/bisect last-coord (get child-keys (inc idx))))]
+    (-> db
+        (update-in
+         parent-path
+         (fn [expr] (update expr :data (fn [data] (assoc data next-id target-expr)))))
+        (update-in
+         [:sessions session-id :writer :stack (:pointer writer) :focus]
+         (fn [focus] (conj (vec (butlast focus)) next-id))))))
+
 (defn expr-before [db op-data session-id op-id op-time]
   (let [writer (to-writer db session-id)
         bookmark (to-bookmark writer)
