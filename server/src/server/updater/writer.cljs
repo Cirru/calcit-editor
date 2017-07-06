@@ -39,3 +39,41 @@
           (update-in
            [:sessions session-id :writer :stack (:pointer writer) :focus]
            (fn [focus] (conj focus (apply min (keys (:data target-expr))))))))))
+
+(defn go-left [db op-data session-id op-id op-time]
+  (let [writer (get-in db [:sessions session-id :writer])
+        bookmark (get (:stack writer) (:pointer writer))
+        parent-bookmark (update bookmark :focus butlast)
+        parent-path (bookmark->path parent-bookmark)
+        last-coord (last (:focus bookmark))
+        base-expr (get-in db parent-path)
+        child-keys (vec (sort (keys (:data base-expr))))
+        idx (.indexOf child-keys last-coord)]
+    (if (empty? (:focus bookmark))
+      db
+      (-> db
+          (update-in
+           [:sessions session-id :writer :stack (:pointer writer) :focus]
+           (fn [focus]
+             (conj
+              (vec (butlast focus))
+              (if (zero? idx) last-coord (get child-keys (dec idx))))))))))
+
+(defn go-right [db op-data session-id op-id op-time]
+  (let [writer (get-in db [:sessions session-id :writer])
+        bookmark (get (:stack writer) (:pointer writer))
+        parent-bookmark (update bookmark :focus butlast)
+        parent-path (bookmark->path parent-bookmark)
+        last-coord (last (:focus bookmark))
+        base-expr (get-in db parent-path)
+        child-keys (vec (sort (keys (:data base-expr))))
+        idx (.indexOf child-keys last-coord)]
+    (if (empty? (:focus bookmark))
+      db
+      (-> db
+          (update-in
+           [:sessions session-id :writer :stack (:pointer writer) :focus]
+           (fn [focus]
+             (conj
+              (vec (butlast focus))
+              (if (= idx (dec (count child-keys))) last-coord (get child-keys (inc idx))))))))))
