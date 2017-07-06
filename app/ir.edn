@@ -268,19 +268,35 @@
                                                              ["[]" "idx" ["comp-bookmark" "bookmark" "idx"]]]]]]
                                                          ["div"
                                                           ["{}" [":style" "style-editor"]]
-                                                          ["cursor->"
-                                                           ":root"
-                                                           "comp-expr"
-                                                           "states"
-                                                           [":expr" "router-data"]
-                                                           [":focus" "router-data"]
-                                                           ["[]"]]
+                                                          ["let"
+                                                           [["others"
+                                                             ["->>" [":others" "router-data"] ["vals"] ["into" ["#{}"]]]]]
+                                                           ["cursor->"
+                                                            ":root"
+                                                            "comp-expr"
+                                                            "states"
+                                                            [":expr" "router-data"]
+                                                            [":focus" "router-data"]
+                                                            ["[]"]
+                                                            "others"]]
                                                           ["comp-inspect" "|Expr" "router-data" "style/inspector"]]]],
                                     "style-stack" ["def" "style-stack" ["{}" [":width" "240"]]],
                                     "style-editor" ["def" "style-editor" ["merge" "ui/flex" ["{}"]]],
                                     "style-container" ["def" "style-container" ["{}" [":position" ":relative"]]]},
                              :procs []},
-         "util" {:defs {"now!" ["defn" "now!" [] [".valueOf" ["js/Date."]]]}, :ns ["ns" "app.util"], :procs []},
+         "util" {:defs {"now!" ["defn" "now!" [] [".valueOf" ["js/Date."]]],
+                        "coord-contains?" ["defn"
+                                           "coord-contains?"
+                                           ["xs" "ys"]
+                                           ["if"
+                                            ["empty?" "ys"]
+                                            "true"
+                                            ["if"
+                                             ["=" ["first" "xs"] ["first" "ys"]]
+                                             ["recur" ["rest" "xs"] ["rest" "ys"]]
+                                             "false"]]]},
+                 :ns ["ns" "app.util"],
+                 :procs []},
          "schema" {:ns ["ns" "app.schema"],
                    :defs {"configs" ["def" "configs" ["{}" [":storage-key" "|workflow-storage"] [":port" "5021"]]]},
                    :procs []},
@@ -947,10 +963,12 @@
                             ["[]" "respo.core" ":refer" ["[]" "create-comp"]]
                             ["[]" "respo.comp.space" ":refer" ["[]" "=<"]]
                             ["[]" "app.util.keycode" ":as" "keycode"]
-                            ["[]" "app.comp.leaf" ":refer" ["[]" "comp-leaf"]]]],
+                            ["[]" "app.comp.leaf" ":refer" ["[]" "comp-leaf"]]
+                            ["[]" "app.util" ":refer" ["[]" "coord-contains?"]]]],
                       :defs {"comp-expr" ["defcomp"
                                           "comp-expr"
-                                          ["states" "expr" "focus" "coord"]
+                                          ["states" "expr" "focus" "coord" "others"]
+                                          ["println" "|contains?" "others" "coord"]
                                           ["let"
                                            [["focused?" ["=" "focus" "coord"]]]
                                            ["div"
@@ -960,6 +978,9 @@
                                              [":style"
                                               ["merge"
                                                "style-expr"
+                                               ["if"
+                                                ["contains?" "others" "coord"]
+                                                ["{}" [":border-color" ["hsl" "0" "0" "100" "0.6"]]]]
                                                ["if" "focused?" ["{}" [":border-color" ["hsl" "0" "0" "100" "0.9"]]]]]]
                                              [":on"
                                               ["{}" [":keydown" ["on-keydown" "coord"]] [":click" ["on-focus" "coord"]]]]]
@@ -970,25 +991,26 @@
                                               ["fn"
                                                ["entry"]
                                                ["let"
-                                                [[["[]" "k" "child"] "entry"]]
+                                                [[["[]" "k" "child"] "entry"]
+                                                 ["child-coord" ["conj" "coord" "k"]]
+                                                 ["partial-others"
+                                                  ["->>"
+                                                   "others"
+                                                   ["filter" ["fn" ["x"] ["coord-contains?" "x" "child-coord"]]]
+                                                   ["into" ["#{}"]]]]]
                                                 ["[]"
                                                  "k"
                                                  ["if"
                                                   ["=" ":leaf" [":type" "child"]]
-                                                  ["cursor->"
-                                                   "k"
-                                                   "comp-leaf"
-                                                   "states"
-                                                   "child"
-                                                   "focus"
-                                                   ["conj" "coord" "k"]]
+                                                  ["cursor->" "k" "comp-leaf" "states" "child" "focus" "child-coord"]
                                                   ["cursor->"
                                                    "k"
                                                    "comp-expr"
                                                    "states"
                                                    "child"
                                                    "focus"
-                                                   ["conj" "coord" "k"]]]]]]]]]]],
+                                                   "child-coord"
+                                                   "partial-others"]]]]]]]]]],
                              "style-expr" ["def"
                                            "style-expr"
                                            ["{}"

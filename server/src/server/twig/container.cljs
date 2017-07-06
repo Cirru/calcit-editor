@@ -23,6 +23,7 @@
                    (case (:name router)
                      :files
                        (twig-page-files (:files ir) (get-in session [:writer :selected-ns]))
-                     :editor (twig-page-editor (:files ir) writer)
+                     :editor
+                       (twig-page-editor (:files ir) (:sessions db) writer (:id session))
                      nil))}
          {:session session, :logged-in? false})))))

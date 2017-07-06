@@ -11,6 +11,9 @@
 
 (defn leaf? [x] (= :leaf (:type x)))
 
+(defn same-buffer? [x y]
+  (and (= (:kind x) (:kind y)) (= (:ns x) (:ns y)) (= (:extra x) (:extra y))))
+
 (defn to-keys [target-expr] (vec (sort (keys (:data target-expr)))))
 
 (defn to-writer [db session-id] (get-in db [:sessions session-id :writer]))

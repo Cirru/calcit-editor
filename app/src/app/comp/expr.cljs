@@ -7,7 +7,8 @@
             [respo.core :refer [create-comp]]
             [respo.comp.space :refer [=<]]
             [app.util.keycode :as keycode]
-            [app.comp.leaf :refer [comp-leaf]]))
+            [app.comp.leaf :refer [comp-leaf]]
+            [app.util :refer [coord-contains?]]))
 
 (def style-expr
   {:border-width "0 0 0 1px",
@@ -44,19 +45,27 @@
 
 (defcomp
  comp-expr
- (states expr focus coord)
+ (states expr focus coord others)
+ (println "contains?" others coord)
  (let [focused? (= focus coord)]
    (div
     {:tab-index 0,
      :class-name (if focused? "cirru-focused" nil),
-     :style (merge style-expr (if focused? {:border-color (hsl 0 0 100 0.9)})),
+     :style (merge
+             style-expr
+             (if (contains? others coord) {:border-color (hsl 0 0 100 0.6)})
+             (if focused? {:border-color (hsl 0 0 100 0.9)})),
      :on {:keydown (on-keydown coord), :click (on-focus coord)}}
     (->> (:data expr)
          (sort-by first)
          (map
           (fn [entry]
-            (let [[k child] entry]
+            (let [[k child] entry
+                  child-coord (conj coord k)
+                  partial-others (->> others
+                                      (filter (fn [x] (coord-contains? x child-coord)))
+                                      (into #{}))]
               [k
                (if (= :leaf (:type child))
-                 (cursor-> k comp-leaf states child focus (conj coord k))
-                 (cursor-> k comp-expr states child focus (conj coord k)))])))))))
+                 (cursor-> k comp-leaf states child focus child-coord)
+                 (cursor-> k comp-expr states child focus child-coord partial-others))])))))))

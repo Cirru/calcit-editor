@@ -1,5 +1,5 @@
 {:package "server",
- :options {:port 7011},
+ :root nil,
  :files {"updater.router" {:ns ["ns" "server.updater.router"],
                            :defs {"change" ["defn"
                                             "change"
@@ -42,7 +42,12 @@
                                                              ["twig-page-files"
                                                               [":files" "ir"]
                                                               ["get-in" "session" ["[]" ":writer" ":selected-ns"]]]]
-                                                            [":editor" ["twig-page-editor" [":files" "ir"] "writer"]]
+                                                            [":editor"
+                                                             ["twig-page-editor"
+                                                              [":files" "ir"]
+                                                              [":sessions" "db"]
+                                                              "writer"
+                                                              [":id" "session"]]]
                                                             "nil"]]]]
                                                         ["{}" [":session" "session"] [":logged-in?" "false"]]]]]]]},
                            :procs []},
@@ -222,6 +227,13 @@
                                        ["get" [":stack" "writer"] [":pointer" "writer"]]],
                         "kinds" ["def" "kinds" ["#{}" ":ns" ":def" ":proc"]],
                         "leaf?" ["defn" "leaf?" ["x"] ["=" ":leaf" [":type" "x"]]],
+                        "same-buffer?" ["defn"
+                                        "same-buffer?"
+                                        ["x" "y"]
+                                        ["and"
+                                         ["=" [":kind" "x"] [":kind" "y"]]
+                                         ["=" [":ns" "x"] [":ns" "y"]]
+                                         ["=" [":extra" "x"] [":extra" "y"]]]],
                         "to-keys" ["defn" "to-keys" ["target-expr"] ["vec" ["sort" ["keys" [":data" "target-expr"]]]]],
                         "to-writer" ["defn"
                                      "to-writer"
@@ -286,7 +298,7 @@
                                        "page-data"
                                        ["{}"
                                         [":files" ["{}" [":ns-set" ["#{}"]] [":defs-set" ["#{}"]]]]
-                                        [":editor" ["{}" [":focus" ["[]"]] [":expr" "nil"]]]]]},
+                                        [":editor" ["{}" [":focus" ["[]"]] [":others" ["#{}"]] [":expr" "nil"]]]]]},
                    :procs []},
          "updater.user" {:ns ["ns" "server.updater.user" [":require" ["[]" "server.util" ":refer" ["[]" "find-first"]]]],
                          :defs {"sign-up" ["defn"
@@ -664,13 +676,15 @@
                          :procs []},
          "twig.page-editor" {:ns ["ns"
                                   "server.twig.page-editor"
-                                  [":require" ["[]" "recollect.bunch" ":refer" ["[]" "create-twig"]]]],
+                                  [":require"
+                                   ["[]" "recollect.bunch" ":refer" ["[]" "create-twig"]]
+                                   ["[]" "server.util" ":refer" ["[]" "same-buffer?"]]]],
                              :defs {"twig-page-editor" ["def"
                                                         "twig-page-editor"
                                                         ["create-twig"
                                                          ":page-editor"
                                                          ["fn"
-                                                          ["files" "writer"]
+                                                          ["files" "sessions" "writer" "session-id"]
                                                           ["let"
                                                            [["pointer" [":pointer" "writer"]]
                                                             ["stack" [":stack" "writer"]]
@@ -681,6 +695,26 @@
                                                              [["ns-text" [":ns" "bookmark"]]]
                                                              ["{}"
                                                               [":focus" [":focus" "bookmark"]]
+                                                              [":others"
+                                                               ["dissoc"
+                                                                ["->>"
+                                                                 "sessions"
+                                                                 ["map"
+                                                                  ["fn"
+                                                                   ["entry"]
+                                                                   ["let"
+                                                                    [["writer" [":writer" ["val" "entry"]]]
+                                                                     ["a-bookmark"
+                                                                      ["get" [":stack" "writer"] [":pointer" "writer"]]]]
+                                                                    ["[]"
+                                                                     ["key" "entry"]
+                                                                     ["if"
+                                                                      ["same-buffer?" "bookmark" "a-bookmark"]
+                                                                      [":focus" "a-bookmark"]
+                                                                      "nil"]]]]]
+                                                                 ["filter" ["fn" ["pair"] ["some?" ["last" "pair"]]]]
+                                                                 ["into" ["{}"]]]
+                                                                "session-id"]]
                                                               [":expr"
                                                                ["case"
                                                                 [":kind" "bookmark"]
@@ -988,4 +1022,5 @@
                                                     ":focus"]
                                                    ["fn" ["focus"] ["vec" ["butlast" "focus"]]]]]
                                                  "db"]]]},
-                       :procs []}}}
+                       :procs []}},
+ :options {:port 7011}}
