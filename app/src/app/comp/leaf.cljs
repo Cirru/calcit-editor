@@ -16,15 +16,16 @@
    ui/input
    {:line-height "14px",
     :height 20,
-    :margin "2px 4px",
+    :margin "2px 0px",
     :padding "0 4px",
     :background-color :transparent,
     :min-width 12,
-    :color :white,
-    :opacity 0.7,
+    :color (hsl 200 30 70),
+    :opacity 0.8,
     :font-family "Menlo",
     :font-size 14,
-    :border-radius "4px"}))
+    :border-radius "4px",
+    :vertical-align :baseline}))
 
 (defn on-focus [coord] (fn [e d! m!] (d! :writer/focus coord)))
 
@@ -61,7 +62,7 @@
 
 (defcomp
  comp-leaf
- (states leaf focus coord by-other?)
+ (states leaf focus coord by-other? first?)
  (let [state (or (:data states) initial-state)
        text (if (> (:time state) (:time leaf)) (:text state) (:text leaf))
        focused? (= focus coord)
@@ -75,8 +76,9 @@
              {:width (+
                       8
                       (text-width* text (:font-size style-leaf) (:font-family style-leaf)))}
+             (if first? {:color (hsl 50 100 70)})
              (if has-blank? {:background-color (hsl 0 0 100 0.3)})
-             (if (or focused? by-other?) {:opacity 1})),
+             (if (or focused? by-other?) {:opacity 1, :color :white})),
      :on {:click (on-focus coord),
           :keydown (on-keydown state leaf coord),
           :input (on-input state coord)}})))

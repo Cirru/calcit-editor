@@ -16,7 +16,7 @@
                             ["[]" "app.util" ":as" "util"]]],
                       :defs {"comp-leaf" ["defcomp"
                                           "comp-leaf"
-                                          ["states" "leaf" "focus" "coord" "by-other?"]
+                                          ["states" "leaf" "focus" "coord" "by-other?" "first?"]
                                           ["let"
                                            [["state" ["or" [":data" "states"] "initial-state"]]
                                             ["text"
@@ -42,10 +42,13 @@
                                                    "text"
                                                    [":font-size" "style-leaf"]
                                                    [":font-family" "style-leaf"]]]]]
+                                               ["if" "first?" ["{}" [":color" ["hsl" "50" "100" "70"]]]]
                                                ["if"
                                                 "has-blank?"
                                                 ["{}" [":background-color" ["hsl" "0" "0" "100" "0.3"]]]]
-                                               ["if" ["or" "focused?" "by-other?"] ["{}" [":opacity" "1"]]]]]
+                                               ["if"
+                                                ["or" "focused?" "by-other?"]
+                                                ["{}" [":opacity" "1"] [":color" ":white"]]]]]
                                              [":on"
                                               ["{}"
                                                [":click" ["on-focus" "coord"]]
@@ -58,15 +61,16 @@
                                             ["{}"
                                              [":line-height" "|14px"]
                                              [":height" "20"]
-                                             [":margin" "|2px 4px"]
+                                             [":margin" "|2px 0px"]
                                              [":padding" "|0 4px"]
                                              [":background-color" ":transparent"]
                                              [":min-width" "12"]
-                                             [":color" ":white"]
-                                             [":opacity" "0.7"]
+                                             [":color" ["hsl" "200" "30" "70"]]
+                                             [":opacity" "0.8"]
                                              [":font-family" "|Menlo"]
                                              [":font-size" "14"]
-                                             [":border-radius" "|4px"]]]],
+                                             [":border-radius" "|4px"]
+                                             [":vertical-align" ":baseline"]]]],
                              "on-focus" ["defn"
                                          "on-focus"
                                          ["coord"]
@@ -286,7 +290,8 @@
                                                             [":expr" "router-data"]
                                                             [":focus" "router-data"]
                                                             ["[]"]
-                                                            "others"]]
+                                                            "others"
+                                                            "false"]]
                                                           ["comp-inspect" "|Expr" "router-data" "style/inspector"]]]],
                                     "style-stack" ["def" "style-stack" ["{}" [":width" "240"]]],
                                     "style-editor" ["def" "style-editor" ["merge" "ui/flex" ["{}"]]],
@@ -302,7 +307,13 @@
                                             ["if"
                                              ["=" ["first" "xs"] ["first" "ys"]]
                                              ["recur" ["rest" "xs"] ["rest" "ys"]]
-                                             "false"]]]},
+                                             "false"]]],
+                        "simple?" ["defn"
+                                   "simple?"
+                                   ["expr"]
+                                   ["and"
+                                    ["every?" ["fn" ["x"] ["=" ":leaf" [":type" "x"]]] ["vals" [":data" "expr"]]]
+                                    ["<=" ["count" [":data" "expr"]] "6"]]]},
                  :ns ["ns" "app.util"],
                  :procs []},
          "schema" {:ns ["ns" "app.schema"],
@@ -972,12 +983,14 @@
                             ["[]" "respo.comp.space" ":refer" ["[]" "=<"]]
                             ["[]" "app.util.keycode" ":as" "keycode"]
                             ["[]" "app.comp.leaf" ":refer" ["[]" "comp-leaf"]]
-                            ["[]" "app.util" ":refer" ["[]" "coord-contains?"]]]],
+                            ["[]" "app.util" ":refer" ["[]" "coord-contains?" "simple?"]]]],
                       :defs {"comp-expr" ["defcomp"
                                           "comp-expr"
-                                          ["states" "expr" "focus" "coord" "others"]
+                                          ["states" "expr" "focus" "coord" "others" "tail?"]
                                           ["let"
-                                           [["focused?" ["=" "focus" "coord"]]]
+                                           [["focused?" ["=" "focus" "coord"]]
+                                            ["first-id" ["apply" "min" ["keys" [":data" "expr"]]]]
+                                            ["last-id" ["apply" "max" ["keys" [":data" "expr"]]]]]
                                            ["div"
                                             ["{}"
                                              [":tab-index" "0"]
@@ -988,7 +1001,8 @@
                                                ["if"
                                                 ["contains?" "others" "coord"]
                                                 ["{}" [":border-color" ["hsl" "0" "0" "100" "0.6"]]]]
-                                               ["if" "focused?" ["{}" [":border-color" ["hsl" "0" "0" "100" "0.9"]]]]]]
+                                               ["if" "focused?" ["{}" [":border-color" ["hsl" "0" "0" "100" "0.9"]]]]
+                                               ["if" ["and" ["simple?" "expr"] ["not" "tail?"]] "style-simple"]]]
                                              [":on"
                                               ["{}" [":keydown" ["on-keydown" "coord"]] [":click" ["on-focus" "coord"]]]]]
                                             ["->>"
@@ -1016,7 +1030,8 @@
                                                    "child"
                                                    "focus"
                                                    "child-coord"
-                                                   ["contains?" "partial-others" "child-coord"]]
+                                                   ["contains?" "partial-others" "child-coord"]
+                                                   ["=" "first-id" "k"]]
                                                   ["cursor->"
                                                    "k"
                                                    "comp-expr"
@@ -1024,7 +1039,8 @@
                                                    "child"
                                                    "focus"
                                                    "child-coord"
-                                                   "partial-others"]]]]]]]]]],
+                                                   "partial-others"
+                                                   ["=" "last-id" "k"]]]]]]]]]]],
                              "style-expr" ["def"
                                            "style-expr"
                                            ["{}"
@@ -1033,7 +1049,8 @@
                                             [":border-color" ["hsl" "0" "0" "100" "0.3"]]
                                             [":min-height" "24"]
                                             [":outline" ":none"]
-                                            [":padding-left" "16"]
+                                            [":padding-left" "4"]
+                                            [":margin-left" "16"]
                                             [":font-family" "|Menlo,monospce"]
                                             [":font-size" "14"]
                                             [":margin" "2"]]],
@@ -1071,5 +1088,12 @@
                              "on-focus" ["defn"
                                          "on-focus"
                                          ["coord"]
-                                         ["fn" ["e" "d!" "m!"] ["d!" ":writer/focus" "coord"]]]},
+                                         ["fn" ["e" "d!" "m!"] ["d!" ":writer/focus" "coord"]]],
+                             "style-simple" ["def"
+                                             "style-simple"
+                                             ["{}"
+                                              [":display" ":inline-block"]
+                                              [":border-width" "|0 0 1px 0"]
+                                              [":min-width" "32"]
+                                              [":padding" "|0 8px"]]]},
                       :procs []}}}

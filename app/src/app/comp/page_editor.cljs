@@ -28,5 +28,13 @@
   (div
    {:style style-editor}
    (let [others (->> (:others router-data) (vals) (into #{}))]
-     (cursor-> :root comp-expr states (:expr router-data) (:focus router-data) [] others))
+     (cursor->
+      :root
+      comp-expr
+      states
+      (:expr router-data)
+      (:focus router-data)
+      []
+      others
+      false))
    (comp-inspect "Expr" router-data style/inspector))))
