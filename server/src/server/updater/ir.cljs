@@ -35,6 +35,9 @@
          [:sessions session-id :writer :stack (:pointer writer) :focus]
          (fn [focus] (conj (vec (butlast focus)) next-id))))))
 
+(defn remove-ns [db op-data session-id op-id op-time]
+  (-> db (update-in [:ir :files] (fn [files] (dissoc files op-data)))))
+
 (defn update-leaf [db op-data session-id op-id op-time]
   (let [writer (get-in db [:sessions session-id :writer])
         bookmark (get (:stack writer) (:pointer writer))
@@ -110,7 +113,9 @@
          (fn [focus] (conj focus new-id))))))
 
 (defn add-ns [db op-data session-id op-id op-time]
-  (assoc-in db [:ir :files op-data] schema/file))
+  (let [user-id (get-in db [:sessions session-id :user-id])
+        empty-expr (assoc schema/expr :time op-time :author user-id)]
+    (assoc-in db [:ir :files op-data] (assoc schema/file :ns empty-expr :proc empty-expr))))
 
 (defn delete-node [db op-data session-id op-id op-time]
   (let [writer (get-in db [:sessions session-id :writer])

@@ -18,4 +18,6 @@
     (concat
      [:ir :files (:ns bookmark) :defs (:extra bookmark)]
      (mapcat prepend-data (:focus bookmark)))
-    (concat [:ir :files (:ns bookmark) :ns] (mapcat prepend-data (:focus bookmark)))))
+    (concat
+     [:ir :files (:ns bookmark) (:kind bookmark)]
+     (mapcat prepend-data (:focus bookmark)))))

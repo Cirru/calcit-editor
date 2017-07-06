@@ -15,7 +15,9 @@
     (let [text (string/trim (:ns-text state))]
       (if (not (string/blank? text)) (do (d! :ir/add-ns text) (m! (assoc state :ns-text "")))))))
 
-(defn on-edit-proc [e d! m!] (d! :writer/edit {:kind :procs}))
+(defn on-remove-ns [ns-text] (fn [e d! m!] (d! :ir/remove-ns ns-text)))
+
+(defn on-edit-proc [e d! m!] (d! :writer/edit {:kind :proc}))
 
 (defn on-input-def [state] (fn [e d! m!] (m! (assoc state :def-text (:value e)))))
 
@@ -56,7 +58,7 @@
               {}
               (span
                {:inner-text def-text, :style style-def, :on {:click (on-edit-def def-text)}})
-              (=< 8 nil)
+              (=< 16 nil)
               (span
                {:class-name "ion-md-close",
                 :style style-remove,
@@ -71,7 +73,7 @@
     (=< 8 nil)
     (button {:inner-text "Add def", :style style/button, :on {:click (on-add-def state)}}))))
 
-(def style-ns {:cursor :pointer})
+(def style-ns {:cursor :pointer, :vertical-align :middle})
 
 (def style-list {:width 320})
 
@@ -96,8 +98,13 @@
           (fn [ns-text]
             [ns-text
              (div
-              {:style style-ns, :on {:click (on-checkout state ns-text)}}
-              (<> span ns-text nil))]))))
+              {:style style-ns}
+              (span {:inner-text ns-text, :on {:click (on-checkout state ns-text)}})
+              (=< 16 nil)
+              (span
+               {:class-name "ion-md-close",
+                :style style-remove,
+                :on {:click (on-remove-ns ns-text)}}))]))))
    (div
     {}
     (input

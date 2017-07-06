@@ -11,7 +11,7 @@
            {:focus (:focus bookmark),
             :expr (case (:kind bookmark)
               :ns (get-in files [ns-text :ns])
-              :procs (get-in files [ns-text :procs])
+              :proc (get-in files [ns-text :proc])
               :def (get-in files [ns-text :defs (:extra bookmark)])
               nil)})
          nil)))))

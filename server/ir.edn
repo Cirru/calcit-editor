@@ -218,7 +218,7 @@
                                             ["[]" ":ir" ":files" [":ns" "bookmark"] ":defs" [":extra" "bookmark"]]
                                             ["mapcat" "prepend-data" [":focus" "bookmark"]]]
                                            ["concat"
-                                            ["[]" ":ir" ":files" [":ns" "bookmark"] ":ns"]
+                                            ["[]" ":ir" ":files" [":ns" "bookmark"] [":kind" "bookmark"]]
                                             ["mapcat" "prepend-data" [":focus" "bookmark"]]]]],
                         "prepend-data" ["defn" "prepend-data" ["x"] ["[]" ":data" "x"]],
                         "kinds" ["def" "kinds" ["#{}" ":ns" ":def" ":proc"]]},
@@ -619,6 +619,8 @@
                                             [":ir/add-def" ["ir/add-def" "db" "op-data" "session-id" "op-id" "op-time"]]
                                             [":ir/remove-def"
                                              ["ir/remove-def" "db" "op-data" "session-id" "op-id" "op-time"]]
+                                            [":ir/remove-ns"
+                                             ["ir/remove-ns" "db" "op-data" "session-id" "op-id" "op-time"]]
                                             [":ir/append-leaf"
                                              ["ir/append-leaf" "db" "op-data" "session-id" "op-id" "op-time"]]
                                             [":ir/delete-node"
@@ -657,7 +659,7 @@
                                                                ["case"
                                                                 [":kind" "bookmark"]
                                                                 [":ns" ["get-in" "files" ["[]" "ns-text" ":ns"]]]
-                                                                [":procs" ["get-in" "files" ["[]" "ns-text" ":procs"]]]
+                                                                [":proc" ["get-in" "files" ["[]" "ns-text" ":proc"]]]
                                                                 [":def"
                                                                  ["get-in"
                                                                   "files"
@@ -718,6 +720,14 @@
                                                 [":pointer" "writer"]
                                                 ":focus"]
                                                ["fn" ["focus"] ["conj" ["vec" ["butlast" "focus"]] "next-id"]]]]]],
+                              "remove-ns" ["defn"
+                                           "remove-ns"
+                                           ["db" "op-data" "session-id" "op-id" "op-time"]
+                                           ["->"
+                                            "db"
+                                            ["update-in"
+                                             ["[]" ":ir" ":files"]
+                                             ["fn" ["files"] ["dissoc" "files" "op-data"]]]]],
                               "update-leaf" ["defn"
                                              "update-leaf"
                                              ["db" "op-data" "session-id" "op-id" "op-time"]
@@ -842,7 +852,13 @@
                               "add-ns" ["defn"
                                         "add-ns"
                                         ["db" "op-data" "session-id" "op-id" "op-time"]
-                                        ["assoc-in" "db" ["[]" ":ir" ":files" "op-data"] "schema/file"]],
+                                        ["let"
+                                         [["user-id" ["get-in" "db" ["[]" ":sessions" "session-id" ":user-id"]]]
+                                          ["empty-expr" ["assoc" "schema/expr" ":time" "op-time" ":author" "user-id"]]]
+                                         ["assoc-in"
+                                          "db"
+                                          ["[]" ":ir" ":files" "op-data"]
+                                          ["assoc" "schema/file" ":ns" "empty-expr" ":proc" "empty-expr"]]]],
                               "delete-leaf" ["defn"
                                              "delete-node"
                                              ["db" "op-data" "session-id" "op-id" "op-time"]

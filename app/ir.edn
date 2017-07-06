@@ -584,10 +584,14 @@
                                                 ["do"
                                                  ["d!" ":ir/add-ns" "text"]
                                                  ["m!" ["assoc" "state" ":ns-text" "|"]]]]]]],
+                                   "on-remove-ns" ["defn"
+                                                   "on-remove-ns"
+                                                   ["ns-text"]
+                                                   ["fn" ["e" "d!" "m!"] ["d!" ":ir/remove-ns" "ns-text"]]],
                                    "on-edit-proc" ["defn"
                                                    "on-edit-proc"
                                                    ["e" "d!" "m!"]
-                                                   ["d!" ":writer/edit" ["{}" [":kind" ":procs"]]]],
+                                                   ["d!" ":writer/edit" ["{}" [":kind" ":proc"]]]],
                                    "render-file" ["defn"
                                                   "render-file"
                                                   ["state" "selected-ns" "defs-set"]
@@ -627,7 +631,7 @@
                                                            [":inner-text" "def-text"]
                                                            [":style" "style-def"]
                                                            [":on" ["{}" [":click" ["on-edit-def" "def-text"]]]]]]
-                                                         ["=<" "8" "nil"]
+                                                         ["=<" "16" "nil"]
                                                          ["span"
                                                           ["{}"
                                                            [":class-name" "|ion-md-close"]
@@ -653,7 +657,9 @@
                                                    ["fn"
                                                     ["e" "d!" "m!"]
                                                     ["m!" ["assoc" "state" ":def-text" [":value" "e"]]]]],
-                                   "style-ns" ["def" "style-ns" ["{}" [":cursor" ":pointer"]]],
+                                   "style-ns" ["def"
+                                               "style-ns"
+                                               ["{}" [":cursor" ":pointer"] [":vertical-align" ":middle"]]],
                                    "on-remove-def" ["defn"
                                                     "on-remove-def"
                                                     ["def-text"]
@@ -732,10 +738,17 @@
                                                        ["[]"
                                                         "ns-text"
                                                         ["div"
-                                                         ["{}"
-                                                          [":style" "style-ns"]
-                                                          [":on" ["{}" [":click" ["on-checkout" "state" "ns-text"]]]]]
-                                                         ["<>" "span" "ns-text" "nil"]]]]]]]
+                                                         ["{}" [":style" "style-ns"]]
+                                                         ["span"
+                                                          ["{}"
+                                                           [":inner-text" "ns-text"]
+                                                           [":on" ["{}" [":click" ["on-checkout" "state" "ns-text"]]]]]]
+                                                         ["=<" "16" "nil"]
+                                                         ["span"
+                                                          ["{}"
+                                                           [":class-name" "|ion-md-close"]
+                                                           [":style" "style-remove"]
+                                                           [":on" ["{}" [":click" ["on-remove-ns" "ns-text"]]]]]]]]]]]]
                                                    ["div"
                                                     ["{}"]
                                                     ["input"
