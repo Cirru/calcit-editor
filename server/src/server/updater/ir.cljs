@@ -58,6 +58,29 @@
 (defn remove-ns [db op-data session-id op-id op-time]
   (-> db (update-in [:ir :files] (fn [files] (dissoc files op-data)))))
 
+(defn expr-before [db op-data session-id op-id op-time]
+  (let [writer (to-writer db session-id)
+        bookmark (to-bookmark writer)
+        current-key (last (:focus bookmark))
+        parent-bookmark (update bookmark :focus butlast)
+        data-path (bookmark->path parent-bookmark)
+        target-expr (get-in db data-path)
+        child-keys (to-keys target-expr)
+        idx (.indexOf child-keys current-key)
+        next-id (bisection/bisect
+                 (if (zero? idx) bisection/min-id (get child-keys (dec idx)))
+                 current-key)
+        user-id (get-in db [:sessions session-id :user-id])
+        new-leaf (assoc schema/leaf :time op-time :author user-id)
+        new-expr (-> schema/expr
+                     (assoc :time op-time :author user-id)
+                     (assoc-in [:data bisection/mid-id] new-leaf))]
+    (-> db
+        (update-in data-path (fn [expr] (assoc-in expr [:data next-id] new-expr)))
+        (update-in
+         [:sessions session-id :writer :stack (:pointer writer) :focus]
+         (fn [focus] (conj (vec (butlast focus)) next-id bisection/mid-id))))))
+
 (defn update-leaf [db op-data session-id op-id op-time]
   (let [writer (get-in db [:sessions session-id :writer])
         bookmark (get (:stack writer) (:pointer writer))
@@ -131,6 +154,31 @@
         (update-in
          [:sessions session-id :writer :stack (:pointer writer) :focus]
          (fn [focus] (conj focus new-id))))))
+
+(defn expr-after [db op-data session-id op-id op-time]
+  (let [writer (to-writer db session-id)
+        bookmark (to-bookmark writer)
+        current-key (last (:focus bookmark))
+        parent-bookmark (update bookmark :focus butlast)
+        data-path (bookmark->path parent-bookmark)
+        target-expr (get-in db data-path)
+        child-keys (to-keys target-expr)
+        idx (.indexOf child-keys current-key)
+        next-id (bisection/bisect
+                 current-key
+                 (if (= idx (dec (count child-keys)))
+                   bisection/max-id
+                   (get child-keys (inc idx))))
+        user-id (get-in db [:sessions session-id :user-id])
+        new-leaf (assoc schema/leaf :time op-time :author user-id)
+        new-expr (-> schema/expr
+                     (assoc :time op-time :author user-id)
+                     (assoc-in [:data bisection/mid-id] new-leaf))]
+    (-> db
+        (update-in data-path (fn [expr] (assoc-in expr [:data next-id] new-expr)))
+        (update-in
+         [:sessions session-id :writer :stack (:pointer writer) :focus]
+         (fn [focus] (conj (vec (butlast focus)) next-id bisection/mid-id))))))
 
 (defn add-ns [db op-data session-id op-id op-time]
   (let [user-id (get-in db [:sessions session-id :user-id])

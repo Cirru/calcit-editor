@@ -30,7 +30,8 @@
           ctrl? (.-ctrlKey event)
           code (:key-code e)]
       (cond
-        (= code keycode/enter) (d! :ir/append-leaf nil)
+        (and meta? (= code keycode/enter)) (d! :ir/append-leaf nil)
+        (= code keycode/enter) (d! (if shift? :ir/expr-before :ir/expr-after) nil)
         (= code keycode/delete) (d! :ir/delete-node nil)
         (= code keycode/space) (d! (if shift? :ir/leaf-before :ir/leaf-after) nil)
         (= code keycode/tab)
