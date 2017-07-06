@@ -214,12 +214,19 @@
                                                      ["drop" ["inc" "op-data"] "stack"]]]]]]]},
                            :procs []},
          "util" {:ns ["ns" "server.util"],
-                 :defs {"find-first" ["defn"
-                                      "find-first"
-                                      ["f" "xs"]
-                                      ["reduce" ["fn" ["_" "x"] ["when" ["f" "x"] ["reduced" "x"]]] "nil" "xs"]],
+                 :defs {"prepend-data" ["defn" "prepend-data" ["x"] ["[]" ":data" "x"]],
                         "expr?" ["defn" "expr?" ["x"] ["=" ":expr" [":type" "x"]]],
+                        "to-bookmark" ["defn"
+                                       "to-bookmark"
+                                       ["writer"]
+                                       ["get" [":stack" "writer"] [":pointer" "writer"]]],
+                        "kinds" ["def" "kinds" ["#{}" ":ns" ":def" ":proc"]],
                         "leaf?" ["defn" "leaf?" ["x"] ["=" ":leaf" [":type" "x"]]],
+                        "to-keys" ["defn" "to-keys" ["target-expr"] ["vec" ["sort" ["keys" [":data" "target-expr"]]]]],
+                        "to-writer" ["defn"
+                                     "to-writer"
+                                     ["db" "session-id"]
+                                     ["get-in" "db" ["[]" ":sessions" "session-id" ":writer"]]],
                         "bookmark->path" ["defn"
                                           "bookmark->path"
                                           ["bookmark"]
@@ -233,8 +240,10 @@
                                            ["concat"
                                             ["[]" ":ir" ":files" [":ns" "bookmark"] [":kind" "bookmark"]]
                                             ["mapcat" "prepend-data" [":focus" "bookmark"]]]]],
-                        "prepend-data" ["defn" "prepend-data" ["x"] ["[]" ":data" "x"]],
-                        "kinds" ["def" "kinds" ["#{}" ":ns" ":def" ":proc"]]},
+                        "find-first" ["defn"
+                                      "find-first"
+                                      ["f" "xs"]
+                                      ["reduce" ["fn" ["_" "x"] ["when" ["f" "x"] ["reduced" "x"]]] "nil" "xs"]]},
                  :procs []},
          "schema" {:ns ["ns" "server.schema"],
                    :defs {"ir-file" ["def" "ir-file" ["{}" [":pkg" "|app"] [":files" ["{}"]]]],
@@ -689,7 +698,10 @@
                             [":require"
                              ["[]" "server.schema" ":as" "schema"]
                              ["[]" "bisection-key.core" ":as" "bisection"]
-                             ["[]" "server.util" ":refer" ["[]" "expr?" "leaf?" "bookmark->path"]]]],
+                             ["[]"
+                              "server.util"
+                              ":refer"
+                              ["[]" "expr?" "leaf?" "bookmark->path" "to-writer" "to-bookmark" "to-keys"]]]],
                        :defs {"add-def" ["defn"
                                          "add-def"
                                          ["db" "op-data" "session-id" "op-id" "op-time"]
@@ -705,14 +717,13 @@
                                              "leaf-before"
                                              ["db" "op-data" "session-id" "op-id" "op-time"]
                                              ["let"
-                                              [["writer" ["get-in" "db" ["[]" ":sessions" "session-id" ":writer"]]]
-                                               [["{}" "stack" ":stack" "pointer" ":pointer"] "writer"]
-                                               ["bookmark" ["get" "stack" "pointer"]]
+                                              [["writer" ["to-writer" "db" "session-id"]]
+                                               ["bookmark" ["to-bookmark" "writer"]]
                                                ["current-key" ["last" [":focus" "bookmark"]]]
                                                ["parent-bookmark" ["update" "bookmark" ":focus" "butlast"]]
                                                ["data-path" ["bookmark->path" "parent-bookmark"]]
                                                ["target-expr" ["get-in" "db" "data-path"]]
-                                               ["child-keys" ["vec" ["sort" ["keys" [":data" "target-expr"]]]]]
+                                               ["child-keys" ["to-keys" "target-expr"]]
                                                ["idx" [".indexOf" "child-keys" "current-key"]]
                                                ["next-id"
                                                 ["bisection/bisect"

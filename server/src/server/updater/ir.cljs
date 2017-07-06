@@ -2,7 +2,7 @@
 (ns server.updater.ir
   (:require [server.schema :as schema]
             [bisection-key.core :as bisection]
-            [server.util :refer [expr? leaf? bookmark->path]]))
+            [server.util :refer [expr? leaf? bookmark->path to-writer to-bookmark to-keys]]))
 
 (defn add-def [db op-data session-id op-id op-time]
   (let [selected-ns (get-in db [:sessions session-id :writer :selected-ns])
@@ -13,14 +13,13 @@
      (assoc schema/expr :time op-time :author user-id))))
 
 (defn leaf-before [db op-data session-id op-id op-time]
-  (let [writer (get-in db [:sessions session-id :writer])
-        {stack :stack, pointer :pointer} writer
-        bookmark (get stack pointer)
+  (let [writer (to-writer db session-id)
+        bookmark (to-bookmark writer)
         current-key (last (:focus bookmark))
         parent-bookmark (update bookmark :focus butlast)
         data-path (bookmark->path parent-bookmark)
         target-expr (get-in db data-path)
-        child-keys (vec (sort (keys (:data target-expr))))
+        child-keys (to-keys target-expr)
         idx (.indexOf child-keys current-key)
         next-id (bisection/bisect
                  (if (zero? idx) bisection/min-id (get child-keys (dec idx)))
