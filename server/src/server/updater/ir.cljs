@@ -130,3 +130,17 @@
            (if (zero? idx)
              (vec (butlast focus))
              (assoc focus (dec (count focus)) (get (vec child-keys) (dec idx)))))))))
+
+(defn unindent-leaf [db op-data session-id op-id op-time]
+  (let [writer (get-in db [:sessions session-id :writer])
+        bookmark (get (:stack writer) (:pointer writer))
+        parent-bookmark (update bookmark :focus butlast)
+        parent-path (bookmark->path parent-bookmark)
+        parent-expr (get-in db parent-path)]
+    (if (= 1 (count (:data parent-expr)))
+      (-> db
+          (update-in parent-path (fn [expr] (first (vals (:data expr)))))
+          (update-in
+           [:sessions session-id :writer :stack (:pointer writer) :focus]
+           (fn [focus] (vec (butlast focus)))))
+      db)))

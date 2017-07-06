@@ -28,5 +28,6 @@
     :ir/leaf-after (ir/leaf-after db op-data session-id op-id op-time)
     :ir/indent (ir/indent db op-data session-id op-id op-time)
     :ir/unindent (ir/unindent db op-data session-id op-id op-time)
+    :ir/unindent-leaf (ir/unindent-leaf db op-data session-id op-id op-time)
     :ir/update-leaf (ir/update-leaf db op-data session-id op-id op-time)
     db))
