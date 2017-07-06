@@ -29,6 +29,9 @@
     (cond
       (= code keycode/enter) (d! :ir/append-leaf nil)
       (= code keycode/delete) (d! :ir/delete-node nil)
+      (= code keycode/space) (d! :ir/leaf-after nil)
+      (= code keycode/tab)
+        (do (d! (if shift? :ir/unindent :ir/indent) nil) (.preventDefault event))
       :else (println "Keydown" (:key-code e)))))
 
 (defn on-focus [coord] (fn [e d! m!] (d! :writer/focus coord)))

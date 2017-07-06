@@ -34,7 +34,7 @@
         (and (not shift?) (= code keycode/space))
           (do (d! :ir/leaf-after nil) (.preventDefault event))
         (= code keycode/tab)
-          (do (d! (if shift? :ir/unindent :ir/indent) nil) (.preventDefault event))
+          (do (d! (if shift? :ir/unindent-leaf :ir/indent) nil) (.preventDefault event))
         :else (println "Keydown leaf" code)))))
 
 (defn on-input [state coord]

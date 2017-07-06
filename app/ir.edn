@@ -81,7 +81,7 @@
                                                ["do" ["d!" ":ir/leaf-after" "nil"] [".preventDefault" "event"]]]
                                               [["=" "code" "keycode/tab"]
                                                ["do"
-                                                ["d!" ["if" "shift?" ":ir/unindent" ":ir/indent"] "nil"]
+                                                ["d!" ["if" "shift?" ":ir/unindent-leaf" ":ir/indent"] "nil"]
                                                 [".preventDefault" "event"]]]
                                               [":else" ["println" "|Keydown leaf" "code"]]]]]],
                              "on-input" ["defn"
@@ -330,14 +330,13 @@
                                       ["js/requestAnimationFrame"
                                        ["fn"
                                         ["timestamp"]
-                                        ["println" "|focus!"]
                                         ["let"
                                          [["current-focused" [".-activeElement" "js/document"]]
                                           ["cirru-focused" [".querySelector" "js/document" "|.cirru-focused"]]]
                                          ["if"
                                           ["some?" "cirru-focused"]
                                           ["if" ["not=" "current-focused" "cirru-focused"] [".focus" "cirru-focused"]]
-                                          ["println" "|[Editor] .cirru-focused not found"]]]]]]},
+                                          ["println" "|[Editor] .cirru-focused not found" "cirru-focused"]]]]]]},
                      :procs []},
          "style" {:ns ["ns"
                        "app.style"
@@ -945,6 +944,11 @@
                                             ["cond"
                                              [["=" "code" "keycode/enter"] ["d!" ":ir/append-leaf" "nil"]]
                                              [["=" "code" "keycode/delete"] ["d!" ":ir/delete-node" "nil"]]
+                                             [["=" "code" "keycode/space"] ["d!" ":ir/leaf-after" "nil"]]
+                                             [["=" "code" "keycode/tab"]
+                                              ["do"
+                                               ["d!" ["if" "shift?" ":ir/unindent" ":ir/indent"] "nil"]
+                                               [".preventDefault" "event"]]]
                                              [":else" ["println" "|Keydown" [":key-code" "e"]]]]]],
                              "on-focus" ["defn"
                                          "on-focus"
