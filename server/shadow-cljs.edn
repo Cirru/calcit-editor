@@ -3,6 +3,7 @@
  :dependencies [[mvc-works/hsl "0.1.2"]
                 [cumulo/recollect "0.1.7"]
                 [org.clojure/core.async "0.3.443"]
+                [fipp "0.6.8"]
                 [cirru/bisection-key "0.1.2"]]
  :builds {:app {:target :node-script
                 :output-to "target/main.js"

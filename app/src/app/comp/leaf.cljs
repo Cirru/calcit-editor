@@ -6,7 +6,9 @@
             [respo-ui.style.colors :as colors]
             [respo.core :refer [create-comp]]
             [respo.comp.space :refer [=<]]
-            [polyfill.core :refer [text-width*]]))
+            [polyfill.core :refer [text-width*]]
+            [app.util.keycode :as keycode]
+            [app.util :as util]))
 
 (def style-leaf
   (merge
@@ -17,19 +19,40 @@
     :padding "0 4px",
     :background-color (hsl 0 0 100 0.3),
     :min-width 12,
-    :color :white}))
+    :color :white,
+    :font-family "Menlo",
+    :font-size 14}))
 
 (defn on-focus [coord] (fn [e d! m!] (d! :writer/focus coord)))
 
+(defn on-keydown [state leaf coord]
+  (fn [e d! m!]
+    (let [event (:original-event e), code (:key-code e)]
+      (cond
+        (= code keycode/delete)
+          (do
+           (println (pr-str state) leaf)
+           (if (and (= "" (:text leaf)) (= "" (:text state))) (d! :ir/delete-leaf nil)))
+        :else (println "Keydown leaf" code)))))
+
+(defn on-input [state coord]
+  (fn [e d! m!] (m! (assoc state :text (:value e) :time (util/now!)))))
+
+(def initial-state {:text "", :time 0})
+
 (defcomp
  comp-leaf
- (leaf coord)
- (input
-  {:value (:text leaf),
-   :placeholder coord,
-   :style (merge
-           style-leaf
-           {:width (let [x (text-width* (:text leaf) 14 "Menlo,monospace")]
-              (println "x" x)
-              x)}),
-   :on {:click (on-focus coord)}}))
+ (states leaf coord)
+ (let [state (or (:data states) initial-state)
+       text (if (> (:time state) (:time leaf)) (:text state) (:text leaf))]
+   (input
+    {:value text,
+     :placeholder coord,
+     :style (merge
+             style-leaf
+             {:width (+
+                      8
+                      (text-width* text (:font-size style-leaf) (:font-family style-leaf)))}),
+     :on {:click (on-focus coord),
+          :keydown (on-keydown state leaf coord),
+          :input (on-input state coord)}})))

@@ -23,5 +23,6 @@
     :ir/add-ns (ir/add-ns db op-data session-id op-id op-time)
     :ir/add-def (ir/add-def db op-data session-id op-id op-time)
     :ir/remove-def (ir/remove-def db op-data session-id op-id op-time)
-    :ir/insert-leaf (ir/insert-leaf db op-data session-id op-id op-time)
+    :ir/append-leaf (ir/append-leaf db op-data session-id op-id op-time)
+    :ir/delete-leaf (ir/delete-leaf db op-data session-id op-id op-time)
     db))

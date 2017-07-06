@@ -1,3 +1,4 @@
 
 ir.edn -diff linguist-generated
+coir.edn -diff linguist-generated
 yarn.lock -diff

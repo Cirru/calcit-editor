@@ -4,7 +4,8 @@
             [server.network :refer [run-server! render-clients!]]
             [server.updater.core :refer [updater]]
             [cljs.core.async :refer [<!]]
-            [cljs.reader :refer [read-string]])
+            [cljs.reader :refer [read-string]]
+            [fipp.edn :as fipp])
   (:require-macros [cljs.core.async.macros :refer [go-loop]]))
 
 (defonce *writer-db
@@ -17,7 +18,9 @@
 
 (defn persist! []
   (let [fs (js/require "fs")]
-    (fs.writeFileSync (:storage-key schema/configs) (pr-str (assoc @*writer-db :sessions {})))))
+    (fs.writeFileSync
+     (:storage-key schema/configs)
+     (with-out-str (fipp/pprint (assoc @*writer-db :sessions {}))))))
 
 (defonce *reader-db (atom @*writer-db))
 

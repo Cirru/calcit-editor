@@ -19,7 +19,26 @@
   (let [selected-ns (get-in db [:sessions session-id :writer :selected-ns])]
     (update-in db [:ir :files selected-ns :defs] (fn [defs] (dissoc defs op-data)))))
 
-(defn insert-leaf [db op-data session-id op-id op-time]
+(defn delete-leaf [db op-data session-id op-id op-time]
+  (let [writer (get-in db [:sessions session-id :writer])
+        bookmark (get (:stack writer) (:pointer writer))
+        parent-bookmark (update bookmark :focus butlast)
+        data-path (bookmark->path parent-bookmark)
+        child-keys (sort (keys (:data (get-in db data-path))))
+        deleted-key (last (:focus bookmark))
+        idx (.indexOf child-keys deleted-key)]
+    (-> db
+        (update-in
+         data-path
+         (fn [expr] (update expr :data (fn [children] (dissoc children deleted-key)))))
+        (update-in
+         [:sessions session-id :writer :stack (:pointer writer) :focus]
+         (fn [focus]
+           (if (zero? idx)
+             (vec (butlast focus))
+             (assoc focus (dec (count focus)) (get (vec child-keys) (dec idx)))))))))
+
+(defn append-leaf [db op-data session-id op-id op-time]
   (let [writer (get-in db [:sessions session-id :writer])
         {stack :stack, pointer :pointer} writer
         bookmark (get stack pointer)
@@ -31,11 +50,7 @@
         new-id (if (empty? (:data target-expr))
                  bisection/mid-id
                  (let [max-entry (apply max (keys (:data target-expr)))]
-                   (println "max-entry" max-entry)
                    (bisection/bisect max-entry bisection/max-id)))]
-    (println "bookmark" bookmark)
-    (println "new path" expr-path)
-    (println "new id" new-id)
     (-> db
         (update-in
          expr-path

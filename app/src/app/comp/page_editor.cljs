@@ -1,6 +1,6 @@
 
 (ns app.comp.page-editor
-  (:require-macros [respo.macros :refer [defcomp <> span div a]])
+  (:require-macros [respo.macros :refer [defcomp cursor-> <> span div a]])
   (:require [hsl.core :refer [hsl]]
             [respo-ui.style :as ui]
             [respo-ui.style.colors :as colors]
@@ -27,5 +27,5 @@
    (->> stack (map-indexed (fn [idx bookmark] [idx (comp-bookmark bookmark idx)]))))
   (div
    {:style style-editor}
-   (comp-expr router-data [])
+   (cursor-> :root comp-expr states router-data [])
    (comp-inspect "Expr" router-data style/inspector))))

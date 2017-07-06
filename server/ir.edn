@@ -276,7 +276,8 @@
                        ["[]" "server.network" ":refer" ["[]" "run-server!" "render-clients!"]]
                        ["[]" "server.updater.core" ":refer" ["[]" "updater"]]
                        ["[]" "cljs.core.async" ":refer" ["[]" "<!"]]
-                       ["[]" "cljs.reader" ":refer" ["[]" "read-string"]]]
+                       ["[]" "cljs.reader" ":refer" ["[]" "read-string"]]
+                       ["[]" "fipp.edn" ":as" "fipp"]]
                       [":require-macros" ["[]" "cljs.core.async.macros" ":refer" ["[]" "go-loop"]]]],
                  :defs {"persist!" ["defn"
                                     "persist!"
@@ -285,7 +286,7 @@
                                      [["fs" ["js/require" "|fs"]]]
                                      ["fs.writeFileSync"
                                       [":storage-key" "schema/configs"]
-                                      ["pr-str" ["assoc" "@*writer-db" ":sessions" ["{}"]]]]]],
+                                      ["with-out-str" ["fipp/pprint" ["assoc" "@*writer-db" ":sessions" ["{}"]]]]]]],
                         "reload!" ["defn" "reload!" [] ["println" "|Code updated."] ["render-clients!" "@*reader-db"]],
                         "main!" ["defn"
                                  "main!"
@@ -501,8 +502,10 @@
                                             [":ir/add-def" ["ir/add-def" "db" "op-data" "session-id" "op-id" "op-time"]]
                                             [":ir/remove-def"
                                              ["ir/remove-def" "db" "op-data" "session-id" "op-id" "op-time"]]
-                                            [":ir/insert-leaf"
-                                             ["ir/insert-leaf" "db" "op-data" "session-id" "op-id" "op-time"]]
+                                            [":ir/append-leaf"
+                                             ["ir/append-leaf" "db" "op-data" "session-id" "op-id" "op-time"]]
+                                            [":ir/delete-leaf"
+                                             ["ir/delete-leaf" "db" "op-data" "session-id" "op-id" "op-time"]]
                                             "db"]]},
                          :procs []},
          "twig.page-editor" {:ns ["ns"
@@ -564,8 +567,46 @@
                                               "db"
                                               ["[]" ":ir" ":files" "selected-ns" ":defs"]
                                               ["fn" ["defs"] ["dissoc" "defs" "op-data"]]]]],
-                              "insert-leaf" ["defn"
-                                             "insert-leaf"
+                              "delete-leaf" ["defn"
+                                             "delete-leaf"
+                                             ["db" "op-data" "session-id" "op-id" "op-time"]
+                                             ["let"
+                                              [["writer" ["get-in" "db" ["[]" ":sessions" "session-id" ":writer"]]]
+                                               ["bookmark" ["get" [":stack" "writer"] [":pointer" "writer"]]]
+                                               ["parent-bookmark" ["update" "bookmark" ":focus" "butlast"]]
+                                               ["data-path" ["bookmark->path" "parent-bookmark"]]
+                                               ["child-keys" ["sort" ["keys" [":data" ["get-in" "db" "data-path"]]]]]
+                                               ["deleted-key" ["last" [":focus" "bookmark"]]]
+                                               ["idx" [".indexOf" "child-keys" "deleted-key"]]]
+                                              ["->"
+                                               "db"
+                                               ["update-in"
+                                                "data-path"
+                                                ["fn"
+                                                 ["expr"]
+                                                 ["update"
+                                                  "expr"
+                                                  ":data"
+                                                  ["fn" ["children"] ["dissoc" "children" "deleted-key"]]]]]
+                                               ["update-in"
+                                                ["[]"
+                                                 ":sessions"
+                                                 "session-id"
+                                                 ":writer"
+                                                 ":stack"
+                                                 [":pointer" "writer"]
+                                                 ":focus"]
+                                                ["fn"
+                                                 ["focus"]
+                                                 ["if"
+                                                  ["zero?" "idx"]
+                                                  ["vec" ["butlast" "focus"]]
+                                                  ["assoc"
+                                                   "focus"
+                                                   ["dec" ["count" "focus"]]
+                                                   ["get" ["vec" "child-keys"] ["dec" "idx"]]]]]]]]],
+                              "append-leaf" ["defn"
+                                             "append-leaf"
                                              ["db" "op-data" "session-id" "op-id" "op-time"]
                                              ["let"
                                               [["writer" ["get-in" "db" ["[]" ":sessions" "session-id" ":writer"]]]
@@ -583,11 +624,7 @@
                                                  "bisection/mid-id"
                                                  ["let"
                                                   [["max-entry" ["apply" "max" ["keys" [":data" "target-expr"]]]]]
-                                                  ["println" "|max-entry" "max-entry"]
                                                   ["bisection/bisect" "max-entry" "bisection/max-id"]]]]]
-                                              ["println" "|bookmark" "bookmark"]
-                                              ["println" "|new path" "expr-path"]
-                                              ["println" "|new id" "new-id"]
                                               ["->"
                                                "db"
                                                ["update-in"
