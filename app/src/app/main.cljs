@@ -5,7 +5,8 @@
             [app.comp.container :refer [comp-container]]
             [cljs.reader :refer [read-string]]
             [app.network :refer [send! setup-socket!]]
-            [app.schema :as schema]))
+            [app.schema :as schema]
+            [app.util.dom :refer [focus!]]))
 
 (def ssr? (some? (.querySelector js/document "meta.respo-ssr")))
 
@@ -36,7 +37,7 @@
    {:url (str "ws://" (.-hostname js/location) ":" (:port schema/configs)),
     :on-close! (fn [event] (reset! *store nil) (.error js/console "Lost connection!")),
     :on-open! (fn [event] (simulate-login!))})
-  (add-watch *store :changes (fn [] (render-app! render!)))
+  (add-watch *store :changes (fn [] (render-app! render!) (focus!)))
   (add-watch *states :changes (fn [] (render-app! render!)))
   (println "App started!"))
 

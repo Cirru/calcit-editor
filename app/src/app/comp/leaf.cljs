@@ -42,11 +42,12 @@
 
 (defcomp
  comp-leaf
- (states leaf coord)
+ (states leaf focus coord)
  (let [state (or (:data states) initial-state)
        text (if (> (:time state) (:time leaf)) (:text state) (:text leaf))]
    (input
     {:value text,
+     :class-name (if (= focus coord) "cirru-focused" nil),
      :placeholder coord,
      :style (merge
              style-leaf

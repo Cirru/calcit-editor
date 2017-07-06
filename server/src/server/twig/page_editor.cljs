@@ -8,9 +8,10 @@
      (let [pointer (:pointer writer), stack (:stack writer), bookmark (get stack pointer)]
        (if (some? bookmark)
          (let [ns-text (:ns bookmark)]
-           (case (:kind bookmark)
-             :ns (get-in files [ns-text :ns])
-             :procs (get-in files [ns-text :procs])
-             :def (get-in files [ns-text :defs (:extra bookmark)])
-             nil))
+           {:focus (:focus bookmark),
+            :expr (case (:kind bookmark)
+              :ns (get-in files [ns-text :ns])
+              :procs (get-in files [ns-text :procs])
+              :def (get-in files [ns-text :defs (:extra bookmark)])
+              nil)})
          nil)))))

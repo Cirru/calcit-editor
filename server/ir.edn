@@ -155,7 +155,7 @@
                                        "page-data"
                                        ["{}"
                                         [":files" ["{}" [":ns-set" ["#{}"]] [":defs-set" ["#{}"]]]]
-                                        [":editor" "nil"]]]},
+                                        [":editor" ["{}" [":focus" ["[]"]] [":expr" "nil"]]]]]},
                    :procs []},
          "updater.user" {:ns ["ns" "server.updater.user" [":require" ["[]" "server.util" ":refer" ["[]" "find-first"]]]],
                          :defs {"sign-up" ["defn"
@@ -525,15 +525,18 @@
                                                             ["some?" "bookmark"]
                                                             ["let"
                                                              [["ns-text" [":ns" "bookmark"]]]
-                                                             ["case"
-                                                              [":kind" "bookmark"]
-                                                              [":ns" ["get-in" "files" ["[]" "ns-text" ":ns"]]]
-                                                              [":procs" ["get-in" "files" ["[]" "ns-text" ":procs"]]]
-                                                              [":def"
-                                                               ["get-in"
-                                                                "files"
-                                                                ["[]" "ns-text" ":defs" [":extra" "bookmark"]]]]
-                                                              "nil"]]
+                                                             ["{}"
+                                                              [":focus" [":focus" "bookmark"]]
+                                                              [":expr"
+                                                               ["case"
+                                                                [":kind" "bookmark"]
+                                                                [":ns" ["get-in" "files" ["[]" "ns-text" ":ns"]]]
+                                                                [":procs" ["get-in" "files" ["[]" "ns-text" ":procs"]]]
+                                                                [":def"
+                                                                 ["get-in"
+                                                                  "files"
+                                                                  ["[]" "ns-text" ":defs" [":extra" "bookmark"]]]]
+                                                                "nil"]]]]
                                                             "nil"]]]]]},
                              :procs []},
          "updater.ir" {:ns ["ns"

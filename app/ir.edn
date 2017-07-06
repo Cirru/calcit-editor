@@ -15,7 +15,7 @@
                             ["[]" "app.util" ":as" "util"]]],
                       :defs {"comp-leaf" ["defcomp"
                                           "comp-leaf"
-                                          ["states" "leaf" "coord"]
+                                          ["states" "leaf" "focus" "coord"]
                                           ["let"
                                            [["state" ["or" [":data" "states"] "initial-state"]]
                                             ["text"
@@ -26,6 +26,7 @@
                                            ["input"
                                             ["{}"
                                              [":value" "text"]
+                                             [":class-name" ["if" ["=" "focus" "coord"] "|cirru-focused" "nil"]]
                                              [":placeholder" "coord"]
                                              [":style"
                                               ["merge"
@@ -202,7 +203,13 @@
                                                              ["[]" "idx" ["comp-bookmark" "bookmark" "idx"]]]]]]
                                                          ["div"
                                                           ["{}" [":style" "style-editor"]]
-                                                          ["cursor->" ":root" "comp-expr" "states" "router-data" ["[]"]]
+                                                          ["cursor->"
+                                                           ":root"
+                                                           "comp-expr"
+                                                           "states"
+                                                           [":expr" "router-data"]
+                                                           [":focus" "router-data"]
+                                                           ["[]"]]
                                                           ["comp-inspect" "|Expr" "router-data" "style/inspector"]]]],
                                     "style-stack" ["def" "style-stack" ["{}" [":width" "240"]]],
                                     "style-editor" ["def" "style-editor" ["merge" "ui/flex" ["{}"]]],
@@ -306,6 +313,21 @@
                                                       [":color" ":black"]
                                                       [":opacity" "1"]]]},
                            :procs []},
+         "util.dom" {:ns ["ns" "app.util.dom"],
+                     :defs {"focus!" ["defn"
+                                      "focus!"
+                                      []
+                                      ["js/requestAnimationFrom"
+                                       ["fn"
+                                        ["timestamp"]
+                                        ["let"
+                                         [["current-focused" [".-activeElement" "js/document"]]
+                                          ["cirru-focused" [".querySelector" "js/document" "|.cirru-focused"]]]
+                                         ["if"
+                                          ["some?" "cirru-focused"]
+                                          ["if" ["not=" "current-focused" "cirru-focused"] [".focus" ["cirru-focused"]]]
+                                          ["println" "|[Editor] .cirru-focused not found"]]]]]]},
+                     :procs []},
          "style" {:ns ["ns"
                        "app.style"
                        [":require" ["[]" "respo-ui.style" ":as" "ui"] ["[]" "hsl.core" ":refer" ["[]" "hsl"]]]],
@@ -334,7 +356,8 @@
                        ["[]" "app.comp.container" ":refer" ["[]" "comp-container"]]
                        ["[]" "cljs.reader" ":refer" ["[]" "read-string"]]
                        ["[]" "app.network" ":refer" ["[]" "send!" "setup-socket!"]]
-                       ["[]" "app.schema" ":as" "schema"]]],
+                       ["[]" "app.schema" ":as" "schema"]
+                       ["[]" "app.util.dom" ":refer" ["[]" "focus!"]]]],
                  :defs {"ssr?" ["def" "ssr?" ["some?" [".querySelector" "js/document" "|meta.respo-ssr"]]],
                         "dispatch!" ["defn"
                                      "dispatch!"
@@ -361,7 +384,7 @@
                                      ["reset!" "*store" "nil"]
                                      [".error" "js/console" "|Lost connection!"]]]
                                    [":on-open!" ["fn" ["event"] ["simulate-login!"]]]]]
-                                 ["add-watch" "*store" ":changes" ["fn" [] ["render-app!" "render!"]]]
+                                 ["add-watch" "*store" ":changes" ["fn" [] ["render-app!" "render!"] ["focus!"]]]
                                  ["add-watch" "*states" ":changes" ["fn" [] ["render-app!" "render!"]]]
                                  ["println" "|App started!"]],
                         "*states" ["defonce" "*states" ["atom" ["{}"]]],
@@ -849,10 +872,11 @@
                             ["[]" "app.comp.leaf" ":refer" ["[]" "comp-leaf"]]]],
                       :defs {"comp-expr" ["defcomp"
                                           "comp-expr"
-                                          ["states" "expr" "coord"]
+                                          ["states" "expr" "focus" "coord"]
                                           ["div"
                                            ["{}"
                                             [":tab-index" "0"]
+                                            [":class-name" ["if" ["=" "focus" "coord"] "|cirru-focused" "nil"]]
                                             [":style" "style-expr"]
                                             [":on" ["{}" [":keydown" "on-keydown"] [":click" ["on-focus" "coord"]]]]]
                                            ["->>"
@@ -867,8 +891,20 @@
                                                 "k"
                                                 ["if"
                                                  ["=" ":leaf" [":type" "child"]]
-                                                 ["cursor->" "k" "comp-leaf" "states" "child" ["conj" "coord" "k"]]
-                                                 ["cursor->" "k" "comp-expr" "states" "child" ["conj" "coord" "k"]]]]]]]]]],
+                                                 ["cursor->"
+                                                  "k"
+                                                  "comp-leaf"
+                                                  "states"
+                                                  "child"
+                                                  "focus"
+                                                  ["conj" "coord" "k"]]
+                                                 ["cursor->"
+                                                  "k"
+                                                  "comp-expr"
+                                                  "states"
+                                                  "child"
+                                                  "focus"
+                                                  ["conj" "coord" "k"]]]]]]]]]],
                              "style-expr" ["def"
                                            "style-expr"
                                            ["{}"

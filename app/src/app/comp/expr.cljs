@@ -31,9 +31,12 @@
 
 (defcomp
  comp-expr
- (states expr coord)
+ (states expr focus coord)
  (div
-  {:tab-index 0, :style style-expr, :on {:keydown on-keydown, :click (on-focus coord)}}
+  {:tab-index 0,
+   :class-name (if (= focus coord) "cirru-focused" nil),
+   :style style-expr,
+   :on {:keydown on-keydown, :click (on-focus coord)}}
   (->> (:data expr)
        (sort-by first)
        (map
@@ -41,5 +44,5 @@
           (let [[k child] entry]
             [k
              (if (= :leaf (:type child))
-               (cursor-> k comp-leaf states child (conj coord k))
-               (cursor-> k comp-expr states child (conj coord k)))]))))))
+               (cursor-> k comp-leaf states child focus (conj coord k))
+               (cursor-> k comp-expr states child focus (conj coord k)))]))))))

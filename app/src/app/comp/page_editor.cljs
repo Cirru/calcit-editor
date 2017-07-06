@@ -27,5 +27,5 @@
    (->> stack (map-indexed (fn [idx bookmark] [idx (comp-bookmark bookmark idx)]))))
   (div
    {:style style-editor}
-   (cursor-> :root comp-expr states router-data [])
+   (cursor-> :root comp-expr states (:expr router-data) (:focus router-data) [])
    (comp-inspect "Expr" router-data style/inspector))))
