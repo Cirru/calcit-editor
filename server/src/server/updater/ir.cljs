@@ -19,7 +19,7 @@
   (let [selected-ns (get-in db [:sessions session-id :writer :selected-ns])]
     (update-in db [:ir :files selected-ns :defs] (fn [defs] (dissoc defs op-data)))))
 
-(defn delete-leaf [db op-data session-id op-id op-time]
+(defn delete-node [db op-data session-id op-id op-time]
   (let [writer (get-in db [:sessions session-id :writer])
         bookmark (get (:stack writer) (:pointer writer))
         parent-bookmark (update bookmark :focus butlast)
@@ -94,3 +94,14 @@
         (update-in
          [:sessions session-id :writer :stack pointer :focus]
          (fn [focus] (vec (concat (butlast focus) [bisection/mid-id (last focus)])))))))
+
+(defn update-leaf [db op-data session-id op-id op-time]
+  (let [writer (get-in db [:sessions session-id :writer])
+        bookmark (get (:stack writer) (:pointer writer))
+        data-path (bookmark->path bookmark)]
+    (-> db
+        (update-in
+         data-path
+         (fn [leaf]
+           (println "chaning leaf:" leaf data-path op-data)
+           (assoc leaf :text op-data))))))

@@ -32,7 +32,7 @@
      (reset! *reader-db @*writer-db)
      (comment println "render loop")
      (render-clients! @*reader-db)))
-  (js/setTimeout render-loop! 300))
+  (js/setTimeout render-loop! 100))
 
 (defn main! []
   (println "Loading configs:" (pr-str schema/configs))

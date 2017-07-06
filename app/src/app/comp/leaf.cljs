@@ -30,7 +30,7 @@
     (let [event (:original-event e), code (:key-code e), shift? (.-shiftKey event)]
       (cond
         (= code keycode/delete)
-          (if (and (= "" (:text leaf)) (= "" (:text state))) (d! :ir/delete-leaf nil))
+          (if (and (= "" (:text leaf)) (= "" (:text state))) (d! :ir/delete-node nil))
         (and (not shift?) (= code keycode/space))
           (do (d! :ir/leaf-after nil) (.preventDefault event))
         (= code keycode/tab)
@@ -38,7 +38,9 @@
         :else (println "Keydown leaf" code)))))
 
 (defn on-input [state coord]
-  (fn [e d! m!] (m! (assoc state :text (:value e) :time (util/now!)))))
+  (fn [e d! m!]
+    (d! :ir/update-leaf (:value e))
+    (m! (assoc state :text (:value e) :time (util/now!)))))
 
 (def initial-state {:text "", :time 0})
 

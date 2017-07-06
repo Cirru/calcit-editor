@@ -104,6 +104,8 @@
                         "bookmark->path" ["defn"
                                           "bookmark->path"
                                           ["bookmark"]
+                                          ["assert" ["map?" "bookmark"] "|Bookmark should be data"]
+                                          ["assert" ["contains?" "kinds" [":kind" "bookmark"]] "|invalid bookmark type"]
                                           ["if"
                                            ["=" ":def" [":kind" "bookmark"]]
                                            ["concat"
@@ -112,7 +114,8 @@
                                            ["concat"
                                             ["[]" ":ir" ":files" [":ns" "bookmark"] ":ns"]
                                             ["mapcat" "prepend-data" [":focus" "bookmark"]]]]],
-                        "prepend-data" ["defn" "prepend-data" ["x"] ["[]" ":data" "x"]]},
+                        "prepend-data" ["defn" "prepend-data" ["x"] ["[]" ":data" "x"]],
+                        "kinds" ["def" "kinds" ["#{}" ":ns" ":def" ":proc"]]},
                  :procs []},
          "schema" {:ns ["ns" "server.schema"],
                    :defs {"ir-file" ["def" "ir-file" ["{}" [":pkg" "|app"] [":files" ["{}"]]]],
@@ -346,7 +349,7 @@
                                           ["reset!" "*reader-db" "@*writer-db"]
                                           ["--" "println" "|render loop"]
                                           ["render-clients!" "@*reader-db"]]]
-                                        ["js/setTimeout" "render-loop!" "300"]],
+                                        ["js/setTimeout" "render-loop!" "100"]],
                         "*reader-db" ["defonce" "*reader-db" ["atom" "@*writer-db"]]},
                  :procs []},
          "network" {:ns ["ns"
@@ -504,11 +507,13 @@
                                              ["ir/remove-def" "db" "op-data" "session-id" "op-id" "op-time"]]
                                             [":ir/append-leaf"
                                              ["ir/append-leaf" "db" "op-data" "session-id" "op-id" "op-time"]]
-                                            [":ir/delete-leaf"
-                                             ["ir/delete-leaf" "db" "op-data" "session-id" "op-id" "op-time"]]
+                                            [":ir/delete-node"
+                                             ["ir/delete-node" "db" "op-data" "session-id" "op-id" "op-time"]]
                                             [":ir/leaf-after"
                                              ["ir/leaf-after" "db" "op-data" "session-id" "op-id" "op-time"]]
                                             [":ir/indent" ["ir/indent" "db" "op-data" "session-id" "op-id" "op-time"]]
+                                            [":ir/update-leaf"
+                                             ["ir/update-leaf" "db" "op-data" "session-id" "op-id" "op-time"]]
                                             "db"]]},
                          :procs []},
          "twig.page-editor" {:ns ["ns"
@@ -574,7 +579,7 @@
                                               ["[]" ":ir" ":files" "selected-ns" ":defs"]
                                               ["fn" ["defs"] ["dissoc" "defs" "op-data"]]]]],
                               "delete-leaf" ["defn"
-                                             "delete-leaf"
+                                             "delete-node"
                                              ["db" "op-data" "session-id" "op-id" "op-time"]
                                              ["let"
                                               [["writer" ["get-in" "db" ["[]" ":sessions" "session-id" ":writer"]]]
@@ -708,5 +713,20 @@
                                            ["fn"
                                             ["focus"]
                                             ["vec"
-                                             ["concat" ["butlast" "focus"] ["[]" "bisection/mid-id" ["last" "focus"]]]]]]]]]},
+                                             ["concat" ["butlast" "focus"] ["[]" "bisection/mid-id" ["last" "focus"]]]]]]]]],
+                              "update-leaf" ["defn"
+                                             "update-leaf"
+                                             ["db" "op-data" "session-id" "op-id" "op-time"]
+                                             ["let"
+                                              [["writer" ["get-in" "db" ["[]" ":sessions" "session-id" ":writer"]]]
+                                               ["bookmark" ["get" [":stack" "writer"] [":pointer" "writer"]]]
+                                               ["data-path" ["bookmark->path" "bookmark"]]]
+                                              ["->"
+                                               "db"
+                                               ["update-in"
+                                                "data-path"
+                                                ["fn"
+                                                 ["leaf"]
+                                                 ["println" "|chaning leaf:" "leaf" "data-path" "op-data"]
+                                                 ["assoc" "leaf" ":text" "op-data"]]]]]]},
                        :procs []}}}
