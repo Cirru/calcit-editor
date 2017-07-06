@@ -71,18 +71,37 @@
                                             ["let"
                                              [["event" [":original-event" "e"]]
                                               ["code" [":key-code" "e"]]
-                                              ["shift?" [".-shiftKey" "event"]]]
+                                              ["shift?" [".-shiftKey" "event"]]
+                                              ["text"
+                                               ["if"
+                                                [">" [":time" "state"] [":time" "leaf"]]
+                                                [":text" "state"]
+                                                [":text" "leaf"]]]
+                                              ["text-length" ["count" "text"]]]
                                              ["cond"
                                               [["=" "code" "keycode/delete"]
-                                               ["if"
-                                                ["and" ["=" "|" [":text" "leaf"]] ["=" "|" [":text" "state"]]]
-                                                ["d!" ":ir/delete-node" "nil"]]]
+                                               ["if" ["and" ["=" "|" "text"]] ["d!" ":ir/delete-node" "nil"]]]
                                               [["and" ["not" "shift?"] ["=" "code" "keycode/space"]]
                                                ["do" ["d!" ":ir/leaf-after" "nil"] [".preventDefault" "event"]]]
                                               [["=" "code" "keycode/tab"]
                                                ["do"
                                                 ["d!" ["if" "shift?" ":ir/unindent-leaf" ":ir/indent"] "nil"]
                                                 [".preventDefault" "event"]]]
+                                              [["=" "code" "keycode/up"]
+                                               ["do"
+                                                ["if" ["not" ["empty?" "coord"]] ["d!" ":writer/go-up" "nil"]]
+                                                [".preventDefault" "event"]]]
+                                              [["=" "code" "keycode/left"]
+                                               ["if"
+                                                ["zero?" "event.target.selectionStart"]
+                                                ["do" ["d!" ":writer/go-left" "nil"] [".preventDefault" "event"]]]]
+                                              [["=" "code" "keycode/right"]
+                                               ["if"
+                                                ["=" "text-length" "event.target.selectionEnd"]
+                                                ["do"
+                                                 ["println" "text-length"]
+                                                 ["d!" ":writer/go-right" "nil"]
+                                                 [".preventDefault" "event"]]]]
                                               [":else" ["println" "|Keydown leaf" "code"]]]]]],
                              "on-input" ["defn"
                                          "on-input"
@@ -181,7 +200,11 @@
                          :defs {"enter" ["def" "enter" "13"],
                                 "delete" ["def" "delete" "8"],
                                 "space" ["def" "space" "32"],
-                                "tab" ["def" "tab" "9"]},
+                                "tab" ["def" "tab" "9"],
+                                "up" ["def" "up" "38"],
+                                "down" ["def" "down" "40"],
+                                "left" ["def" "left" "37"],
+                                "right" ["def" "right" "39"]},
                          :procs []},
          "comp.page-editor" {:ns ["ns"
                                   "app.comp.page-editor"
@@ -893,7 +916,8 @@
                                               ["merge"
                                                "style-expr"
                                                ["if" "focused?" ["{}" [":border-color" ["hsl" "0" "0" "100" "0.9"]]]]]]
-                                             [":on" ["{}" [":keydown" "on-keydown"] [":click" ["on-focus" "coord"]]]]]
+                                             [":on"
+                                              ["{}" [":keydown" ["on-keydown" "coord"]] [":click" ["on-focus" "coord"]]]]]
                                             ["->>"
                                              [":data" "expr"]
                                              ["sort-by" "first"]
@@ -934,22 +958,34 @@
                                             [":margin" "2"]]],
                              "on-keydown" ["defn"
                                            "on-keydown"
-                                           ["e" "d!" "m!"]
-                                           ["let"
-                                            [["event" [":original-event" "e"]]
-                                             ["shift?" [".-shiftKey" "event"]]
-                                             ["meta?" [".-metaKey" "event"]]
-                                             ["ctrl?" [".-ctrlKey" "event"]]
-                                             ["code" [":key-code" "e"]]]
-                                            ["cond"
-                                             [["=" "code" "keycode/enter"] ["d!" ":ir/append-leaf" "nil"]]
-                                             [["=" "code" "keycode/delete"] ["d!" ":ir/delete-node" "nil"]]
-                                             [["=" "code" "keycode/space"] ["d!" ":ir/leaf-after" "nil"]]
-                                             [["=" "code" "keycode/tab"]
-                                              ["do"
-                                               ["d!" ["if" "shift?" ":ir/unindent" ":ir/indent"] "nil"]
-                                               [".preventDefault" "event"]]]
-                                             [":else" ["println" "|Keydown" [":key-code" "e"]]]]]],
+                                           ["coord"]
+                                           ["fn"
+                                            ["e" "d!" "m!"]
+                                            ["let"
+                                             [["event" [":original-event" "e"]]
+                                              ["shift?" [".-shiftKey" "event"]]
+                                              ["meta?" [".-metaKey" "event"]]
+                                              ["ctrl?" [".-ctrlKey" "event"]]
+                                              ["code" [":key-code" "e"]]]
+                                             ["cond"
+                                              [["=" "code" "keycode/enter"] ["d!" ":ir/append-leaf" "nil"]]
+                                              [["=" "code" "keycode/delete"] ["d!" ":ir/delete-node" "nil"]]
+                                              [["=" "code" "keycode/space"] ["d!" ":ir/leaf-after" "nil"]]
+                                              [["=" "code" "keycode/tab"]
+                                               ["do"
+                                                ["d!" ["if" "shift?" ":ir/unindent" ":ir/indent"] "nil"]
+                                                [".preventDefault" "event"]]]
+                                              [["=" "code" "keycode/up"]
+                                               ["do"
+                                                ["if" ["not" ["empty?" "coord"]] ["d!" ":writer/go-up" "nil"]]
+                                                [".preventDefault" "event"]]]
+                                              [["=" "code" "keycode/down"]
+                                               ["do" ["d!" ":writer/go-down" "nil"] [".preventDefault" "event"]]]
+                                              [["=" "code" "keycode/left"]
+                                               ["do" ["d!" ":writer/go-left" "nil"] [".preventDefault" "event"]]]
+                                              [["=" "code" "keycode/right"]
+                                               ["do" ["d!" ":writer/go-right" "nil"] [".preventDefault" "event"]]]
+                                              [":else" ["println" "|Keydown" [":key-code" "e"]]]]]]],
                              "on-focus" ["defn"
                                          "on-focus"
                                          ["coord"]

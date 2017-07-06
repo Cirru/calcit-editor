@@ -20,6 +20,8 @@
     :writer/edit (writer/edit db op-data session-id op-id op-time)
     :writer/point-to (writer/point-to db op-data session-id op-id op-time)
     :writer/focus (writer/focus db op-data session-id op-id op-time)
+    :writer/go-up (writer/go-up db op-data session-id op-id op-time)
+    :writer/go-down (writer/go-down db op-data session-id op-id op-time)
     :ir/add-ns (ir/add-ns db op-data session-id op-id op-time)
     :ir/add-def (ir/add-def db op-data session-id op-id op-time)
     :ir/remove-def (ir/remove-def db op-data session-id op-id op-time)

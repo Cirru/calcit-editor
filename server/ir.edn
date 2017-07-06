@@ -46,7 +46,9 @@
                                                             "nil"]]]]
                                                         ["{}" [":session" "session"] [":logged-in?" "false"]]]]]]]},
                            :procs []},
-         "updater.writer" {:ns ["ns" "server.updater.writer"],
+         "updater.writer" {:ns ["ns"
+                                "server.updater.writer"
+                                [":require" ["[]" "server.util" ":refer" ["[]" "bookmark->path"]]]],
                            :defs {"edit" ["defn"
                                           "edit"
                                           ["db" "op-data" "session-id" "op-id" "op-time"]
@@ -92,7 +94,45 @@
                                               ":stack"
                                               [":pointer" "writer"]
                                               ":focus"]
-                                             "op-data"]]]},
+                                             "op-data"]]],
+                                  "go-up" ["defn"
+                                           "go-up"
+                                           ["db" "op-data" "session-id" "op-id" "op-time"]
+                                           ["->"
+                                            "db"
+                                            ["update-in"
+                                             ["[]" ":sessions" "session-id" ":writer"]
+                                             ["fn"
+                                              ["writer"]
+                                              ["update-in"
+                                               "writer"
+                                               ["[]" ":stack" [":pointer" "writer"] ":focus"]
+                                               ["fn"
+                                                ["focus"]
+                                                ["if" ["empty?" "focus"] "focus" ["vec" ["butlast" "focus"]]]]]]]]],
+                                  "go-down" ["defn"
+                                             "go-down"
+                                             ["db" "op-data" "session-id" "op-id" "op-time"]
+                                             ["let"
+                                              [["writer" ["get-in" "db" ["[]" ":sessions" "session-id" ":writer"]]]
+                                               ["bookmark" ["get" [":stack" "writer"] [":pointer" "writer"]]]
+                                               ["target-expr" ["get-in" "db" ["bookmark->path" "bookmark"]]]]
+                                              ["if"
+                                               ["zero?" ["count" [":data" "target-expr"]]]
+                                               "db"
+                                               ["->"
+                                                "db"
+                                                ["update-in"
+                                                 ["[]"
+                                                  ":sessions"
+                                                  "session-id"
+                                                  ":writer"
+                                                  ":stack"
+                                                  [":pointer" "writer"]
+                                                  ":focus"]
+                                                 ["fn"
+                                                  ["focus"]
+                                                  ["conj" "focus" ["apply" "min" ["keys" [":data" "target-expr"]]]]]]]]]]},
                            :procs []},
          "util" {:ns ["ns" "server.util"],
                  :defs {"find-first" ["defn"
@@ -501,6 +541,10 @@
                                              ["writer/point-to" "db" "op-data" "session-id" "op-id" "op-time"]]
                                             [":writer/focus"
                                              ["writer/focus" "db" "op-data" "session-id" "op-id" "op-time"]]
+                                            [":writer/go-up"
+                                             ["writer/go-up" "db" "op-data" "session-id" "op-id" "op-time"]]
+                                            [":writer/go-down"
+                                             ["writer/go-down" "db" "op-data" "session-id" "op-id" "op-time"]]
                                             [":ir/add-ns" ["ir/add-ns" "db" "op-data" "session-id" "op-id" "op-time"]]
                                             [":ir/add-def" ["ir/add-def" "db" "op-data" "session-id" "op-id" "op-time"]]
                                             [":ir/remove-def"

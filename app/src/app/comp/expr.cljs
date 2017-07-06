@@ -20,19 +20,25 @@
    :font-size 14,
    :margin 2})
 
-(defn on-keydown [e d! m!]
-  (let [event (:original-event e)
-        shift? (.-shiftKey event)
-        meta? (.-metaKey event)
-        ctrl? (.-ctrlKey event)
-        code (:key-code e)]
-    (cond
-      (= code keycode/enter) (d! :ir/append-leaf nil)
-      (= code keycode/delete) (d! :ir/delete-node nil)
-      (= code keycode/space) (d! :ir/leaf-after nil)
-      (= code keycode/tab)
-        (do (d! (if shift? :ir/unindent :ir/indent) nil) (.preventDefault event))
-      :else (println "Keydown" (:key-code e)))))
+(defn on-keydown [coord]
+  (fn [e d! m!]
+    (let [event (:original-event e)
+          shift? (.-shiftKey event)
+          meta? (.-metaKey event)
+          ctrl? (.-ctrlKey event)
+          code (:key-code e)]
+      (cond
+        (= code keycode/enter) (d! :ir/append-leaf nil)
+        (= code keycode/delete) (d! :ir/delete-node nil)
+        (= code keycode/space) (d! :ir/leaf-after nil)
+        (= code keycode/tab)
+          (do (d! (if shift? :ir/unindent :ir/indent) nil) (.preventDefault event))
+        (= code keycode/up)
+          (do (if (not (empty? coord)) (d! :writer/go-up nil)) (.preventDefault event))
+        (= code keycode/down) (do (d! :writer/go-down nil) (.preventDefault event))
+        (= code keycode/left) (do (d! :writer/go-left nil) (.preventDefault event))
+        (= code keycode/right) (do (d! :writer/go-right nil) (.preventDefault event))
+        :else (println "Keydown" (:key-code e))))))
 
 (defn on-focus [coord] (fn [e d! m!] (d! :writer/focus coord)))
 
@@ -44,7 +50,7 @@
     {:tab-index 0,
      :class-name (if focused? "cirru-focused" nil),
      :style (merge style-expr (if focused? {:border-color (hsl 0 0 100 0.9)})),
-     :on {:keydown on-keydown, :click (on-focus coord)}}
+     :on {:keydown (on-keydown coord), :click (on-focus coord)}}
     (->> (:data expr)
          (sort-by first)
          (map
