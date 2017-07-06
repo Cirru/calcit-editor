@@ -4,7 +4,7 @@
   "description": "Stack Workflow",
   "main": "index.js",
   "scripts": {
-    "tiye": "rsync -r dist/ tiye.me:repo/Cumulo/workflow",
+    "tiye": "rsync -r dist/ tiye.me:repo/Cirru/cumulo-editor",
     "release": "shadow-cljs release browser",
     "watch": "shadow-cljs watch browser",
     "compile-ssr": "shadow-cljs compile ssr",

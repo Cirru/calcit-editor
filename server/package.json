@@ -4,8 +4,9 @@
   "description": "Boot Workflow ----",
   "main": "index.js",
   "scripts": {
-    "tiye": "rsync -r dist/main.js repo.tiye.me:servers/tiye",
+    "tiye": "rsync -r target/main.js tiye.me:repo/Cirru/cumulo-editor-server/",
     "compile": "shadow-cljs compile app",
+    "build": "shadow-cljs release app",
     "watch": "shadow-cljs watch app",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
