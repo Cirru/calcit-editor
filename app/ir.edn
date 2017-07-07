@@ -1,6 +1,38 @@
 {:package "app",
  :root {:ns "main", :def "main!"},
- :files {"comp.leaf" {:ns ["ns"
+ :files {"comp.changed-files" {:ns ["ns"
+                                    "app.comp.changed-files"
+                                    [":require-macros"
+                                     ["[]" "respo.macros" ":refer" ["[]" "defcomp" "<>" "span" "div" "pre" "input" "a"]]]
+                                    [":require"
+                                     ["[]" "clojure.string" ":as" "string"]
+                                     ["[]" "hsl.core" ":refer" ["[]" "hsl"]]
+                                     ["[]" "respo-ui.style" ":as" "ui"]
+                                     ["[]" "respo-ui.style.colors" ":as" "colors"]
+                                     ["[]" "respo.core" ":refer" ["[]" "create-comp"]]
+                                     ["[]" "respo.comp.space" ":refer" ["[]" "=<"]]
+                                     ["[]" "app.util" ":as" "util"]
+                                     ["[]" "app.style" ":as" "style"]
+                                     ["[]" "app.comp.changed-info" ":refer" ["[]" "comp-changed-info"]]]],
+                               :defs {"comp-changed-files" ["defcomp"
+                                                            "comp-changed-files"
+                                                            ["states" "changed-files"]
+                                                            ["div"
+                                                             ["{}"]
+                                                             ["<>" "div" "|Changed" "style/title"]
+                                                             ["div"
+                                                              ["{}"]
+                                                              ["->>"
+                                                               "changed-files"
+                                                               ["map"
+                                                                ["fn"
+                                                                 ["entry"]
+                                                                 ["let"
+                                                                  [[["[]" "k" "info"] "entry"]]
+                                                                  ["[]" "k" ["comp-changed-info" "info" "k"]]]]]]]
+                                                             ["div" ["{}"] ["<>" "span" "|Footer" "nil"]]]]},
+                               :procs []},
+         "comp.leaf" {:ns ["ns"
                            "app.comp.leaf"
                            [":require-macros"
                             ["[]" "respo.macros" ":refer" ["[]" "defcomp" "<>" "span" "div" "input" "a"]]]
@@ -420,6 +452,58 @@
                                                       [":color" ":black"]
                                                       [":opacity" "1"]]]},
                            :procs []},
+         "comp.changed-info" {:ns ["ns"
+                                   "app.comp.changed-info"
+                                   [":require-macros"
+                                    ["[]"
+                                     "respo.macros"
+                                     ":refer"
+                                     ["[]" "defcomp" "cursor->" "<>" "span" "div" "pre" "input" "button" "a"]]]
+                                   [":require"
+                                    ["[]" "clojure.string" ":as" "string"]
+                                    ["[]" "hsl.core" ":refer" ["[]" "hsl"]]
+                                    ["[]" "respo-ui.style" ":as" "ui"]
+                                    ["[]" "respo-ui.style.colors" ":as" "colors"]
+                                    ["[]" "respo.core" ":refer" ["[]" "create-comp"]]
+                                    ["[]" "respo.comp.space" ":refer" ["[]" "=<"]]
+                                    ["[]" "app.style" ":as" "style"]]],
+                              :defs {"comp-changed-info" ["defcomp"
+                                                          "comp-changed-info"
+                                                          ["info" "ns-text"]
+                                                          ["div"
+                                                           ["{}"]
+                                                           ["div"
+                                                            ["{}"]
+                                                            ["<>" "span" "ns-text" "nil"]
+                                                            ["=<" "24" "nil"]
+                                                            ["render-status" "|ns" [":ns" "info"]]
+                                                            ["=<" "8" "nil"]
+                                                            ["render-status" "|proc" [":proc" "info"]]]
+                                                           ["div"
+                                                            ["{}" [":style" "style-defs"]]
+                                                            ["->>"
+                                                             [":defs" "info"]
+                                                             ["map"
+                                                              ["fn"
+                                                               ["entry"]
+                                                               ["let"
+                                                                [[["[]" "def-text" "status"] "entry"]]
+                                                                ["[]"
+                                                                 "def-text"
+                                                                 ["div" ["{}"] ["render-status" "def-text" "status"]]]]]]]]]],
+                                     "style-defs" ["def" "style-defs" ["{}" [":padding-left" "16"]]],
+                                     "render-status" ["defn"
+                                                      "render-status"
+                                                      ["kind" "status"]
+                                                      ["span"
+                                                       ["{}"]
+                                                       ["<>" "span" "kind" "nil"]
+                                                       ["=<" "8" "nil"]
+                                                       ["<>" "span" "status" "style-status"]]],
+                                     "style-status" ["def"
+                                                     "style-status"
+                                                     ["{}" [":font-size" "12"] [":font-family" "|Josefin Sans"]]]},
+                              :procs []},
          "util.dom" {:ns ["ns" "app.util.dom"],
                      :defs {"focus!" ["defn"
                                       "focus!"
@@ -636,7 +720,7 @@
                                   ["[]"
                                    "respo.macros"
                                    ":refer"
-                                   ["[]" "defcomp" "<>" "span" "div" "pre" "input" "button" "a"]]]
+                                   ["[]" "defcomp" "cursor->" "<>" "span" "div" "pre" "input" "button" "a"]]]
                                  [":require"
                                   ["[]" "clojure.string" ":as" "string"]
                                   ["[]" "hsl.core" ":refer" ["[]" "hsl"]]
@@ -645,7 +729,8 @@
                                   ["[]" "respo.core" ":refer" ["[]" "create-comp"]]
                                   ["[]" "respo.comp.inspect" ":refer" ["[]" "comp-inspect"]]
                                   ["[]" "respo.comp.space" ":refer" ["[]" "=<"]]
-                                  ["[]" "app.style" ":as" "style"]]],
+                                  ["[]" "app.style" ":as" "style"]
+                                  ["[]" "app.comp.changed-files" ":refer" ["[]" "comp-changed-files"]]]],
                             :defs {"on-add" ["defn"
                                              "on-add"
                                              ["state"]
@@ -670,7 +755,7 @@
                                                   "render-file"
                                                   ["state" "selected-ns" "defs-set"]
                                                   ["div"
-                                                   ["{}" [":style" "ui/flex"]]
+                                                   ["{}" [":style" "style-file"]]
                                                    ["div"
                                                     ["{}"]
                                                     ["<>" "span" "|File" "style/title"]
@@ -764,6 +849,11 @@
                                                           "selected-ns"
                                                           [":defs-set" "router-data"]]
                                                          ["render-empty"]]
+                                                        ["cursor->"
+                                                         ":files"
+                                                         "comp-changed-files"
+                                                         "states"
+                                                         [":changed-files" "router-data"]]
                                                         ["--" "comp-inspect" "selected-ns" "nil" "style-inspect"]]]],
                                    "render-empty" ["defn" "render-empty" [] ["div" ["{}"] ["<>" "span" "|Empty" "nil"]]],
                                    "initial-state" ["def" "initial-state" ["{}" [":ns-text" "|"] [":def-text" "|"]]],
@@ -847,7 +937,8 @@
                                                   ["text"]
                                                   ["fn"
                                                    ["e" "d!" "m!"]
-                                                   ["d!" ":writer/edit" ["{}" [":kind" ":def"] [":extra" "text"]]]]]},
+                                                   ["d!" ":writer/edit" ["{}" [":kind" ":def"] [":extra" "text"]]]]],
+                                   "style-file" ["def" "style-file" ["{}" [":width" "360"]]]},
                             :procs []},
          "render" {:ns ["ns"
                         "app.render"
@@ -907,34 +998,16 @@
                               ["[]" "respo-ui.style.colors" ":as" "colors"]
                               ["[]" "respo.core" ":refer" ["[]" "create-comp"]]
                               ["[]" "respo.comp.space" ":refer" ["[]" "=<"]]]],
-                        :defs {"on-profile" ["defn"
+                        :defs {"on-search" ["defn"
+                                            "on-search"
+                                            ["e" "d!" "m!"]
+                                            ["d!" ":router/change" ["{}" [":name" ":search"]]]],
+                               "on-profile" ["defn"
                                              "on-profile"
                                              ["e" "dispatch!"]
                                              ["dispatch!"
                                               ":router/change"
                                               ["{}" [":name" ":profile"] [":data" "nil"] [":router" "nil"]]]],
-                               "comp-header" ["defcomp"
-                                              "comp-header"
-                                              ["logged-in?"]
-                                              ["div"
-                                               ["{}" [":style" ["merge" "ui/row-center" "style-header"]]]
-                                               ["div"
-                                                ["{}" [":style" "ui/row"]]
-                                                ["div"
-                                                 ["{}" [":on" ["{}" [":click" "on-files"]]] [":style" "style-entry"]]
-                                                 ["<>" "span" "|Files" "nil"]]
-                                                ["=<" "8" "nil"]
-                                                ["div"
-                                                 ["{}" [":on" ["{}" [":click" "on-editor"]]] [":style" "style-entry"]]
-                                                 ["<>" "span" "|Editor" "nil"]]
-                                                ["=<" "8" "nil"]
-                                                ["div"
-                                                 ["{}" [":on" ["{}" [":click" "on-members"]]] [":style" "style-entry"]]
-                                                 ["<>" "span" "|Members" "nil"]]]
-                                               ["div"
-                                                ["{}" [":style" "style-pointer"] [":on" ["{}" [":click" "on-profile"]]]]
-                                                ["<>" "span" ["if" "logged-in?" "|Me" "|Guest"] "nil"]]]],
-                               "style-pointer" ["def" "style-pointer" ["{}" [":cursor" "|pointer"]]],
                                "style-header" ["def"
                                                "style-header"
                                                ["{}"
@@ -947,7 +1020,6 @@
                                                 [":font-family" "|Josefin Sans"]
                                                 [":font-weight" "100"]
                                                 [":font-size" "20"]]],
-                               "style-entry" ["def" "style-entry" ["{}" [":cursor" ":pointer"] [":width" "80"]]],
                                "on-files" ["defn"
                                            "on-files"
                                            ["e" "dispatch!" "m!"]
@@ -956,10 +1028,34 @@
                                             "on-editor"
                                             ["e" "d!" "m!"]
                                             ["d!" ":router/change" ["{}" [":name" ":editor"]]]],
+                               "style-pointer" ["def" "style-pointer" ["{}" [":cursor" "|pointer"]]],
+                               "comp-header" ["defcomp"
+                                              "comp-header"
+                                              ["logged-in?"]
+                                              ["div"
+                                               ["{}" [":style" ["merge" "ui/row-center" "style-header"]]]
+                                               ["div"
+                                                ["{}" [":style" "ui/row"]]
+                                                ["div"
+                                                 ["{}" [":on" ["{}" [":click" "on-files"]]] [":style" "style-entry"]]
+                                                 ["<>" "span" "|Files" "nil"]]
+                                                ["div"
+                                                 ["{}" [":on" ["{}" [":click" "on-editor"]]] [":style" "style-entry"]]
+                                                 ["<>" "span" "|Editor" "nil"]]
+                                                ["div"
+                                                 ["{}" [":on" ["{}" [":click" "on-search"]]] [":style" "style-entry"]]
+                                                 ["<>" "span" "|Search" "nil"]]
+                                                ["div"
+                                                 ["{}" [":on" ["{}" [":click" "on-members"]]] [":style" "style-entry"]]
+                                                 ["<>" "span" "|Members" "nil"]]]
+                                               ["div"
+                                                ["{}" [":style" "style-pointer"] [":on" ["{}" [":click" "on-profile"]]]]
+                                                ["<>" "span" ["if" "logged-in?" "|Me" "|Guest"] "nil"]]]],
                                "on-members" ["defn"
                                              "on-members"
                                              ["e" "d!" "m!"]
-                                             ["d!" ":router/change" ["{}" [":name" ":members"]]]]},
+                                             ["d!" ":router/change" ["{}" [":name" ":members"]]]],
+                               "style-entry" ["def" "style-entry" ["{}" [":cursor" ":pointer"] [":width" "80"]]]},
                         :procs []},
          "comp.page-members" {:ns ["ns"
                                    "app.comp.page-members"

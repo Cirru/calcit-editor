@@ -1,6 +1,6 @@
 
 (ns app.comp.page-files
-  (:require-macros [respo.macros :refer [defcomp <> span div pre input button a]])
+  (:require-macros [respo.macros :refer [defcomp cursor-> <> span div pre input button a]])
   (:require [clojure.string :as string]
             [hsl.core :refer [hsl]]
             [respo-ui.style :as ui]
@@ -8,7 +8,8 @@
             [respo.core :refer [create-comp]]
             [respo.comp.inspect :refer [comp-inspect]]
             [respo.comp.space :refer [=<]]
-            [app.style :as style]))
+            [app.style :as style]
+            [app.comp.changed-files :refer [comp-changed-files]]))
 
 (defn on-add [state]
   (fn [e d! m!]
@@ -39,9 +40,11 @@
 
 (defn on-edit-def [text] (fn [e d! m!] (d! :writer/edit {:kind :def, :extra text})))
 
+(def style-file {:width 360})
+
 (defn render-file [state selected-ns defs-set]
   (div
-   {:style ui/flex}
+   {:style style-file}
    (div {} (<> span "File" style/title) (=< 16 nil) (<> span selected-ns nil))
    (div
     {}
@@ -125,4 +128,5 @@
     (if (some? selected-ns)
       (render-file state selected-ns (:defs-set router-data))
       (render-empty))
+    (cursor-> :files comp-changed-files states (:changed-files router-data))
     (comment comp-inspect selected-ns nil style-inspect))))

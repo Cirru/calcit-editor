@@ -10,17 +10,19 @@
 
 (defonce *writer-db
   (atom
-   (let [fs (js/require "fs"), filepath (:storage-key schema/configs)]
-     (enable-console-print!)
-     (if (fs.existsSync filepath)
-       (do (println "Found storage.") (read-string (fs.readFileSync filepath "utf8")))
-       (do (println "Found no storage.") schema/database)))))
+   (let [fs (js/require "fs")
+         filepath (:storage-key schema/configs)
+         db (if (fs.existsSync filepath)
+              (do (println "Found storage.") (read-string (fs.readFileSync filepath "utf8")))
+              (do (println "Found no storage.") schema/database))]
+     (assoc db :saved-files (get-in db [:ir :files])))))
 
 (defn persist! []
   (let [fs (js/require "fs")]
     (fs.writeFileSync
      (:storage-key schema/configs)
-     (with-out-str (fipp/pprint (assoc @*writer-db :sessions {}))))))
+     (with-out-str
+      (fipp/pprint (-> @*writer-db (assoc :sessions {}) (assoc :saved-files {})))))))
 
 (defonce *reader-db (atom @*writer-db))
 
@@ -32,7 +34,7 @@
      (reset! *reader-db @*writer-db)
      (comment println "render loop")
      (render-clients! @*reader-db)))
-  (js/setTimeout render-loop! 100))
+  (js/setTimeout render-loop! 20))
 
 (defn main! []
   (println "Loading configs:" (pr-str schema/configs))

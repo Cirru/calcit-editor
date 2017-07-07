@@ -13,7 +13,7 @@
 
 (def leaf {:type :leaf, :author nil, :time nil, :text ""})
 
-(def database {:sessions {}, :users {}, :ir ir-file})
+(def database {:sessions {}, :users {}, :ir ir-file, :saved-files {}})
 
 (def router {:name nil, :title nil, :data {}, :router nil})
 
@@ -30,4 +30,5 @@
 (def notification {:id nil, :kind nil, :text nil})
 
 (def page-data
-  {:files {:ns-set #{}, :defs-set #{}}, :editor {:focus [], :others #{}, :expr nil}})
+  {:files {:ns-set #{}, :defs-set #{}, :changed-files {}},
+   :editor {:focus [], :others #{}, :expr nil}})
