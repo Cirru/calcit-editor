@@ -3,7 +3,10 @@
  :files {"comp.changed-files" {:ns ["ns"
                                     "app.comp.changed-files"
                                     [":require-macros"
-                                     ["[]" "respo.macros" ":refer" ["[]" "defcomp" "<>" "span" "div" "pre" "input" "a"]]]
+                                     ["[]"
+                                      "respo.macros"
+                                      ":refer"
+                                      ["[]" "defcomp" "<>" "span" "div" "pre" "input" "button" "a"]]]
                                     [":require"
                                      ["[]" "clojure.string" ":as" "string"]
                                      ["[]" "hsl.core" ":refer" ["[]" "hsl"]]
@@ -30,7 +33,14 @@
                                                                  ["let"
                                                                   [[["[]" "k" "info"] "entry"]]
                                                                   ["[]" "k" ["comp-changed-info" "info" "k"]]]]]]]
-                                                             ["div" ["{}"] ["<>" "span" "|Footer" "nil"]]]]},
+                                                             ["div"
+                                                              ["{}"]
+                                                              ["button"
+                                                               ["{}"
+                                                                [":inner-text" "|Save"]
+                                                                [":style" "style/button"]
+                                                                [":on" ["{}" [":click" "on-save"]]]]]]]],
+                                      "on-save" ["defn" "on-save" ["e" "d!" "m!"] ["d!" ":writer/save-files" "nil"]]},
                                :procs []},
          "comp.leaf" {:ns ["ns"
                            "app.comp.leaf"
@@ -471,7 +481,7 @@
                                                           "comp-changed-info"
                                                           ["info" "ns-text"]
                                                           ["div"
-                                                           ["{}"]
+                                                           ["{}" [":style" "style-info"]]
                                                            ["div"
                                                             ["{}"]
                                                             ["<>" "span" "ns-text" "nil"]
@@ -502,7 +512,13 @@
                                                        ["<>" "span" "status" "style-status"]]],
                                      "style-status" ["def"
                                                      "style-status"
-                                                     ["{}" [":font-size" "12"] [":font-family" "|Josefin Sans"]]]},
+                                                     ["{}" [":font-size" "12"] [":font-family" "|Josefin Sans"]]],
+                                     "style-info" ["def"
+                                                   "style-info"
+                                                   ["{}"
+                                                    [":background-color" ["hsl" "0" "0" "100" "0.1"]]
+                                                    [":padding" "8"]
+                                                    [":margin-bottom" "8"]]]},
                               :procs []},
          "util.dom" {:ns ["ns" "app.util.dom"],
                      :defs {"focus!" ["defn"
@@ -855,7 +871,11 @@
                                                          "states"
                                                          [":changed-files" "router-data"]]
                                                         ["--" "comp-inspect" "selected-ns" "nil" "style-inspect"]]]],
-                                   "render-empty" ["defn" "render-empty" [] ["div" ["{}"] ["<>" "span" "|Empty" "nil"]]],
+                                   "style-empty" ["def" "style-empty" ["{}" [":width" "360"]]],
+                                   "render-empty" ["defn"
+                                                   "render-empty"
+                                                   []
+                                                   ["div" ["{}"] ["<>" "span" "|Empty" "style-empty"]]],
                                    "initial-state" ["def" "initial-state" ["{}" [":ns-text" "|"] [":def-text" "|"]]],
                                    "style-inspect" ["def"
                                                     "style-inspect"

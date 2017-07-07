@@ -91,6 +91,9 @@
 (defn point-to [db op-data session-id op-id op-time]
   (assoc-in db [:sessions session-id :writer :pointer] op-data))
 
+(defn save-files [db op-data session-id op-id op-time]
+  (assoc db :saved-files (get-in db [:ir :files])))
+
 (defn go-left [db op-data session-id op-id op-time]
   (let [writer (get-in db [:sessions session-id :writer])
         bookmark (get (:stack writer) (:pointer writer))

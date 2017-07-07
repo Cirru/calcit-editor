@@ -5,7 +5,8 @@
             [server.updater.core :refer [updater]]
             [cljs.core.async :refer [<!]]
             [cljs.reader :refer [read-string]]
-            [fipp.edn :as fipp])
+            [fipp.edn :as fipp]
+            [server.util.compile :refer [handle-files!]])
   (:require-macros [cljs.core.async.macros :refer [go-loop]]))
 
 (defonce *writer-db
@@ -46,6 +47,7 @@
        (.log js/console "Database:" (clj->js @*writer-db))
        (try
         (let [new-db (updater @*writer-db op op-data session-id op-id op-time)]
+          (if (= op :writer/save-files) (handle-files! @*writer-db))
           (reset! *writer-db new-db))
         (catch js/Error e (.log js/console e)))
        (recur)))

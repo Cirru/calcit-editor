@@ -16,11 +16,13 @@
 (defn render-status [kind status]
   (span {} (<> span kind nil) (=< 8 nil) (<> span status style-status)))
 
+(def style-info {:background-color (hsl 0 0 100 0.1), :padding 8, :margin-bottom 8})
+
 (defcomp
  comp-changed-info
  (info ns-text)
  (div
-  {}
+  {:style style-info}
   (div
    {}
    (<> span ns-text nil)

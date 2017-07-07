@@ -84,7 +84,9 @@
 
 (defn on-input-ns [state] (fn [e d! m!] (m! (assoc state :ns-text (:value e)))))
 
-(defn render-empty [] (div {} (<> span "Empty" nil)))
+(def style-empty {:width 360})
+
+(defn render-empty [] (div {} (<> span "Empty" style-empty)))
 
 (def initial-state {:ns-text "", :def-text ""})
 

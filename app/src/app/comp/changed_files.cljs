@@ -1,6 +1,6 @@
 
 (ns app.comp.changed-files
-  (:require-macros [respo.macros :refer [defcomp <> span div pre input a]])
+  (:require-macros [respo.macros :refer [defcomp <> span div pre input button a]])
   (:require [clojure.string :as string]
             [hsl.core :refer [hsl]]
             [respo-ui.style :as ui]
@@ -10,6 +10,8 @@
             [app.util :as util]
             [app.style :as style]
             [app.comp.changed-info :refer [comp-changed-info]]))
+
+(defn on-save [e d! m!] (d! :writer/save-files nil))
 
 (defcomp
  comp-changed-files
@@ -21,4 +23,4 @@
    {}
    (->> changed-files
         (map (fn [entry] (let [[k info] entry] [k (comp-changed-info info k)])))))
-  (div {} (<> span "Footer" nil))))
+  (div {} (button {:inner-text "Save", :style style/button, :on {:click on-save}}))))

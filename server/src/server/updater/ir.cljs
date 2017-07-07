@@ -105,12 +105,7 @@
   (let [writer (get-in db [:sessions session-id :writer])
         bookmark (get (:stack writer) (:pointer writer))
         data-path (bookmark->path bookmark)]
-    (-> db
-        (update-in
-         data-path
-         (fn [leaf]
-           (println "chaning leaf:" leaf data-path op-data)
-           (assoc leaf :text op-data))))))
+    (-> db (update-in data-path (fn [leaf] (assoc leaf :text op-data))))))
 
 (defn unindent [db op-data session-id op-id op-time]
   (let [writer (get-in db [:sessions session-id :writer])

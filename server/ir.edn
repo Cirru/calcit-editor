@@ -42,7 +42,7 @@
                                                              ["twig-page-files"
                                                               [":files" "ir"]
                                                               ["get-in" "session" ["[]" ":writer" ":selected-ns"]]
-                                                              [":changed-files" "db"]]]
+                                                              [":saved-files" "db"]]]
                                                             [":editor"
                                                              ["twig-page-editor"
                                                               [":files" "ir"]
@@ -52,6 +52,37 @@
                                                             "nil"]]]]
                                                         ["{}" [":session" "session"] [":logged-in?" "false"]]]]]]]},
                            :procs []},
+         "util.compile" {:ns ["ns"
+                              "server.util.compile"
+                              [":require" ["[]" "clojure.set" ":refer" ["[]" "difference" "intersection"]]]],
+                         :defs {"emit-file!" ["defn" "emit-file!" []],
+                                "handle-files!" ["defn"
+                                                 "handle-files!"
+                                                 ["db"]
+                                                 ["let"
+                                                  [["new-files" ["get-in" "db" ["[]" ":ir" ":files"]]]
+                                                   ["old-files" ["get" "db" ":saved-files"]]
+                                                   ["new-names" ["set" ["keys" "new-files"]]]
+                                                   ["old-names" ["set" ["keys" "old-files"]]]
+                                                   ["added-names" ["difference" "new-names" "old-names"]]
+                                                   ["removed-names" ["difference" "old-names" "new-names"]]
+                                                   ["changed-names"
+                                                    ["->>"
+                                                     ["intersection" "new-names" "old-names"]
+                                                     ["filter"
+                                                      ["fn"
+                                                       ["ns-text"]
+                                                       ["not="
+                                                        ["get" "new-files" "ns-text"]
+                                                        ["get" "old-files" "ns-text"]]]]]]]
+                                                  ["doseq" ["[]" "ns-text" "added-names"] ["println" "|add:" "ns-text"]]
+                                                  ["doseq"
+                                                   ["[]" "ns-text" "removed-names"]
+                                                   ["println" "|remove:" "ns-text"]]
+                                                  ["doseq"
+                                                   ["[]" "ns-text" "changed-names"]
+                                                   ["println" "|changed:" "ns-text"]]]]},
+                         :procs []},
          "updater.writer" {:ns ["ns"
                                 "server.updater.writer"
                                 [":require"
@@ -227,6 +258,10 @@
                                                "db"
                                                ["[]" ":sessions" "session-id" ":writer" ":pointer"]
                                                "op-data"]],
+                                  "save-files" ["defn"
+                                                "save-files"
+                                                ["db" "op-data" "session-id" "op-id" "op-time"]
+                                                ["assoc" "db" ":saved-files" ["get-in" "db" ["[]" ":ir" ":files"]]]],
                                   "go-left" ["defn"
                                              "go-left"
                                              ["db" "op-data" "session-id" "op-id" "op-time"]
@@ -475,7 +510,8 @@
                        ["[]" "server.updater.core" ":refer" ["[]" "updater"]]
                        ["[]" "cljs.core.async" ":refer" ["[]" "<!"]]
                        ["[]" "cljs.reader" ":refer" ["[]" "read-string"]]
-                       ["[]" "fipp.edn" ":as" "fipp"]]
+                       ["[]" "fipp.edn" ":as" "fipp"]
+                       ["[]" "server.util.compile" ":refer" ["[]" "handle-files!"]]]
                       [":require-macros" ["[]" "cljs.core.async.macros" ":refer" ["[]" "go-loop"]]]],
                  :defs {"persist!" ["defn"
                                     "persist!"
@@ -514,6 +550,7 @@
                                      ["let"
                                       [["new-db"
                                         ["updater" "@*writer-db" "op" "op-data" "session-id" "op-id" "op-time"]]]
+                                      ["if" ["=" "op" ":writer/save-files"] ["handle-files!" "@*writer-db"]]
                                       ["reset!" "*writer-db" "new-db"]]
                                      ["catch" "js/Error" "e" [".log" "js/console" "e"]]]
                                     ["recur"]]]
@@ -785,6 +822,8 @@
                                             [":writer/cut" ["writer/cut" "db" "op-data" "session-id" "op-id" "op-time"]]
                                             [":writer/paste"
                                              ["writer/paste" "db" "op-data" "session-id" "op-id" "op-time"]]
+                                            [":writer/save-files"
+                                             ["writer/save-files" "db" "op-data" "session-id" "op-id" "op-time"]]
                                             [":ir/add-ns" ["ir/add-ns" "db" "op-data" "session-id" "op-id" "op-time"]]
                                             [":ir/add-def" ["ir/add-def" "db" "op-data" "session-id" "op-id" "op-time"]]
                                             [":ir/remove-def"
@@ -1057,10 +1096,7 @@
                                                "db"
                                                ["update-in"
                                                 "data-path"
-                                                ["fn"
-                                                 ["leaf"]
-                                                 ["println" "|chaning leaf:" "leaf" "data-path" "op-data"]
-                                                 ["assoc" "leaf" ":text" "op-data"]]]]]],
+                                                ["fn" ["leaf"] ["assoc" "leaf" ":text" "op-data"]]]]]],
                               "unindent" ["defn"
                                           "unindent"
                                           ["db" "op-data" "session-id" "op-id" "op-time"]
