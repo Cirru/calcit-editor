@@ -16,7 +16,7 @@
 
 (def style-alert {:font-family "Josefin Sans", :font-weight 100, :font-size 40})
 
-(def style-body {:padding "8px 16px"})
+(def style-body {:padding-top 16})
 
 (def style-container {:background-color :black, :color :white})
 
@@ -48,7 +48,13 @@
              :files
                (cursor-> :files comp-page-files states (:selected-ns writer) (:data router))
              :editor
-               (cursor-> :editor comp-page-editor states (:stack writer) (:data router))
+               (cursor->
+                :editor
+                comp-page-editor
+                states
+                (:stack writer)
+                (:data router)
+                (:pointer writer))
              :members (comp-page-members)
              (div {} (<> span (str "404 page: " (pr-str router)) nil))))
          (comp-login states)))

@@ -17,24 +17,25 @@
 
 (def style-container {:position :relative})
 
+(def style-missing
+  {:font-family "Josefin Sans", :color (hsl 10 60 50), :font-size 20, :font-weight 100})
+
+(def ui-missing (div {:style style-missing} (<> span "Expression is missing!" nil)))
+
 (defcomp
  comp-page-editor
- (states stack router-data)
+ (states stack router-data pointer)
  (div
   {:style (merge ui/row ui/flex style-container)}
   (div
    {:style style-stack}
-   (->> stack (map-indexed (fn [idx bookmark] [idx (comp-bookmark bookmark idx)]))))
+   (->> stack
+        (map-indexed (fn [idx bookmark] [idx (comp-bookmark bookmark idx (= idx pointer))]))))
+  (=< 8 nil)
   (div
    {:style style-editor}
-   (let [others (->> (:others router-data) (vals) (into #{}))]
-     (cursor->
-      :root
-      comp-expr
-      states
-      (:expr router-data)
-      (:focus router-data)
-      []
-      others
-      false))
-   (comp-inspect "Expr" router-data style/inspector))))
+   (let [others (->> (:others router-data) (vals) (into #{})), expr (:expr router-data)]
+     (if (some? expr)
+       (cursor-> :root comp-expr states expr (:focus router-data) [] others false)
+       ui-missing))
+   (comment comp-inspect "Expr" router-data style/inspector))))

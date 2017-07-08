@@ -37,7 +37,10 @@
    {:url (str "ws://" (.-hostname js/location) ":" (:port schema/configs)),
     :on-close! (fn [event] (reset! *store nil) (.error js/console "Lost connection!")),
     :on-open! (fn [event] (simulate-login!))})
-  (add-watch *store :changes (fn [] (render-app! render!) (focus!)))
+  (add-watch
+   *store
+   :changes
+   (fn [] (render-app! render!) (if (= :editor (get-in @*store [:router :name])) (focus!))))
   (add-watch *states :changes (fn [] (render-app! render!)))
   (println "App started!"))
 

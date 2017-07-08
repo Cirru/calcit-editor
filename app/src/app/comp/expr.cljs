@@ -31,7 +31,10 @@
           code (:key-code e)]
       (cond
         (and meta? (= code keycode/enter)) (d! :ir/append-leaf nil)
-        (= code keycode/enter) (d! (if shift? :ir/expr-before :ir/expr-after) nil)
+        (= code keycode/enter)
+          (if (empty? coord)
+            (d! :ir/append-leaf nil)
+            (d! (if shift? :ir/expr-before :ir/expr-after) nil))
         (= code keycode/delete) (d! :ir/delete-node nil)
         (= code keycode/space) (d! (if shift? :ir/leaf-before :ir/leaf-after) nil)
         (= code keycode/tab)
@@ -65,7 +68,7 @@
              style-expr
              (if (contains? others coord) {:border-color (hsl 0 0 100 0.6)})
              (if focused? {:border-color (hsl 0 0 100 0.9)})
-             (if (and (simple? expr) (not tail?)) style-simple)),
+             (if (and (simple? expr) (not tail?) (pos? (count coord))) style-simple)),
      :on {:keydown (on-keydown coord), :click (on-focus coord)}}
     (->> (:data expr)
          (sort-by first)

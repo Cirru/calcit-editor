@@ -180,15 +180,46 @@
                                 ["[]" "respo-ui.style.colors" ":as" "colors"]
                                 ["[]" "respo.core" ":refer" ["[]" "create-comp"]]
                                 ["[]" "respo.comp.space" ":refer" ["[]" "=<"]]]],
-                          :defs {"comp-bookmark" ["defcomp"
+                          :defs {"style-minor" ["def" "style-minor" ["{}" [":color" ["hsl" "0" "0" "50"]]]],
+                                 "on-pick" ["defn"
+                                            "on-pick"
+                                            ["idx"]
+                                            ["fn" ["e" "d!" "m!"] ["d!" ":writer/point-to" "idx"]]],
+                                 "style-highlight" ["def"
+                                                    "style-highlight"
+                                                    ["{}" [":background-color" ["hsl" "0" "0" "100" "0.2"]]]],
+                                 "style-remove" ["def"
+                                                 "style-remove"
+                                                 ["{}"
+                                                  [":color" ["hsl" "0" "0" "40"]]
+                                                  [":cursor" ":pointer"]
+                                                  [":position" ":absolute"]
+                                                  [":top" "4"]
+                                                  [":right" "8"]]],
+                                 "style-kind" ["def"
+                                               "style-kind"
+                                               ["{}" [":color" ["hsl" "0" "0" "50"]] [":font-family" "|Josefin Sans"]]],
+                                 "on-remove" ["defn"
+                                              "on-remove"
+                                              ["idx"]
+                                              ["fn" ["e" "d!" "m!"] ["d!" ":writer/remove-idx" "idx"]]],
+                                 "style-bookmark" ["def"
+                                                   "style-bookmark"
+                                                   ["{}"
+                                                    [":line-height" "|1.2em"]
+                                                    [":padding" "|4px 8px"]
+                                                    [":cursor" ":pointer"]
+                                                    [":position" ":relative"]]],
+                                 "comp-bookmark" ["defcomp"
                                                   "comp-bookmark"
-                                                  ["bookmark" "idx"]
+                                                  ["bookmark" "idx" "selected?"]
                                                   ["case"
                                                    [":kind" "bookmark"]
                                                    [":def"
                                                     ["div"
                                                      ["{}"
-                                                      [":style" "style-bookmark"]
+                                                      [":style"
+                                                       ["merge" "style-bookmark" ["if" "selected?" "style-highlight"]]]
                                                       [":on" ["{}" [":click" ["on-pick" "idx"]]]]]
                                                      ["div"
                                                       ["{}"]
@@ -209,7 +240,8 @@
                                                       ["<>" "span" [":ns" "bookmark"] "style-minor"]]]]
                                                    ["div"
                                                     ["{}"
-                                                     [":style" "style-bookmark"]
+                                                     [":style"
+                                                      ["merge" "style-bookmark" ["if" "selected?" "style-highlight"]]]
                                                      [":on" ["{}" [":click" ["on-pick" "idx"]]]]]
                                                     ["div"
                                                      ["{}"]
@@ -223,31 +255,7 @@
                                                     ["div"
                                                      ["{}"]
                                                      ["<>" "span" ["name" [":kind" "bookmark"]] "style-kind"]]]]],
-                                 "style-kind" ["def"
-                                               "style-kind"
-                                               ["{}" [":color" ["hsl" "0" "0" "50"]] [":font-family" "|Josefin Sans"]]],
-                                 "style-bookmark" ["def"
-                                                   "style-bookmark"
-                                                   ["{}"
-                                                    [":line-height" "|1.2em"]
-                                                    [":padding" "|4px 0"]
-                                                    [":cursor" ":pointer"]]],
-                                 "on-pick" ["defn"
-                                            "on-pick"
-                                            ["idx"]
-                                            ["fn" ["e" "d!" "m!"] ["d!" ":writer/point-to" "idx"]]],
-                                 "style-minor" ["def" "style-minor" ["{}" [":color" ["hsl" "0" "0" "50"]]]],
-                                 "style-remove" ["def"
-                                                 "style-remove"
-                                                 ["{}"
-                                                  [":color" ["hsl" "0" "0" "80"]]
-                                                  [":cursor" ":pointer"]
-                                                  [":vertical-align" ":middle"]]],
-                                 "style-main" ["def" "style-main" ["{}" [":vertical-align" ":middle"]]],
-                                 "on-remove" ["defn"
-                                              "on-remove"
-                                              ["idx"]
-                                              ["fn" ["e" "d!" "m!"] ["d!" ":writer/remove-idx" "idx"]]]},
+                                 "style-main" ["def" "style-main" ["{}" [":vertical-align" ":middle"]]]},
                           :procs []},
          "comp.profile" {:ns ["ns"
                               "app.comp.profile"
@@ -315,7 +323,7 @@
                                    ["[]" "app.style" ":as" "style"]]],
                              :defs {"comp-page-editor" ["defcomp"
                                                         "comp-page-editor"
-                                                        ["states" "stack" "router-data"]
+                                                        ["states" "stack" "router-data" "pointer"]
                                                         ["div"
                                                          ["{}"
                                                           [":style" ["merge" "ui/row" "ui/flex" "style-container"]]]
@@ -326,25 +334,44 @@
                                                            ["map-indexed"
                                                             ["fn"
                                                              ["idx" "bookmark"]
-                                                             ["[]" "idx" ["comp-bookmark" "bookmark" "idx"]]]]]]
+                                                             ["[]"
+                                                              "idx"
+                                                              ["comp-bookmark" "bookmark" "idx" ["=" "idx" "pointer"]]]]]]]
+                                                         ["=<" "8" "nil"]
                                                          ["div"
                                                           ["{}" [":style" "style-editor"]]
                                                           ["let"
                                                            [["others"
-                                                             ["->>" [":others" "router-data"] ["vals"] ["into" ["#{}"]]]]]
-                                                           ["cursor->"
-                                                            ":root"
-                                                            "comp-expr"
-                                                            "states"
-                                                            [":expr" "router-data"]
-                                                            [":focus" "router-data"]
-                                                            ["[]"]
-                                                            "others"
-                                                            "false"]]
-                                                          ["comp-inspect" "|Expr" "router-data" "style/inspector"]]]],
+                                                             ["->>" [":others" "router-data"] ["vals"] ["into" ["#{}"]]]]
+                                                            ["expr" [":expr" "router-data"]]]
+                                                           ["if"
+                                                            ["some?" "expr"]
+                                                            ["cursor->"
+                                                             ":root"
+                                                             "comp-expr"
+                                                             "states"
+                                                             "expr"
+                                                             [":focus" "router-data"]
+                                                             ["[]"]
+                                                             "others"
+                                                             "false"]
+                                                            "ui-missing"]]
+                                                          ["--" "comp-inspect" "|Expr" "router-data" "style/inspector"]]]],
                                     "style-stack" ["def" "style-stack" ["{}" [":width" "240"]]],
                                     "style-editor" ["def" "style-editor" ["merge" "ui/flex" ["{}"]]],
-                                    "style-container" ["def" "style-container" ["{}" [":position" ":relative"]]]},
+                                    "style-container" ["def" "style-container" ["{}" [":position" ":relative"]]],
+                                    "ui-missing" ["def"
+                                                  "ui-missing"
+                                                  ["div"
+                                                   ["{}" [":style" "style-missing"]]
+                                                   ["<>" "span" "|Expression is missing!" "nil"]]],
+                                    "style-missing" ["def"
+                                                     "style-missing"
+                                                     ["{}"
+                                                      [":font-family" "|Josefin Sans"]
+                                                      [":color" ["hsl" "10" "60" "50"]]
+                                                      [":font-size" "20"]
+                                                      [":font-weight" "100"]]]},
                              :procs []},
          "util" {:defs {"now!" ["defn" "now!" [] [".valueOf" ["js/Date."]]],
                         "coord-contains?" ["defn"
@@ -435,7 +462,8 @@
                                                              "comp-page-editor"
                                                              "states"
                                                              [":stack" "writer"]
-                                                             [":data" "router"]]]
+                                                             [":data" "router"]
+                                                             [":pointer" "writer"]]]
                                                            [":members" ["comp-page-members"]]
                                                            ["div"
                                                             ["{}"]
@@ -448,7 +476,7 @@
                                                        ["comp-msg-list"
                                                         ["get-in" "store" ["[]" ":session" ":notifications"]]
                                                         ":session/remove-notification"]]]]],
-                                  "style-body" ["def" "style-body" ["{}" [":padding" "|8px 16px"]]],
+                                  "style-body" ["def" "style-body" ["{}" [":padding-top" "16"]]],
                                   "style-container" ["def"
                                                      "style-container"
                                                      ["{}" [":background-color" ":black"] [":color" ":white"]]],
@@ -591,7 +619,13 @@
                                      ["reset!" "*store" "nil"]
                                      [".error" "js/console" "|Lost connection!"]]]
                                    [":on-open!" ["fn" ["event"] ["simulate-login!"]]]]]
-                                 ["add-watch" "*store" ":changes" ["fn" [] ["render-app!" "render!"] ["focus!"]]]
+                                 ["add-watch"
+                                  "*store"
+                                  ":changes"
+                                  ["fn"
+                                   []
+                                   ["render-app!" "render!"]
+                                   ["if" ["=" ":editor" ["get-in" "@*store" ["[]" ":router" ":name"]]] ["focus!"]]]]
                                  ["add-watch" "*states" ":changes" ["fn" [] ["render-app!" "render!"]]]
                                  ["println" "|App started!"]],
                         "*states" ["defonce" "*states" ["atom" ["{}"]]],
@@ -767,6 +801,7 @@
                                                    "on-edit-proc"
                                                    ["e" "d!" "m!"]
                                                    ["d!" ":writer/edit" ["{}" [":kind" ":proc"]]]],
+                                   "sytle-container" ["def" "sytle-container" ["{}" [":padding" "|0 16px"]]],
                                    "render-file" ["defn"
                                                   "render-file"
                                                   ["state" "selected-ns" "defs-set"]
@@ -856,7 +891,7 @@
                                                       ["let"
                                                        [["state" ["or" [":data" "states"] "initial-state"]]]
                                                        ["div"
-                                                        ["{}" [":style" ["merge" "ui/flex" "ui/row"]]]
+                                                        ["{}" [":style" ["merge" "ui/flex" "ui/row" "sytle-container"]]]
                                                         ["render-list" [":ns-set" "router-data"] "state"]
                                                         ["if"
                                                          ["some?" "selected-ns"]
@@ -875,7 +910,7 @@
                                    "render-empty" ["defn"
                                                    "render-empty"
                                                    []
-                                                   ["div" ["{}"] ["<>" "span" "|Empty" "style-empty"]]],
+                                                   ["div" ["{}" [":style" "style-empty"]] ["<>" "span" "|Empty" "nil"]]],
                                    "initial-state" ["def" "initial-state" ["{}" [":ns-text" "|"] [":def-text" "|"]]],
                                    "style-inspect" ["def"
                                                     "style-inspect"
@@ -1125,7 +1160,9 @@
                                                 ["contains?" "others" "coord"]
                                                 ["{}" [":border-color" ["hsl" "0" "0" "100" "0.6"]]]]
                                                ["if" "focused?" ["{}" [":border-color" ["hsl" "0" "0" "100" "0.9"]]]]
-                                               ["if" ["and" ["simple?" "expr"] ["not" "tail?"]] "style-simple"]]]
+                                               ["if"
+                                                ["and" ["simple?" "expr"] ["not" "tail?"] ["pos?" ["count" "coord"]]]
+                                                "style-simple"]]]
                                              [":on"
                                               ["{}" [":keydown" ["on-keydown" "coord"]] [":click" ["on-focus" "coord"]]]]]
                                             ["->>"
@@ -1192,7 +1229,10 @@
                                               [["and" "meta?" ["=" "code" "keycode/enter"]]
                                                ["d!" ":ir/append-leaf" "nil"]]
                                               [["=" "code" "keycode/enter"]
-                                               ["d!" ["if" "shift?" ":ir/expr-before" ":ir/expr-after"] "nil"]]
+                                               ["if"
+                                                ["empty?" "coord"]
+                                                ["d!" ":ir/append-leaf" "nil"]
+                                                ["d!" ["if" "shift?" ":ir/expr-before" ":ir/expr-after"] "nil"]]]
                                               [["=" "code" "keycode/delete"] ["d!" ":ir/delete-node" "nil"]]
                                               [["=" "code" "keycode/space"]
                                                ["d!" ["if" "shift?" ":ir/leaf-before" ":ir/leaf-after"] "nil"]]

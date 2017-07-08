@@ -7,27 +7,32 @@
             [respo.core :refer [create-comp]]
             [respo.comp.space :refer [=<]]))
 
-(def style-kind {:color (hsl 0 0 50), :font-family "Josefin Sans"})
-
-(def style-bookmark {:line-height "1.2em", :padding "4px 0", :cursor :pointer})
+(def style-minor {:color (hsl 0 0 50)})
 
 (defn on-pick [idx] (fn [e d! m!] (d! :writer/point-to idx)))
 
-(def style-minor {:color (hsl 0 0 50)})
+(def style-highlight {:background-color (hsl 0 0 100 0.2)})
 
-(def style-remove {:color (hsl 0 0 80), :cursor :pointer, :vertical-align :middle})
+(def style-remove
+  {:color (hsl 0 0 40), :cursor :pointer, :position :absolute, :top 4, :right 8})
 
-(def style-main {:vertical-align :middle})
+(def style-kind {:color (hsl 0 0 50), :font-family "Josefin Sans"})
 
 (defn on-remove [idx] (fn [e d! m!] (d! :writer/remove-idx idx)))
 
+(def style-bookmark
+  {:line-height "1.2em", :padding "4px 8px", :cursor :pointer, :position :relative})
+
+(def style-main {:vertical-align :middle})
+
 (defcomp
  comp-bookmark
- (bookmark idx)
+ (bookmark idx selected?)
  (case (:kind bookmark)
    :def
      (div
-      {:style style-bookmark, :on {:click (on-pick idx)}}
+      {:style (merge style-bookmark (if selected? style-highlight)),
+       :on {:click (on-pick idx)}}
       (div
        {}
        (span {:inner-text (:extra bookmark), :style style-main})
@@ -36,7 +41,8 @@
         {:class-name "ion-md-close", :style style-remove, :on {:click (on-remove idx)}}))
       (div {} (<> span "def" style-kind) (=< 8 nil) (<> span (:ns bookmark) style-minor)))
    (div
-    {:style style-bookmark, :on {:click (on-pick idx)}}
+    {:style (merge style-bookmark (if selected? style-highlight)),
+     :on {:click (on-pick idx)}}
     (div
      {}
      (<> span (:ns bookmark) nil)

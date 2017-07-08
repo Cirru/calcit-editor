@@ -20,6 +20,8 @@
 
 (defn on-edit-proc [e d! m!] (d! :writer/edit {:kind :proc}))
 
+(def sytle-container {:padding "0 16px"})
+
 (defn on-input-def [state] (fn [e d! m!] (m! (assoc state :def-text (:value e)))))
 
 (defn on-remove-def [def-text] (fn [e d! m!] (d! :ir/remove-def def-text)))
@@ -86,7 +88,7 @@
 
 (def style-empty {:width 360})
 
-(defn render-empty [] (div {} (<> span "Empty" style-empty)))
+(defn render-empty [] (div {:style style-empty} (<> span "Empty" nil)))
 
 (def initial-state {:ns-text "", :def-text ""})
 
@@ -125,7 +127,7 @@
  (states selected-ns router-data)
  (let [state (or (:data states) initial-state)]
    (div
-    {:style (merge ui/flex ui/row)}
+    {:style (merge ui/flex ui/row sytle-container)}
     (render-list (:ns-set router-data) state)
     (if (some? selected-ns)
       (render-file state selected-ns (:defs-set router-data))

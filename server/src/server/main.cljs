@@ -44,7 +44,7 @@
      []
      (let [[op op-data session-id op-id op-time] (<! server-ch)]
        (.log js/console "Action" (str op) (clj->js op-data) session-id op-id op-time)
-       (.log js/console "Database:" (clj->js @*writer-db))
+       (comment .log js/console "Database:" (clj->js @*writer-db))
        (try
         (let [new-db (updater @*writer-db op op-data session-id op-id op-time)]
           (if (= op :writer/save-files) (handle-files! @*writer-db))

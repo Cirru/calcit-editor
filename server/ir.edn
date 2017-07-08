@@ -624,7 +624,7 @@
                                      "session-id"
                                      "op-id"
                                      "op-time"]
-                                    [".log" "js/console" "|Database:" ["clj->js" "@*writer-db"]]
+                                    ["--" ".log" "js/console" "|Database:" ["clj->js" "@*writer-db"]]
                                     ["try"
                                      ["let"
                                       [["new-db"
