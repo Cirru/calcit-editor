@@ -1,5 +1,5 @@
 
-(ns server.util )
+(ns server.util (:require [clojure.string :as string] [server.schema :as schema]))
 
 (defn prepend-data [x] [:data x])
 
@@ -7,9 +7,20 @@
 
 (defn to-bookmark [writer] (get (:stack writer) (:pointer writer)))
 
+(defn tree->cirru [x]
+  (if (= :leaf (:type x))
+    (:text x)
+    (->> (:data x) (sort-by first) (map (fn [entry] (tree->cirru (val entry)))) (vec))))
+
 (def kinds #{:ns :def :proc})
 
 (defn leaf? [x] (= :leaf (:type x)))
+
+(defn ns->path [ns-text]
+  (-> ns-text
+      (string/replace "." "/")
+      (string/replace "-" "_")
+      (str (:extension schema/configs))))
 
 (defn same-buffer? [x y]
   (and (= (:kind x) (:kind y)) (= (:ns x) (:ns y)) (= (:extra x) (:extra y))))
@@ -28,5 +39,14 @@
     (concat
      [:ir :files (:ns bookmark) (:kind bookmark)]
      (mapcat prepend-data (:focus bookmark)))))
+
+(defn file->cirru [file]
+  (-> file
+      (update :ns tree->cirru)
+      (update :proc tree->cirru)
+      (update
+       :defs
+       (fn [defs]
+         (->> defs (map (fn [entry] (let [[k xs] entry] [k (tree->cirru xs)]))) (into {}))))))
 
 (defn find-first [f xs] (reduce (fn [_ x] (when (f x) (reduced x))) nil xs))

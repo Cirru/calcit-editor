@@ -1,7 +1,33 @@
 
-(ns server.util.compile (:require [clojure.set :refer [difference intersection]]))
+(ns server.util.compile
+  (:require [clojure.set :refer [difference intersection]]
+            [stack-server.analyze :refer [generate-file]]
+            [server.util :refer [ns->path file->cirru]]
+            [server.schema :as schema]))
 
 (defn emit-file! [] )
+
+(def fs (js/require "fs"))
+
+(def path (js/require "path"))
+
+(def cp (js/require "child_process"))
+
+(defn create-file! [file-path file]
+  (let [project-path (path.join (:output schema/configs) file-path)]
+    (println "Creating" project-path)
+    (cp.execSync (str "mkdir -p " (path.dirname project-path)))
+    (fs.writeFileSync project-path (generate-file (file->cirru file)))))
+
+(defn remove-file! [file-path]
+  (let [project-path (path.join (:output schema/configs) file-path)]
+    (println "Removing" project-path)
+    (cp.execSync (str "rm -rfv " project-path))))
+
+(defn modify-file! [file-path file]
+  (let [project-path (path.join (:output schema/configs) file-path)]
+    (println "Modifying" project-path)
+    (fs.writeFileSync project-path (generate-file (file->cirru file)))))
 
 (defn handle-files! [db]
   (let [new-files (get-in db [:ir :files])
@@ -14,6 +40,7 @@
                            (filter
                             (fn [ns-text]
                               (not= (get new-files ns-text) (get old-files ns-text)))))]
-    (doseq [ns-text added-names] (println "add:" ns-text))
-    (doseq [ns-text removed-names] (println "remove:" ns-text))
-    (doseq [ns-text changed-names] (println "changed:" ns-text))))
+    (doseq [ns-text added-names] (create-file! (ns->path ns-text) (get new-files ns-text)))
+    (doseq [ns-text removed-names] (remove-file! (ns->path ns-text)))
+    (doseq [ns-text changed-names]
+      (modify-file! (ns->path ns-text) (get new-files ns-text)))))

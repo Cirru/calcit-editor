@@ -54,7 +54,11 @@
                            :procs []},
          "util.compile" {:ns ["ns"
                               "server.util.compile"
-                              [":require" ["[]" "clojure.set" ":refer" ["[]" "difference" "intersection"]]]],
+                              [":require"
+                               ["[]" "clojure.set" ":refer" ["[]" "difference" "intersection"]]
+                               ["[]" "stack-server.analyze" ":refer" ["[]" "generate-file"]]
+                               ["[]" "server.util" ":refer" ["[]" "ns->path" "file->cirru"]]
+                               ["[]" "server.schema" ":as" "schema"]]],
                          :defs {"emit-file!" ["defn" "emit-file!" []],
                                 "handle-files!" ["defn"
                                                  "handle-files!"
@@ -75,13 +79,47 @@
                                                        ["not="
                                                         ["get" "new-files" "ns-text"]
                                                         ["get" "old-files" "ns-text"]]]]]]]
-                                                  ["doseq" ["[]" "ns-text" "added-names"] ["println" "|add:" "ns-text"]]
+                                                  ["doseq"
+                                                   ["[]" "ns-text" "added-names"]
+                                                   ["create-file!" ["ns->path" "ns-text"] ["get" "new-files" "ns-text"]]]
                                                   ["doseq"
                                                    ["[]" "ns-text" "removed-names"]
-                                                   ["println" "|remove:" "ns-text"]]
+                                                   ["remove-file!" ["ns->path" "ns-text"]]]
                                                   ["doseq"
                                                    ["[]" "ns-text" "changed-names"]
-                                                   ["println" "|changed:" "ns-text"]]]]},
+                                                   ["modify-file!" ["ns->path" "ns-text"] ["get" "new-files" "ns-text"]]]]],
+                                "create-file!" ["defn"
+                                                "create-file!"
+                                                ["file-path" "file"]
+                                                ["let"
+                                                 [["project-path"
+                                                   ["path.join" [":output" "schema/configs"] "file-path"]]]
+                                                 ["println" "|Creating" "project-path"]
+                                                 ["cp.execSync" ["str" "|mkdir -p " ["path.dirname" "project-path"]]]
+                                                 ["fs.writeFileSync"
+                                                  "project-path"
+                                                  ["generate-file" ["file->cirru" "file"]]]]],
+                                "remove-file!" ["defn"
+                                                "remove-file!"
+                                                ["file-path"]
+                                                ["let"
+                                                 [["project-path"
+                                                   ["path.join" [":output" "schema/configs"] "file-path"]]]
+                                                 ["println" "|Removing" "project-path"]
+                                                 ["cp.execSync" ["str" "|rm -rfv " "project-path"]]]],
+                                "modify-file!" ["defn"
+                                                "modify-file!"
+                                                ["file-path" "file"]
+                                                ["let"
+                                                 [["project-path"
+                                                   ["path.join" [":output" "schema/configs"] "file-path"]]]
+                                                 ["println" "|Modifying" "project-path"]
+                                                 ["fs.writeFileSync"
+                                                  "project-path"
+                                                  ["generate-file" ["file->cirru" "file"]]]]],
+                                "fs" ["def" "fs" ["js/require" "|fs"]],
+                                "path" ["def" "path" ["js/require" "|path"]],
+                                "cp" ["def" "cp" ["js/require" "|child_process"]]},
                          :procs []},
          "updater.writer" {:ns ["ns"
                                 "server.updater.writer"
@@ -296,15 +334,36 @@
                                                     "last-coord"
                                                     ["get" "child-keys" ["dec" "idx"]]]]]]]]]]},
                            :procs []},
-         "util" {:ns ["ns" "server.util"],
+         "util" {:ns ["ns"
+                      "server.util"
+                      [":require" ["[]" "clojure.string" ":as" "string"] ["[]" "server.schema" ":as" "schema"]]],
                  :defs {"prepend-data" ["defn" "prepend-data" ["x"] ["[]" ":data" "x"]],
                         "expr?" ["defn" "expr?" ["x"] ["=" ":expr" [":type" "x"]]],
                         "to-bookmark" ["defn"
                                        "to-bookmark"
                                        ["writer"]
                                        ["get" [":stack" "writer"] [":pointer" "writer"]]],
+                        "tree->cirru" ["defn"
+                                       "tree->cirru"
+                                       ["x"]
+                                       ["if"
+                                        ["=" ":leaf" [":type" "x"]]
+                                        [":text" "x"]
+                                        ["->>"
+                                         [":data" "x"]
+                                         ["sort-by" "first"]
+                                         ["map" ["fn" ["entry"] ["tree->cirru" ["val" "entry"]]]]
+                                         ["vec"]]]],
                         "kinds" ["def" "kinds" ["#{}" ":ns" ":def" ":proc"]],
                         "leaf?" ["defn" "leaf?" ["x"] ["=" ":leaf" [":type" "x"]]],
+                        "ns->path" ["defn"
+                                    "ns->path"
+                                    ["ns-text"]
+                                    ["->"
+                                     "ns-text"
+                                     ["string/replace" "|." "|/"]
+                                     ["string/replace" "|-" "|_"]
+                                     ["str" [":extension" "schema/configs"]]]],
                         "same-buffer?" ["defn"
                                         "same-buffer?"
                                         ["x" "y"]
@@ -330,6 +389,24 @@
                                            ["concat"
                                             ["[]" ":ir" ":files" [":ns" "bookmark"] [":kind" "bookmark"]]
                                             ["mapcat" "prepend-data" [":focus" "bookmark"]]]]],
+                        "file->cirru" ["defn"
+                                       "file->cirru"
+                                       ["file"]
+                                       ["->"
+                                        "file"
+                                        ["update" ":ns" "tree->cirru"]
+                                        ["update" ":proc" "tree->cirru"]
+                                        ["update"
+                                         ":defs"
+                                         ["fn"
+                                          ["defs"]
+                                          ["->>"
+                                           "defs"
+                                           ["map"
+                                            ["fn"
+                                             ["entry"]
+                                             ["let" [[["[]" "k" "xs"] "entry"]] ["[]" "k" ["tree->cirru" "xs"]]]]]
+                                           ["into" ["{}"]]]]]]],
                         "find-first" ["defn"
                                       "find-first"
                                       ["f" "xs"]
@@ -344,6 +421,8 @@
                                      "configs"
                                      ["{}"
                                       [":storage-key" "|coir.edn"]
+                                      [":extension" "|.cljs"]
+                                      [":output" "|src"]
                                       [":port" ["or" [".-port" "js/process.env"] "6001"]]]],
                           "user" ["def"
                                   "user"
