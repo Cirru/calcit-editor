@@ -36,6 +36,6 @@
    {:style style-editor}
    (let [others (->> (:others router-data) (vals) (into #{})), expr (:expr router-data)]
      (if (some? expr)
-       (cursor-> :root comp-expr states expr (:focus router-data) [] others false)
+       (cursor-> :root comp-expr states expr (:focus router-data) [] others false false)
        ui-missing))
    (comment comp-inspect "Expr" router-data style/inspector))))

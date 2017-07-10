@@ -8,3 +8,7 @@
 
 (defn simple? [expr]
   (and (every? (fn [x] (= :leaf (:type x))) (vals (:data expr))) (<= (count (:data expr)) 6)))
+
+(defn leaf? [x] (= :leaf (:type x)))
+
+(defn expr? [x] (= :expr (:type x)))

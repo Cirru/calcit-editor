@@ -19,13 +19,16 @@
     :margin "2px 0px",
     :padding "0 4px",
     :background-color :transparent,
-    :min-width 12,
+    :min-width 8,
     :color (hsl 200 30 70),
     :opacity 0.8,
     :font-family "Menlo",
     :font-size 14,
     :border-radius "4px",
-    :vertical-align :baseline}))
+    :vertical-align :baseline,
+    :transition-duration "200ms",
+    :transition-property "color",
+    :text-align :center}))
 
 (defn on-focus [coord] (fn [e d! m!] (d! :writer/focus coord)))
 
@@ -63,6 +66,8 @@
 
 (def initial-state {:text "", :time 0})
 
+(def style-highlight {:opacity 1, :color (hsl 0 0 100 0.9)})
+
 (defcomp
  comp-leaf
  (states leaf focus coord by-other? first?)
@@ -72,16 +77,17 @@
        has-blank? (or (= text "") (string/includes? text " "))]
    (input
     {:value text,
+     :spellcheck false,
      :class-name (if (= focus coord) "cirru-focused" nil),
      :placeholder coord,
      :style (merge
              style-leaf
              {:width (+
-                      8
+                      10
                       (text-width* text (:font-size style-leaf) (:font-family style-leaf)))}
              (if first? {:color (hsl 50 100 70)})
-             (if has-blank? {:background-color (hsl 0 0 100 0.3)})
-             (if (or focused? by-other?) {:opacity 1, :color :white})),
+             (if has-blank? {:background-color (hsl 0 0 100 0.2)})
+             (if (or focused? by-other?) style-highlight)),
      :on {:click (on-focus coord),
           :keydown (on-keydown state leaf coord),
           :input (on-input state coord)}})))

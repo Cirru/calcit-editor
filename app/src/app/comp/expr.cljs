@@ -8,7 +8,7 @@
             [respo.comp.space :refer [=<]]
             [app.util.keycode :as keycode]
             [app.comp.leaf :refer [comp-leaf]]
-            [app.util :refer [coord-contains? simple?]]))
+            [app.util :refer [coord-contains? simple? leaf? expr?]]))
 
 (def style-expr
   {:border-width "0 0 0 1px",
@@ -16,11 +16,13 @@
    :border-color (hsl 0 0 100 0.3),
    :min-height 24,
    :outline :none,
-   :padding-left 4,
-   :margin-left 16,
+   :padding-left 8,
    :font-family "Menlo,monospce",
    :font-size 14,
-   :margin 2})
+   :margin-bottom 2,
+   :margin-right 2,
+   :margin-left 10,
+   :margin-top 1})
 
 (defn on-keydown [coord]
   (fn [e d! m!]
@@ -55,12 +57,17 @@
 (def style-simple
   {:display :inline-block, :border-width "0 0 1px 0", :min-width 32, :padding "0 8px"})
 
+(def style-tail
+  {:display :inline-block, :vertical-align :top, :margin-left 10, :padding-left 8})
+
 (defcomp
  comp-expr
- (states expr focus coord others tail?)
+ (states expr focus coord others tail? after-expr?)
  (let [focused? (= focus coord)
        first-id (apply min (keys (:data expr)))
-       last-id (apply max (keys (:data expr)))]
+       last-id (apply max (keys (:data expr)))
+       sorted-children (->> (:data expr) (sort-by first))
+       default-info {:after-expr? false}]
    (div
     {:tab-index 0,
      :class-name (if focused? "cirru-focused" nil),
@@ -68,34 +75,41 @@
              style-expr
              (if (contains? others coord) {:border-color (hsl 0 0 100 0.6)})
              (if focused? {:border-color (hsl 0 0 100 0.9)})
-             (if (and (simple? expr) (not tail?) (pos? (count coord))) style-simple)),
+             (if (and (simple? expr) (not tail?) (not after-expr?) (pos? (count coord)))
+               style-simple)
+             (if tail? style-tail)),
      :on {:keydown (on-keydown coord), :click (on-focus coord)}}
-    (->> (:data expr)
-         (sort-by first)
-         (map
-          (fn [entry]
-            (let [[k child] entry
-                  child-coord (conj coord k)
-                  partial-others (->> others
-                                      (filter (fn [x] (coord-contains? x child-coord)))
-                                      (into #{}))]
-              [k
-               (if (= :leaf (:type child))
-                 (cursor->
-                  k
-                  comp-leaf
-                  states
-                  child
-                  focus
-                  child-coord
-                  (contains? partial-others child-coord)
-                  (= first-id k))
-                 (cursor->
-                  k
-                  comp-expr
-                  states
-                  child
-                  focus
-                  child-coord
-                  partial-others
-                  (= last-id k)))])))))))
+    (loop [result [], children sorted-children, info default-info]
+      (if (empty? children)
+        result
+        (let [[k child] (first children)
+              child-coord (conj coord k)
+              partial-others (->> others
+                                  (filter (fn [x] (coord-contains? x child-coord)))
+                                  (into #{}))]
+          (recur
+           (conj
+            result
+            [k
+             (if (= :leaf (:type child))
+               (cursor->
+                k
+                comp-leaf
+                states
+                child
+                focus
+                child-coord
+                (contains? partial-others child-coord)
+                (= first-id k))
+               (cursor->
+                k
+                comp-expr
+                states
+                child
+                focus
+                child-coord
+                partial-others
+                (= last-id k)
+                (:after-expr? info)))])
+           (rest children)
+           (assoc info :after-expr? (expr? child)))))))))

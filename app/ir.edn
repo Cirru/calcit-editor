@@ -81,6 +81,7 @@
                                            ["input"
                                             ["{}"
                                              [":value" "text"]
+                                             [":spellcheck" "false"]
                                              [":class-name" ["if" ["=" "focus" "coord"] "|cirru-focused" "nil"]]
                                              [":placeholder" "coord"]
                                              [":style"
@@ -89,7 +90,7 @@
                                                ["{}"
                                                 [":width"
                                                  ["+"
-                                                  "8"
+                                                  "10"
                                                   ["text-width*"
                                                    "text"
                                                    [":font-size" "style-leaf"]
@@ -97,10 +98,8 @@
                                                ["if" "first?" ["{}" [":color" ["hsl" "50" "100" "70"]]]]
                                                ["if"
                                                 "has-blank?"
-                                                ["{}" [":background-color" ["hsl" "0" "0" "100" "0.3"]]]]
-                                               ["if"
-                                                ["or" "focused?" "by-other?"]
-                                                ["{}" [":opacity" "1"] [":color" ":white"]]]]]
+                                                ["{}" [":background-color" ["hsl" "0" "0" "100" "0.2"]]]]
+                                               ["if" ["or" "focused?" "by-other?"] "style-highlight"]]]
                                              [":on"
                                               ["{}"
                                                [":click" ["on-focus" "coord"]]
@@ -116,13 +115,16 @@
                                              [":margin" "|2px 0px"]
                                              [":padding" "|0 4px"]
                                              [":background-color" ":transparent"]
-                                             [":min-width" "12"]
+                                             [":min-width" "8"]
                                              [":color" ["hsl" "200" "30" "70"]]
                                              [":opacity" "0.8"]
                                              [":font-family" "|Menlo"]
                                              [":font-size" "14"]
                                              [":border-radius" "|4px"]
-                                             [":vertical-align" ":baseline"]]]],
+                                             [":vertical-align" ":baseline"]
+                                             [":transition-duration" "|200ms"]
+                                             [":transition-property" "|color"]
+                                             [":text-align" ":center"]]]],
                              "on-focus" ["defn"
                                          "on-focus"
                                          ["coord"]
@@ -179,7 +181,10 @@
                                           ["e" "d!" "m!"]
                                           ["d!" ":ir/update-leaf" [":value" "e"]]
                                           ["m!" ["assoc" "state" ":text" [":value" "e"] ":time" ["util/now!"]]]]],
-                             "initial-state" ["def" "initial-state" ["{}" [":text" "|"] [":time" "0"]]]},
+                             "initial-state" ["def" "initial-state" ["{}" [":text" "|"] [":time" "0"]]],
+                             "style-highlight" ["def"
+                                                "style-highlight"
+                                                ["{}" [":opacity" "1"] [":color" ["hsl" "0" "0" "100" "0.9"]]]]},
                       :procs []},
          "comp.bookmark" {:ns ["ns"
                                "app.comp.bookmark"
@@ -485,6 +490,7 @@
                                                              [":focus" "router-data"]
                                                              ["[]"]
                                                              "others"
+                                                             "false"
                                                              "false"]
                                                             "ui-missing"]]
                                                           ["--" "comp-inspect" "|Expr" "router-data" "style/inspector"]]]],
@@ -520,7 +526,9 @@
                                    ["expr"]
                                    ["and"
                                     ["every?" ["fn" ["x"] ["=" ":leaf" [":type" "x"]]] ["vals" [":data" "expr"]]]
-                                    ["<=" ["count" [":data" "expr"]] "6"]]]},
+                                    ["<=" ["count" [":data" "expr"]] "6"]]],
+                        "leaf?" ["defn" "leaf?" ["x"] ["=" ":leaf" [":type" "x"]]],
+                        "expr?" ["defn" "expr?" ["x"] ["=" ":expr" [":type" "x"]]]},
                  :ns ["ns" "app.util"],
                  :procs []},
          "schema" {:ns ["ns" "app.schema"],
@@ -1387,14 +1395,16 @@
                             ["[]" "respo.comp.space" ":refer" ["[]" "=<"]]
                             ["[]" "app.util.keycode" ":as" "keycode"]
                             ["[]" "app.comp.leaf" ":refer" ["[]" "comp-leaf"]]
-                            ["[]" "app.util" ":refer" ["[]" "coord-contains?" "simple?"]]]],
+                            ["[]" "app.util" ":refer" ["[]" "coord-contains?" "simple?" "leaf?" "expr?"]]]],
                       :defs {"comp-expr" ["defcomp"
                                           "comp-expr"
-                                          ["states" "expr" "focus" "coord" "others" "tail?"]
+                                          ["states" "expr" "focus" "coord" "others" "tail?" "after-expr?"]
                                           ["let"
                                            [["focused?" ["=" "focus" "coord"]]
                                             ["first-id" ["apply" "min" ["keys" [":data" "expr"]]]]
-                                            ["last-id" ["apply" "max" ["keys" [":data" "expr"]]]]]
+                                            ["last-id" ["apply" "max" ["keys" [":data" "expr"]]]]
+                                            ["sorted-children" ["->>" [":data" "expr"] ["sort-by" "first"]]]
+                                            ["default-info" ["{}" [":after-expr?" "false"]]]]
                                            ["div"
                                             ["{}"
                                              [":tab-index" "0"]
@@ -1407,46 +1417,56 @@
                                                 ["{}" [":border-color" ["hsl" "0" "0" "100" "0.6"]]]]
                                                ["if" "focused?" ["{}" [":border-color" ["hsl" "0" "0" "100" "0.9"]]]]
                                                ["if"
-                                                ["and" ["simple?" "expr"] ["not" "tail?"] ["pos?" ["count" "coord"]]]
-                                                "style-simple"]]]
+                                                ["and"
+                                                 ["simple?" "expr"]
+                                                 ["not" "tail?"]
+                                                 ["not" "after-expr?"]
+                                                 ["pos?" ["count" "coord"]]]
+                                                "style-simple"]
+                                               ["if" "tail?" "style-tail"]]]
                                              [":on"
                                               ["{}" [":keydown" ["on-keydown" "coord"]] [":click" ["on-focus" "coord"]]]]]
-                                            ["->>"
-                                             [":data" "expr"]
-                                             ["sort-by" "first"]
-                                             ["map"
-                                              ["fn"
-                                               ["entry"]
-                                               ["let"
-                                                [[["[]" "k" "child"] "entry"]
-                                                 ["child-coord" ["conj" "coord" "k"]]
-                                                 ["partial-others"
-                                                  ["->>"
-                                                   "others"
-                                                   ["filter" ["fn" ["x"] ["coord-contains?" "x" "child-coord"]]]
-                                                   ["into" ["#{}"]]]]]
-                                                ["[]"
-                                                 "k"
-                                                 ["if"
-                                                  ["=" ":leaf" [":type" "child"]]
-                                                  ["cursor->"
-                                                   "k"
-                                                   "comp-leaf"
-                                                   "states"
-                                                   "child"
-                                                   "focus"
-                                                   "child-coord"
-                                                   ["contains?" "partial-others" "child-coord"]
-                                                   ["=" "first-id" "k"]]
-                                                  ["cursor->"
-                                                   "k"
-                                                   "comp-expr"
-                                                   "states"
-                                                   "child"
-                                                   "focus"
-                                                   "child-coord"
-                                                   "partial-others"
-                                                   ["=" "last-id" "k"]]]]]]]]]]],
+                                            ["loop"
+                                             ["[]" "result" ["[]"] "children" "sorted-children" "info" "default-info"]
+                                             ["if"
+                                              ["empty?" "children"]
+                                              "result"
+                                              ["let"
+                                               [[["[]" "k" "child"] ["first" "children"]]
+                                                ["child-coord" ["conj" "coord" "k"]]
+                                                ["partial-others"
+                                                 ["->>"
+                                                  "others"
+                                                  ["filter" ["fn" ["x"] ["coord-contains?" "x" "child-coord"]]]
+                                                  ["into" ["#{}"]]]]]
+                                               ["recur"
+                                                ["conj"
+                                                 "result"
+                                                 ["[]"
+                                                  "k"
+                                                  ["if"
+                                                   ["=" ":leaf" [":type" "child"]]
+                                                   ["cursor->"
+                                                    "k"
+                                                    "comp-leaf"
+                                                    "states"
+                                                    "child"
+                                                    "focus"
+                                                    "child-coord"
+                                                    ["contains?" "partial-others" "child-coord"]
+                                                    ["=" "first-id" "k"]]
+                                                   ["cursor->"
+                                                    "k"
+                                                    "comp-expr"
+                                                    "states"
+                                                    "child"
+                                                    "focus"
+                                                    "child-coord"
+                                                    "partial-others"
+                                                    ["=" "last-id" "k"]
+                                                    [":after-expr?" "info"]]]]]
+                                                ["rest" "children"]
+                                                ["assoc" "info" ":after-expr?" ["expr?" "child"]]]]]]]]],
                              "style-expr" ["def"
                                            "style-expr"
                                            ["{}"
@@ -1455,11 +1475,13 @@
                                             [":border-color" ["hsl" "0" "0" "100" "0.3"]]
                                             [":min-height" "24"]
                                             [":outline" ":none"]
-                                            [":padding-left" "4"]
-                                            [":margin-left" "16"]
+                                            [":padding-left" "8"]
                                             [":font-family" "|Menlo,monospce"]
                                             [":font-size" "14"]
-                                            [":margin" "2"]]],
+                                            [":margin-bottom" "2"]
+                                            [":margin-right" "2"]
+                                            [":margin-left" "10"]
+                                            [":margin-top" "1"]]],
                              "on-keydown" ["defn"
                                            "on-keydown"
                                            ["coord"]
@@ -1511,5 +1533,12 @@
                                               [":display" ":inline-block"]
                                               [":border-width" "|0 0 1px 0"]
                                               [":min-width" "32"]
-                                              [":padding" "|0 8px"]]]},
+                                              [":padding" "|0 8px"]]],
+                             "style-tail" ["def"
+                                           "style-tail"
+                                           ["{}"
+                                            [":display" ":inline-block"]
+                                            [":vertical-align" ":top"]
+                                            [":margin-left" "10"]
+                                            [":padding-left" "8"]]]},
                       :procs []}}}
