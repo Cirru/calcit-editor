@@ -1,7 +1,8 @@
 
 (ns app.comp.bookmark
   (:require-macros [respo.macros :refer [defcomp <> span div a]])
-  (:require [hsl.core :refer [hsl]]
+  (:require [clojure.string :as string]
+            [hsl.core :refer [hsl]]
             [respo-ui.style :as ui]
             [respo-ui.style.colors :as colors]
             [respo.core :refer [create-comp]]
@@ -9,7 +10,23 @@
 
 (def style-minor {:color (hsl 0 0 50)})
 
-(defn on-pick [idx] (fn [e d! m!] (d! :writer/point-to idx)))
+(defn on-pick [bookmark idx]
+  (fn [e d! m!]
+    (let [event (:original-event e), shift? (.-shiftKey event)]
+      (if shift?
+        (let [new-name (js/prompt
+                        "Rename:"
+                        (if (= :def (:kind bookmark))
+                          (str (:ns bookmark) "/" (:extra bookmark))
+                          (:ns bookmark)))
+              [ns-text def-text] (string/split new-name "/")]
+          (d!
+           :ir/rename
+           {:kind (:kind bookmark),
+            :ns {:from (:ns bookmark), :to ns-text},
+            :extra {:from (:extra bookmark), :to def-text},
+            :index idx}))
+        (d! :writer/point-to idx)))))
 
 (def style-highlight {:background-color (hsl 0 0 100 0.2)})
 
@@ -32,7 +49,7 @@
    :def
      (div
       {:style (merge style-bookmark (if selected? style-highlight)),
-       :on {:click (on-pick idx)}}
+       :on {:click (on-pick bookmark idx)}}
       (div
        {}
        (span {:inner-text (:extra bookmark), :style style-main})
@@ -42,7 +59,7 @@
       (div {} (<> span "def" style-kind) (=< 8 nil) (<> span (:ns bookmark) style-minor)))
    (div
     {:style (merge style-bookmark (if selected? style-highlight)),
-     :on {:click (on-pick idx)}}
+     :on {:click (on-pick bookmark idx)}}
     (div
      {}
      (<> span (:ns bookmark) nil)

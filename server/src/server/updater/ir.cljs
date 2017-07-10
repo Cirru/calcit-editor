@@ -4,7 +4,47 @@
             [bisection-key.core :as bisection]
             [server.util
              :refer
-             [expr? leaf? bookmark->path to-writer to-bookmark to-keys cirru->tree]]))
+             [expr?
+              leaf?
+              bookmark->path
+              to-writer
+              to-bookmark
+              to-keys
+              cirru->tree
+              pick-second-key]]))
+
+(defn rename [db op-data session-id op-id op-time]
+  (let [{kind :kind, ns-info :ns, extra-info :extra} op-data]
+    (cond
+      (= :ns kind)
+        (let [{old-ns :from, new-ns :to} ns-info
+              expr (get-in db [:ir :files old-ns :ns])
+              next-id (pick-second-key (:data expr))]
+          (-> db
+              (update-in
+               [:ir :files]
+               (fn [files] (-> files (dissoc old-ns) (assoc new-ns (get files old-ns)))))
+              (assoc-in [:sessions session-id :writer :stack (:index op-data) :ns] new-ns)
+              (update-in [:ir :files new-ns :ns :data next-id :text] (fn [x] new-ns))))
+      (= :def kind)
+        (let [{old-ns :from, new-ns :to} ns-info
+              {old-def :from, new-def :to} extra-info
+              expr (get-in db [:ir :files old-ns :defs old-def])
+              next-id (pick-second-key (:data expr))]
+          (-> db
+              (update-in
+               [:ir :files]
+               (fn [files]
+                 (-> files
+                     (update-in [old-ns :defs] (fn [file] (dissoc file old-def)))
+                     (assoc-in [new-ns :defs new-def] (get-in files [old-ns :defs old-def])))))
+              (update-in
+               [:sessions session-id :writer :stack (:index op-data)]
+               (fn [bookmark] (-> bookmark (assoc :ns new-ns) (assoc :extra new-def))))
+              (update-in
+               [:ir :files new-ns :defs new-def :data next-id :text]
+               (fn [x] new-def))))
+      :else (do (println "Unexpected kind:" kind) db))))
 
 (defn add-def [db op-data session-id op-id op-time]
   (let [selected-ns (get-in db [:sessions session-id :writer :selected-ns])

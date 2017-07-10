@@ -4,6 +4,8 @@
             [server.schema :as schema]
             [bisection-key.core :as bisection]))
 
+(defn pick-second-key [m] (first (rest (sort (keys m)))))
+
 (defn prepend-data [x] [:data x])
 
 (defn expr? [x] (= :expr (:type x)))

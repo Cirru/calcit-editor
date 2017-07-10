@@ -379,7 +379,8 @@
                        ["[]" "clojure.string" ":as" "string"]
                        ["[]" "server.schema" ":as" "schema"]
                        ["[]" "bisection-key.core" ":as" "bisection"]]],
-                 :defs {"prepend-data" ["defn" "prepend-data" ["x"] ["[]" ":data" "x"]],
+                 :defs {"pick-second-key" ["defn" "pick-second-key" ["m"] ["first" ["rest" ["sort" ["keys" "m"]]]]],
+                        "prepend-data" ["defn" "prepend-data" ["x"] ["[]" ":data" "x"]],
                         "expr?" ["defn" "expr?" ["x"] ["=" ":expr" [":type" "x"]]],
                         "to-bookmark" ["defn"
                                        "to-bookmark"
@@ -1087,6 +1088,7 @@
                                              ["ir/update-leaf" "db" "op-data" "session-id" "op-id" "op-time"]]
                                             [":ir/duplicate"
                                              ["ir/duplicate" "db" "op-data" "session-id" "op-id" "op-time"]]
+                                            [":ir/rename" ["ir/rename" "db" "op-data" "session-id" "op-id" "op-time"]]
                                             [":notify/push-error"
                                              ["notify/push-error" "db" "op-data" "session-id" "op-id" "op-time"]]
                                             "db"]]},
@@ -1177,8 +1179,78 @@
                              ["[]"
                               "server.util"
                               ":refer"
-                              ["[]" "expr?" "leaf?" "bookmark->path" "to-writer" "to-bookmark" "to-keys" "cirru->tree"]]]],
-                       :defs {"add-def" ["defn"
+                              ["[]"
+                               "expr?"
+                               "leaf?"
+                               "bookmark->path"
+                               "to-writer"
+                               "to-bookmark"
+                               "to-keys"
+                               "cirru->tree"
+                               "pick-second-key"]]]],
+                       :defs {"rename" ["defn"
+                                        "rename"
+                                        ["db" "op-data" "session-id" "op-id" "op-time"]
+                                        ["let"
+                                         [[["{}" ["kind" ":kind"] ["ns-info" ":ns"] ["extra-info" ":extra"]] "op-data"]]
+                                         ["cond"
+                                          [["=" ":ns" "kind"]
+                                           ["let"
+                                            [[["{}" ["old-ns" ":from"] ["new-ns" ":to"]] "ns-info"]
+                                             ["expr" ["get-in" "db" ["[]" ":ir" ":files" "old-ns" ":ns"]]]
+                                             ["next-id" ["pick-second-key" [":data" "expr"]]]]
+                                            ["->"
+                                             "db"
+                                             ["update-in"
+                                              ["[]" ":ir" ":files"]
+                                              ["fn"
+                                               ["files"]
+                                               ["->"
+                                                "files"
+                                                ["dissoc" "old-ns"]
+                                                ["assoc" "new-ns" ["get" "files" "old-ns"]]]]]
+                                             ["assoc-in"
+                                              ["[]"
+                                               ":sessions"
+                                               "session-id"
+                                               ":writer"
+                                               ":stack"
+                                               [":index" "op-data"]
+                                               ":ns"]
+                                              "new-ns"]
+                                             ["update-in"
+                                              ["[]" ":ir" ":files" "new-ns" ":ns" ":data" "next-id" ":text"]
+                                              ["fn" ["x"] "new-ns"]]]]]
+                                          [["=" ":def" "kind"]
+                                           ["let"
+                                            [[["{}" ["old-ns" ":from"] ["new-ns" ":to"]] "ns-info"]
+                                             [["{}" ["old-def" ":from"] ["new-def" ":to"]] "extra-info"]
+                                             ["expr" ["get-in" "db" ["[]" ":ir" ":files" "old-ns" ":defs" "old-def"]]]
+                                             ["next-id" ["pick-second-key" [":data" "expr"]]]]
+                                            ["->"
+                                             "db"
+                                             ["update-in"
+                                              ["[]" ":ir" ":files"]
+                                              ["fn"
+                                               ["files"]
+                                               ["->"
+                                                "files"
+                                                ["update-in"
+                                                 ["[]" "old-ns" ":defs"]
+                                                 ["fn" ["file"] ["dissoc" "file" "old-def"]]]
+                                                ["assoc-in"
+                                                 ["[]" "new-ns" ":defs" "new-def"]
+                                                 ["get-in" "files" ["[]" "old-ns" ":defs" "old-def"]]]]]]
+                                             ["update-in"
+                                              ["[]" ":sessions" "session-id" ":writer" ":stack" [":index" "op-data"]]
+                                              ["fn"
+                                               ["bookmark"]
+                                               ["->" "bookmark" ["assoc" ":ns" "new-ns"] ["assoc" ":extra" "new-def"]]]]
+                                             ["update-in"
+                                              ["[]" ":ir" ":files" "new-ns" ":defs" "new-def" ":data" "next-id" ":text"]
+                                              ["fn" ["x"] "new-def"]]]]]
+                                          [":else" ["do" ["println" "|Unexpected kind:" "kind"] "db"]]]]],
+                              "add-def" ["defn"
                                          "add-def"
                                          ["db" "op-data" "session-id" "op-id" "op-time"]
                                          ["let"
