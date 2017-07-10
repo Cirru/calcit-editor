@@ -6,7 +6,8 @@
             [cljs.reader :refer [read-string]]
             [app.network :refer [send! setup-socket!]]
             [app.schema :as schema]
-            [app.util.dom :refer [focus!]]))
+            [app.util.dom :refer [focus!]]
+            [app.util.shortcuts :refer [on-window-keydown]]))
 
 (def ssr? (some? (.querySelector js/document "meta.respo-ssr")))
 
@@ -42,6 +43,7 @@
    :changes
    (fn [] (render-app! render!) (if (= :editor (get-in @*store [:router :name])) (focus!))))
   (add-watch *states :changes (fn [] (render-app! render!)))
+  (.addEventListener js/window "keydown" (fn [event] (on-window-keydown event dispatch!)))
   (println "App started!"))
 
 (defn reload! [] (clear-cache!) (render-app! render!) (println "Code updated."))

@@ -65,7 +65,8 @@
                             ["[]" "respo.comp.space" ":refer" ["[]" "=<"]]
                             ["[]" "polyfill.core" ":refer" ["[]" "text-width*"]]
                             ["[]" "app.util.keycode" ":as" "keycode"]
-                            ["[]" "app.util" ":as" "util"]]],
+                            ["[]" "app.util" ":as" "util"]
+                            ["[]" "app.util.shortcuts" ":refer" ["[]" "on-window-keydown"]]]],
                       :defs {"on-input" ["defn"
                                          "on-input"
                                          ["state" "coord"]
@@ -184,7 +185,10 @@
                                                  [".preventDefault" "event"]]]]
                                               [["and" "meta?" "shift?" ["=" "code" "keycode/v"]]
                                                ["do" ["d!" ":writer/paste" "nil"] [".preventDefault" "event"]]]
-                                              [":else" ["println" "|Keydown leaf" "code"]]]]]]},
+                                              [":else"
+                                               ["do"
+                                                ["println" "|Keydown leaf" "code"]
+                                                ["on-window-keydown" "event" "d!"]]]]]]]},
                       :procs []},
          "comp.bookmark" {:ns ["ns"
                                "app.comp.bookmark"
@@ -435,6 +439,7 @@
                                 "right" ["def" "right" "39"],
                                 "up" ["def" "up" "38"],
                                 "delete" ["def" "delete" "8"],
+                                "p" ["def" "p" "80"],
                                 "x" ["def" "x" "88"],
                                 "v" ["def" "v" "86"],
                                 "down" ["def" "down" "40"],
@@ -465,14 +470,17 @@
                                                           [":style" ["merge" "ui/row" "ui/flex" "style-container"]]]
                                                          ["div"
                                                           ["{}" [":style" "style-stack"]]
-                                                          ["->>"
-                                                           "stack"
-                                                           ["map-indexed"
-                                                            ["fn"
-                                                             ["idx" "bookmark"]
-                                                             ["[]"
-                                                              "idx"
-                                                              ["comp-bookmark" "bookmark" "idx" ["=" "idx" "pointer"]]]]]]]
+                                                          ["if"
+                                                           ["empty?" "stack"]
+                                                           ["<>" "span" "|Nothing selected" "style-nothing"]
+                                                           ["->>"
+                                                            "stack"
+                                                            ["map-indexed"
+                                                             ["fn"
+                                                              ["idx" "bookmark"]
+                                                              ["[]"
+                                                               "idx"
+                                                               ["comp-bookmark" "bookmark" "idx" ["=" "idx" "pointer"]]]]]]]]
                                                          ["=<" "8" "nil"]
                                                          ["div"
                                                           ["{}" [":style" "style-editor"]]
@@ -492,7 +500,7 @@
                                                              "others"
                                                              "false"
                                                              "false"]
-                                                            "ui-missing"]]
+                                                            ["if" ["not" ["empty?" "stack"]] "ui-missing"]]]
                                                           ["--" "comp-inspect" "|Expr" "router-data" "style/inspector"]]]],
                                     "style-stack" ["def" "style-stack" ["{}" [":width" "240"]]],
                                     "style-editor" ["def" "style-editor" ["merge" "ui/flex" ["{}"]]],
@@ -508,7 +516,13 @@
                                                       [":font-family" "|Josefin Sans"]
                                                       [":color" ["hsl" "10" "60" "50"]]
                                                       [":font-size" "20"]
-                                                      [":font-weight" "100"]]]},
+                                                      [":font-weight" "100"]]],
+                                    "style-nothing" ["def"
+                                                     "style-nothing"
+                                                     ["{}"
+                                                      [":color" ["hsl" "0" "0" "100" "0.4"]]
+                                                      [":padding" "|0 16px"]
+                                                      [":font-family" "|Josefin Sans"]]]},
                              :procs []},
          "util" {:defs {"now!" ["defn" "now!" [] [".valueOf" ["js/Date."]]],
                         "coord-contains?" ["defn"
@@ -767,7 +781,8 @@
                        ["[]" "cljs.reader" ":refer" ["[]" "read-string"]]
                        ["[]" "app.network" ":refer" ["[]" "send!" "setup-socket!"]]
                        ["[]" "app.schema" ":as" "schema"]
-                       ["[]" "app.util.dom" ":refer" ["[]" "focus!"]]]],
+                       ["[]" "app.util.dom" ":refer" ["[]" "focus!"]]
+                       ["[]" "app.util.shortcuts" ":refer" ["[]" "on-window-keydown"]]]],
                  :defs {"ssr?" ["def" "ssr?" ["some?" [".querySelector" "js/document" "|meta.respo-ssr"]]],
                         "dispatch!" ["defn"
                                      "dispatch!"
@@ -802,6 +817,10 @@
                                    ["render-app!" "render!"]
                                    ["if" ["=" ":editor" ["get-in" "@*store" ["[]" ":router" ":name"]]] ["focus!"]]]]
                                  ["add-watch" "*states" ":changes" ["fn" [] ["render-app!" "render!"]]]
+                                 [".addEventListener"
+                                  "js/window"
+                                  "|keydown"
+                                  ["fn" ["event"] ["on-window-keydown" "event" "dispatch!"]]]
                                  ["println" "|App started!"]],
                         "*states" ["defonce" "*states" ["atom" ["{}"]]],
                         "simulate-login!" ["defn"
@@ -1395,7 +1414,8 @@
                             ["[]" "respo.comp.space" ":refer" ["[]" "=<"]]
                             ["[]" "app.util.keycode" ":as" "keycode"]
                             ["[]" "app.comp.leaf" ":refer" ["[]" "comp-leaf"]]
-                            ["[]" "app.util" ":refer" ["[]" "coord-contains?" "simple?" "leaf?" "expr?"]]]],
+                            ["[]" "app.util" ":refer" ["[]" "coord-contains?" "simple?" "leaf?" "expr?"]]
+                            ["[]" "app.util.shortcuts" ":refer" ["[]" "on-window-keydown"]]]],
                       :defs {"comp-expr" ["defcomp"
                                           "comp-expr"
                                           ["states" "expr" "focus" "coord" "others" "tail?" "after-expr?"]
@@ -1522,7 +1542,10 @@
                                               [["and" "meta?" ["=" "code" "keycode/x"]] ["d!" ":writer/cut" "nil"]]
                                               [["and" "meta?" ["=" "code" "keycode/v"]] ["d!" ":writer/paste" "nil"]]
                                               [["and" "meta?" ["=" "code" "keycode/b"]] ["d!" ":ir/duplicate" "nil"]]
-                                              [":else" ["println" "|Keydown" [":key-code" "e"]]]]]]],
+                                              [":else"
+                                               ["do"
+                                                ["println" "|Keydown" [":key-code" "e"]]
+                                                ["on-window-keydown" "event" "d!"]]]]]]],
                              "on-focus" ["defn"
                                          "on-focus"
                                          ["coord"]
@@ -1542,4 +1565,21 @@
                                             [":display" ":inline-block"]
                                             [":vertical-align" ":top"]
                                             [":padding-left" "8"]]]},
-                      :procs []}}}
+                      :procs []},
+         "util.shortcuts" {:ns ["ns"
+                                "app.util.shortcuts"
+                                [":require"
+                                 ["[]" "app.util.keycode" ":as" "keycode"]
+                                 ["[]" "app.util.dom" ":refer" ["[]" "focus-search!"]]]],
+                           :defs {"on-window-keydown" ["defn"
+                                                       "on-window-keydown"
+                                                       ["event" "dispatch!"]
+                                                       ["cond"
+                                                        [["and"
+                                                          [".-metaKey" "event"]
+                                                          ["=" [".-keyCode" "event"] "keycode/p"]]
+                                                         ["do"
+                                                          ["dispatch!" ":router/change" ["{}" [":name" ":search"]]]
+                                                          ["focus-search!"]
+                                                          [".preventDefault" "event"]]]]]},
+                           :procs []}}}

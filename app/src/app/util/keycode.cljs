@@ -11,6 +11,8 @@
 
 (def delete 8)
 
+(def p 80)
+
 (def x 88)
 
 (def v 86)

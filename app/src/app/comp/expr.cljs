@@ -8,7 +8,8 @@
             [respo.comp.space :refer [=<]]
             [app.util.keycode :as keycode]
             [app.comp.leaf :refer [comp-leaf]]
-            [app.util :refer [coord-contains? simple? leaf? expr?]]))
+            [app.util :refer [coord-contains? simple? leaf? expr?]]
+            [app.util.shortcuts :refer [on-window-keydown]]))
 
 (def style-expr
   {:border-width "0 0 0px 1px",
@@ -50,7 +51,7 @@
         (and meta? (= code keycode/x)) (d! :writer/cut nil)
         (and meta? (= code keycode/v)) (d! :writer/paste nil)
         (and meta? (= code keycode/b)) (d! :ir/duplicate nil)
-        :else (println "Keydown" (:key-code e))))))
+        :else (do (println "Keydown" (:key-code e)) (on-window-keydown event d!))))))
 
 (defn on-focus [coord] (fn [e d! m!] (d! :writer/focus coord)))
 

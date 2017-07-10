@@ -9,7 +9,8 @@
             [respo.comp.space :refer [=<]]
             [polyfill.core :refer [text-width*]]
             [app.util.keycode :as keycode]
-            [app.util :as util]))
+            [app.util :as util]
+            [app.util.shortcuts :refer [on-window-keydown]]))
 
 (defn on-input [state coord]
   (fn [e d! m!]
@@ -70,7 +71,7 @@
             (do (println text-length) (d! :writer/go-right nil) (.preventDefault event)))
         (and meta? shift? (= code keycode/v))
           (do (d! :writer/paste nil) (.preventDefault event))
-        :else (println "Keydown leaf" code)))))
+        :else (do (println "Keydown leaf" code) (on-window-keydown event d!))))))
 
 (defcomp
  comp-leaf
