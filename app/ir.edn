@@ -267,6 +267,132 @@
                                                      ["<>" "span" ["name" [":kind" "bookmark"]] "style-kind"]]]]],
                                  "style-main" ["def" "style-main" ["{}" [":vertical-align" ":middle"]]]},
                           :procs []},
+         "comp.search" {:ns ["ns"
+                             "app.comp.search"
+                             [":require-macros"
+                              ["[]" "respo.macros" ":refer" ["[]" "defcomp" "<>" "span" "div" "input" "a"]]]
+                             [":require"
+                              ["[]" "clojure.string" ":as" "string"]
+                              ["[]" "hsl.core" ":refer" ["[]" "hsl"]]
+                              ["[]" "respo-ui.style" ":as" "ui"]
+                              ["[]" "respo-ui.style.colors" ":as" "colors"]
+                              ["[]" "respo.core" ":refer" ["[]" "create-comp"]]
+                              ["[]" "respo.comp.space" ":refer" ["[]" "=<"]]
+                              ["[]" "polyfill.core" ":refer" ["[]" "text-width*"]]
+                              ["[]" "app.util.keycode" ":as" "keycode"]
+                              ["[]" "app.util" ":as" "util"]
+                              ["[]" "app.style" ":as" "style"]]],
+                        :defs {"on-input" ["defn"
+                                           "on-input"
+                                           ["state"]
+                                           ["fn"
+                                            ["e" "d!" "m!"]
+                                            ["m!" ["{}" [":query" [":value" "e"]] [":selection" "0"]]]]],
+                               "style-candidate" ["def"
+                                                  "style-candidate"
+                                                  ["{}"
+                                                   [":padding" "|0 8px"]
+                                                   [":color" ["hsl" "0" "0" "100" "0.6"]]
+                                                   [":cursor" ":pointer"]]],
+                               "style-search" ["def" "style-search" ["{}" [":padding" "|0 16px"]]],
+                               "style-highlight" ["def" "style-highlight" ["{}" [":color" ":white"]]],
+                               "style-input" ["def" "style-input" ["merge" "style/input" ["{}" [":width" "400"]]]],
+                               "on-select" ["defn"
+                                            "on-select"
+                                            ["bookmark"]
+                                            ["fn"
+                                             ["e" "d!" "m!"]
+                                             ["m!" ["{}" [":position" ":0"] [":query" "|"]]]
+                                             ["d!" ":writer/select" "bookmark"]]],
+                               "comp-search" ["defcomp"
+                                              "comp-search"
+                                              ["states" "router-data"]
+                                              ["let"
+                                               [["state" ["or" [":data" "states"] "initial-state"]]
+                                                ["queries"
+                                                 ["->>" ["string/split" [":query" "state"] "| "] ["map" "string/trim"]]]
+                                                ["candidates"
+                                                 ["->>"
+                                                  "router-data"
+                                                  ["filter"
+                                                   ["fn"
+                                                    ["bookmark"]
+                                                    ["every?"
+                                                     ["fn" ["y"] ["string/includes?" ["bookmark->str" "bookmark"] "y"]]
+                                                     "queries"]]]
+                                                  ["sort-by" "bookmark->str"]]]]
+                                               ["div"
+                                                ["{}" [":style" "style-search"]]
+                                                ["div"
+                                                 ["{}"]
+                                                 ["input"
+                                                  ["{}"
+                                                   [":placeholder" "|Type to search..."]
+                                                   [":value" [":query" "state"]]
+                                                   [":class-name" "|search-input"]
+                                                   [":style" "style-input"]
+                                                   [":on"
+                                                    ["{}"
+                                                     [":input" ["on-input" "state"]]
+                                                     [":keydown" ["on-keydown" "state" "candidates"]]]]]]]
+                                                ["div"
+                                                 ["{}"]
+                                                 ["->>"
+                                                  "candidates"
+                                                  ["map-indexed"
+                                                   ["fn"
+                                                    ["idx" "bookmark"]
+                                                    ["let"
+                                                     [["text" ["bookmark->str" "bookmark"]]]
+                                                     ["[]"
+                                                      "text"
+                                                      ["div"
+                                                       ["{}"
+                                                        [":class-name" "|hoverable"]
+                                                        [":style"
+                                                         ["merge"
+                                                          "style-candidate"
+                                                          ["if" ["=" "idx" [":selection" "state"]] "style-highlight"]]]
+                                                        [":on" ["{}" [":click" ["on-select" "bookmark"]]]]]
+                                                       ["<>" "span" "text" "nil"]]]]]]]]]]],
+                               "initial-state" ["def" "initial-state" ["{}" [":query" "|"] [":selection" "0"]]],
+                               "bookmark->str" ["defn"
+                                                "bookmark->str"
+                                                ["bookmark"]
+                                                ["str"
+                                                 [":kind" "bookmark"]
+                                                 "| "
+                                                 [":ns" "bookmark"]
+                                                 "| "
+                                                 [":extra" "bookmark"]]],
+                               "on-keydown" ["defn"
+                                             "on-keydown"
+                                             ["state" "candidates"]
+                                             ["fn"
+                                              ["e" "d!" "m!"]
+                                              ["let"
+                                               [["code" [":key-code" "e"]] ["event" [":original-event" "e"]]]
+                                               ["cond"
+                                                [["=" "keycode/enter" "code"]
+                                                 ["do"
+                                                  ["m!" ["{}" [":query" "|"] [":position" "0"]]]
+                                                  ["d!"
+                                                   ":writer/select"
+                                                   ["get" ["vec" "candidates"] [":selection" "state"]]]]]
+                                                [["=" "keycode/up" "code"]
+                                                 ["do"
+                                                  [".preventDefault" "event"]
+                                                  ["if"
+                                                   ["pos?" [":selection" "state"]]
+                                                   ["m!" ["update" "state" ":selection" "dec"]]]]]
+                                                [["=" "keycode/down" "code"]
+                                                 ["do"
+                                                  [".preventDefault" "event"]
+                                                  ["if"
+                                                   ["<" [":selection" "state"] ["dec" ["count" "candidates"]]]
+                                                   ["m!" ["update" "state" ":selection" "inc"]]]]]
+                                                [":else" "nil"]]]]]},
+                        :procs []},
          "comp.profile" {:ns ["ns"
                               "app.comp.profile"
                               [":require-macros"
@@ -416,7 +542,8 @@
                                  ["[]" "respo-message.comp.msg-list" ":refer" ["[]" "comp-msg-list"]]
                                  ["[]" "app.comp.page-files" ":refer" ["[]" "comp-page-files"]]
                                  ["[]" "app.comp.page-editor" ":refer" ["[]" "comp-page-editor"]]
-                                 ["[]" "app.comp.page-members" ":refer" ["[]" "comp-page-members"]]]],
+                                 ["[]" "app.comp.page-members" ":refer" ["[]" "comp-page-members"]]
+                                 ["[]" "app.comp.search" ":refer" ["[]" "comp-search"]]]],
                            :defs {"style-alert" ["def"
                                                  "style-alert"
                                                  ["{}"
@@ -469,6 +596,12 @@
                                                             [":data" "router"]
                                                             [":pointer" "writer"]]]
                                                           [":members" ["comp-page-members" [":data" "router"]]]
+                                                          [":search"
+                                                           ["cursor->"
+                                                            ":search"
+                                                            "comp-search"
+                                                            "states"
+                                                            [":data" "router"]]]
                                                           ["div"
                                                            ["{}"]
                                                            ["<>" "span" ["str" "|404 page: " ["pr-str" "router"]] "nil"]]]
@@ -569,7 +702,17 @@
                                          ["if"
                                           ["some?" "cirru-focused"]
                                           ["if" ["not=" "current-focused" "cirru-focused"] [".focus" "cirru-focused"]]
-                                          ["println" "|[Editor] .cirru-focused not found" "cirru-focused"]]]]]]},
+                                          ["println" "|[Editor] .cirru-focused not found" "cirru-focused"]]]]]],
+                            "focus-search!" ["defn"
+                                             "focus-search!"
+                                             []
+                                             ["js/setTimeout"
+                                              ["fn"
+                                               ["timestamp"]
+                                               ["let"
+                                                [["target" [".querySelector" "js/document" "|.search-input"]]]
+                                                ["if" ["some?" "target"] [".focus" "target"]]]]
+                                              "300"]]},
                      :procs []},
          "style" {:ns ["ns"
                        "app.style"
@@ -1089,11 +1232,13 @@
                               ["[]" "respo-ui.style" ":as" "ui"]
                               ["[]" "respo-ui.style.colors" ":as" "colors"]
                               ["[]" "respo.core" ":refer" ["[]" "create-comp"]]
-                              ["[]" "respo.comp.space" ":refer" ["[]" "=<"]]]],
+                              ["[]" "respo.comp.space" ":refer" ["[]" "=<"]]
+                              ["[]" "app.util.dom" ":refer" ["[]" "focus-search!"]]]],
                         :defs {"on-search" ["defn"
                                             "on-search"
                                             ["e" "d!" "m!"]
-                                            ["d!" ":router/change" ["{}" [":name" ":search"]]]],
+                                            ["d!" ":router/change" ["{}" [":name" ":search"]]]
+                                            ["focus-search!"]],
                                "on-profile" ["defn"
                                              "on-profile"
                                              ["e" "dispatch!"]

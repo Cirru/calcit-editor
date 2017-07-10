@@ -5,9 +5,10 @@
             [respo-ui.style :as ui]
             [respo-ui.style.colors :as colors]
             [respo.core :refer [create-comp]]
-            [respo.comp.space :refer [=<]]))
+            [respo.comp.space :refer [=<]]
+            [app.util.dom :refer [focus-search!]]))
 
-(defn on-search [e d! m!] (d! :router/change {:name :search}))
+(defn on-search [e d! m!] (d! :router/change {:name :search}) (focus-search!))
 
 (defn on-profile [e dispatch!]
   (dispatch! :router/change {:name :profile, :data nil, :router nil}))

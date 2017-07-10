@@ -13,7 +13,8 @@
                                  ["[]" "server.twig.user" ":refer" ["[]" "twig-user"]]
                                  ["[]" "server.twig.page-files" ":refer" ["[]" "twig-page-files"]]
                                  ["[]" "server.twig.page-editor" ":refer" ["[]" "twig-page-editor"]]
-                                 ["[]" "server.twig.page-members" ":refer" ["[]" "twig-page-members"]]]],
+                                 ["[]" "server.twig.page-members" ":refer" ["[]" "twig-page-members"]]
+                                 ["[]" "server.twig.search" ":refer" ["[]" "twig-search"]]]],
                            :defs {"twig-container" ["def"
                                                     "twig-container"
                                                     ["create-twig"
@@ -52,6 +53,7 @@
                                                               [":id" "session"]]]
                                                             [":members"
                                                              ["twig-page-members" [":sessions" "db"] [":users" "db"]]]
+                                                            [":search" ["twig-search" [":files" "ir"]]]
                                                             "nil"]]]]
                                                         ["{}" [":session" "session"] [":logged-in?" "false"]]]]]]]},
                            :procs []},
@@ -240,6 +242,28 @@
                                             ["assoc-in"
                                              ["[]" ":sessions" "session-id" ":router"]
                                              ["{}" [":name" ":editor"]]]]]],
+                                  "select" ["defn"
+                                            "select"
+                                            ["db" "op-data" "session-id" "op-id" "op-time"]
+                                            ["let"
+                                             [["bookmark" "op-data"]]
+                                             ["->"
+                                              "db"
+                                              ["update-in"
+                                               ["[]" ":sessions" "session-id" ":writer"]
+                                               ["fn"
+                                                ["writer"]
+                                                ["let"
+                                                 [[["{}" ["stack" ":stack"] ["pointer" ":pointer"]] "writer"]]
+                                                 ["assoc"
+                                                  "writer"
+                                                  ":stack"
+                                                  ["conj" "stack" "bookmark"]
+                                                  ":pointer"
+                                                  ["count" "stack"]]]]]
+                                              ["assoc-in"
+                                               ["[]" ":sessions" "session-id" ":router"]
+                                               ["{}" [":name" ":editor"]]]]]],
                                   "go-right" ["defn"
                                               "go-right"
                                               ["db" "op-data" "session-id" "op-id" "op-time"]
@@ -489,6 +513,35 @@
                                                    [["writer" [":writer" "session"]]]
                                                    ["get" [":stack" "writer"] [":pointer" "writer"]]]]
                                                  [":page" ["get-in" "session" ["[]" ":router" ":name"]]]]]]]},
+                        :procs []},
+         "twig.search" {:ns ["ns"
+                             "server.twig.search"
+                             [":require" ["[]" "recollect.bunch" ":refer" ["[]" "create-twig"]]]],
+                        :defs {"twig-search" ["def"
+                                              "twig-search"
+                                              ["create-twig"
+                                               ":search"
+                                               ["fn"
+                                                ["files"]
+                                                ["->>"
+                                                 "files"
+                                                 ["mapcat"
+                                                  ["fn"
+                                                   ["entry"]
+                                                   ["let"
+                                                    [[["[]" "k" "file"] "entry"]]
+                                                    ["concat"
+                                                     ["[]"
+                                                      ["{}" [":kind" ":ns"] [":ns" "k"]]
+                                                      ["{}" [":kind" ":proc"] [":ns" "k"]]]
+                                                     ["map"
+                                                      ["fn"
+                                                       ["f-entry"]
+                                                       ["let"
+                                                        [[["[]" "f-k" "file"] "f-entry"]]
+                                                        ["{}" [":kind" ":def"] [":ns" "k"] [":extra" "f-k"]]]]
+                                                      [":defs" "file"]]]]]]
+                                                 ["set"]]]]]},
                         :procs []},
          "updater.user" {:ns ["ns" "server.updater.user" [":require" ["[]" "server.util" ":refer" ["[]" "find-first"]]]],
                          :defs {"sign-up" ["defn"
@@ -901,6 +954,8 @@
                                              ["router/change" "db" "op-data" "session-id" "op-id" "op-time"]]
                                             [":writer/edit"
                                              ["writer/edit" "db" "op-data" "session-id" "op-id" "op-time"]]
+                                            [":writer/select"
+                                             ["writer/select" "db" "op-data" "session-id" "op-id" "op-time"]]
                                             [":writer/point-to"
                                              ["writer/point-to" "db" "op-data" "session-id" "op-id" "op-time"]]
                                             [":writer/focus"

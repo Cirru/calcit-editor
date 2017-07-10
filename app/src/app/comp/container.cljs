@@ -12,7 +12,8 @@
             [respo-message.comp.msg-list :refer [comp-msg-list]]
             [app.comp.page-files :refer [comp-page-files]]
             [app.comp.page-editor :refer [comp-page-editor]]
-            [app.comp.page-members :refer [comp-page-members]]))
+            [app.comp.page-members :refer [comp-page-members]]
+            [app.comp.search :refer [comp-search]]))
 
 (def style-alert {:font-family "Josefin Sans", :font-weight 100, :font-size 40})
 
@@ -58,6 +59,7 @@
               (:data router)
               (:pointer writer))
            :members (comp-page-members (:data router))
+           :search (cursor-> :search comp-search states (:data router))
            (div {} (<> span (str "404 page: " (pr-str router)) nil)))
          (comp-login states)))
       (comp-inspect "Session" (:session store) style-inspector)

@@ -4,7 +4,8 @@
             [server.twig.user :refer [twig-user]]
             [server.twig.page-files :refer [twig-page-files]]
             [server.twig.page-editor :refer [twig-page-editor]]
-            [server.twig.page-members :refer [twig-page-members]]))
+            [server.twig.page-members :refer [twig-page-members]]
+            [server.twig.search :refer [twig-search]]))
 
 (def twig-container
   (create-twig
@@ -30,5 +31,6 @@
                      :editor
                        (twig-page-editor (:files ir) (:sessions db) writer (:id session))
                      :members (twig-page-members (:sessions db) (:users db))
+                     :search (twig-search (:files ir))
                      nil))}
          {:session session, :logged-in? false})))))

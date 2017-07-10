@@ -57,6 +57,16 @@
              (assoc writer :stack (conj stack bookmark) :pointer (count stack)))))
         (assoc-in [:sessions session-id :router] {:name :editor}))))
 
+(defn select [db op-data session-id op-id op-time]
+  (let [bookmark op-data]
+    (-> db
+        (update-in
+         [:sessions session-id :writer]
+         (fn [writer]
+           (let [{stack :stack, pointer :pointer} writer]
+             (assoc writer :stack (conj stack bookmark) :pointer (count stack)))))
+        (assoc-in [:sessions session-id :router] {:name :editor}))))
+
 (defn go-right [db op-data session-id op-id op-time]
   (let [writer (get-in db [:sessions session-id :writer])
         bookmark (get (:stack writer) (:pointer writer))
