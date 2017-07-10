@@ -18,31 +18,35 @@
    :padding "0 16px",
    :font-size 20,
    :color :white,
-   :border-bottom (str "1px solid " (hsl 0 0 30)),
+   :border-bottom (str "1px solid " (hsl 0 0 100 0.2)),
    :font-family "Josefin Sans",
    :font-weight 100})
+
+(def style-highlight {:color (hsl 0 0 100)})
+
+(def style-entry {:cursor :pointer, :width 80, :color (hsl 0 0 100 0.6)})
+
+(defn render-entry [page-name this-page router-name on-click]
+  (div
+   {:on {:click on-click},
+    :style (merge style-entry (if (= this-page router-name) style-highlight))}
+   (<> span page-name nil)))
 
 (defn on-files [e dispatch! m!] (dispatch! :router/change {:name :files}))
 
 (defn on-editor [e d! m!] (d! :router/change {:name :editor}))
 
-(def style-pointer {:cursor "pointer"})
-
 (defn on-members [e d! m!] (d! :router/change {:name :members}))
-
-(def style-entry {:cursor :pointer, :width 80})
 
 (defcomp
  comp-header
- (logged-in?)
+ (router-name logged-in?)
  (div
   {:style (merge ui/row-center style-header)}
   (div
    {:style ui/row}
-   (div {:on {:click on-files}, :style style-entry} (<> span "Files" nil))
-   (div {:on {:click on-editor}, :style style-entry} (<> span "Editor" nil))
-   (div {:on {:click on-search}, :style style-entry} (<> span "Search" nil))
-   (div {:on {:click on-members}, :style style-entry} (<> span "Members" nil)))
-  (div
-   {:style style-pointer, :on {:click on-profile}}
-   (<> span (if logged-in? "Me" "Guest") nil))))
+   (render-entry "Files" :files router-name on-files)
+   (render-entry "Editor" :editor router-name on-editor)
+   (render-entry "Search" :search router-name on-search)
+   (render-entry "Members" :members router-name on-members))
+  (div {} (render-entry (if logged-in? "Profile" "Guest") :profile router-name on-profile))))

@@ -429,7 +429,8 @@
                                                     ["let"
                                                      [["state" [":data" "states"]]
                                                       ["session" [":session" "store"]]
-                                                      ["writer" [":writer" "session"]]]
+                                                      ["writer" [":writer" "session"]]
+                                                      ["router" [":router" "store"]]]
                                                      ["if"
                                                       ["nil?" "store"]
                                                       ["div"
@@ -444,38 +445,33 @@
                                                           "ui/fullscreen"
                                                           "ui/column"
                                                           "style-container"]]]
-                                                       ["comp-header" [":logged-in?" "store"]]
+                                                       ["comp-header" [":name" "router"] [":logged-in?" "store"]]
                                                        ["div"
                                                         ["{}" [":style" ["merge" "ui/row" "ui/flex" "style-body"]]]
                                                         ["if"
                                                          [":logged-in?" "store"]
-                                                         ["let"
-                                                          [["router" [":router" "store"]]]
-                                                          ["case"
-                                                           [":name" "router"]
-                                                           [":profile" ["comp-profile" [":user" "store"]]]
-                                                           [":files"
-                                                            ["cursor->"
-                                                             ":files"
-                                                             "comp-page-files"
-                                                             "states"
-                                                             [":selected-ns" "writer"]
-                                                             [":data" "router"]]]
-                                                           [":editor"
-                                                            ["cursor->"
-                                                             ":editor"
-                                                             "comp-page-editor"
-                                                             "states"
-                                                             [":stack" "writer"]
-                                                             [":data" "router"]
-                                                             [":pointer" "writer"]]]
-                                                           [":members" ["comp-page-members" [":data" "router"]]]
-                                                           ["div"
-                                                            ["{}"]
-                                                            ["<>"
-                                                             "span"
-                                                             ["str" "|404 page: " ["pr-str" "router"]]
-                                                             "nil"]]]]
+                                                         ["case"
+                                                          [":name" "router"]
+                                                          [":profile" ["comp-profile" [":user" "store"]]]
+                                                          [":files"
+                                                           ["cursor->"
+                                                            ":files"
+                                                            "comp-page-files"
+                                                            "states"
+                                                            [":selected-ns" "writer"]
+                                                            [":data" "router"]]]
+                                                          [":editor"
+                                                           ["cursor->"
+                                                            ":editor"
+                                                            "comp-page-editor"
+                                                            "states"
+                                                            [":stack" "writer"]
+                                                            [":data" "router"]
+                                                            [":pointer" "writer"]]]
+                                                          [":members" ["comp-page-members" [":data" "router"]]]
+                                                          ["div"
+                                                           ["{}"]
+                                                           ["<>" "span" ["str" "|404 page: " ["pr-str" "router"]] "nil"]]]
                                                          ["comp-login" "states"]]]
                                                        ["comp-inspect"
                                                         "|Session"
@@ -1112,10 +1108,22 @@
                                                 [":padding" "|0 16px"]
                                                 [":font-size" "16"]
                                                 [":color" ":white"]
-                                                [":border-bottom" ["str" "|1px solid " ["hsl" "0" "0" "30"]]]
+                                                [":border-bottom" ["str" "|1px solid " ["hsl" "0" "0" "100" "0.2"]]]
                                                 [":font-family" "|Josefin Sans"]
                                                 [":font-weight" "100"]
                                                 [":font-size" "20"]]],
+                               "render-entry" ["defn"
+                                               "render-entry"
+                                               ["page-name" "this-page" "router-name" "on-click"]
+                                               ["div"
+                                                ["{}"
+                                                 [":on" ["{}" [":click" "on-click"]]]
+                                                 [":style"
+                                                  ["merge"
+                                                   "style-entry"
+                                                   ["if" ["=" "this-page" "router-name"] "style-highlight"]]]]
+                                                ["<>" "span" "page-name" "nil"]]],
+                               "style-highlight" ["def" "style-highlight" ["{}" [":color" ["hsl" "0" "0" "100"]]]],
                                "on-files" ["defn"
                                            "on-files"
                                            ["e" "dispatch!" "m!"]
@@ -1124,34 +1132,34 @@
                                             "on-editor"
                                             ["e" "d!" "m!"]
                                             ["d!" ":router/change" ["{}" [":name" ":editor"]]]],
-                               "style-pointer" ["def" "style-pointer" ["{}" [":cursor" "|pointer"]]],
                                "comp-header" ["defcomp"
                                               "comp-header"
-                                              ["logged-in?"]
+                                              ["router-name" "logged-in?"]
                                               ["div"
                                                ["{}" [":style" ["merge" "ui/row-center" "style-header"]]]
                                                ["div"
                                                 ["{}" [":style" "ui/row"]]
-                                                ["div"
-                                                 ["{}" [":on" ["{}" [":click" "on-files"]]] [":style" "style-entry"]]
-                                                 ["<>" "span" "|Files" "nil"]]
-                                                ["div"
-                                                 ["{}" [":on" ["{}" [":click" "on-editor"]]] [":style" "style-entry"]]
-                                                 ["<>" "span" "|Editor" "nil"]]
-                                                ["div"
-                                                 ["{}" [":on" ["{}" [":click" "on-search"]]] [":style" "style-entry"]]
-                                                 ["<>" "span" "|Search" "nil"]]
-                                                ["div"
-                                                 ["{}" [":on" ["{}" [":click" "on-members"]]] [":style" "style-entry"]]
-                                                 ["<>" "span" "|Members" "nil"]]]
+                                                ["render-entry" "|Files" ":files" "router-name" "on-files"]
+                                                ["render-entry" "|Editor" ":editor" "router-name" "on-editor"]
+                                                ["render-entry" "|Search" ":search" "router-name" "on-search"]
+                                                ["render-entry" "|Members" ":members" "router-name" "on-members"]]
                                                ["div"
-                                                ["{}" [":style" "style-pointer"] [":on" ["{}" [":click" "on-profile"]]]]
-                                                ["<>" "span" ["if" "logged-in?" "|Me" "|Guest"] "nil"]]]],
+                                                ["{}"]
+                                                ["render-entry"
+                                                 ["if" "logged-in?" "|Profile" "|Guest"]
+                                                 ":profile"
+                                                 "router-name"
+                                                 "on-profile"]]]],
                                "on-members" ["defn"
                                              "on-members"
                                              ["e" "d!" "m!"]
                                              ["d!" ":router/change" ["{}" [":name" ":members"]]]],
-                               "style-entry" ["def" "style-entry" ["{}" [":cursor" ":pointer"] [":width" "80"]]]},
+                               "style-entry" ["def"
+                                              "style-entry"
+                                              ["{}"
+                                               [":cursor" ":pointer"]
+                                               [":width" "80"]
+                                               [":color" ["hsl" "0" "0" "100" "0.6"]]]]},
                         :procs []},
          "comp.page-members" {:ns ["ns"
                                    "app.comp.page-members"

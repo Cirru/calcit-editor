@@ -31,32 +31,34 @@
 (defcomp
  comp-container
  (states store)
- (let [state (:data states), session (:session store), writer (:writer session)]
+ (let [state (:data states)
+       session (:session store)
+       writer (:writer session)
+       router (:router store)]
    (if (nil? store)
      (div
       {:style (merge ui/global ui/fullscreen ui/center)}
       (<> span "No connection!" style-alert))
      (div
       {:style (merge ui/global ui/fullscreen ui/column style-container)}
-      (comp-header (:logged-in? store))
+      (comp-header (:name router) (:logged-in? store))
       (div
        {:style (merge ui/row ui/flex style-body)}
        (if (:logged-in? store)
-         (let [router (:router store)]
-           (case (:name router)
-             :profile (comp-profile (:user store))
-             :files
-               (cursor-> :files comp-page-files states (:selected-ns writer) (:data router))
-             :editor
-               (cursor->
-                :editor
-                comp-page-editor
-                states
-                (:stack writer)
-                (:data router)
-                (:pointer writer))
-             :members (comp-page-members (:data router))
-             (div {} (<> span (str "404 page: " (pr-str router)) nil))))
+         (case (:name router)
+           :profile (comp-profile (:user store))
+           :files
+             (cursor-> :files comp-page-files states (:selected-ns writer) (:data router))
+           :editor
+             (cursor->
+              :editor
+              comp-page-editor
+              states
+              (:stack writer)
+              (:data router)
+              (:pointer writer))
+           :members (comp-page-members (:data router))
+           (div {} (<> span (str "404 page: " (pr-str router)) nil)))
          (comp-login states)))
       (comp-inspect "Session" (:session store) style-inspector)
       (comp-inspect
