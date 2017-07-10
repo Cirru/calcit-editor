@@ -55,8 +55,12 @@
                 (:stack writer)
                 (:data router)
                 (:pointer writer))
-             :members (comp-page-members)
+             :members (comp-page-members (:data router))
              (div {} (<> span (str "404 page: " (pr-str router)) nil))))
          (comp-login states)))
-      (comp-inspect "Store" store style-inspector)
+      (comp-inspect "Session" (:session store) style-inspector)
+      (comp-inspect
+       "Router data"
+       (get-in store [:router :data])
+       (merge style-inspector {:left 100}))
       (comp-msg-list (get-in store [:session :notifications]) :session/remove-notification)))))

@@ -12,7 +12,8 @@
                                  ["[]" "recollect.bunch" ":refer" ["[]" "create-twig"]]
                                  ["[]" "server.twig.user" ":refer" ["[]" "twig-user"]]
                                  ["[]" "server.twig.page-files" ":refer" ["[]" "twig-page-files"]]
-                                 ["[]" "server.twig.page-editor" ":refer" ["[]" "twig-page-editor"]]]],
+                                 ["[]" "server.twig.page-editor" ":refer" ["[]" "twig-page-editor"]]
+                                 ["[]" "server.twig.page-members" ":refer" ["[]" "twig-page-members"]]]],
                            :defs {"twig-container" ["def"
                                                     "twig-container"
                                                     ["create-twig"
@@ -49,6 +50,8 @@
                                                               [":sessions" "db"]
                                                               "writer"
                                                               [":id" "session"]]]
+                                                            [":members"
+                                                             ["twig-page-members" [":sessions" "db"] [":users" "db"]]]
                                                             "nil"]]]]
                                                         ["{}" [":session" "session"] [":logged-in?" "false"]]]]]]]},
                            :procs []},
@@ -469,6 +472,24 @@
                                          ["{}" [":ns-set" ["#{}"]] [":defs-set" ["#{}"]] [":changed-files" ["{}"]]]]
                                         [":editor" ["{}" [":focus" ["[]"]] [":others" ["#{}"]] [":expr" "nil"]]]]]},
                    :procs []},
+         "twig.member" {:ns ["ns"
+                             "server.twig.member"
+                             [":require" ["[]" "recollect.bunch" ":refer" ["[]" "create-twig"]]]],
+                        :defs {"twig-member" ["def"
+                                              "twig-member"
+                                              ["create-twig"
+                                               ":member"
+                                               ["fn"
+                                                ["session" "user"]
+                                                ["{}"
+                                                 [":user" "user"]
+                                                 [":nickname" [":nickname" "session"]]
+                                                 [":bookmark"
+                                                  ["let"
+                                                   [["writer" [":writer" "session"]]]
+                                                   ["get" [":stack" "writer"] [":pointer" "writer"]]]]
+                                                 [":page" ["get-in" "session" ["[]" ":router" ":name"]]]]]]]},
+                        :procs []},
          "updater.user" {:ns ["ns" "server.updater.user" [":require" ["[]" "server.util" ":refer" ["[]" "find-first"]]]],
                          :defs {"sign-up" ["defn"
                                            "sign-up"
@@ -756,7 +777,7 @@
                                  "server.twig.page-files"
                                  [":require"
                                   ["[]" "recollect.bunch" ":refer" ["[]" "create-twig"]]
-                                  ["[]" "clojure.set" ":as" "set"]]],
+                                  ["[]" "clojure.set" ":refer" ["[]" "union"]]]],
                             :defs {"twig-page-files" ["def"
                                                       "twig-page-files"
                                                       ["create-twig"
@@ -781,9 +802,7 @@
                                                            "render-changed-files"
                                                            ["files" "saved-files"]
                                                            ["->>"
-                                                            ["set/union"
-                                                             ["keys-set" "files"]
-                                                             ["keys-set" "saved-files"]]
+                                                            ["union" ["keys-set" "files"] ["keys-set" "saved-files"]]
                                                             ["filter"
                                                              ["fn"
                                                               ["ns-text"]
@@ -809,7 +828,7 @@
                                                                  [":defs"
                                                                   ["let"
                                                                    [["all-defs"
-                                                                     ["set/union"
+                                                                     ["union"
                                                                       ["keys-set" [":defs" "file"]]
                                                                       ["keys-set" [":defs" "saved-file"]]]]
                                                                     ["defs" [":defs" "file"]]
@@ -832,7 +851,7 @@
                                                                         ["get" "saved-defs" "def-text"]]]]]
                                                                     ["into" ["{}"]]]]]]]]]]
                                                             ["into" ["{}"]]]],
-                                   "keys-set" ["defn" "keys-set" ["x"] ["into" ["#{}"] ["keys" "x"]]],
+                                   "keys-set" ["defn" "keys-set" ["x"] ["set" ["keys" "x"]]],
                                    "compare-entry" ["defn"
                                                     "compare-entry"
                                                     ["new-x" "old-x"]
@@ -932,6 +951,31 @@
                                              ["ir/duplicate" "db" "op-data" "session-id" "op-id" "op-time"]]
                                             "db"]]},
                          :procs []},
+         "twig.page-members" {:ns ["ns"
+                                   "server.twig.page-members"
+                                   [":require"
+                                    ["[]" "recollect.bunch" ":refer" ["[]" "create-twig"]]
+                                    ["[]" "server.twig.member" ":refer" ["[]" "twig-member"]]]],
+                              :defs {"twig-page-members" ["def"
+                                                          "twig-page-members"
+                                                          ["create-twig"
+                                                           ":page-members"
+                                                           ["fn"
+                                                            ["sessions" "users"]
+                                                            ["->>"
+                                                             "sessions"
+                                                             ["map"
+                                                              ["fn"
+                                                               ["entry"]
+                                                               ["let"
+                                                                [[["[]" "k" "session"] "entry"]]
+                                                                ["[]"
+                                                                 "k"
+                                                                 ["twig-member"
+                                                                  "session"
+                                                                  ["get" "users" [":user-id" "session"]]]]]]]
+                                                             ["into" ["{}"]]]]]]},
+                              :procs []},
          "twig.page-editor" {:ns ["ns"
                                   "server.twig.page-editor"
                                   [":require"

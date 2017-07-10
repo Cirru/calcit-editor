@@ -3,7 +3,8 @@
   (:require [recollect.bunch :refer [create-twig]]
             [server.twig.user :refer [twig-user]]
             [server.twig.page-files :refer [twig-page-files]]
-            [server.twig.page-editor :refer [twig-page-editor]]))
+            [server.twig.page-editor :refer [twig-page-editor]]
+            [server.twig.page-members :refer [twig-page-members]]))
 
 (def twig-container
   (create-twig
@@ -28,5 +29,6 @@
                         (:saved-files db))
                      :editor
                        (twig-page-editor (:files ir) (:sessions db) writer (:id session))
+                     :members (twig-page-members (:sessions db) (:users db))
                      nil))}
          {:session session, :logged-in? false})))))

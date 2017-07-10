@@ -469,7 +469,7 @@
                                                              [":stack" "writer"]
                                                              [":data" "router"]
                                                              [":pointer" "writer"]]]
-                                                           [":members" ["comp-page-members"]]
+                                                           [":members" ["comp-page-members" [":data" "router"]]]
                                                            ["div"
                                                             ["{}"]
                                                             ["<>"
@@ -477,7 +477,14 @@
                                                              ["str" "|404 page: " ["pr-str" "router"]]
                                                              "nil"]]]]
                                                          ["comp-login" "states"]]]
-                                                       ["comp-inspect" "|Store" "store" "style-inspector"]
+                                                       ["comp-inspect"
+                                                        "|Session"
+                                                        [":session" "store"]
+                                                        "style-inspector"]
+                                                       ["comp-inspect"
+                                                        "|Router data"
+                                                        ["get-in" "store" ["[]" ":router" ":data"]]
+                                                        ["merge" "style-inspector" ["{}" [":left" "100"]]]]
                                                        ["comp-msg-list"
                                                         ["get-in" "store" ["[]" ":session" ":notifications"]]
                                                         ":session/remove-notification"]]]]],
@@ -1151,6 +1158,7 @@
                                    [":require-macros"
                                     ["[]" "respo.macros" ":refer" ["[]" "defcomp" "<>" "span" "div" "a"]]]
                                    [":require"
+                                    ["[]" "clojure.string" ":as" "string"]
                                     ["[]" "hsl.core" ":refer" ["[]" "hsl"]]
                                     ["[]" "respo-ui.style" ":as" "ui"]
                                     ["[]" "respo-ui.style.colors" ":as" "colors"]
@@ -1158,10 +1166,61 @@
                                     ["[]" "respo.comp.space" ":refer" ["[]" "=<"]]]],
                               :defs {"comp-page-members" ["defcomp"
                                                           "comp-page-members"
-                                                          []
+                                                          ["router-data"]
                                                           ["div"
-                                                           ["{}" [":style" "ui/flex"]]
-                                                           ["<>" "span" "|Members" "nil"]]]},
+                                                           ["{}" [":style" ["merge" "ui/flex" "style-members"]]]
+                                                           ["div"
+                                                            ["{}"]
+                                                            ["->>"
+                                                             "router-data"
+                                                             ["map"
+                                                              ["fn"
+                                                               ["entry"]
+                                                               ["let"
+                                                                [[["[]" "k" "member"] "entry"]]
+                                                                ["[]"
+                                                                 "k"
+                                                                 ["div"
+                                                                  ["{}"]
+                                                                  ["if"
+                                                                   ["some?" [":user" "member"]]
+                                                                   ["<>"
+                                                                    "span"
+                                                                    ["get-in" "member" ["[]" ":user" ":name"]]
+                                                                    "style-name"]
+                                                                   ["<>" "span" "|Guest" "style-name"]]
+                                                                  ["=<" "32" "nil"]
+                                                                  ["<>" "span" [":page" "member"] "style-page"]
+                                                                  ["=<" "32" "nil"]
+                                                                  ["let"
+                                                                   [["bookmark" [":bookmark" "member"]]]
+                                                                   ["if"
+                                                                    ["some?" "bookmark"]
+                                                                    ["<>"
+                                                                     "span"
+                                                                     ["str"
+                                                                      [":kind" "bookmark"]
+                                                                      "| "
+                                                                      [":ns" "bookmark"]
+                                                                      "| "
+                                                                      [":extra" "bookmark"]
+                                                                      "| _"
+                                                                      ["string/join" "|_" [":focus" "bookmark"]]
+                                                                      "|_"]
+                                                                     "style-bookmark"]]]]]]]]]]]],
+                                     "style-bookmark" ["def"
+                                                       "style-bookmark"
+                                                       ["{}"
+                                                        [":font-family" "|Menlo,monospace"]
+                                                        [":min-width" "200"]
+                                                        [":display" ":inline-block"]]],
+                                     "style-name" ["def"
+                                                   "style-name"
+                                                   ["{}" [":min-width" "160"] [":display" ":inline-block"]]],
+                                     "style-page" ["def"
+                                                   "style-page"
+                                                   ["{}" [":min-width" "160"] [":display" ":inline-block"]]],
+                                     "style-members" ["def" "style-members" ["{}" [":padding" "|0 16px"]]]},
                               :procs []},
          "comp.expr" {:ns ["ns"
                            "app.comp.expr"
