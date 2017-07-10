@@ -37,7 +37,7 @@
      (render-clients! @*reader-db)))
   (js/setTimeout render-loop! 20))
 
-(defn main! []
+(defn start-server! []
   (println "Loading configs:" (pr-str schema/configs))
   (let [server-ch (run-server! {:port (:port schema/configs)})]
     (go-loop
@@ -63,3 +63,12 @@
    "SIGINT"
    (fn [code] (persist!) (println "Saving file on exit" code) (.exit js/process)))
   (println "Server started."))
+
+(defn compile-all-files! []
+  (handle-files!
+   (assoc @*writer-db :saved-files {})
+   (fn [op op-data] (println "After compile:" op op-data))))
+
+(defn main! []
+  (let [op (or (.-op js/process.env) "server")]
+    (if (= op "compile") (compile-all-files!) (start-server!))))

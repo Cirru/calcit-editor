@@ -736,48 +736,9 @@
                         "main!" ["defn"
                                  "main!"
                                  []
-                                 ["println" "|Loading configs:" ["pr-str" "schema/configs"]]
                                  ["let"
-                                  [["server-ch" ["run-server!" ["{}" [":port" [":port" "schema/configs"]]]]]]
-                                  ["go-loop"
-                                   ["[]"]
-                                   ["let"
-                                    [[["[]" "op" "op-data" "session-id" "op-id" "op-time"] ["<!" "server-ch"]]
-                                     ["dispatch!"
-                                      ["fn"
-                                       ["op'" "op-data'"]
-                                       ["go" [">!" "server-ch" ["[]" "op'" "op-data'" "session-id" "op-id" "op-time"]]]]]]
-                                    [".log"
-                                     "js/console"
-                                     "|Action"
-                                     ["str" "op"]
-                                     ["clj->js" "op-data"]
-                                     "session-id"
-                                     "op-id"
-                                     "op-time"]
-                                    ["--" ".log" "js/console" "|Database:" ["clj->js" "@*writer-db"]]
-                                    ["try"
-                                     ["do"
-                                      ["cond"
-                                       [["=" "op" ":effect/save-files"] ["handle-files!" "@*writer-db" "dispatch!"]]
-                                       [":else"
-                                        ["let"
-                                         [["new-db"
-                                           ["updater" "@*writer-db" "op" "op-data" "session-id" "op-id" "op-time"]]]
-                                         ["reset!" "*writer-db" "new-db"]]]]]
-                                     ["catch" "js/Error" "e" [".log" "js/console" "e"]]]
-                                    ["recur"]]]
-                                  ["render-loop!"]]
-                                 ["add-watch" "*reader-db" ":log" ["fn" []]]
-                                 [".on"
-                                  "js/process"
-                                  "|SIGINT"
-                                  ["fn"
-                                   ["code"]
-                                   ["persist!"]
-                                   ["println" "|Saving file on exit" "code"]
-                                   [".exit" "js/process"]]]
-                                 ["println" "|Server started."]],
+                                  [["op" ["or" [".-op" "js/process.env"] "|server"]]]
+                                  ["if" ["=" "op" "|compile"] ["compile-all-files!"] ["start-server!"]]]],
                         "*writer-db" ["defonce"
                                       "*writer-db"
                                       ["atom"
@@ -802,7 +763,68 @@
                                           ["--" "println" "|render loop"]
                                           ["render-clients!" "@*reader-db"]]]
                                         ["js/setTimeout" "render-loop!" "20"]],
-                        "*reader-db" ["defonce" "*reader-db" ["atom" "@*writer-db"]]},
+                        "*reader-db" ["defonce" "*reader-db" ["atom" "@*writer-db"]],
+                        "start-server!" ["defn"
+                                         "start-server!"
+                                         []
+                                         ["println" "|Loading configs:" ["pr-str" "schema/configs"]]
+                                         ["let"
+                                          [["server-ch" ["run-server!" ["{}" [":port" [":port" "schema/configs"]]]]]]
+                                          ["go-loop"
+                                           ["[]"]
+                                           ["let"
+                                            [[["[]" "op" "op-data" "session-id" "op-id" "op-time"] ["<!" "server-ch"]]
+                                             ["dispatch!"
+                                              ["fn"
+                                               ["op'" "op-data'"]
+                                               ["go"
+                                                [">!"
+                                                 "server-ch"
+                                                 ["[]" "op'" "op-data'" "session-id" "op-id" "op-time"]]]]]]
+                                            [".log"
+                                             "js/console"
+                                             "|Action"
+                                             ["str" "op"]
+                                             ["clj->js" "op-data"]
+                                             "session-id"
+                                             "op-id"
+                                             "op-time"]
+                                            ["--" ".log" "js/console" "|Database:" ["clj->js" "@*writer-db"]]
+                                            ["try"
+                                             ["do"
+                                              ["cond"
+                                               [["=" "op" ":effect/save-files"]
+                                                ["handle-files!" "@*writer-db" "dispatch!"]]
+                                               [":else"
+                                                ["let"
+                                                 [["new-db"
+                                                   ["updater"
+                                                    "@*writer-db"
+                                                    "op"
+                                                    "op-data"
+                                                    "session-id"
+                                                    "op-id"
+                                                    "op-time"]]]
+                                                 ["reset!" "*writer-db" "new-db"]]]]]
+                                             ["catch" "js/Error" "e" [".log" "js/console" "e"]]]
+                                            ["recur"]]]
+                                          ["render-loop!"]]
+                                         ["add-watch" "*reader-db" ":log" ["fn" []]]
+                                         [".on"
+                                          "js/process"
+                                          "|SIGINT"
+                                          ["fn"
+                                           ["code"]
+                                           ["persist!"]
+                                           ["println" "|Saving file on exit" "code"]
+                                           [".exit" "js/process"]]]
+                                         ["println" "|Server started."]],
+                        "compile-all-files!" ["defn"
+                                              "compile-all-files!"
+                                              []
+                                              ["handle-files!"
+                                               ["assoc" "@*writer-db" ":saved-files" ["{}"]]
+                                               ["fn" ["op" "op-data"] ["println" "|After compile:" "op" "op-data"]]]]},
                  :procs []},
          "network" {:ns ["ns"
                          "server.network"
