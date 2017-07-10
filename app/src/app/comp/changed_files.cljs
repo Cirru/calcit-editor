@@ -13,6 +13,8 @@
 
 (defn on-save [e d! m!] (d! :writer/save-files nil))
 
+(def style-nothing {:font-family "Josefin Sans", :color (hsl 0 0 100 0.5)})
+
 (defcomp
  comp-changed-files
  (states changed-files)
@@ -23,4 +25,6 @@
    {}
    (->> changed-files
         (map (fn [entry] (let [[k info] entry] [k (comp-changed-info info k)])))))
-  (div {} (button {:inner-text "Save", :style style/button, :on {:click on-save}}))))
+  (if (empty? changed-files)
+    (div {:style style-nothing} (<> span "No changes" nil))
+    (div {} (button {:inner-text "Save", :style style/button, :on {:click on-save}})))))

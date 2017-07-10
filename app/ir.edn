@@ -33,14 +33,24 @@
                                                                  ["let"
                                                                   [[["[]" "k" "info"] "entry"]]
                                                                   ["[]" "k" ["comp-changed-info" "info" "k"]]]]]]]
-                                                             ["div"
-                                                              ["{}"]
-                                                              ["button"
-                                                               ["{}"
-                                                                [":inner-text" "|Save"]
-                                                                [":style" "style/button"]
-                                                                [":on" ["{}" [":click" "on-save"]]]]]]]],
-                                      "on-save" ["defn" "on-save" ["e" "d!" "m!"] ["d!" ":writer/save-files" "nil"]]},
+                                                             ["if"
+                                                              ["empty?" "changed-files"]
+                                                              ["div"
+                                                               ["{}" [":style" "style-nothing"]]
+                                                               ["<>" "span" "|No changes" "nil"]]
+                                                              ["div"
+                                                               ["{}"]
+                                                               ["button"
+                                                                ["{}"
+                                                                 [":inner-text" "|Save"]
+                                                                 [":style" "style/button"]
+                                                                 [":on" ["{}" [":click" "on-save"]]]]]]]]],
+                                      "on-save" ["defn" "on-save" ["e" "d!" "m!"] ["d!" ":writer/save-files" "nil"]],
+                                      "style-nothing" ["def"
+                                                       "style-nothing"
+                                                       ["{}"
+                                                        [":font-family" "|Josefin Sans"]
+                                                        [":color" ["hsl" "0" "0" "100" "0.5"]]]]},
                                :procs []},
          "comp.leaf" {:ns ["ns"
                            "app.comp.leaf"
@@ -259,14 +269,16 @@
                           :procs []},
          "comp.profile" {:ns ["ns"
                               "app.comp.profile"
-                              [":require-macros" ["[]" "respo.macros" ":refer" ["[]" "defcomp" "<>" "span" "div" "a"]]]
+                              [":require-macros"
+                               ["[]" "respo.macros" ":refer" ["[]" "defcomp" "<>" "span" "div" "button" "a"]]]
                               [":require"
                                ["[]" "hsl.core" ":refer" ["[]" "hsl"]]
                                ["[]" "app.schema" ":as" "schema"]
                                ["[]" "respo-ui.style" ":as" "ui"]
                                ["[]" "respo-ui.style.colors" ":as" "colors"]
                                ["[]" "respo.core" ":refer" ["[]" "create-comp"]]
-                               ["[]" "respo.comp.space" ":refer" ["[]" "=<"]]]],
+                               ["[]" "respo.comp.space" ":refer" ["[]" "=<"]]
+                               ["[]" "app.style" ":as" "style"]]],
                          :defs {"on-log-out" ["defn"
                                               "on-log-out"
                                               ["e" "dispatch!"]
@@ -276,22 +288,15 @@
                                                 "comp-profile"
                                                 ["user"]
                                                 ["div"
-                                                 ["{}" [":style" "ui/flex"]]
+                                                 ["{}" [":style" ["merge" "ui/flex" "style-profile"]]]
                                                  ["<>" "span" ["str" "|Hello! " [":name" "user"]] "nil"]
                                                  ["=<" "8" "nil"]
-                                                 ["a"
+                                                 ["button"
                                                   ["{}"
-                                                   [":style" "style-trigger"]
-                                                   [":on" ["{}" [":click" "on-log-out"]]]]
-                                                  ["<>" "span" "|Log out" "nil"]]]],
-                                "style-trigger" ["def"
-                                                 "style-trigger"
-                                                 ["{}"
-                                                  [":font-size" "14"]
-                                                  [":cursor" ":pointer"]
-                                                  [":background-color" "colors/motif-light"]
-                                                  [":color" ":white"]
-                                                  [":padding" "|0 8px"]]]},
+                                                   [":inner-text" "|Log out"]
+                                                   [":style" "style/button"]
+                                                   [":on" ["{}" [":click" "on-log-out"]]]]]]],
+                                "style-profile" ["def" "style-profile" ["{}" [":padding" "|0 16px"]]]},
                          :procs []},
          "util.keycode" {:ns ["ns" "app.util.keycode"],
                          :defs {"space" ["def" "space" "32"],
@@ -566,8 +571,24 @@
          "style" {:ns ["ns"
                        "app.style"
                        [":require" ["[]" "respo-ui.style" ":as" "ui"] ["[]" "hsl.core" ":refer" ["[]" "hsl"]]]],
-                  :defs {"input" ["def" "input" ["merge" "ui/input" ["{}"]]],
-                         "button" ["def" "button" ["merge" "ui/button" ["{}"]]],
+                  :defs {"input" ["def"
+                                  "input"
+                                  ["merge"
+                                   "ui/input"
+                                   ["{}"
+                                    [":background-color" ["hsl" "0" "0" "100" "0.16"]]
+                                    [":color" ["hsl" "0" "0" "100"]]
+                                    [":font-family" "|Menlo,monospace"]]]],
+                         "button" ["def"
+                                   "button"
+                                   ["merge"
+                                    "ui/button"
+                                    ["{}"
+                                     [":background-color" ["hsl" "0" "0" "100" "0"]]
+                                     [":text-decoration" ":underline"]
+                                     [":color" ["hsl" "0" "0" "100" "0.4"]]
+                                     [":min-width" "40"]
+                                     [":vertical-align" ":middle"]]]],
                          "title" ["def"
                                   "title"
                                   ["{}"
@@ -835,18 +856,18 @@
                                                        ["[]"
                                                         "def-text"
                                                         ["div"
-                                                         ["{}"]
-                                                         ["span"
-                                                          ["{}"
-                                                           [":inner-text" "def-text"]
-                                                           [":style" "style-def"]
-                                                           [":on" ["{}" [":click" ["on-edit-def" "def-text"]]]]]]
+                                                         ["{}"
+                                                          [":class-name" "|hoverable"]
+                                                          [":style" "style-def"]
+                                                          [":on" ["{}" [":click" ["on-edit-def" "def-text"]]]]]
+                                                         ["<>" "span" "def-text" "nil"]
                                                          ["=<" "16" "nil"]
                                                          ["span"
                                                           ["{}"
                                                            [":class-name" "|ion-md-close"]
                                                            [":style" "style-remove"]
                                                            [":on" ["{}" [":click" ["on-remove-def" "def-text"]]]]]]]]]]]]
+                                                   ["=<" "nil" "8"]
                                                    ["div"
                                                     ["{}"]
                                                     ["input"
@@ -858,7 +879,7 @@
                                                     ["=<" "8" "nil"]
                                                     ["button"
                                                      ["{}"
-                                                      [":inner-text" "|Add def"]
+                                                      [":inner-text" "|Add"]
                                                       [":style" "style/button"]
                                                       [":on" ["{}" [":click" ["on-add-def" "state"]]]]]]]]],
                                    "on-input-def" ["defn"
@@ -869,12 +890,16 @@
                                                     ["m!" ["assoc" "state" ":def-text" [":value" "e"]]]]],
                                    "style-ns" ["def"
                                                "style-ns"
-                                               ["{}" [":cursor" ":pointer"] [":vertical-align" ":middle"]]],
+                                               ["{}"
+                                                [":cursor" ":pointer"]
+                                                [":vertical-align" ":middle"]
+                                                [":position" ":relative"]
+                                                [":padding" "|0 8px"]]],
                                    "on-remove-def" ["defn"
                                                     "on-remove-def"
                                                     ["def-text"]
                                                     ["fn" ["e" "d!" "m!"] ["d!" ":ir/remove-def" "def-text"]]],
-                                   "style-list" ["def" "style-list" ["{}" [":width" "320"]]],
+                                   "style-list" ["def" "style-list" ["{}" [":width" "280"]]],
                                    "on-checkout" ["defn"
                                                   "on-checkout"
                                                   ["state" "ns-text"]
@@ -892,7 +917,8 @@
                                                        [["state" ["or" [":data" "states"] "initial-state"]]]
                                                        ["div"
                                                         ["{}" [":style" ["merge" "ui/flex" "ui/row" "sytle-container"]]]
-                                                        ["render-list" [":ns-set" "router-data"] "state"]
+                                                        ["render-list" "state" [":ns-set" "router-data"] "selected-ns"]
+                                                        ["=<" "32" "nil"]
                                                         ["if"
                                                          ["some?" "selected-ns"]
                                                          ["render-file"
@@ -900,6 +926,7 @@
                                                           "selected-ns"
                                                           [":defs-set" "router-data"]]
                                                          ["render-empty"]]
+                                                        ["=<" "32" "nil"]
                                                         ["cursor->"
                                                          ":files"
                                                          "comp-changed-files"
@@ -920,13 +947,16 @@
                                                      [":color" ":black"]]],
                                    "style-def" ["def"
                                                 "style-def"
-                                                ["{}" [":cursor" ":pointer"] [":vertical-align" ":middle"]]],
+                                                ["{}" [":padding" "|0 8px"] [":position" ":relative"]]],
                                    "style-remove" ["def"
                                                    "style-remove"
                                                    ["{}"
                                                     [":color" ["hsl" "0" "0" "80"]]
                                                     [":cursor" ":pointer"]
-                                                    [":vertical-align" ":middle"]]],
+                                                    [":vertical-align" ":middle"]
+                                                    [":position" ":absolute"]
+                                                    [":top" "8"]
+                                                    [":right" "8"]]],
                                    "on-add-def" ["defn"
                                                  "on-add-def"
                                                  ["state"]
@@ -941,7 +971,7 @@
                                                      ["m!" ["assoc" "state" ":def-text" "|"]]]]]]],
                                    "render-list" ["defn"
                                                   "render-list"
-                                                  ["ns-set" "state"]
+                                                  ["state" "ns-set" "selected-ns"]
                                                   ["div"
                                                    ["{}" [":style" "style-list"]]
                                                    ["div"
@@ -957,17 +987,21 @@
                                                        ["[]"
                                                         "ns-text"
                                                         ["div"
-                                                         ["{}" [":style" "style-ns"]]
-                                                         ["span"
-                                                          ["{}"
-                                                           [":inner-text" "ns-text"]
-                                                           [":on" ["{}" [":click" ["on-checkout" "state" "ns-text"]]]]]]
-                                                         ["=<" "16" "nil"]
+                                                         ["{}"
+                                                          [":class-name"
+                                                           ["if"
+                                                            ["=" "selected-ns" "ns-text"]
+                                                            "|hoverable is-selected"
+                                                            "|hoverable"]]
+                                                          [":style" ["merge" "style-ns"]]
+                                                          [":on" ["{}" [":click" ["on-checkout" "state" "ns-text"]]]]]
+                                                         ["span" ["{}" [":inner-text" "ns-text"]]]
                                                          ["span"
                                                           ["{}"
                                                            [":class-name" "|ion-md-close"]
                                                            [":style" "style-remove"]
                                                            [":on" ["{}" [":click" ["on-remove-ns" "ns-text"]]]]]]]]]]]]
+                                                   ["=<" "nil" "8"]
                                                    ["div"
                                                     ["{}"]
                                                     ["input"
@@ -979,7 +1013,7 @@
                                                     ["=<" "8" "nil"]
                                                     ["button"
                                                      ["{}"
-                                                      [":inner-text" "|Add ns"]
+                                                      [":inner-text" "|Add"]
                                                       [":style" "style/button"]
                                                       [":on" ["{}" [":click" ["on-add" "state"]]]]]]]]],
                                    "style-link" ["def" "style-link" ["{}" [":cursor" ":pointer"]]],
@@ -993,7 +1027,7 @@
                                                   ["fn"
                                                    ["e" "d!" "m!"]
                                                    ["d!" ":writer/edit" ["{}" [":kind" ":def"] [":extra" "text"]]]]],
-                                   "style-file" ["def" "style-file" ["{}" [":width" "360"]]]},
+                                   "style-file" ["def" "style-file" ["{}" [":width" "280"]]]},
                             :procs []},
          "render" {:ns ["ns"
                         "app.render"

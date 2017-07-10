@@ -1,9 +1,21 @@
 
 (ns app.style (:require [respo-ui.style :as ui] [hsl.core :refer [hsl]]))
 
-(def input (merge ui/input {}))
+(def input
+  (merge
+   ui/input
+   {:background-color (hsl 0 0 100 0.16),
+    :color (hsl 0 0 100),
+    :font-family "Menlo,monospace"}))
 
-(def button (merge ui/button {}))
+(def button
+  (merge
+   ui/button
+   {:background-color (hsl 0 0 100 0),
+    :text-decoration :underline,
+    :color (hsl 0 0 100 0.4),
+    :min-width 40,
+    :vertical-align :middle}))
 
 (def title
   {:font-family "Josefin Sans", :font-size 20, :font-weight 100, :color (hsl 0 0 80)})

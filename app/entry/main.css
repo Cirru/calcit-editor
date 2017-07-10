@@ -6,3 +6,14 @@ body {
 body * {
   box-sizing: border-box;
 }
+
+.hoverable {
+  background-color: hsla(0, 0%, 100%,0);
+  cursor: pointer;
+}
+.hoverable:hover {
+  background-color: hsla(0, 0%, 100%,0.15);
+}
+.hoverable.is-selected {
+  background-color: hsla(0, 0%, 100%,0.2);
+}

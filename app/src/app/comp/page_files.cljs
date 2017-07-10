@@ -26,9 +26,15 @@
 
 (defn on-remove-def [def-text] (fn [e d! m!] (d! :ir/remove-def def-text)))
 
-(def style-def {:cursor :pointer, :vertical-align :middle})
+(def style-def {:padding "0 8px", :position :relative})
 
-(def style-remove {:color (hsl 0 0 80), :cursor :pointer, :vertical-align :middle})
+(def style-remove
+  {:color (hsl 0 0 80),
+   :cursor :pointer,
+   :vertical-align :middle,
+   :position :absolute,
+   :top 8,
+   :right 8})
 
 (defn on-add-def [state]
   (fn [e d! m!]
@@ -42,7 +48,7 @@
 
 (defn on-edit-def [text] (fn [e d! m!] (d! :writer/edit {:kind :def, :extra text})))
 
-(def style-file {:width 360})
+(def style-file {:width 280})
 
 (defn render-file [state selected-ns defs-set]
   (div
@@ -60,14 +66,16 @@
           (fn [def-text]
             [def-text
              (div
-              {}
-              (span
-               {:inner-text def-text, :style style-def, :on {:click (on-edit-def def-text)}})
+              {:class-name "hoverable",
+               :style style-def,
+               :on {:click (on-edit-def def-text)}}
+              (<> span def-text nil)
               (=< 16 nil)
               (span
                {:class-name "ion-md-close",
                 :style style-remove,
                 :on {:click (on-remove-def def-text)}}))]))))
+   (=< nil 8)
    (div
     {}
     (input
@@ -76,11 +84,12 @@
       :style style/input,
       :on {:input (on-input-def state)}})
     (=< 8 nil)
-    (button {:inner-text "Add def", :style style/button, :on {:click (on-add-def state)}}))))
+    (button {:inner-text "Add", :style style/button, :on {:click (on-add-def state)}}))))
 
-(def style-ns {:cursor :pointer, :vertical-align :middle})
+(def style-ns
+  {:cursor :pointer, :vertical-align :middle, :position :relative, :padding "0 8px"})
 
-(def style-list {:width 320})
+(def style-list {:width 280})
 
 (defn on-checkout [state ns-text] (fn [e d! m!] (d! :session/select-ns ns-text)))
 
@@ -94,7 +103,7 @@
 
 (def style-inspect {:opacity 1, :background-color (hsl 0 0 100), :color :black})
 
-(defn render-list [ns-set state]
+(defn render-list [state ns-set selected-ns]
   (div
    {:style style-list}
    (div {:style style/title} (<> span "Namespaces" nil))
@@ -105,13 +114,15 @@
           (fn [ns-text]
             [ns-text
              (div
-              {:style style-ns}
-              (span {:inner-text ns-text, :on {:click (on-checkout state ns-text)}})
-              (=< 16 nil)
+              {:class-name (if (= selected-ns ns-text) "hoverable is-selected" "hoverable"),
+               :style (merge style-ns),
+               :on {:click (on-checkout state ns-text)}}
+              (span {:inner-text ns-text})
               (span
                {:class-name "ion-md-close",
                 :style style-remove,
                 :on {:click (on-remove-ns ns-text)}}))]))))
+   (=< nil 8)
    (div
     {}
     (input
@@ -120,7 +131,7 @@
       :style style/input,
       :on {:input (on-input-ns state)}})
     (=< 8 nil)
-    (button {:inner-text "Add ns", :style style/button, :on {:click (on-add state)}}))))
+    (button {:inner-text "Add", :style style/button, :on {:click (on-add state)}}))))
 
 (defcomp
  comp-page-files
@@ -128,9 +139,11 @@
  (let [state (or (:data states) initial-state)]
    (div
     {:style (merge ui/flex ui/row sytle-container)}
-    (render-list (:ns-set router-data) state)
+    (render-list state (:ns-set router-data) selected-ns)
+    (=< 32 nil)
     (if (some? selected-ns)
       (render-file state selected-ns (:defs-set router-data))
       (render-empty))
+    (=< 32 nil)
     (cursor-> :files comp-changed-files states (:changed-files router-data))
     (comment comp-inspect selected-ns nil style-inspect))))
