@@ -11,26 +11,39 @@
             [app.util.keycode :as keycode]
             [app.util :as util]))
 
+(defn on-input [state coord]
+  (fn [e d! m!]
+    (d! :ir/update-leaf (:value e))
+    (m! (assoc state :text (:value e) :time (util/now!)))))
+
+(def style-first {:color (hsl 40 85 60)})
+
+(def style-space {:background-color (hsl 0 0 100 0.2)})
+
+(def style-highlight {:opacity 1})
+
+(defn on-focus [coord] (fn [e d! m!] (d! :writer/focus coord)))
+
+(def initial-state {:text "", :time 0})
+
 (def style-leaf
   (merge
    ui/input
-   {:line-height "14px",
-    :height 20,
-    :margin "2px 0px",
-    :padding "0 4px",
+   {:line-height "24px",
+    :height 24,
+    :margin "2px 2px",
+    :padding "0px 2px",
     :background-color :transparent,
     :min-width 8,
-    :color (hsl 200 30 70),
-    :opacity 0.8,
+    :color (hsl 200 16 60),
+    :opacity 0.9,
     :font-family "Menlo",
-    :font-size 14,
+    :font-size 15,
     :border-radius "4px",
     :vertical-align :baseline,
     :transition-duration "200ms",
     :transition-property "color",
     :text-align :center}))
-
-(defn on-focus [coord] (fn [e d! m!] (d! :writer/focus coord)))
 
 (defn on-keydown [state leaf coord]
   (fn [e d! m!]
@@ -59,15 +72,6 @@
           (do (d! :writer/paste nil) (.preventDefault event))
         :else (println "Keydown leaf" code)))))
 
-(defn on-input [state coord]
-  (fn [e d! m!]
-    (d! :ir/update-leaf (:value e))
-    (m! (assoc state :text (:value e) :time (util/now!)))))
-
-(def initial-state {:text "", :time 0})
-
-(def style-highlight {:opacity 1, :color (hsl 0 0 100 0.9)})
-
 (defcomp
  comp-leaf
  (states leaf focus coord by-other? first?)
@@ -83,10 +87,10 @@
      :style (merge
              style-leaf
              {:width (+
-                      10
+                      6
                       (text-width* text (:font-size style-leaf) (:font-family style-leaf)))}
-             (if first? {:color (hsl 50 100 70)})
-             (if has-blank? {:background-color (hsl 0 0 100 0.2)})
+             (if first? style-first)
+             (if has-blank? style-space)
              (if (or focused? by-other?) style-highlight)),
      :on {:click (on-focus coord),
           :keydown (on-keydown state leaf coord),

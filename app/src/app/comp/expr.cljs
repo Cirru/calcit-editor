@@ -11,18 +11,18 @@
             [app.util :refer [coord-contains? simple? leaf? expr?]]))
 
 (def style-expr
-  {:border-width "0 0 0 1px",
+  {:border-width "0 0 0px 1px",
    :border-style :solid,
    :border-color (hsl 0 0 100 0.3),
    :min-height 24,
    :outline :none,
-   :padding-left 8,
+   :padding-left 10,
    :font-family "Menlo,monospce",
    :font-size 14,
-   :margin-bottom 2,
+   :margin-bottom 4,
    :margin-right 2,
-   :margin-left 10,
-   :margin-top 1})
+   :margin-left 12,
+   :margin-top 0})
 
 (defn on-keydown [coord]
   (fn [e d! m!]
@@ -55,10 +55,14 @@
 (defn on-focus [coord] (fn [e d! m!] (d! :writer/focus coord)))
 
 (def style-simple
-  {:display :inline-block, :border-width "0 0 1px 0", :min-width 32, :padding "0 8px"})
+  {:display :inline-block,
+   :border-width "0 0 1px 0",
+   :min-width 32,
+   :padding-left 9,
+   :padding-right 9,
+   :vertical-align :top})
 
-(def style-tail
-  {:display :inline-block, :vertical-align :top, :margin-left 10, :padding-left 8})
+(def style-tail {:display :inline-block, :vertical-align :top, :padding-left 8})
 
 (defcomp
  comp-expr
