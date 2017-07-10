@@ -29,18 +29,21 @@
     (println "Modifying" project-path)
     (fs.writeFileSync project-path (generate-file (file->cirru file)))))
 
-(defn handle-files! [db]
-  (let [new-files (get-in db [:ir :files])
-        old-files (get db :saved-files)
-        new-names (set (keys new-files))
-        old-names (set (keys old-files))
-        added-names (difference new-names old-names)
-        removed-names (difference old-names new-names)
-        changed-names (->> (intersection new-names old-names)
-                           (filter
-                            (fn [ns-text]
-                              (not= (get new-files ns-text) (get old-files ns-text)))))]
-    (doseq [ns-text added-names] (create-file! (ns->path ns-text) (get new-files ns-text)))
-    (doseq [ns-text removed-names] (remove-file! (ns->path ns-text)))
-    (doseq [ns-text changed-names]
-      (modify-file! (ns->path ns-text) (get new-files ns-text)))))
+(defn handle-files! [db dispatch!]
+  (try
+   (let [new-files (get-in db [:ir :files])
+         old-files (get db :saved-files)
+         new-names (set (keys new-files))
+         old-names (set (keys old-files))
+         added-names (difference new-names old-names)
+         removed-names (difference old-names new-names)
+         changed-names (->> (intersection new-names old-names)
+                            (filter
+                             (fn [ns-text]
+                               (not= (get new-files ns-text) (get old-files ns-text)))))]
+     (doseq [ns-text added-names] (create-file! (ns->path ns-text) (get new-files ns-text)))
+     (doseq [ns-text removed-names] (remove-file! (ns->path ns-text)))
+     (doseq [ns-text changed-names]
+       (modify-file! (ns->path ns-text) (get new-files ns-text)))
+     (dispatch! :writer/save-files nil))
+   (catch js/Error e (do (.log js/console e) (dispatch! :notify/push-error (.-message e))))))

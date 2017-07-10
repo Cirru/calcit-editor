@@ -4,7 +4,8 @@
             [server.updater.user :as user]
             [server.updater.router :as router]
             [server.updater.ir :as ir]
-            [server.updater.writer :as writer]))
+            [server.updater.writer :as writer]
+            [server.updater.notify :as notify]))
 
 (defn updater [db op op-data session-id op-id op-time]
   (case op
@@ -45,4 +46,5 @@
     :ir/unindent-leaf (ir/unindent-leaf db op-data session-id op-id op-time)
     :ir/update-leaf (ir/update-leaf db op-data session-id op-id op-time)
     :ir/duplicate (ir/duplicate db op-data session-id op-id op-time)
+    :notify/push-error (notify/push-error db op-data session-id op-id op-time)
     db))

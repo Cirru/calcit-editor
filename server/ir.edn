@@ -67,32 +67,44 @@
                          :defs {"emit-file!" ["defn" "emit-file!" []],
                                 "handle-files!" ["defn"
                                                  "handle-files!"
-                                                 ["db"]
-                                                 ["let"
-                                                  [["new-files" ["get-in" "db" ["[]" ":ir" ":files"]]]
-                                                   ["old-files" ["get" "db" ":saved-files"]]
-                                                   ["new-names" ["set" ["keys" "new-files"]]]
-                                                   ["old-names" ["set" ["keys" "old-files"]]]
-                                                   ["added-names" ["difference" "new-names" "old-names"]]
-                                                   ["removed-names" ["difference" "old-names" "new-names"]]
-                                                   ["changed-names"
-                                                    ["->>"
-                                                     ["intersection" "new-names" "old-names"]
-                                                     ["filter"
-                                                      ["fn"
-                                                       ["ns-text"]
-                                                       ["not="
-                                                        ["get" "new-files" "ns-text"]
-                                                        ["get" "old-files" "ns-text"]]]]]]]
-                                                  ["doseq"
-                                                   ["[]" "ns-text" "added-names"]
-                                                   ["create-file!" ["ns->path" "ns-text"] ["get" "new-files" "ns-text"]]]
-                                                  ["doseq"
-                                                   ["[]" "ns-text" "removed-names"]
-                                                   ["remove-file!" ["ns->path" "ns-text"]]]
-                                                  ["doseq"
-                                                   ["[]" "ns-text" "changed-names"]
-                                                   ["modify-file!" ["ns->path" "ns-text"] ["get" "new-files" "ns-text"]]]]],
+                                                 ["db" "dispatch!"]
+                                                 ["try"
+                                                  ["let"
+                                                   [["new-files" ["get-in" "db" ["[]" ":ir" ":files"]]]
+                                                    ["old-files" ["get" "db" ":saved-files"]]
+                                                    ["new-names" ["set" ["keys" "new-files"]]]
+                                                    ["old-names" ["set" ["keys" "old-files"]]]
+                                                    ["added-names" ["difference" "new-names" "old-names"]]
+                                                    ["removed-names" ["difference" "old-names" "new-names"]]
+                                                    ["changed-names"
+                                                     ["->>"
+                                                      ["intersection" "new-names" "old-names"]
+                                                      ["filter"
+                                                       ["fn"
+                                                        ["ns-text"]
+                                                        ["not="
+                                                         ["get" "new-files" "ns-text"]
+                                                         ["get" "old-files" "ns-text"]]]]]]]
+                                                   ["doseq"
+                                                    ["[]" "ns-text" "added-names"]
+                                                    ["create-file!"
+                                                     ["ns->path" "ns-text"]
+                                                     ["get" "new-files" "ns-text"]]]
+                                                   ["doseq"
+                                                    ["[]" "ns-text" "removed-names"]
+                                                    ["remove-file!" ["ns->path" "ns-text"]]]
+                                                   ["doseq"
+                                                    ["[]" "ns-text" "changed-names"]
+                                                    ["modify-file!"
+                                                     ["ns->path" "ns-text"]
+                                                     ["get" "new-files" "ns-text"]]]
+                                                   ["dispatch!" ":writer/save-files" "nil"]]
+                                                  ["catch"
+                                                   "js/Error"
+                                                   "e"
+                                                   ["do"
+                                                    [".log" "js/console" "e"]
+                                                    ["dispatch!" ":notify/push-error" [".-message" "e"]]]]]],
                                 "create-file!" ["defn"
                                                 "create-file!"
                                                 ["file-path" "file"]
@@ -571,6 +583,19 @@
                                                       [":defs" "file"]]]]]]
                                                  ["set"]]]]]},
                         :procs []},
+         "updater.notify" {:ns ["ns" "server.updater.notify"],
+                           :defs {"push-error" ["defn"
+                                                "push-error"
+                                                ["db" "op-data" "session-id" "op-id" "op-time"]
+                                                ["update-in"
+                                                 "db"
+                                                 ["[]" ":sessions" "session-id" ":notifications"]
+                                                 ["fn"
+                                                  ["notifications"]
+                                                  ["conj"
+                                                   "notifications"
+                                                   ["{}" [":id" "op-id"] [":kind" ":irreversible"] [":text" "op-data"]]]]]]},
+                           :procs []},
          "updater.user" {:ns ["ns" "server.updater.user" [":require" ["[]" "server.util" ":refer" ["[]" "find-first"]]]],
                          :defs {"sign-up" ["defn"
                                            "sign-up"
@@ -689,11 +714,11 @@
                        ["[]" "server.schema" ":as" "schema"]
                        ["[]" "server.network" ":refer" ["[]" "run-server!" "render-clients!"]]
                        ["[]" "server.updater.core" ":refer" ["[]" "updater"]]
-                       ["[]" "cljs.core.async" ":refer" ["[]" "<!"]]
+                       ["[]" "cljs.core.async" ":refer" ["[]" "<!" ">!"]]
                        ["[]" "cljs.reader" ":refer" ["[]" "read-string"]]
                        ["[]" "fipp.edn" ":as" "fipp"]
                        ["[]" "server.util.compile" ":refer" ["[]" "handle-files!"]]]
-                      [":require-macros" ["[]" "cljs.core.async.macros" ":refer" ["[]" "go-loop"]]]],
+                      [":require-macros" ["[]" "cljs.core.async.macros" ":refer" ["[]" "go-loop" "go"]]]],
                  :defs {"persist!" ["defn"
                                     "persist!"
                                     []
@@ -717,7 +742,11 @@
                                   ["go-loop"
                                    ["[]"]
                                    ["let"
-                                    [[["[]" "op" "op-data" "session-id" "op-id" "op-time"] ["<!" "server-ch"]]]
+                                    [[["[]" "op" "op-data" "session-id" "op-id" "op-time"] ["<!" "server-ch"]]
+                                     ["dispatch!"
+                                      ["fn"
+                                       ["op'" "op-data'"]
+                                       ["go" [">!" "server-ch" ["[]" "op'" "op-data'" "session-id" "op-id" "op-time"]]]]]]
                                     [".log"
                                      "js/console"
                                      "|Action"
@@ -728,11 +757,14 @@
                                      "op-time"]
                                     ["--" ".log" "js/console" "|Database:" ["clj->js" "@*writer-db"]]
                                     ["try"
-                                     ["let"
-                                      [["new-db"
-                                        ["updater" "@*writer-db" "op" "op-data" "session-id" "op-id" "op-time"]]]
-                                      ["if" ["=" "op" ":writer/save-files"] ["handle-files!" "@*writer-db"]]
-                                      ["reset!" "*writer-db" "new-db"]]
+                                     ["do"
+                                      ["cond"
+                                       [["=" "op" ":effect/save-files"] ["handle-files!" "@*writer-db" "dispatch!"]]
+                                       [":else"
+                                        ["let"
+                                         [["new-db"
+                                           ["updater" "@*writer-db" "op" "op-data" "session-id" "op-id" "op-time"]]]
+                                         ["reset!" "*writer-db" "new-db"]]]]]
                                      ["catch" "js/Error" "e" [".log" "js/console" "e"]]]
                                     ["recur"]]]
                                   ["render-loop!"]]
@@ -953,7 +985,8 @@
                                ["[]" "server.updater.user" ":as" "user"]
                                ["[]" "server.updater.router" ":as" "router"]
                                ["[]" "server.updater.ir" ":as" "ir"]
-                               ["[]" "server.updater.writer" ":as" "writer"]]],
+                               ["[]" "server.updater.writer" ":as" "writer"]
+                               ["[]" "server.updater.notify" ":as" "notify"]]],
                          :defs {"updater" ["defn"
                                            "updater"
                                            ["db" "op" "op-data" "session-id" "op-id" "op-time"]
@@ -1032,6 +1065,8 @@
                                              ["ir/update-leaf" "db" "op-data" "session-id" "op-id" "op-time"]]
                                             [":ir/duplicate"
                                              ["ir/duplicate" "db" "op-data" "session-id" "op-id" "op-time"]]
+                                            [":notify/push-error"
+                                             ["notify/push-error" "db" "op-data" "session-id" "op-id" "op-time"]]
                                             "db"]]},
                          :procs []},
          "twig.page-members" {:ns ["ns"
@@ -1458,11 +1493,12 @@
                                         ["let"
                                          [["user-id" ["get-in" "db" ["[]" ":sessions" "session-id" ":user-id"]]]
                                           ["cirru-expr" ["[]" "|ns" "op-data"]]
-                                          ["empty-expr" ["cirru->tree" "cirru-expr" "user-id" "op-time"]]]
+                                          ["default-expr" ["cirru->tree" "cirru-expr" "user-id" "op-time"]]
+                                          ["empty-expr" ["cirru->tree" ["[]"] "user-id" "op-time"]]]
                                          ["assoc-in"
                                           "db"
                                           ["[]" ":ir" ":files" "op-data"]
-                                          ["assoc" "schema/file" ":ns" "empty-expr" ":proc" "empty-expr"]]]],
+                                          ["assoc" "schema/file" ":ns" "default-expr" ":proc" "empty-expr"]]]],
                               "delete-leaf" ["defn"
                                              "delete-node"
                                              ["db" "op-data" "session-id" "op-id" "op-time"]

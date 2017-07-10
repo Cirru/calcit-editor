@@ -45,7 +45,7 @@
                                                                  [":inner-text" "|Save"]
                                                                  [":style" "style/button"]
                                                                  [":on" ["{}" [":click" "on-save"]]]]]]]]],
-                                      "on-save" ["defn" "on-save" ["e" "d!" "m!"] ["d!" ":writer/save-files" "nil"]],
+                                      "on-save" ["defn" "on-save" ["e" "d!" "m!"] ["d!" ":effect/save-files" "nil"]],
                                       "style-nothing" ["def"
                                                        "style-nothing"
                                                        ["{}"

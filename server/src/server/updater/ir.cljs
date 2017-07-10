@@ -201,8 +201,9 @@
 (defn add-ns [db op-data session-id op-id op-time]
   (let [user-id (get-in db [:sessions session-id :user-id])
         cirru-expr ["ns" op-data]
-        empty-expr (cirru->tree cirru-expr user-id op-time)]
-    (assoc-in db [:ir :files op-data] (assoc schema/file :ns empty-expr :proc empty-expr))))
+        default-expr (cirru->tree cirru-expr user-id op-time)
+        empty-expr (cirru->tree [] user-id op-time)]
+    (assoc-in db [:ir :files op-data] (assoc schema/file :ns default-expr :proc empty-expr))))
 
 (defn delete-node [db op-data session-id op-id op-time]
   (let [writer (get-in db [:sessions session-id :writer])

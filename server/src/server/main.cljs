@@ -3,11 +3,11 @@
   (:require [server.schema :as schema]
             [server.network :refer [run-server! render-clients!]]
             [server.updater.core :refer [updater]]
-            [cljs.core.async :refer [<!]]
+            [cljs.core.async :refer [<! >!]]
             [cljs.reader :refer [read-string]]
             [fipp.edn :as fipp]
             [server.util.compile :refer [handle-files!]])
-  (:require-macros [cljs.core.async.macros :refer [go-loop]]))
+  (:require-macros [cljs.core.async.macros :refer [go-loop go]]))
 
 (defonce *writer-db
   (atom
@@ -42,13 +42,18 @@
   (let [server-ch (run-server! {:port (:port schema/configs)})]
     (go-loop
      []
-     (let [[op op-data session-id op-id op-time] (<! server-ch)]
+     (let [[op op-data session-id op-id op-time] (<! server-ch)
+           dispatch! (fn [op' op-data']
+                       (go (>! server-ch [op' op-data' session-id op-id op-time])))]
        (.log js/console "Action" (str op) (clj->js op-data) session-id op-id op-time)
        (comment .log js/console "Database:" (clj->js @*writer-db))
        (try
-        (let [new-db (updater @*writer-db op op-data session-id op-id op-time)]
-          (if (= op :writer/save-files) (handle-files! @*writer-db))
-          (reset! *writer-db new-db))
+        (do
+         (cond
+           (= op :effect/save-files) (handle-files! @*writer-db dispatch!)
+           :else
+             (let [new-db (updater @*writer-db op op-data session-id op-id op-time)]
+               (reset! *writer-db new-db))))
         (catch js/Error e (.log js/console e)))
        (recur)))
     (render-loop!))
