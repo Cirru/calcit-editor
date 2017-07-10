@@ -363,7 +363,10 @@
                            :procs []},
          "util" {:ns ["ns"
                       "server.util"
-                      [":require" ["[]" "clojure.string" ":as" "string"] ["[]" "server.schema" ":as" "schema"]]],
+                      [":require"
+                       ["[]" "clojure.string" ":as" "string"]
+                       ["[]" "server.schema" ":as" "schema"]
+                       ["[]" "bisection-key.core" ":as" "bisection"]]],
                  :defs {"prepend-data" ["defn" "prepend-data" ["x"] ["[]" ":data" "x"]],
                         "expr?" ["defn" "expr?" ["x"] ["=" ":expr" [":type" "x"]]],
                         "to-bookmark" ["defn"
@@ -381,6 +384,31 @@
                                          ["sort-by" "first"]
                                          ["map" ["fn" ["entry"] ["tree->cirru" ["val" "entry"]]]]
                                          ["vec"]]]],
+                        "cirru->tree" ["defn"
+                                       "cirru->tree"
+                                       ["xs" "author" "timestamp"]
+                                       ["if"
+                                        ["vector?" "xs"]
+                                        ["merge"
+                                         "schema/expr"
+                                         ["{}"
+                                          [":time" "timestamp"]
+                                          [":author" "author"]
+                                          [":data"
+                                           ["loop"
+                                            ["[]" "result" ["{}"] "ys" "xs" "next-id" "bisection/mid-id"]
+                                            ["if"
+                                             ["empty?" "ys"]
+                                             "result"
+                                             ["let"
+                                              [["y" ["first" "ys"]]]
+                                              ["recur"
+                                               ["assoc" "result" "next-id" ["cirru->tree" "y" "author" "timestamp"]]
+                                               ["rest" "ys"]
+                                               ["bisection/bisect" "next-id" "bisection/max-id"]]]]]]]]
+                                        ["merge"
+                                         "schema/leaf"
+                                         ["{}" [":time" "timestamp"] [":author" "author"] [":text" "xs"]]]]],
                         "kinds" ["def" "kinds" ["#{}" ":ns" ":def" ":proc"]],
                         "leaf?" ["defn" "leaf?" ["x"] ["=" ":leaf" [":type" "x"]]],
                         "ns->path" ["defn"
@@ -1092,18 +1120,19 @@
                              ["[]"
                               "server.util"
                               ":refer"
-                              ["[]" "expr?" "leaf?" "bookmark->path" "to-writer" "to-bookmark" "to-keys"]]]],
+                              ["[]" "expr?" "leaf?" "bookmark->path" "to-writer" "to-bookmark" "to-keys" "cirru->tree"]]]],
                        :defs {"add-def" ["defn"
                                          "add-def"
                                          ["db" "op-data" "session-id" "op-id" "op-time"]
                                          ["let"
                                           [["selected-ns"
                                             ["get-in" "db" ["[]" ":sessions" "session-id" ":writer" ":selected-ns"]]]
-                                           ["user-id" ["get-in" "db" ["[]" ":sessions" "session-id" ":user-id"]]]]
+                                           ["user-id" ["get-in" "db" ["[]" ":sessions" "session-id" ":user-id"]]]
+                                           ["cirru-expr" ["[]" "|defn" "op-data" ["[]"]]]]
                                           ["assoc-in"
                                            "db"
                                            ["[]" ":ir" ":files" "selected-ns" ":defs" "op-data"]
-                                           ["assoc" "schema/expr" ":time" "op-time" ":author" "user-id"]]]],
+                                           ["cirru->tree" "cirru-expr" "user-id" "op-time"]]]],
                               "leaf-before" ["defn"
                                              "leaf-before"
                                              ["db" "op-data" "session-id" "op-id" "op-time"]
@@ -1428,7 +1457,8 @@
                                         ["db" "op-data" "session-id" "op-id" "op-time"]
                                         ["let"
                                          [["user-id" ["get-in" "db" ["[]" ":sessions" "session-id" ":user-id"]]]
-                                          ["empty-expr" ["assoc" "schema/expr" ":time" "op-time" ":author" "user-id"]]]
+                                          ["cirru-expr" ["[]" "|ns" "op-data"]]
+                                          ["empty-expr" ["cirru->tree" "cirru-expr" "user-id" "op-time"]]]
                                          ["assoc-in"
                                           "db"
                                           ["[]" ":ir" ":files" "op-data"]

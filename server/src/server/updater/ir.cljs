@@ -2,15 +2,18 @@
 (ns server.updater.ir
   (:require [server.schema :as schema]
             [bisection-key.core :as bisection]
-            [server.util :refer [expr? leaf? bookmark->path to-writer to-bookmark to-keys]]))
+            [server.util
+             :refer
+             [expr? leaf? bookmark->path to-writer to-bookmark to-keys cirru->tree]]))
 
 (defn add-def [db op-data session-id op-id op-time]
   (let [selected-ns (get-in db [:sessions session-id :writer :selected-ns])
-        user-id (get-in db [:sessions session-id :user-id])]
+        user-id (get-in db [:sessions session-id :user-id])
+        cirru-expr ["defn" op-data []]]
     (assoc-in
      db
      [:ir :files selected-ns :defs op-data]
-     (assoc schema/expr :time op-time :author user-id))))
+     (cirru->tree cirru-expr user-id op-time))))
 
 (defn leaf-before [db op-data session-id op-id op-time]
   (let [writer (to-writer db session-id)
@@ -197,7 +200,8 @@
 
 (defn add-ns [db op-data session-id op-id op-time]
   (let [user-id (get-in db [:sessions session-id :user-id])
-        empty-expr (assoc schema/expr :time op-time :author user-id)]
+        cirru-expr ["ns" op-data]
+        empty-expr (cirru->tree cirru-expr user-id op-time)]
     (assoc-in db [:ir :files op-data] (assoc schema/file :ns empty-expr :proc empty-expr))))
 
 (defn delete-node [db op-data session-id op-id op-time]

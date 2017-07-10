@@ -1,5 +1,8 @@
 
-(ns server.util (:require [clojure.string :as string] [server.schema :as schema]))
+(ns server.util
+  (:require [clojure.string :as string]
+            [server.schema :as schema]
+            [bisection-key.core :as bisection]))
 
 (defn prepend-data [x] [:data x])
 
@@ -11,6 +14,22 @@
   (if (= :leaf (:type x))
     (:text x)
     (->> (:data x) (sort-by first) (map (fn [entry] (tree->cirru (val entry)))) (vec))))
+
+(defn cirru->tree [xs author timestamp]
+  (if (vector? xs)
+    (merge
+     schema/expr
+     {:time timestamp,
+      :author author,
+      :data (loop [result {}, ys xs, next-id bisection/mid-id]
+        (if (empty? ys)
+          result
+          (let [y (first ys)]
+            (recur
+             (assoc result next-id (cirru->tree y author timestamp))
+             (rest ys)
+             (bisection/bisect next-id bisection/max-id)))))})
+    (merge schema/leaf {:time timestamp, :author author, :text xs})))
 
 (def kinds #{:ns :def :proc})
 
