@@ -141,7 +141,8 @@
          "updater.writer" {:ns ["ns"
                                 "server.updater.writer"
                                 [":require"
-                                 ["[]" "server.util" ":refer" ["[]" "bookmark->path" "to-writer" "to-bookmark"]]]],
+                                 ["[]" "server.util" ":refer" ["[]" "bookmark->path" "to-writer" "to-bookmark"]]
+                                 ["[]" "server.util.stack" ":refer" ["[]" "push-bookmark"]]]],
                            :defs {"collapse" ["defn"
                                               "collapse"
                                               ["db" "op-data" "session-id" "op-id" "op-time"]
@@ -176,13 +177,24 @@
                                                 ["->"
                                                  "db"
                                                  ["update-in"
-                                                  ["[]" ":sessions" "session-id" ":writer" ":stack"]
+                                                  ["[]" ":sessions" "session-id" ":writer"]
                                                   ["fn"
-                                                   ["stack"]
-                                                   ["vec"
-                                                    ["concat"
-                                                     ["take" "op-data" "stack"]
-                                                     ["drop" ["inc" "op-data"] "stack"]]]]]]],
+                                                   ["writer"]
+                                                   ["->"
+                                                    "writer"
+                                                    ["update"
+                                                     ":stack"
+                                                     ["fn"
+                                                      ["stack"]
+                                                      ["vec"
+                                                       ["concat"
+                                                        ["take" "op-data" "stack"]
+                                                        ["drop" ["inc" "op-data"] "stack"]]]]]
+                                                    ["update"
+                                                     ":pointer"
+                                                     ["fn"
+                                                      ["pointer"]
+                                                      ["if" ["pos?" "pointer"] ["dec" "pointer"] "pointer"]]]]]]]],
                                   "copy" ["defn"
                                           "copy"
                                           ["db" "op-data" "session-id" "op-id" "op-time"]
@@ -254,16 +266,7 @@
                                             "db"
                                             ["update-in"
                                              ["[]" ":sessions" "session-id" ":writer"]
-                                             ["fn"
-                                              ["writer"]
-                                              ["let"
-                                               [[["{}" ["stack" ":stack"] ["pointer" ":pointer"]] "writer"]]
-                                               ["assoc"
-                                                "writer"
-                                                ":stack"
-                                                ["conj" "stack" "bookmark"]
-                                                ":pointer"
-                                                ["count" "stack"]]]]]
+                                             ["push-bookmark" "bookmark"]]
                                             ["assoc-in"
                                              ["[]" ":sessions" "session-id" ":router"]
                                              ["{}" [":name" ":editor"]]]]]],
@@ -276,16 +279,7 @@
                                               "db"
                                               ["update-in"
                                                ["[]" ":sessions" "session-id" ":writer"]
-                                               ["fn"
-                                                ["writer"]
-                                                ["let"
-                                                 [[["{}" ["stack" ":stack"] ["pointer" ":pointer"]] "writer"]]
-                                                 ["assoc"
-                                                  "writer"
-                                                  ":stack"
-                                                  ["conj" "stack" "bookmark"]
-                                                  ":pointer"
-                                                  ["count" "stack"]]]]]
+                                               ["push-bookmark" "bookmark"]]
                                               ["assoc-in"
                                                ["[]" ":sessions" "session-id" ":router"]
                                                ["{}" [":name" ":editor"]]]]]],
@@ -1132,6 +1126,41 @@
                                                                   ["get" "users" [":user-id" "session"]]]]]]]
                                                              ["into" ["{}"]]]]]]},
                               :procs []},
+         "util.stack" {:ns ["ns" "server.util.stack"],
+                       :defs {"push-bookmark" ["defn"
+                                               "push-bookmark"
+                                               ["bookmark"]
+                                               ["fn"
+                                                ["writer"]
+                                                ["let"
+                                                 [[["{}" "pointer" ":pointer" "stack" ":stack"] "writer"]
+                                                  ["idx" ["index-of-bookmark" "stack" "bookmark"]]]
+                                                 ["if"
+                                                  ["neg?" "idx"]
+                                                  ["->"
+                                                   "writer"
+                                                   ["update" ":stack" ["fn" ["stack"] ["conj" "stack" "bookmark"]]]
+                                                   ["assoc" ":pointer" ["count" "stack"]]]
+                                                  ["->" "writer" ["assoc" ":pointer" "idx"]]]]]],
+                              "index-of-bookmark" ["defn"
+                                                   "index-of-bookmark"
+                                                   [["stack" "bookmark"] ["index-of-bookmark" "stack" "bookmark" "0"]]
+                                                   [["stack" "bookmark" "idx"]
+                                                    ["if"
+                                                     ["empty?" "stack"]
+                                                     "-1"
+                                                     ["if"
+                                                      ["=bookmark?" "bookmark" ["first" "stack"]]
+                                                      "idx"
+                                                      ["recur" ["rest" "stack"] "bookmark" ["inc" "idx"]]]]]],
+                              "=bookmark?" ["defn"
+                                            "=bookmark?"
+                                            ["x" "y"]
+                                            ["and"
+                                             ["=" [":kind" "x"] [":kind" "y"]]
+                                             ["=" [":ns" "x"] [":ns" "y"]]
+                                             ["=" [":extra" "x"] [":extra" "y"]]]]},
+                       :procs []},
          "twig.page-editor" {:ns ["ns"
                                   "server.twig.page-editor"
                                   [":require"

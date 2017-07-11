@@ -1,6 +1,7 @@
 
 (ns server.updater.writer
-  (:require [server.util :refer [bookmark->path to-writer to-bookmark]]))
+  (:require [server.util :refer [bookmark->path to-writer to-bookmark]]
+            [server.util.stack :refer [push-bookmark]]))
 
 (defn collapse [db op-data session-id op-id op-time]
   (-> db
@@ -26,8 +27,13 @@
 (defn remove-idx [db op-data session-id op-id op-time]
   (-> db
       (update-in
-       [:sessions session-id :writer :stack]
-       (fn [stack] (vec (concat (take op-data stack) (drop (inc op-data) stack)))))))
+       [:sessions session-id :writer]
+       (fn [writer]
+         (-> writer
+             (update
+              :stack
+              (fn [stack] (vec (concat (take op-data stack) (drop (inc op-data) stack)))))
+             (update :pointer (fn [pointer] (if (pos? pointer) (dec pointer) pointer))))))))
 
 (defn copy [db op-data session-id op-id op-time]
   (let [writer (to-writer db session-id)
@@ -57,21 +63,13 @@
   (let [ns-text (get-in db [:sessions session-id :writer :selected-ns])
         bookmark (assoc op-data :ns ns-text :focus [])]
     (-> db
-        (update-in
-         [:sessions session-id :writer]
-         (fn [writer]
-           (let [{stack :stack, pointer :pointer} writer]
-             (assoc writer :stack (conj stack bookmark) :pointer (count stack)))))
+        (update-in [:sessions session-id :writer] (push-bookmark bookmark))
         (assoc-in [:sessions session-id :router] {:name :editor}))))
 
 (defn select [db op-data session-id op-id op-time]
   (let [bookmark op-data]
     (-> db
-        (update-in
-         [:sessions session-id :writer]
-         (fn [writer]
-           (let [{stack :stack, pointer :pointer} writer]
-             (assoc writer :stack (conj stack bookmark) :pointer (count stack)))))
+        (update-in [:sessions session-id :writer] (push-bookmark bookmark))
         (assoc-in [:sessions session-id :router] {:name :editor}))))
 
 (defn go-right [db op-data session-id op-id op-time]
