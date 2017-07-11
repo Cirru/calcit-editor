@@ -438,8 +438,6 @@
                                  :author "Bka0vFjNW",
                                  :time 1499487322064,
                                  :data {}}},
-              :sessions {"SkJTzNbS-" {:writer {:stack {0 {:ns "app.lib",
-                                                          :extra "dede"}}}}},
               "app.lib" {:ns {:type :expr,
                               :author "Bka0vFjNW",
                               :time 1499489025485,
@@ -478,4 +476,8 @@
                       :nickname "chen",
                       :password "",
                       :avatar nil}},
- :saved-files {}}
+ :saved-files {},
+ :configs {:storage-key "coir.edn",
+           :extension ".cljs",
+           :output "src",
+           :port 6001}}

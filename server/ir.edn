@@ -1,6 +1,24 @@
 {:package "server",
  :root nil,
- :files {"updater.router" {:ns ["ns" "server.updater.router"],
+ :files {"util.env" {:ns ["ns" "server.util.env"],
+                     :defs {"pick-configs" ["defn"
+                                            "pick-configs"
+                                            ["configs"]
+                                            ["let"
+                                             [["cli-port"
+                                               ["if"
+                                                ["some?" [".-port" "js/process.env"]]
+                                                ["js/parseInt" [".-port" "js/process.env"]]]]
+                                              ["cli-op" [".-op" "js/process.env"]]
+                                              ["result"
+                                               ["->"
+                                                "configs"
+                                                ["update" ":port" ["fn" ["port"] ["or" "cli-port" "port"]]]
+                                                ["update" ":op" ["fn" ["op"] ["or" "cli-op" "op"]]]]]]
+                                             ["println" "|Using configs:" "result"]
+                                             "result"]]},
+                     :procs []},
+         "updater.router" {:ns ["ns" "server.updater.router"],
                            :defs {"change" ["defn"
                                             "change"
                                             ["db" "op-data" "session-id" "op-id" "op-time"]
@@ -67,7 +85,7 @@
                          :defs {"emit-file!" ["defn" "emit-file!" []],
                                 "handle-files!" ["defn"
                                                  "handle-files!"
-                                                 ["db" "dispatch!"]
+                                                 ["db" "configs" "dispatch!"]
                                                  ["try"
                                                   ["let"
                                                    [["new-files" ["get-in" "db" ["[]" ":ir" ":files"]]]
@@ -88,16 +106,18 @@
                                                    ["doseq"
                                                     ["[]" "ns-text" "added-names"]
                                                     ["create-file!"
-                                                     ["ns->path" "ns-text"]
-                                                     ["get" "new-files" "ns-text"]]]
+                                                     ["ns->path" "ns-text" "configs"]
+                                                     ["get" "new-files" "ns-text"]
+                                                     "configs"]]
                                                    ["doseq"
                                                     ["[]" "ns-text" "removed-names"]
-                                                    ["remove-file!" ["ns->path" "ns-text"]]]
+                                                    ["remove-file!" ["ns->path" "ns-text" "configs"] "configs"]]
                                                    ["doseq"
                                                     ["[]" "ns-text" "changed-names"]
                                                     ["modify-file!"
-                                                     ["ns->path" "ns-text"]
-                                                     ["get" "new-files" "ns-text"]]]
+                                                     ["ns->path" "ns-text" "configs"]
+                                                     ["get" "new-files" "ns-text"]
+                                                     "configs"]]
                                                    ["dispatch!" ":writer/save-files" "nil"]]
                                                   ["catch"
                                                    "js/Error"
@@ -107,10 +127,9 @@
                                                     ["dispatch!" ":notify/push-error" [".-message" "e"]]]]]],
                                 "create-file!" ["defn"
                                                 "create-file!"
-                                                ["file-path" "file"]
+                                                ["file-path" "file" "configs"]
                                                 ["let"
-                                                 [["project-path"
-                                                   ["path.join" [":output" "schema/configs"] "file-path"]]]
+                                                 [["project-path" ["path.join" [":output" "configs"] "file-path"]]]
                                                  ["println" "|Creating" "project-path"]
                                                  ["cp.execSync" ["str" "|mkdir -p " ["path.dirname" "project-path"]]]
                                                  ["fs.writeFileSync"
@@ -118,18 +137,16 @@
                                                   ["generate-file" ["file->cirru" "file"]]]]],
                                 "remove-file!" ["defn"
                                                 "remove-file!"
-                                                ["file-path"]
+                                                ["file-path" "configs"]
                                                 ["let"
-                                                 [["project-path"
-                                                   ["path.join" [":output" "schema/configs"] "file-path"]]]
+                                                 [["project-path" ["path.join" [":output" "configs"] "file-path"]]]
                                                  ["println" "|Removing" "project-path"]
                                                  ["cp.execSync" ["str" "|rm -rfv " "project-path"]]]],
                                 "modify-file!" ["defn"
                                                 "modify-file!"
-                                                ["file-path" "file"]
+                                                ["file-path" "file" "configs"]
                                                 ["let"
-                                                 [["project-path"
-                                                   ["path.join" [":output" "schema/configs"] "file-path"]]]
+                                                 [["project-path" ["path.join" [":output" "configs"] "file-path"]]]
                                                  ["println" "|Modifying" "project-path"]
                                                  ["fs.writeFileSync"
                                                   "project-path"
@@ -483,12 +500,12 @@
                         "leaf?" ["defn" "leaf?" ["x"] ["=" ":leaf" [":type" "x"]]],
                         "ns->path" ["defn"
                                     "ns->path"
-                                    ["ns-text"]
+                                    ["ns-text" "configs"]
                                     ["->"
                                      "ns-text"
                                      ["string/replace" "|." "|/"]
                                      ["string/replace" "|-" "|_"]
-                                     ["str" [":extension" "schema/configs"]]]],
+                                     ["str" [":extension" "configs"]]]],
                         "same-buffer?" ["defn"
                                         "same-buffer?"
                                         ["x" "y"]
@@ -567,7 +584,8 @@
                                        [":sessions" ["{}"]]
                                        [":users" ["{}"]]
                                        [":ir" "ir-file"]
-                                       [":saved-files" ["{}"]]]],
+                                       [":saved-files" ["{}"]]
+                                       [":configs" "configs"]]],
                           "router" ["def"
                                     "router"
                                     ["{}" [":name" "nil"] [":title" "nil"] [":data" ["{}"]] [":router" "nil"]]],
@@ -775,59 +793,14 @@
                        ["[]" "cljs.core.async" ":refer" ["[]" "<!" ">!"]]
                        ["[]" "cljs.reader" ":refer" ["[]" "read-string"]]
                        ["[]" "fipp.edn" ":as" "fipp"]
-                       ["[]" "server.util.compile" ":refer" ["[]" "handle-files!"]]]
+                       ["[]" "server.util.compile" ":refer" ["[]" "handle-files!"]]
+                       ["[]" "server.util.env" ":refer" ["[]" "pick-configs"]]]
                       [":require-macros" ["[]" "cljs.core.async.macros" ":refer" ["[]" "go-loop" "go"]]]],
-                 :defs {"persist!" ["defn"
-                                    "persist!"
-                                    []
-                                    ["let"
-                                     [["fs" ["js/require" "|fs"]]]
-                                     ["fs.writeFileSync"
-                                      [":storage-key" "schema/configs"]
-                                      ["with-out-str"
-                                       ["fipp/pprint"
-                                        ["->"
-                                         "@*writer-db"
-                                         ["assoc" ":sessions" ["{}"]]
-                                         ["assoc" ":saved-files" ["{}"]]]]]]]],
-                        "reload!" ["defn" "reload!" [] ["println" "|Code updated."] ["render-clients!" "@*reader-db"]],
-                        "main!" ["defn"
-                                 "main!"
-                                 []
-                                 ["let"
-                                  [["op" ["or" [".-op" "js/process.env"] "|server"]]]
-                                  ["if" ["=" "op" "|compile"] ["compile-all-files!"] ["start-server!"]]]],
-                        "*writer-db" ["defonce"
-                                      "*writer-db"
-                                      ["atom"
-                                       ["let"
-                                        [["fs" ["js/require" "|fs"]]
-                                         ["filepath" [":storage-key" "schema/configs"]]
-                                         ["db"
-                                          ["if"
-                                           ["fs.existsSync" "filepath"]
-                                           ["do"
-                                            ["println" "|Found storage."]
-                                            ["read-string" ["fs.readFileSync" "filepath" "|utf8"]]]
-                                           ["do" ["println" "|Found no storage."] "schema/database"]]]]
-                                        ["assoc" "db" ":saved-files" ["get-in" "db" ["[]" ":ir" ":files"]]]]]],
-                        "render-loop!" ["defn"
-                                        "render-loop!"
-                                        []
-                                        ["if"
-                                         ["not=" "@*reader-db" "@*writer-db"]
-                                         ["do"
-                                          ["reset!" "*reader-db" "@*writer-db"]
-                                          ["--" "println" "|render loop"]
-                                          ["render-clients!" "@*reader-db"]]]
-                                        ["js/setTimeout" "render-loop!" "20"]],
-                        "*reader-db" ["defonce" "*reader-db" ["atom" "@*writer-db"]],
-                        "start-server!" ["defn"
+                 :defs {"start-server!" ["defn"
                                          "start-server!"
-                                         []
-                                         ["println" "|Loading configs:" ["pr-str" "schema/configs"]]
+                                         ["configs"]
                                          ["let"
-                                          [["server-ch" ["run-server!" ["{}" [":port" [":port" "schema/configs"]]]]]]
+                                          [["server-ch" ["run-server!" ["{}" [":port" [":port" "configs"]]]]]]
                                           ["go-loop"
                                            ["[]"]
                                            ["let"
@@ -852,7 +825,7 @@
                                              ["do"
                                               ["cond"
                                                [["=" "op" ":effect/save-files"]
-                                                ["handle-files!" "@*writer-db" "dispatch!"]]
+                                                ["handle-files!" "@*writer-db" "dispatch!" "configs"]]
                                                [":else"
                                                 ["let"
                                                  [["new-db"
@@ -877,12 +850,65 @@
                                            ["println" "|Saving file on exit" "code"]
                                            [".exit" "js/process"]]]
                                          ["println" "|Server started."]],
+                        "main!" ["defn"
+                                 "main!"
+                                 []
+                                 ["let"
+                                  [["op" ["or" [".-op" "js/process.env"] "|server"]]
+                                   ["configs" ["pick-configs" [":configs" "@*writer-db"]]]]
+                                  ["if"
+                                   ["=" "op" "|compile"]
+                                   ["compile-all-files!" "configs"]
+                                   ["start-server!" "configs"]]]],
+                        "persist!" ["defn"
+                                    "persist!"
+                                    []
+                                    ["let"
+                                     [["fs" ["js/require" "|fs"]]]
+                                     ["fs.writeFileSync"
+                                      [":storage-key" "schema/configs"]
+                                      ["with-out-str"
+                                       ["fipp/pprint"
+                                        ["->"
+                                         "@*writer-db"
+                                         ["assoc" ":sessions" ["{}"]]
+                                         ["assoc" ":saved-files" ["{}"]]]]]]]],
+                        "*reader-db" ["defonce" "*reader-db" ["atom" "@*writer-db"]],
                         "compile-all-files!" ["defn"
                                               "compile-all-files!"
-                                              []
+                                              ["configs"]
                                               ["handle-files!"
                                                ["assoc" "@*writer-db" ":saved-files" ["{}"]]
-                                               ["fn" ["op" "op-data"] ["println" "|After compile:" "op" "op-data"]]]]},
+                                               "configs"
+                                               ["fn" ["op" "op-data"] ["println" "|After compile:" "op" "op-data"]]]],
+                        "reload!" ["defn" "reload!" [] ["println" "|Code updated."] ["render-clients!" "@*reader-db"]],
+                        "*writer-db" ["defonce"
+                                      "*writer-db"
+                                      ["atom"
+                                       ["let"
+                                        [["fs" ["js/require" "|fs"]]
+                                         ["filepath" [":storage-key" "schema/configs"]]
+                                         ["db"
+                                          ["if"
+                                           ["fs.existsSync" "filepath"]
+                                           ["do"
+                                            ["println" "|Found storage."]
+                                            ["read-string" ["fs.readFileSync" "filepath" "|utf8"]]]
+                                           ["do" ["println" "|Found no storage."] "schema/database"]]]]
+                                        ["->"
+                                         "db"
+                                         ["assoc" ":saved-files" ["get-in" "db" ["[]" ":ir" ":files"]]]
+                                         ["update" ":configs" ["fn" ["configs"] ["or" "configs" "schema/configs"]]]]]]],
+                        "render-loop!" ["defn"
+                                        "render-loop!"
+                                        []
+                                        ["if"
+                                         ["not=" "@*reader-db" "@*writer-db"]
+                                         ["do"
+                                          ["reset!" "*reader-db" "@*writer-db"]
+                                          ["--" "println" "|render loop"]
+                                          ["render-clients!" "@*reader-db"]]]
+                                        ["js/setTimeout" "render-loop!" "20"]]},
                  :procs []},
          "network" {:ns ["ns"
                          "server.network"
@@ -899,7 +925,11 @@
                                           "run-server!"
                                           ["configs"]
                                           ["let"
-                                           [["wss" ["new" "WebSocketServer" ["js-obj" "|port" [":port" "configs"]]]]]
+                                           [["port" [":port" "configs"]]
+                                            ["wss" ["new" "WebSocketServer" ["js-obj" "|port" "port"]]]]
+                                           ["println"
+                                            "|Edit with "
+                                            ["str" "|http://cumulo-editor.cirru.org?port=" "port"]]
                                            [".on"
                                             "wss"
                                             "|connection"

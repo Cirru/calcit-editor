@@ -6,7 +6,8 @@
             [cljs.core.async :refer [<! >!]]
             [cljs.reader :refer [read-string]]
             [fipp.edn :as fipp]
-            [server.util.compile :refer [handle-files!]])
+            [server.util.compile :refer [handle-files!]]
+            [server.util.env :refer [pick-configs]])
   (:require-macros [cljs.core.async.macros :refer [go-loop go]]))
 
 (defonce *writer-db
@@ -16,7 +17,9 @@
          db (if (fs.existsSync filepath)
               (do (println "Found storage.") (read-string (fs.readFileSync filepath "utf8")))
               (do (println "Found no storage.") schema/database))]
-     (assoc db :saved-files (get-in db [:ir :files])))))
+     (-> db
+         (assoc :saved-files (get-in db [:ir :files]))
+         (update :configs (fn [configs] (or configs schema/configs)))))))
 
 (defn persist! []
   (let [fs (js/require "fs")]
@@ -27,8 +30,6 @@
 
 (defonce *reader-db (atom @*writer-db))
 
-(defn reload! [] (println "Code updated.") (render-clients! @*reader-db))
-
 (defn render-loop! []
   (if (not= @*reader-db @*writer-db)
     (do
@@ -37,9 +38,8 @@
      (render-clients! @*reader-db)))
   (js/setTimeout render-loop! 20))
 
-(defn start-server! []
-  (println "Loading configs:" (pr-str schema/configs))
-  (let [server-ch (run-server! {:port (:port schema/configs)})]
+(defn start-server! [configs]
+  (let [server-ch (run-server! {:port (:port configs)})]
     (go-loop
      []
      (let [[op op-data session-id op-id op-time] (<! server-ch)
@@ -50,7 +50,7 @@
        (try
         (do
          (cond
-           (= op :effect/save-files) (handle-files! @*writer-db dispatch!)
+           (= op :effect/save-files) (handle-files! @*writer-db dispatch! configs)
            :else
              (let [new-db (updater @*writer-db op op-data session-id op-id op-time)]
                (reset! *writer-db new-db))))
@@ -64,11 +64,14 @@
    (fn [code] (persist!) (println "Saving file on exit" code) (.exit js/process)))
   (println "Server started."))
 
-(defn compile-all-files! []
+(defn compile-all-files! [configs]
   (handle-files!
    (assoc @*writer-db :saved-files {})
+   configs
    (fn [op op-data] (println "After compile:" op op-data))))
 
 (defn main! []
-  (let [op (or (.-op js/process.env) "server")]
-    (if (= op "compile") (compile-all-files!) (start-server!))))
+  (let [op (or (.-op js/process.env) "server"), configs (pick-configs (:configs @*writer-db))]
+    (if (= op "compile") (compile-all-files! configs) (start-server! configs))))
+
+(defn reload! [] (println "Code updated.") (render-clients! @*reader-db))

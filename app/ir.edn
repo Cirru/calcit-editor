@@ -578,8 +578,25 @@
                                     ["every?" ["fn" ["x"] ["=" ":leaf" [":type" "x"]]] ["vals" [":data" "expr"]]]
                                     ["<=" ["count" [":data" "expr"]] "6"]]],
                         "leaf?" ["defn" "leaf?" ["x"] ["=" ":leaf" [":type" "x"]]],
-                        "expr?" ["defn" "expr?" ["x"] ["=" ":expr" [":type" "x"]]]},
-                 :ns ["ns" "app.util"],
+                        "expr?" ["defn" "expr?" ["x"] ["=" ":expr" [":type" "x"]]],
+                        "ws-host" ["def"
+                                   "ws-host"
+                                   ["let"
+                                    [["query"
+                                      ["->>"
+                                       ["->" [".-search" "js/location"] ["subs" "1"] ["string/split" "|&"]]
+                                       ["map"
+                                        ["fn" ["chunk"] ["update" ["vec" ["string/split" "chunk" "|="]] "0" "keyword"]]]
+                                       ["into" ["{}"]]]]]
+                                    ["println" "|Loading from url" "query"]
+                                    ["str"
+                                     "|ws://"
+                                     ["or" [":host" "query"] [".-hostname" "js/location"]]
+                                     "|:"
+                                     ["or" [":port" "query"] [":port" "schema/configs"]]]]]},
+                 :ns ["ns"
+                      "app.util"
+                      [":require" ["[]" "clojure.string" ":as" "string"] ["[]" "app.schema" ":as" "schema"]]],
                  :procs []},
          "schema" {:ns ["ns" "app.schema"],
                    :defs {"configs" ["def" "configs" ["{}" [":storage-key" "|workflow-storage"] [":port" "6001"]]]},
@@ -817,6 +834,7 @@
                        ["[]" "cljs.reader" ":refer" ["[]" "read-string"]]
                        ["[]" "app.network" ":refer" ["[]" "send!" "setup-socket!"]]
                        ["[]" "app.schema" ":as" "schema"]
+                       ["[]" "app.util" ":refer" ["[]" "ws-host"]]
                        ["[]" "app.util.dom" ":refer" ["[]" "focus!"]]
                        ["[]" "app.util.shortcuts" ":refer" ["[]" "on-window-keydown"]]]],
                  :defs {"ssr?" ["def" "ssr?" ["some?" [".querySelector" "js/document" "|meta.respo-ssr"]]],
@@ -837,8 +855,7 @@
                                  ["setup-socket!"
                                   "*store"
                                   ["{}"
-                                   [":url"
-                                    ["str" "|ws://" [".-hostname" "js/location"] "|:" [":port" "schema/configs"]]]
+                                   [":url" "ws-host"]
                                    [":on-close!"
                                     ["fn"
                                      ["event"]

@@ -23,7 +23,8 @@
     (go (>! server-chan [op op-data session-id op-id op-time]))))
 
 (defn run-server! [configs]
-  (let [wss (new WebSocketServer (js-obj "port" (:port configs)))]
+  (let [port (:port configs), wss (new WebSocketServer (js-obj "port" port))]
+    (println "Edit with " (str "http://cumulo-editor.cirru.org?port=" port))
     (.on
      wss
      "connection"

@@ -37,11 +37,8 @@
 
 (defn leaf? [x] (= :leaf (:type x)))
 
-(defn ns->path [ns-text]
-  (-> ns-text
-      (string/replace "." "/")
-      (string/replace "-" "_")
-      (str (:extension schema/configs))))
+(defn ns->path [ns-text configs]
+  (-> ns-text (string/replace "." "/") (string/replace "-" "_") (str (:extension configs))))
 
 (defn same-buffer? [x y]
   (and (= (:kind x) (:kind y)) (= (:ns x) (:ns y)) (= (:extra x) (:extra y))))

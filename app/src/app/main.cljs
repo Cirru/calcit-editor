@@ -6,6 +6,7 @@
             [cljs.reader :refer [read-string]]
             [app.network :refer [send! setup-socket!]]
             [app.schema :as schema]
+            [app.util :refer [ws-host]]
             [app.util.dom :refer [focus!]]
             [app.util.shortcuts :refer [on-window-keydown]]))
 
@@ -35,7 +36,7 @@
   (render-app! render!)
   (setup-socket!
    *store
-   {:url (str "ws://" (.-hostname js/location) ":" (:port schema/configs)),
+   {:url ws-host,
     :on-close! (fn [event] (reset! *store nil) (.error js/console "Lost connection!")),
     :on-open! (fn [event] (simulate-login!))})
   (add-watch

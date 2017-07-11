@@ -17,7 +17,7 @@
 
 (def leaf {:type :leaf, :author nil, :time nil, :text ""})
 
-(def database {:sessions {}, :users {}, :ir ir-file, :saved-files {}})
+(def database {:sessions {}, :users {}, :ir ir-file, :saved-files {}, :configs configs})
 
 (def router {:name nil, :title nil, :data {}, :router nil})
 
