@@ -185,6 +185,10 @@
                                                  [".preventDefault" "event"]]]]
                                               [["and" "meta?" "shift?" ["=" "code" "keycode/v"]]
                                                ["do" ["d!" ":writer/paste" "nil"] [".preventDefault" "event"]]]
+                                              [["and" "meta?" ["=" "code" "keycode/d"]]
+                                               ["do"
+                                                [".preventDefault" "event"]
+                                                ["d!" ":analyze/goto-def" [":text" "leaf"]]]]
                                               [":else"
                                                ["do"
                                                 ["println" "|Keydown leaf" "code"]
@@ -467,7 +471,8 @@
                                 "style-profile" ["def" "style-profile" ["{}" [":padding" "|0 16px"]]]},
                          :procs []},
          "util.keycode" {:ns ["ns" "app.util.keycode"],
-                         :defs {"space" ["def" "space" "32"],
+                         :defs {"d" ["def" "d" "68"],
+                                "space" ["def" "space" "32"],
                                 "s" ["def" "s" "83"],
                                 "tab" ["def" "tab" "9"],
                                 "right" ["def" "right" "39"],
@@ -930,7 +935,7 @@
                                                ["event"]
                                                ["let"
                                                 [["changes" ["reader/read-string" "event.data"]]]
-                                                [".log" "js/console" "|Changes" ["clj->js" "changes"]]
+                                                ["println" "|Changes" ["count" "changes"]]
                                                 ["reset!" "*store" ["patch-bunch" "@*store" "changes"]]]]]
                                              ["go" ["loop" ["[]"] [".send" "ws" ["pr-str" ["<!" "sender"]]] ["recur"]]]]]},
                     :procs []},
@@ -1618,7 +1623,7 @@
                                            ["{}"
                                             [":display" ":inline-block"]
                                             [":vertical-align" ":top"]
-                                            [":padding-left" "8"]]]},
+                                            [":padding-left" "10"]]]},
                       :procs []},
          "util.shortcuts" {:ns ["ns"
                                 "app.util.shortcuts"

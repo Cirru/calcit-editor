@@ -59,7 +59,7 @@
           collect! (fn [x] (swap! *changes conj x))
           socket (get @socket-registry session-id)]
       (diff-bunch collect! [] old-store new-store)
-      (.info js/console "Changes for" session-id ":" (clj->js @*changes))
+      (comment .info js/console "Changes for" session-id ":" (clj->js @*changes))
       (if (and (not= *changes []) (some? socket))
         (do
          (.send socket (pr-str @*changes))

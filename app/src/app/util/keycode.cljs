@@ -1,6 +1,8 @@
 
 (ns app.util.keycode )
 
+(def d 68)
+
 (def space 32)
 
 (def s 83)

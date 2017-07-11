@@ -63,7 +63,7 @@
    :padding-right 9,
    :vertical-align :top})
 
-(def style-tail {:display :inline-block, :vertical-align :top, :padding-left 8})
+(def style-tail {:display :inline-block, :vertical-align :top, :padding-left 10})
 
 (defcomp
  comp-expr

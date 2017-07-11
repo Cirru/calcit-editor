@@ -5,7 +5,8 @@
             [server.updater.router :as router]
             [server.updater.ir :as ir]
             [server.updater.writer :as writer]
-            [server.updater.notify :as notify]))
+            [server.updater.notify :as notify]
+            [server.updater.analyze :as analyze]))
 
 (defn updater [db op op-data session-id op-id op-time]
   (case op
@@ -52,4 +53,5 @@
     :ir/duplicate (ir/duplicate db op-data session-id op-id op-time)
     :ir/rename (ir/rename db op-data session-id op-id op-time)
     :notify/push-error (notify/push-error db op-data session-id op-id op-time)
+    :analyze/goto-def (analyze/goto-def db op-data session-id op-id op-time)
     db))

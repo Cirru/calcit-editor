@@ -71,6 +71,8 @@
             (do (println text-length) (d! :writer/go-right nil) (.preventDefault event)))
         (and meta? shift? (= code keycode/v))
           (do (d! :writer/paste nil) (.preventDefault event))
+        (and meta? (= code keycode/d))
+          (do (.preventDefault event) (d! :analyze/goto-def (:text leaf)))
         :else (do (println "Keydown leaf" code) (on-window-keydown event d!))))))
 
 (defcomp

@@ -4,7 +4,33 @@
             [server.schema :as schema]
             [bisection-key.core :as bisection]))
 
+(defn parse-require [piece]
+  (let [method (get piece 1), ns-text (get piece 0)]
+    (if (= method ":as")
+      {(get piece 2) {:method :as, :ns ns-text}}
+      (->> (get piece 2)
+           (rest)
+           (map (fn [def-text] [def-text {:method :refer, :ns ns-text, :def def-text}]))
+           (into {})))))
+
+(defn parse-deps [require-exprs]
+  (let [require-rules (->> require-exprs (filter (fn [xs] (= ":require" (first xs)))) (first))]
+    (if (some? require-rules)
+      (loop [result {}, xs (rest require-rules)]
+        (comment println "loop" result xs)
+        (if (empty? xs)
+          result
+          (let [rule (first xs)]
+            (recur (merge result (parse-require (subvec rule 1))) (rest xs))))))))
+
 (defn pick-second-key [m] (first (rest (sort (keys m)))))
+
+(defn parse-def [text]
+  (let [clean-text (-> text (string/replace "@" ""))]
+    (if (string/includes? clean-text "/")
+      (let [[ns-text def-text] (string/split clean-text "/")]
+        {:method :as, :key ns-text, :extra def-text})
+      {:method :refer, :key text})))
 
 (defn prepend-data [x] [:data x])
 

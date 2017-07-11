@@ -485,9 +485,60 @@
                        ["[]" "clojure.string" ":as" "string"]
                        ["[]" "server.schema" ":as" "schema"]
                        ["[]" "bisection-key.core" ":as" "bisection"]]],
-                 :defs {"pick-second-key" ["defn" "pick-second-key" ["m"] ["first" ["rest" ["sort" ["keys" "m"]]]]],
+                 :defs {"parse-deps" ["defn"
+                                      "parse-deps"
+                                      ["require-exprs"]
+                                      ["let"
+                                       [["require-rules"
+                                         ["->>"
+                                          "require-exprs"
+                                          ["filter" ["fn" ["xs"] ["=" "|:require" ["first" "xs"]]]]
+                                          ["first"]]]]
+                                       ["if"
+                                        ["some?" "require-rules"]
+                                        ["loop"
+                                         ["[]" "result" ["{}"] "xs" ["rest" "require-rules"]]
+                                         ["--" "println" "|loop" "result" "xs"]
+                                         ["if"
+                                          ["empty?" "xs"]
+                                          "result"
+                                          ["let"
+                                           [["rule" ["first" "xs"]]]
+                                           ["recur"
+                                            ["merge" "result" ["parse-require" ["subvec" "rule" "1"]]]
+                                            ["rest" "xs"]]]]]]]],
+                        "pick-second-key" ["defn" "pick-second-key" ["m"] ["first" ["rest" ["sort" ["keys" "m"]]]]],
+                        "parse-def" ["defn"
+                                     "parse-def"
+                                     ["text"]
+                                     ["let"
+                                      [["clean-text" ["->" "text" ["string/replace" "|@" "|"]]]]
+                                      ["if"
+                                       ["string/includes?" "clean-text" "|/"]
+                                       ["let"
+                                        [[["[]" "ns-text" "def-text"] ["string/split" "clean-text" "|/"]]]
+                                        ["{}" [":method" ":as"] [":key" "ns-text"] [":extra" "def-text"]]]
+                                       ["{}" [":method" ":refer"] [":key" "text"]]]]],
                         "prepend-data" ["defn" "prepend-data" ["x"] ["[]" ":data" "x"]],
                         "expr?" ["defn" "expr?" ["x"] ["=" ":expr" [":type" "x"]]],
+                        "parse-require" ["defn"
+                                         "parse-require"
+                                         ["piece"]
+                                         ["let"
+                                          [["method" ["get" "piece" "1"]] ["ns-text" ["get" "piece" "0"]]]
+                                          ["if"
+                                           ["=" "method" "|:as"]
+                                           ["{}" [["get" "piece" "2"] ["{}" [":method" ":as"] [":ns" "ns-text"]]]]
+                                           ["->>"
+                                            ["get" "piece" "2"]
+                                            ["rest"]
+                                            ["map"
+                                             ["fn"
+                                              ["def-text"]
+                                              ["[]"
+                                               "def-text"
+                                               ["{}" [":method" ":refer"] [":ns" "ns-text"] [":def" "def-text"]]]]]
+                                            ["into" ["{}"]]]]]],
                         "to-bookmark" ["defn"
                                        "to-bookmark"
                                        ["writer"]
@@ -1004,7 +1055,8 @@
                                                  ["collect!" ["fn" ["x"] ["swap!" "*changes" "conj" "x"]]]
                                                  ["socket" ["get" "@socket-registry" "session-id"]]]
                                                 ["diff-bunch" "collect!" ["[]"] "old-store" "new-store"]
-                                                [".info"
+                                                ["--"
+                                                 ".info"
                                                  "js/console"
                                                  "|Changes for"
                                                  "session-id"
@@ -1127,7 +1179,8 @@
                                ["[]" "server.updater.router" ":as" "router"]
                                ["[]" "server.updater.ir" ":as" "ir"]
                                ["[]" "server.updater.writer" ":as" "writer"]
-                               ["[]" "server.updater.notify" ":as" "notify"]]],
+                               ["[]" "server.updater.notify" ":as" "notify"]
+                               ["[]" "server.updater.analyze" ":as" "analyze"]]],
                          :defs {"updater" ["defn"
                                            "updater"
                                            ["db" "op" "op-data" "session-id" "op-id" "op-time"]
@@ -1217,6 +1270,8 @@
                                             [":ir/rename" ["ir/rename" "db" "op-data" "session-id" "op-id" "op-time"]]
                                             [":notify/push-error"
                                              ["notify/push-error" "db" "op-data" "session-id" "op-id" "op-time"]]
+                                            [":analyze/goto-def"
+                                             ["analyze/goto-def" "db" "op-data" "session-id" "op-id" "op-time"]]
                                             "db"]]},
                          :procs []},
          "twig.page-members" {:ns ["ns"
@@ -1244,6 +1299,95 @@
                                                                   ["get" "users" [":user-id" "session"]]]]]]]
                                                              ["into" ["{}"]]]]]]},
                               :procs []},
+         "updater.analyze" {:ns ["ns"
+                                 "server.updater.analyze"
+                                 [":require"
+                                  ["[]" "clojure.string" ":as" "string"]
+                                  ["[]"
+                                   "server.util"
+                                   ":refer"
+                                   ["[]"
+                                    "bookmark->path"
+                                    "to-writer"
+                                    "to-bookmark"
+                                    "parse-deps"
+                                    "tree->cirru"
+                                    "parse-def"]]
+                                  ["[]" "server.util.stack" ":refer" ["[]" "push-bookmark"]]
+                                  ["[]" "server.schema" ":as" "schema"]]],
+                            :defs {"goto-def" ["defn"
+                                               "goto-def"
+                                               ["db" "op-data" "sid" "op-id" "op-time"]
+                                               ["let"
+                                                [["writer" ["to-writer" "db" "sid"]]
+                                                 ["pkg" ["get-in" "db" ["[]" ":ir" ":package"]]]
+                                                 ["bookmark" ["to-bookmark" "writer"]]
+                                                 ["ns-text" [":ns" "bookmark"]]
+                                                 ["ns-expr"
+                                                  ["tree->cirru" ["get-in" "db" ["[]" ":ir" ":files" "ns-text" ":ns"]]]]
+                                                 ["deps-info" ["parse-deps" ["subvec" "ns-expr" "2"]]]
+                                                 ["def-info" ["parse-def" "op-data"]]
+                                                 ["bookmark"
+                                                  ["if"
+                                                   ["and"
+                                                    ["contains?" "deps-info" [":key" "def-info"]]
+                                                    ["="
+                                                     [":method" "def-info"]
+                                                     [":method" ["get" "deps-info" [":key" "def-info"]]]]]
+                                                   ["let"
+                                                    [["rule" ["get" "deps-info" [":key" "def-info"]]]]
+                                                    ["merge"
+                                                     "schema/bookmark"
+                                                     ["if"
+                                                      ["=" ":refer" [":method" "def-info"]]
+                                                      ["{}"
+                                                       [":kind" ":def"]
+                                                       [":ns" [":ns" "rule"]]
+                                                       [":extra" [":key" "def-info"]]]
+                                                      ["{}"
+                                                       [":kind" ":ns"]
+                                                       [":ns" [":ns" "rule"]]
+                                                       [":extra" [":extra" "def-info"]]]]]]
+                                                   "nil"]]]
+                                                ["--" "println" "|deps" "deps-info" "def-info" "bookmark"]
+                                                ["if"
+                                                 ["some?" "bookmark"]
+                                                 ["if"
+                                                  ["string/starts-with?" [":ns" "bookmark"] ["str" "pkg" "|."]]
+                                                  ["->"
+                                                   "db"
+                                                   ["update-in"
+                                                    ["[]" ":sessions" "sid" ":writer"]
+                                                    ["push-bookmark" "bookmark"]]]
+                                                  ["->"
+                                                   "db"
+                                                   ["update-in"
+                                                    ["[]" ":sessions" "sid" ":notifications"]
+                                                    ["fn"
+                                                     ["xs"]
+                                                     ["conj"
+                                                      "xs"
+                                                      ["merge"
+                                                       "schema/notification"
+                                                       ["{}"
+                                                        [":id" "op-id"]
+                                                        [":kind" ":attentive"]
+                                                        [":text" ["str" "|External dep:" [":ns" "bookmark"]]]]]]]]]]
+                                                 ["->"
+                                                  "db"
+                                                  ["update-in"
+                                                   ["[]" ":sessions" "sid" ":notifications"]
+                                                   ["fn"
+                                                    ["xs"]
+                                                    ["conj"
+                                                     "xs"
+                                                     ["merge"
+                                                      "schema/notification"
+                                                      ["{}"
+                                                       [":id" "op-id"]
+                                                       [":kind" ":attentive"]
+                                                       [":text" ["str" "|Cannot locate:" "def-info"]]]]]]]]]]]},
+                            :procs []},
          "util.stack" {:ns ["ns" "server.util.stack"],
                        :defs {"push-bookmark" ["defn"
                                                "push-bookmark"
