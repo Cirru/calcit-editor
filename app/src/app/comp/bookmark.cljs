@@ -8,7 +8,7 @@
             [respo.core :refer [create-comp]]
             [respo.comp.space :refer [=<]]))
 
-(def style-minor {:color (hsl 0 0 50)})
+(def style-minor {:color (hsl 0 0 50), :font-size 12})
 
 (defn on-pick [bookmark idx]
   (fn [e d! m!]
@@ -30,19 +30,23 @@
         meta? (d! :writer/collapse idx)
         :else (d! :writer/point-to idx)))))
 
-(def style-highlight {:background-color (hsl 0 0 100 0.2)})
+(def style-highlight {:color (hsl 0 0 100)})
 
-(def style-remove
-  {:color (hsl 0 0 40), :cursor :pointer, :position :absolute, :top 4, :right 8})
+(def style-remove {:color (hsl 0 0 40), :cursor :pointer, :vertical-align :middle})
 
-(def style-kind {:color (hsl 0 0 50), :font-family "Josefin Sans"})
+(def style-kind
+  {:color (hsl 0 0 50),
+   :font-family "Josefin Sans",
+   :font-size 14,
+   :margin-left 8,
+   :vertical-align :middle})
 
 (defn on-remove [idx] (fn [e d! m!] (d! :writer/remove-idx idx)))
 
 (def style-bookmark
   {:line-height "1.2em", :padding "4px 8px", :cursor :pointer, :position :relative})
 
-(def style-main {:vertical-align :middle})
+(def style-main {:vertical-align :middle, :color (hsl 0 0 70)})
 
 (defcomp
  comp-bookmark
@@ -50,21 +54,25 @@
  (case (:kind bookmark)
    :def
      (div
-      {:style (merge style-bookmark (if selected? style-highlight)),
-       :on {:click (on-pick bookmark idx)}}
+      {:style (merge style-bookmark), :on {:click (on-pick bookmark idx)}}
       (div
        {}
-       (span {:inner-text (:extra bookmark), :style style-main})
+       (span
+        {:inner-text (:extra bookmark),
+         :style (merge style-main (if selected? style-highlight))}))
+      (div
+       {}
+       (<> span "def" style-kind)
+       (=< 8 nil)
+       (<> span (:ns bookmark) style-minor)
        (=< 8 nil)
        (span
-        {:class-name "ion-md-close", :style style-remove, :on {:click (on-remove idx)}}))
-      (div {} (<> span "def" style-kind) (=< 8 nil) (<> span (:ns bookmark) style-minor)))
+        {:class-name "ion-md-close", :style style-remove, :on {:click (on-remove idx)}})))
    (div
-    {:style (merge style-bookmark (if selected? style-highlight)),
-     :on {:click (on-pick bookmark idx)}}
+    {:style (merge style-bookmark), :on {:click (on-pick bookmark idx)}}
+    (div {} (<> span (:ns bookmark) (merge style-main (if selected? style-highlight))))
     (div
      {}
-     (<> span (:ns bookmark) nil)
-     (=< 16 nil)
-     (span {:class-name "ion-md-close", :style style-remove, :on {:click (on-remove idx)}}))
-    (div {} (<> span (name (:kind bookmark)) style-kind)))))
+     (<> span (name (:kind bookmark)) style-kind)
+     (=< 8 nil)
+     (span {:class-name "ion-md-close", :style style-remove, :on {:click (on-remove idx)}})))))

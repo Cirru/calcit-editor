@@ -11,7 +11,7 @@
             [app.comp.expr :refer [comp-expr]]
             [app.style :as style]))
 
-(def style-stack {:width 240})
+(def style-stack {:width 200})
 
 (def style-editor (merge ui/flex {}))
 
