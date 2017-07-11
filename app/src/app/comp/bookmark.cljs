@@ -12,21 +12,23 @@
 
 (defn on-pick [bookmark idx]
   (fn [e d! m!]
-    (let [event (:original-event e), shift? (.-shiftKey event)]
-      (if shift?
-        (let [new-name (js/prompt
-                        "Rename:"
-                        (if (= :def (:kind bookmark))
-                          (str (:ns bookmark) "/" (:extra bookmark))
-                          (:ns bookmark)))
-              [ns-text def-text] (string/split new-name "/")]
-          (d!
-           :ir/rename
-           {:kind (:kind bookmark),
-            :ns {:from (:ns bookmark), :to ns-text},
-            :extra {:from (:extra bookmark), :to def-text},
-            :index idx}))
-        (d! :writer/point-to idx)))))
+    (let [event (:original-event e), shift? (.-shiftKey event), meta? (.-metaKey event)]
+      (cond
+        shift?
+          (let [new-name (js/prompt
+                          "Rename:"
+                          (if (= :def (:kind bookmark))
+                            (str (:ns bookmark) "/" (:extra bookmark))
+                            (:ns bookmark)))
+                [ns-text def-text] (string/split new-name "/")]
+            (d!
+             :ir/rename
+             {:kind (:kind bookmark),
+              :ns {:from (:ns bookmark), :to ns-text},
+              :extra {:from (:extra bookmark), :to def-text},
+              :index idx}))
+        meta? (d! :writer/collapse idx)
+        :else (d! :writer/point-to idx)))))
 
 (def style-highlight {:background-color (hsl 0 0 100 0.2)})
 

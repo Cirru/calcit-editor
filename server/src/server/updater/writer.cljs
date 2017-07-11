@@ -2,6 +2,13 @@
 (ns server.updater.writer
   (:require [server.util :refer [bookmark->path to-writer to-bookmark]]))
 
+(defn collapse [db op-data session-id op-id op-time]
+  (-> db
+      (update-in
+       [:sessions session-id :writer]
+       (fn [writer]
+         (-> writer (update :stack (fn [stack] (subvec stack op-data))) (assoc :pointer 0))))))
+
 (defn focus [db op-data session-id op-id op-time]
   (let [writer (get-in db [:sessions session-id :writer])]
     (assoc-in db [:sessions session-id :writer :stack (:pointer writer) :focus] op-data)))

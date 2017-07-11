@@ -142,7 +142,20 @@
                                 "server.updater.writer"
                                 [":require"
                                  ["[]" "server.util" ":refer" ["[]" "bookmark->path" "to-writer" "to-bookmark"]]]],
-                           :defs {"go-up" ["defn"
+                           :defs {"collapse" ["defn"
+                                              "collapse"
+                                              ["db" "op-data" "session-id" "op-id" "op-time"]
+                                              ["->"
+                                               "db"
+                                               ["update-in"
+                                                ["[]" ":sessions" "session-id" ":writer"]
+                                                ["fn"
+                                                 ["writer"]
+                                                 ["->"
+                                                  "writer"
+                                                  ["update" ":stack" ["fn" ["stack"] ["subvec" "stack" "op-data"]]]
+                                                  ["assoc" ":pointer" "0"]]]]]],
+                                  "go-up" ["defn"
                                            "go-up"
                                            ["db" "op-data" "session-id" "op-id" "op-time"]
                                            ["->"
@@ -926,7 +939,6 @@
                                                           ["if"
                                                            ["some?" "selected-ns"]
                                                            ["do"
-                                                            ["println" ["get-in" "files" ["[]" "selected-ns" ":defs"]]]
                                                             ["->>"
                                                              ["get-in" "files" ["[]" "selected-ns" ":defs"]]
                                                              ["keys"]
@@ -1061,6 +1073,8 @@
                                              ["writer/paste" "db" "op-data" "session-id" "op-id" "op-time"]]
                                             [":writer/save-files"
                                              ["writer/save-files" "db" "op-data" "session-id" "op-id" "op-time"]]
+                                            [":writer/collapse"
+                                             ["writer/collapse" "db" "op-data" "session-id" "op-id" "op-time"]]
                                             [":ir/add-ns" ["ir/add-ns" "db" "op-data" "session-id" "op-id" "op-time"]]
                                             [":ir/add-def" ["ir/add-def" "db" "op-data" "session-id" "op-id" "op-time"]]
                                             [":ir/remove-def"

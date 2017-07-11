@@ -41,8 +41,6 @@
    (fn [files selected-ns saved-files]
      {:ns-set (into #{} (keys files)),
       :defs-set (if (some? selected-ns)
-        (do
-         (println (get-in files [selected-ns :defs]))
-         (->> (get-in files [selected-ns :defs]) (keys) (into #{})))
+        (do (->> (get-in files [selected-ns :defs]) (keys) (into #{})))
         #{}),
       :changed-files (render-changed-files files saved-files)})))
