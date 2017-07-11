@@ -3,6 +3,8 @@
 
 (def space 32)
 
+(def s 83)
+
 (def tab 9)
 
 (def right 39)

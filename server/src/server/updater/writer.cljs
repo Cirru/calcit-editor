@@ -135,8 +135,28 @@
 (defn point-to [db op-data session-id op-id op-time]
   (assoc-in db [:sessions session-id :writer :pointer] op-data))
 
-(defn save-files [db op-data session-id op-id op-time]
-  (assoc db :saved-files (get-in db [:ir :files])))
+(defn save-files [db op-data sid op-id op-time]
+  (let [user-id (get-in db [:sessions sid :user-id])
+        user-name (get-in db [:users user-id :name])
+        message (assoc
+                 schema/notification
+                 :kind
+                 :verdant
+                 :text
+                 (str user-name " saved files!")
+                 :id
+                 op-id)]
+    (-> db
+        (assoc :saved-files (get-in db [:ir :files]))
+        (update
+         :sessions
+         (fn [sessions]
+           (->> sessions
+                (map
+                 (fn [entry]
+                   (let [[k session] entry]
+                     [k (update session :notifications (fn [notes] (conj notes message)))])))
+                (into {})))))))
 
 (defn go-left [db op-data session-id op-id op-time]
   (let [writer (get-in db [:sessions session-id :writer])

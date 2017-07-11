@@ -468,6 +468,7 @@
                          :procs []},
          "util.keycode" {:ns ["ns" "app.util.keycode"],
                          :defs {"space" ["def" "space" "32"],
+                                "s" ["def" "s" "83"],
                                 "tab" ["def" "tab" "9"],
                                 "right" ["def" "right" "39"],
                                 "e" ["def" "e" "69"],
@@ -1640,5 +1641,9 @@
                                                          [["and" "meta?" ["=" "code" "keycode/j"]]
                                                           ["do" ["dispatch!" ":writer/move-next" "nil"]]]
                                                          [["and" "meta?" ["=" "code" "keycode/k"]]
-                                                          ["do" ["dispatch!" ":writer/move-previous" "nil"]]]]]]},
+                                                          ["do" ["dispatch!" ":writer/move-previous" "nil"]]]
+                                                         [["and" "meta?" ["=" "code" "keycode/s"]]
+                                                          ["do"
+                                                           [".preventDefault" "event"]
+                                                           ["dispatch!" ":effect/save-files" "nil"]]]]]]},
                            :procs []}}}
