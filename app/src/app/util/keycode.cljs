@@ -15,9 +15,13 @@
 
 (def p 80)
 
+(def j 74)
+
 (def x 88)
 
 (def v 86)
+
+(def k 75)
 
 (def down 40)
 

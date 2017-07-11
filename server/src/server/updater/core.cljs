@@ -33,6 +33,8 @@
     :writer/paste (writer/paste db op-data session-id op-id op-time)
     :writer/save-files (writer/save-files db op-data session-id op-id op-time)
     :writer/collapse (writer/collapse db op-data session-id op-id op-time)
+    :writer/move-next (writer/move-next db op-data session-id op-id op-time)
+    :writer/move-previous (writer/move-previous db op-data session-id op-id op-time)
     :ir/add-ns (ir/add-ns db op-data session-id op-id op-time)
     :ir/add-def (ir/add-def db op-data session-id op-id op-time)
     :ir/remove-def (ir/remove-def db op-data session-id op-id op-time)

@@ -172,6 +172,24 @@
                                                ["fn"
                                                 ["focus"]
                                                 ["if" ["empty?" "focus"] "focus" ["vec" ["butlast" "focus"]]]]]]]]],
+                                  "move-next" ["defn"
+                                               "move-next"
+                                               ["db" "op-data" "sid" "op-id" "op-time"]
+                                               ["->"
+                                                "db"
+                                                ["update-in"
+                                                 ["[]" ":sessions" "sid" ":writer"]
+                                                 ["fn"
+                                                  ["writer"]
+                                                  ["let"
+                                                   [["pointer" [":pointer" "writer"]]]
+                                                   ["assoc"
+                                                    "writer"
+                                                    ":pointer"
+                                                    ["if"
+                                                     [">=" "pointer" ["dec" ["count" [":stack" "writer"]]]]
+                                                     "pointer"
+                                                     ["inc" "pointer"]]]]]]]],
                                   "remove-idx" ["defn"
                                                 "remove-idx"
                                                 ["db" "op-data" "session-id" "op-id" "op-time"]
@@ -208,6 +226,21 @@
                                             ["assoc-in"
                                              ["[]" ":sessions" "session-id" ":writer" ":clipboard"]
                                              ["get-in" "db" "data-path"]]]]],
+                                  "move-previous" ["defn"
+                                                   "move-previous"
+                                                   ["db" "op-data" "sid" "op-id" "op-time"]
+                                                   ["->"
+                                                    "db"
+                                                    ["update-in"
+                                                     ["[]" ":sessions" "sid" ":writer"]
+                                                     ["fn"
+                                                      ["writer"]
+                                                      ["let"
+                                                       [["pointer" [":pointer" "writer"]]]
+                                                       ["assoc"
+                                                        "writer"
+                                                        ":pointer"
+                                                        ["if" ["pos?" "pointer"] ["dec" "pointer"] "0"]]]]]]],
                                   "paste" ["defn"
                                            "paste"
                                            ["db" "op-data" "session-id" "op-id" "op-time"]
@@ -1088,6 +1121,10 @@
                                              ["writer/save-files" "db" "op-data" "session-id" "op-id" "op-time"]]
                                             [":writer/collapse"
                                              ["writer/collapse" "db" "op-data" "session-id" "op-id" "op-time"]]
+                                            [":writer/move-next"
+                                             ["writer/move-next" "db" "op-data" "session-id" "op-id" "op-time"]]
+                                            [":writer/move-previous"
+                                             ["writer/move-previous" "db" "op-data" "session-id" "op-id" "op-time"]]
                                             [":ir/add-ns" ["ir/add-ns" "db" "op-data" "session-id" "op-id" "op-time"]]
                                             [":ir/add-def" ["ir/add-def" "db" "op-data" "session-id" "op-id" "op-time"]]
                                             [":ir/remove-def"

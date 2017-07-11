@@ -474,8 +474,10 @@
                                 "up" ["def" "up" "38"],
                                 "delete" ["def" "delete" "8"],
                                 "p" ["def" "p" "80"],
+                                "j" ["def" "j" "74"],
                                 "x" ["def" "x" "88"],
                                 "v" ["def" "v" "86"],
+                                "k" ["def" "k" "75"],
                                 "down" ["def" "down" "40"],
                                 "b" ["def" "b" "66"],
                                 "enter" ["def" "enter" "13"],
@@ -1617,5 +1619,9 @@
                                                            ["focus-search!"]
                                                            [".preventDefault" "event"]]]
                                                          [["and" "meta?" ["=" "code" "keycode/e"]]
-                                                          ["do" ["dispatch!" ":writer/edit-ns" "nil"]]]]]]},
+                                                          ["do" ["dispatch!" ":writer/edit-ns" "nil"]]]
+                                                         [["and" "meta?" ["=" "code" "keycode/j"]]
+                                                          ["do" ["dispatch!" ":writer/move-next" "nil"]]]
+                                                         [["and" "meta?" ["=" "code" "keycode/k"]]
+                                                          ["do" ["dispatch!" ":writer/move-previous" "nil"]]]]]]},
                            :procs []}}}

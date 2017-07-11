@@ -25,6 +25,17 @@
           [:stack (:pointer writer) :focus]
           (fn [focus] (if (empty? focus) focus (vec (butlast focus)))))))))
 
+(defn move-next [db op-data sid op-id op-time]
+  (-> db
+      (update-in
+       [:sessions sid :writer]
+       (fn [writer]
+         (let [pointer (:pointer writer)]
+           (assoc
+            writer
+            :pointer
+            (if (>= pointer (dec (count (:stack writer)))) pointer (inc pointer))))))))
+
 (defn remove-idx [db op-data session-id op-id op-time]
   (-> db
       (update-in
@@ -41,6 +52,14 @@
         bookmark (to-bookmark writer)
         data-path (bookmark->path bookmark)]
     (-> db (assoc-in [:sessions session-id :writer :clipboard] (get-in db data-path)))))
+
+(defn move-previous [db op-data sid op-id op-time]
+  (-> db
+      (update-in
+       [:sessions sid :writer]
+       (fn [writer]
+         (let [pointer (:pointer writer)]
+           (assoc writer :pointer (if (pos? pointer) (dec pointer) 0)))))))
 
 (defn paste [db op-data session-id op-id op-time]
   (let [piece (get-in db [:sessions session-id :writer :clipboard])
