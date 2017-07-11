@@ -19,6 +19,7 @@
     :session/select-ns (session/select-ns db op-data session-id op-id op-time)
     :router/change (router/change db op-data session-id op-id op-time)
     :writer/edit (writer/edit db op-data session-id op-id op-time)
+    :writer/edit-ns (writer/edit-ns db op-data session-id op-id op-time)
     :writer/select (writer/select db op-data session-id op-id op-time)
     :writer/point-to (writer/point-to db op-data session-id op-id op-time)
     :writer/focus (writer/focus db op-data session-id op-id op-time)

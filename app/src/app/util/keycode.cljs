@@ -7,6 +7,8 @@
 
 (def right 39)
 
+(def e 69)
+
 (def up 38)
 
 (def delete 8)

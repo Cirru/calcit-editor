@@ -470,6 +470,7 @@
                          :defs {"space" ["def" "space" "32"],
                                 "tab" ["def" "tab" "9"],
                                 "right" ["def" "right" "39"],
+                                "e" ["def" "e" "69"],
                                 "up" ["def" "up" "38"],
                                 "delete" ["def" "delete" "8"],
                                 "p" ["def" "p" "80"],
@@ -1607,12 +1608,14 @@
                            :defs {"on-window-keydown" ["defn"
                                                        "on-window-keydown"
                                                        ["event" "dispatch!"]
-                                                       ["cond"
-                                                        [["and"
-                                                          [".-metaKey" "event"]
-                                                          ["=" [".-keyCode" "event"] "keycode/p"]]
-                                                         ["do"
-                                                          ["dispatch!" ":router/change" ["{}" [":name" ":search"]]]
-                                                          ["focus-search!"]
-                                                          [".preventDefault" "event"]]]]]},
+                                                       ["let"
+                                                        [["meta?" [".-metaKey" "event"]] ["code" [".-keyCode" "event"]]]
+                                                        ["cond"
+                                                         [["and" "meta?" ["=" "code" "keycode/p"]]
+                                                          ["do"
+                                                           ["dispatch!" ":router/change" ["{}" [":name" ":search"]]]
+                                                           ["focus-search!"]
+                                                           [".preventDefault" "event"]]]
+                                                         [["and" "meta?" ["=" "code" "keycode/e"]]
+                                                          ["do" ["dispatch!" ":writer/edit-ns" "nil"]]]]]]},
                            :procs []}}}

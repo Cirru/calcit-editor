@@ -142,7 +142,8 @@
                                 "server.updater.writer"
                                 [":require"
                                  ["[]" "server.util" ":refer" ["[]" "bookmark->path" "to-writer" "to-bookmark"]]
-                                 ["[]" "server.util.stack" ":refer" ["[]" "push-bookmark"]]]],
+                                 ["[]" "server.util.stack" ":refer" ["[]" "push-bookmark"]]
+                                 ["[]" "server.schema" ":as" "schema"]]],
                            :defs {"collapse" ["defn"
                                               "collapse"
                                               ["db" "op-data" "session-id" "op-id" "op-time"]
@@ -316,6 +317,22 @@
                                                      ["=" "idx" ["dec" ["count" "child-keys"]]]
                                                      "last-coord"
                                                      ["get" "child-keys" ["inc" "idx"]]]]]]]]]],
+                                  "edit-ns" ["defn"
+                                             "edit-ns"
+                                             ["db" "op-data" "sid" "op-id" "op-time"]
+                                             ["let"
+                                              [["writer" ["to-writer" "db" "sid"]]
+                                               ["bookmark" ["to-bookmark" "writer"]]
+                                               ["ns-text" [":ns" "bookmark"]]]
+                                              ["if"
+                                               ["contains?" ["#{}" ":def" ":proc"] [":kind" "bookmark"]]
+                                               ["->"
+                                                "db"
+                                                ["update-in"
+                                                 ["[]" ":sessions" "sid" ":writer"]
+                                                 ["push-bookmark"
+                                                  ["assoc" "schema/bookmark" ":kind" ":ns" ":ns" "ns-text"]]]]
+                                               "db"]]],
                                   "cut" ["defn"
                                          "cut"
                                          ["db" "op-data" "session-id" "op-id" "op-time"]
@@ -1044,6 +1061,8 @@
                                              ["router/change" "db" "op-data" "session-id" "op-id" "op-time"]]
                                             [":writer/edit"
                                              ["writer/edit" "db" "op-data" "session-id" "op-id" "op-time"]]
+                                            [":writer/edit-ns"
+                                             ["writer/edit-ns" "db" "op-data" "session-id" "op-id" "op-time"]]
                                             [":writer/select"
                                              ["writer/select" "db" "op-data" "session-id" "op-id" "op-time"]]
                                             [":writer/point-to"

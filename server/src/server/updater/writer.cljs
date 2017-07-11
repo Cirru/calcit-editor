@@ -1,7 +1,8 @@
 
 (ns server.updater.writer
   (:require [server.util :refer [bookmark->path to-writer to-bookmark]]
-            [server.util.stack :refer [push-bookmark]]))
+            [server.util.stack :refer [push-bookmark]]
+            [server.schema :as schema]))
 
 (defn collapse [db op-data session-id op-id op-time]
   (-> db
@@ -90,6 +91,15 @@
              (conj
               (vec (butlast focus))
               (if (= idx (dec (count child-keys))) last-coord (get child-keys (inc idx))))))))))
+
+(defn edit-ns [db op-data sid op-id op-time]
+  (let [writer (to-writer db sid), bookmark (to-bookmark writer), ns-text (:ns bookmark)]
+    (if (contains? #{:def :proc} (:kind bookmark))
+      (-> db
+          (update-in
+           [:sessions sid :writer]
+           (push-bookmark (assoc schema/bookmark :kind :ns :ns ns-text))))
+      db)))
 
 (defn cut [db op-data session-id op-id op-time]
   (let [writer (to-writer db session-id)
