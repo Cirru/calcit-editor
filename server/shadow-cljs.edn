@@ -9,4 +9,5 @@
  :builds {:app {:target :node-script
                 :output-to "target/main.js"
                 :main server.main/main!
-                :devtools {:after-load server.main/reload!}}}}
+                :devtools {:after-load server.main/reload!}
+                :release {:output-to "dist/main.js"}}}}

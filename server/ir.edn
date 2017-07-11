@@ -7,9 +7,9 @@
                                             ["let"
                                              [["cli-port"
                                                ["if"
-                                                ["some?" [".-port" "js/process.env"]]
-                                                ["js/parseInt" [".-port" "js/process.env"]]]]
-                                              ["cli-op" [".-op" "js/process.env"]]
+                                                ["some?" ["aget" "js/process.env" "|port"]]
+                                                ["js/parseInt" ["aget" "js/process.env" "|port"]]]]
+                                              ["cli-op" ["aget" "js/process.env" "|op"]]
                                               ["result"
                                                ["->"
                                                 "configs"
@@ -565,7 +565,7 @@
                                       [":storage-key" "|coir.edn"]
                                       [":extension" "|.cljs"]
                                       [":output" "|src"]
-                                      [":port" ["or" [".-port" "js/process.env"] "6001"]]]],
+                                      [":port" "6001"]]],
                           "user" ["def"
                                   "user"
                                   ["{}"
@@ -825,7 +825,7 @@
                                              ["do"
                                               ["cond"
                                                [["=" "op" ":effect/save-files"]
-                                                ["handle-files!" "@*writer-db" "dispatch!" "configs"]]
+                                                ["handle-files!" "@*writer-db" "configs" "dispatch!"]]
                                                [":else"
                                                 ["let"
                                                  [["new-db"
@@ -854,8 +854,8 @@
                                  "main!"
                                  []
                                  ["let"
-                                  [["op" ["or" [".-op" "js/process.env"] "|server"]]
-                                   ["configs" ["pick-configs" [":configs" "@*writer-db"]]]]
+                                  [["configs" ["pick-configs" [":configs" "@*writer-db"]]]
+                                   ["op" ["get" "configs" ":op"]]]
                                   ["if"
                                    ["=" "op" "|compile"]
                                    ["compile-all-files!" "configs"]

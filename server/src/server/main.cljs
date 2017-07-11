@@ -50,7 +50,7 @@
        (try
         (do
          (cond
-           (= op :effect/save-files) (handle-files! @*writer-db dispatch! configs)
+           (= op :effect/save-files) (handle-files! @*writer-db configs dispatch!)
            :else
              (let [new-db (updater @*writer-db op op-data session-id op-id op-time)]
                (reset! *writer-db new-db))))
@@ -71,7 +71,7 @@
    (fn [op op-data] (println "After compile:" op op-data))))
 
 (defn main! []
-  (let [op (or (.-op js/process.env) "server"), configs (pick-configs (:configs @*writer-db))]
+  (let [configs (pick-configs (:configs @*writer-db)), op (get configs :op)]
     (if (= op "compile") (compile-all-files! configs) (start-server! configs))))
 
 (defn reload! [] (println "Code updated.") (render-clients! @*reader-db))

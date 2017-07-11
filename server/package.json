@@ -1,8 +1,11 @@
 {
-  "name": "server",
-  "version": "1.0.0",
-  "description": "Boot Workflow ----",
-  "main": "index.js",
+  "name": "cumulo-editor",
+  "version": "0.1.0",
+  "description": "Command line for Cumulo Editor",
+  "bin": {
+    "cumulo-editor": "dist/main.js",
+    "ce": "dist/main.js"
+  },
   "scripts": {
     "tiye": "rsync -r target/main.js tiye.me:repo/Cirru/cumulo-editor-server/",
     "compile": "shadow-cljs compile app",
