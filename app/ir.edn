@@ -74,10 +74,10 @@
                                           ["e" "d!" "m!"]
                                           ["d!" ":ir/update-leaf" [":value" "e"]]
                                           ["m!" ["assoc" "state" ":text" [":value" "e"] ":time" ["util/now!"]]]]],
-                             "style-first" ["def" "style-first" ["{}" [":color" ["hsl" "40" "85" "60"]]]],
+                             "style-first" ["def" "style-first" ["{}" [":color" ["hsl" "40" "85" "66"]]]],
                              "style-space" ["def"
                                             "style-space"
-                                            ["{}" [":background-color" ["hsl" "0" "0" "100" "0.2"]]]],
+                                            ["{}" [":background-color" ["hsl" "0" "0" "100" "0.3"]]]],
                              "style-highlight" ["def" "style-highlight" ["{}" [":opacity" "1"]]],
                              "comp-leaf" ["defcomp"
                                           "comp-leaf"
@@ -104,7 +104,7 @@
                                                ["{}"
                                                 [":width"
                                                  ["+"
-                                                  "6"
+                                                  "10"
                                                   ["text-width*"
                                                    "text"
                                                    [":font-size" "style-leaf"]
@@ -130,11 +130,11 @@
                                              [":line-height" "|24px"]
                                              [":height" "24"]
                                              [":margin" "|2px 2px"]
-                                             [":padding" "|0px 2px"]
+                                             [":padding" "|0px 4px"]
                                              [":background-color" ":transparent"]
                                              [":min-width" "8"]
-                                             [":color" ["hsl" "200" "16" "60"]]
-                                             [":opacity" "0.9"]
+                                             [":color" ["hsl" "200" "18" "66"]]
+                                             [":opacity" "0.8"]
                                              [":font-family" "|Menlo"]
                                              [":font-size" "15"]
                                              [":border-radius" "|4px"]
@@ -1655,8 +1655,8 @@
                                               [":display" ":inline-block"]
                                               [":border-width" "|0 0 1px 0"]
                                               [":min-width" "32"]
-                                              [":padding-left" "9"]
-                                              [":padding-right" "9"]
+                                              [":padding-left" "11"]
+                                              [":padding-right" "11"]
                                               [":vertical-align" ":top"]]],
                              "style-tail" ["def"
                                            "style-tail"

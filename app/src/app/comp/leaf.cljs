@@ -17,9 +17,9 @@
     (d! :ir/update-leaf (:value e))
     (m! (assoc state :text (:value e) :time (util/now!)))))
 
-(def style-first {:color (hsl 40 85 60)})
+(def style-first {:color (hsl 40 85 66)})
 
-(def style-space {:background-color (hsl 0 0 100 0.2)})
+(def style-space {:background-color (hsl 0 0 100 0.3)})
 
 (def style-highlight {:opacity 1})
 
@@ -33,11 +33,11 @@
    {:line-height "24px",
     :height 24,
     :margin "2px 2px",
-    :padding "0px 2px",
+    :padding "0px 4px",
     :background-color :transparent,
     :min-width 8,
-    :color (hsl 200 16 60),
-    :opacity 0.9,
+    :color (hsl 200 18 66),
+    :opacity 0.8,
     :font-family "Menlo",
     :font-size 15,
     :border-radius "4px",
@@ -92,7 +92,7 @@
      :style (merge
              {}
              {:width (+
-                      6
+                      10
                       (text-width* text (:font-size style-leaf) (:font-family style-leaf)))}
              (if first? style-first)
              (if has-blank? style-space)

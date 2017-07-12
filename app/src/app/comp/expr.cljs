@@ -45,8 +45,8 @@
   {:display :inline-block,
    :border-width "0 0 1px 0",
    :min-width 32,
-   :padding-left 9,
-   :padding-right 9,
+   :padding-left 11,
+   :padding-right 11,
    :vertical-align :top})
 
 (def style-tail {:display :inline-block, :vertical-align :top, :padding-left 10})
