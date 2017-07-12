@@ -40,7 +40,7 @@
     :ir/add-def (ir/add-def db op-data session-id op-id op-time)
     :ir/remove-def (ir/remove-def db op-data session-id op-id op-time)
     :ir/remove-ns (ir/remove-ns db op-data session-id op-id op-time)
-    :ir/append-leaf (ir/append-leaf db op-data session-id op-id op-time)
+    :ir/prepend-leaf (ir/prepend-leaf db op-data session-id op-id op-time)
     :ir/delete-node (ir/delete-node db op-data session-id op-id op-time)
     :ir/leaf-after (ir/leaf-after db op-data session-id op-id op-time)
     :ir/leaf-before (ir/leaf-before db op-data session-id op-id op-time)

@@ -101,6 +101,27 @@
 (defn remove-ns [db op-data session-id op-id op-time]
   (-> db (update-in [:ir :files] (fn [files] (dissoc files op-data)))))
 
+(defn prepend-leaf [db op-data session-id op-id op-time]
+  (let [writer (get-in db [:sessions session-id :writer])
+        {stack :stack, pointer :pointer} writer
+        bookmark (get stack pointer)
+        focus (:focus bookmark)
+        user-id (get-in db [:sessions session-id :user-id])
+        new-leaf (assoc schema/leaf :author user-id :time op-time)
+        expr-path (bookmark->path bookmark)
+        target-expr (get-in db expr-path)
+        new-id (if (empty? (:data target-expr))
+                 bisection/mid-id
+                 (let [min-entry (apply min (keys (:data target-expr)))]
+                   (bisection/bisect bisection/min-id min-entry)))]
+    (-> db
+        (update-in
+         expr-path
+         (fn [expr] (if (expr? expr) (assoc-in expr [:data new-id] new-leaf) expr)))
+        (update-in
+         [:sessions session-id :writer :stack (:pointer writer) :focus]
+         (fn [focus] (conj focus new-id))))))
+
 (defn duplicate [db op-data session-id op-id op-time]
   (let [writer (to-writer db session-id)
         bookmark (to-bookmark writer)
@@ -195,27 +216,6 @@
 (defn remove-def [db op-data session-id op-id op-time]
   (let [selected-ns (get-in db [:sessions session-id :writer :selected-ns])]
     (update-in db [:ir :files selected-ns :defs] (fn [defs] (dissoc defs op-data)))))
-
-(defn append-leaf [db op-data session-id op-id op-time]
-  (let [writer (get-in db [:sessions session-id :writer])
-        {stack :stack, pointer :pointer} writer
-        bookmark (get stack pointer)
-        focus (:focus bookmark)
-        user-id (get-in db [:sessions session-id :user-id])
-        new-leaf (assoc schema/leaf :author user-id :time op-time)
-        expr-path (bookmark->path bookmark)
-        target-expr (get-in db expr-path)
-        new-id (if (empty? (:data target-expr))
-                 bisection/mid-id
-                 (let [max-entry (apply max (keys (:data target-expr)))]
-                   (bisection/bisect max-entry bisection/max-id)))]
-    (-> db
-        (update-in
-         expr-path
-         (fn [expr] (if (expr? expr) (assoc-in expr [:data new-id] new-leaf) expr)))
-        (update-in
-         [:sessions session-id :writer :stack (:pointer writer) :focus]
-         (fn [focus] (conj focus new-id))))))
 
 (defn expr-after [db op-data session-id op-id op-time]
   (let [writer (to-writer db session-id)

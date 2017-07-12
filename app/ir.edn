@@ -1595,7 +1595,7 @@
                                             [":min-height" "24"]
                                             [":outline" ":none"]
                                             [":padding-left" "10"]
-                                            [":font-family" "|Menlo,monospce"]
+                                            [":font-family" "|Menlo,monospace"]
                                             [":font-size" "14"]
                                             [":margin-bottom" "4"]
                                             [":margin-right" "2"]
@@ -1614,11 +1614,11 @@
                                               ["code" [":key-code" "e"]]]
                                              ["cond"
                                               [["and" "meta?" ["=" "code" "keycode/enter"]]
-                                               ["d!" ":ir/append-leaf" "nil"]]
+                                               ["d!" ":ir/prepend-leaf" "nil"]]
                                               [["=" "code" "keycode/enter"]
                                                ["if"
                                                 ["empty?" "coord"]
-                                                ["d!" ":ir/append-leaf" "nil"]
+                                                ["d!" ":ir/prepend-leaf" "nil"]
                                                 ["d!" ["if" "shift?" ":ir/expr-before" ":ir/expr-after"] "nil"]]]
                                               [["=" "code" "keycode/delete"] ["d!" ":ir/delete-node" "nil"]]
                                               [["=" "code" "keycode/space"]
