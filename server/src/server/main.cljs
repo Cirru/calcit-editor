@@ -15,8 +15,10 @@
    (let [fs (js/require "fs")
          filepath (:storage-key schema/configs)
          db (if (fs.existsSync filepath)
-              (do (println "Found storage.") (read-string (fs.readFileSync filepath "utf8")))
-              (do (println "Found no storage.") schema/database))]
+              (do
+               (println "Loading existing database storagte...")
+               (read-string (fs.readFileSync filepath "utf8")))
+              (do (println "Using default schema.") schema/database))]
      (-> db
          (assoc :saved-files (get-in db [:ir :files]))
          (update :configs (fn [configs] (or configs schema/configs)))))))
@@ -45,7 +47,7 @@
      (let [[op op-data session-id op-id op-time] (<! server-ch)
            dispatch! (fn [op' op-data']
                        (go (>! server-ch [op' op-data' session-id op-id op-time])))]
-       (.log js/console "Action" (str op) (clj->js op-data) session-id op-id op-time)
+       (comment .log js/console "Action" (str op) (clj->js op-data) session-id op-id op-time)
        (comment .log js/console "Database:" (clj->js @*writer-db))
        (try
         (do

@@ -1033,20 +1033,9 @@
                                   ["[]" "respo.comp.inspect" ":refer" ["[]" "comp-inspect"]]
                                   ["[]" "respo.comp.space" ":refer" ["[]" "=<"]]
                                   ["[]" "app.style" ":as" "style"]
-                                  ["[]" "app.comp.changed-files" ":refer" ["[]" "comp-changed-files"]]]],
-                            :defs {"on-add" ["defn"
-                                             "on-add"
-                                             ["state"]
-                                             ["fn"
-                                              ["e" "d!" "m!"]
-                                              ["let"
-                                               [["text" ["string/trim" [":ns-text" "state"]]]]
-                                               ["if"
-                                                ["not" ["string/blank?" "text"]]
-                                                ["do"
-                                                 ["d!" ":ir/add-ns" "text"]
-                                                 ["m!" ["assoc" "state" ":ns-text" "|"]]]]]]],
-                                   "on-remove-ns" ["defn"
+                                  ["[]" "app.comp.changed-files" ":refer" ["[]" "comp-changed-files"]]
+                                  ["[]" "app.util.keycode" ":as" "keycode"]]],
+                            :defs {"on-remove-ns" ["defn"
                                                    "on-remove-ns"
                                                    ["ns-text"]
                                                    ["fn" ["e" "d!" "m!"] ["d!" ":ir/remove-ns" "ns-text"]]],
@@ -1082,6 +1071,7 @@
                                                     ["{}"]
                                                     ["->>"
                                                      "defs-set"
+                                                     ["sort"]
                                                      ["map"
                                                       ["fn"
                                                        ["def-text"]
@@ -1107,13 +1097,10 @@
                                                       [":value" [":def-text" "state"]]
                                                       [":placeholder" "|a def"]
                                                       [":style" "style/input"]
-                                                      [":on" ["{}" [":input" ["on-input-def" "state"]]]]]]
-                                                    ["=<" "8" "nil"]
-                                                    ["button"
-                                                     ["{}"
-                                                      [":inner-text" "|Add"]
-                                                      [":style" "style/button"]
-                                                      [":on" ["{}" [":click" ["on-add-def" "state"]]]]]]]]],
+                                                      [":on"
+                                                       ["{}"
+                                                        [":input" ["on-input-def" "state"]]
+                                                        [":keydown" ["on-keydown-def" "state"]]]]]]]]],
                                    "on-input-def" ["defn"
                                                    "on-input-def"
                                                    ["state"]
@@ -1171,12 +1158,42 @@
                                                    []
                                                    ["div" ["{}" [":style" "style-empty"]] ["<>" "span" "|Empty" "nil"]]],
                                    "initial-state" ["def" "initial-state" ["{}" [":ns-text" "|"] [":def-text" "|"]]],
+                                   "on-keydown-def" ["defn"
+                                                     "on-keydown-def"
+                                                     ["state"]
+                                                     ["fn"
+                                                      ["e" "d!" "m!"]
+                                                      ["let"
+                                                       [["text" ["string/trim" [":def-text" "state"]]]
+                                                        ["code" [":key-code" "e"]]]
+                                                       ["if"
+                                                        ["and"
+                                                         ["=" "code" "keycode/enter"]
+                                                         ["not" ["string/blank?" "text"]]]
+                                                        ["do"
+                                                         ["d!" ":ir/add-def" "text"]
+                                                         ["m!" ["assoc" "state" ":def-text" "|"]]]]]]],
                                    "style-inspect" ["def"
                                                     "style-inspect"
                                                     ["{}"
                                                      [":opacity" "1"]
                                                      [":background-color" ["hsl" "0" "0" "100"]]
                                                      [":color" ":black"]]],
+                                   "on-keydown-ns" ["defn"
+                                                    "on-keydown-ns"
+                                                    ["state"]
+                                                    ["fn"
+                                                     ["e" "d!" "m!"]
+                                                     ["let"
+                                                      [["text" ["string/trim" [":ns-text" "state"]]]
+                                                       ["code" [":key-code" "e"]]]
+                                                      ["if"
+                                                       ["and"
+                                                        ["=" "code" "keycode/enter"]
+                                                        ["not" ["string/blank?" "text"]]]
+                                                       ["do"
+                                                        ["d!" ":ir/add-ns" "text"]
+                                                        ["m!" ["assoc" "state" ":ns-text" "|"]]]]]]],
                                    "style-def" ["def"
                                                 "style-def"
                                                 ["{}" [":padding" "|0 8px"] [":position" ":relative"]]],
@@ -1189,18 +1206,6 @@
                                                     [":position" ":absolute"]
                                                     [":top" "8"]
                                                     [":right" "8"]]],
-                                   "on-add-def" ["defn"
-                                                 "on-add-def"
-                                                 ["state"]
-                                                 ["fn"
-                                                  ["e" "d!" "m!"]
-                                                  ["let"
-                                                   [["text" ["string/trim" [":def-text" "state"]]]]
-                                                   ["if"
-                                                    ["not" ["string/blank?" "text"]]
-                                                    ["do"
-                                                     ["d!" ":ir/add-def" "text"]
-                                                     ["m!" ["assoc" "state" ":def-text" "|"]]]]]]],
                                    "render-list" ["defn"
                                                   "render-list"
                                                   ["state" "ns-set" "selected-ns"]
@@ -1213,6 +1218,7 @@
                                                     ["{}"]
                                                     ["->>"
                                                      "ns-set"
+                                                     ["sort"]
                                                      ["map"
                                                       ["fn"
                                                        ["ns-text"]
@@ -1241,13 +1247,10 @@
                                                       [":value" [":ns-text" "state"]]
                                                       [":placeholder" "|a namespace"]
                                                       [":style" "style/input"]
-                                                      [":on" ["{}" [":input" ["on-input-ns" "state"]]]]]]
-                                                    ["=<" "8" "nil"]
-                                                    ["button"
-                                                     ["{}"
-                                                      [":inner-text" "|Add"]
-                                                      [":style" "style/button"]
-                                                      [":on" ["{}" [":click" ["on-add" "state"]]]]]]]]],
+                                                      [":on"
+                                                       ["{}"
+                                                        [":input" ["on-input-ns" "state"]]
+                                                        [":keydown" ["on-keydown-ns" "state"]]]]]]]]],
                                    "style-link" ["def" "style-link" ["{}" [":cursor" ":pointer"]]],
                                    "on-edit-ns" ["defn"
                                                  "on-edit-ns"

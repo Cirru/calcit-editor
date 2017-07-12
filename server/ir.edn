@@ -895,7 +895,8 @@
                                                 [">!"
                                                  "server-ch"
                                                  ["[]" "op'" "op-data'" "session-id" "op-id" "op-time"]]]]]]
-                                            [".log"
+                                            ["--"
+                                             ".log"
                                              "js/console"
                                              "|Action"
                                              ["str" "op"]
@@ -975,9 +976,9 @@
                                           ["if"
                                            ["fs.existsSync" "filepath"]
                                            ["do"
-                                            ["println" "|Found storage."]
+                                            ["println" "|Loading existing database storagte..."]
                                             ["read-string" ["fs.readFileSync" "filepath" "|utf8"]]]
-                                           ["do" ["println" "|Found no storage."] "schema/database"]]]]
+                                           ["do" ["println" "|Using default schema."] "schema/database"]]]]
                                         ["->"
                                          "db"
                                          ["assoc" ":saved-files" ["get-in" "db" ["[]" ":ir" ":files"]]]

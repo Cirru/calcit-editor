@@ -9,12 +9,8 @@
             [respo.comp.inspect :refer [comp-inspect]]
             [respo.comp.space :refer [=<]]
             [app.style :as style]
-            [app.comp.changed-files :refer [comp-changed-files]]))
-
-(defn on-add [state]
-  (fn [e d! m!]
-    (let [text (string/trim (:ns-text state))]
-      (if (not (string/blank? text)) (do (d! :ir/add-ns text) (m! (assoc state :ns-text "")))))))
+            [app.comp.changed-files :refer [comp-changed-files]]
+            [app.util.keycode :as keycode]))
 
 (defn on-remove-ns [ns-text] (fn [e d! m!] (d! :ir/remove-ns ns-text)))
 
@@ -26,6 +22,12 @@
 
 (defn on-remove-def [def-text] (fn [e d! m!] (d! :ir/remove-def def-text)))
 
+(defn on-keydown-def [state]
+  (fn [e d! m!]
+    (let [text (string/trim (:def-text state)), code (:key-code e)]
+      (if (and (= code keycode/enter) (not (string/blank? text)))
+        (do (d! :ir/add-def text) (m! (assoc state :def-text "")))))))
+
 (def style-def {:padding "0 8px", :position :relative})
 
 (def style-remove
@@ -35,12 +37,6 @@
    :position :absolute,
    :top 8,
    :right 8})
-
-(defn on-add-def [state]
-  (fn [e d! m!]
-    (let [text (string/trim (:def-text state))]
-      (if (not (string/blank? text))
-        (do (d! :ir/add-def text) (m! (assoc state :def-text "")))))))
 
 (def style-link {:cursor :pointer})
 
@@ -62,6 +58,7 @@
    (div
     {}
     (->> defs-set
+         (sort)
          (map
           (fn [def-text]
             [def-text
@@ -82,9 +79,7 @@
      {:value (:def-text state),
       :placeholder "a def",
       :style style/input,
-      :on {:input (on-input-def state)}})
-    (=< 8 nil)
-    (button {:inner-text "Add", :style style/button, :on {:click (on-add-def state)}}))))
+      :on {:input (on-input-def state), :keydown (on-keydown-def state)}}))))
 
 (def style-ns
   {:cursor :pointer, :vertical-align :middle, :position :relative, :padding "0 8px"})
@@ -103,6 +98,12 @@
 
 (def style-inspect {:opacity 1, :background-color (hsl 0 0 100), :color :black})
 
+(defn on-keydown-ns [state]
+  (fn [e d! m!]
+    (let [text (string/trim (:ns-text state)), code (:key-code e)]
+      (if (and (= code keycode/enter) (not (string/blank? text)))
+        (do (d! :ir/add-ns text) (m! (assoc state :ns-text "")))))))
+
 (defn render-list [state ns-set selected-ns]
   (div
    {:style style-list}
@@ -110,6 +111,7 @@
    (div
     {}
     (->> ns-set
+         (sort)
          (map
           (fn [ns-text]
             [ns-text
@@ -129,9 +131,7 @@
      {:value (:ns-text state),
       :placeholder "a namespace",
       :style style/input,
-      :on {:input (on-input-ns state)}})
-    (=< 8 nil)
-    (button {:inner-text "Add", :style style/button, :on {:click (on-add state)}}))))
+      :on {:input (on-input-ns state), :keydown (on-keydown-ns state)}}))))
 
 (defcomp
  comp-page-files
