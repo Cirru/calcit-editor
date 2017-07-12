@@ -29,12 +29,15 @@
   (let [clean-text (-> text (string/replace "@" ""))]
     (if (string/includes? clean-text "/")
       (let [[ns-text def-text] (string/split clean-text "/")]
-        {:method :as, :key ns-text, :extra def-text})
-      {:method :refer, :key text})))
+        {:method :as, :key ns-text, :def def-text})
+      {:method :refer, :key clean-text, :def clean-text})))
 
 (defn prepend-data [x] [:data x])
 
 (defn expr? [x] (= :expr (:type x)))
+
+(defn add-warning [op-id text]
+  (fn [xs] (conj xs (merge schema/notification {:id op-id, :kind :attentive, :text text}))))
 
 (defn to-bookmark [writer] (get (:stack writer) (:pointer writer)))
 

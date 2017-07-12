@@ -72,7 +72,9 @@
         (and meta? shift? (= code keycode/v))
           (do (d! :writer/paste nil) (.preventDefault event))
         (and meta? (= code keycode/d))
-          (do (.preventDefault event) (d! :analyze/goto-def (:text leaf)))
+          (do
+           (.preventDefault event)
+           (d! :analyze/goto-def {:text (:text leaf), :forced? shift?}))
         :else (do (println "Keydown leaf" code) (on-window-keydown event d!))))))
 
 (defcomp

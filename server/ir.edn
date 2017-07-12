@@ -517,8 +517,8 @@
                                        ["string/includes?" "clean-text" "|/"]
                                        ["let"
                                         [[["[]" "ns-text" "def-text"] ["string/split" "clean-text" "|/"]]]
-                                        ["{}" [":method" ":as"] [":key" "ns-text"] [":extra" "def-text"]]]
-                                       ["{}" [":method" ":refer"] [":key" "text"]]]]],
+                                        ["{}" [":method" ":as"] [":key" "ns-text"] [":def" "def-text"]]]
+                                       ["{}" [":method" ":refer"] [":key" "clean-text"] [":def" "clean-text"]]]]],
                         "prepend-data" ["defn" "prepend-data" ["x"] ["[]" ":data" "x"]],
                         "expr?" ["defn" "expr?" ["x"] ["=" ":expr" [":type" "x"]]],
                         "parse-require" ["defn"
@@ -539,6 +539,16 @@
                                                "def-text"
                                                ["{}" [":method" ":refer"] [":ns" "ns-text"] [":def" "def-text"]]]]]
                                             ["into" ["{}"]]]]]],
+                        "add-warning" ["defn"
+                                       "add-warning"
+                                       ["op-id" "text"]
+                                       ["fn"
+                                        ["xs"]
+                                        ["conj"
+                                         "xs"
+                                         ["merge"
+                                          "schema/notification"
+                                          ["{}" [":id" "op-id"] [":kind" ":attentive"] [":text" "text"]]]]]],
                         "to-bookmark" ["defn"
                                        "to-bookmark"
                                        ["writer"]
@@ -1313,7 +1323,9 @@
                                     "to-bookmark"
                                     "parse-deps"
                                     "tree->cirru"
-                                    "parse-def"]]
+                                    "cirru->tree"
+                                    "parse-def"
+                                    "add-warning"]]
                                   ["[]" "server.util.stack" ":refer" ["[]" "push-bookmark"]]
                                   ["[]" "server.schema" ":as" "schema"]]],
                             :defs {"goto-def" ["defn"
@@ -1327,8 +1339,9 @@
                                                  ["ns-expr"
                                                   ["tree->cirru" ["get-in" "db" ["[]" ":ir" ":files" "ns-text" ":ns"]]]]
                                                  ["deps-info" ["parse-deps" ["subvec" "ns-expr" "2"]]]
-                                                 ["def-info" ["parse-def" "op-data"]]
-                                                 ["bookmark"
+                                                 ["def-info" ["parse-def" [":text" "op-data"]]]
+                                                 ["forced?" [":forced?" "op-data"]]
+                                                 ["new-bookmark"
                                                   ["if"
                                                    ["and"
                                                     ["contains?" "deps-info" [":key" "def-info"]]
@@ -1346,48 +1359,83 @@
                                                        [":ns" [":ns" "rule"]]
                                                        [":extra" [":key" "def-info"]]]
                                                       ["{}"
-                                                       [":kind" ":ns"]
+                                                       [":kind" ":def"]
                                                        [":ns" [":ns" "rule"]]
-                                                       [":extra" [":extra" "def-info"]]]]]]
-                                                   "nil"]]]
-                                                ["--" "println" "|deps" "deps-info" "def-info" "bookmark"]
+                                                       [":extra" [":def" "def-info"]]]]]]
+                                                   ["{}"
+                                                    [":kind" ":def"]
+                                                    [":ns" [":ns" "bookmark"]]
+                                                    [":extra" [":def" "def-info"]]]]]
+                                                 ["def-existed?"
+                                                  ["some?"
+                                                   ["get-in"
+                                                    "db"
+                                                    ["[]"
+                                                     ":ir"
+                                                     ":files"
+                                                     [":ns" "new-bookmark"]
+                                                     ":defs"
+                                                     [":extra" "new-bookmark"]]]]]
+                                                 ["user-id" ["get-in" "db" ["[]" ":sessions" "sid" ":user-id"]]]]
+                                                ["--"
+                                                 "println"
+                                                 "|deps"
+                                                 "deps-info"
+                                                 "def-info"
+                                                 "new-bookmark"
+                                                 "def-existed?"]
                                                 ["if"
-                                                 ["some?" "bookmark"]
+                                                 ["some?" "new-bookmark"]
                                                  ["if"
-                                                  ["string/starts-with?" [":ns" "bookmark"] ["str" "pkg" "|."]]
-                                                  ["->"
-                                                   "db"
-                                                   ["update-in"
-                                                    ["[]" ":sessions" "sid" ":writer"]
-                                                    ["push-bookmark" "bookmark"]]]
+                                                  ["string/starts-with?" [":ns" "new-bookmark"] ["str" "pkg" "|."]]
+                                                  ["if"
+                                                   "def-existed?"
+                                                   ["->"
+                                                    "db"
+                                                    ["update-in"
+                                                     ["[]" ":sessions" "sid" ":writer"]
+                                                     ["push-bookmark" "new-bookmark"]]]
+                                                   ["if"
+                                                    "forced?"
+                                                    ["->"
+                                                     "db"
+                                                     ["assoc-in"
+                                                      ["[]"
+                                                       ":ir"
+                                                       ":files"
+                                                       [":ns" "new-bookmark"]
+                                                       ":defs"
+                                                       [":extra" "new-bookmark"]]
+                                                      ["cirru->tree"
+                                                       ["[]" "|defn" [":extra" "new-bookmark"] ["[]"]]
+                                                       "user-id"
+                                                       "op-time"]]
+                                                     ["update-in"
+                                                      ["[]" ":sessions" "sid" ":writer"]
+                                                      ["push-bookmark" "new-bookmark"]]]
+                                                    ["->"
+                                                     "db"
+                                                     ["update-in"
+                                                      ["[]" ":sessions" "sid" ":notifications"]
+                                                      ["add-warning"
+                                                       "op-id"
+                                                       ["str"
+                                                        "|Does not exist: "
+                                                        [":ns" "new-bookmark"]
+                                                        "| "
+                                                        [":extra" "new-bookmark"]]]]]]]
                                                   ["->"
                                                    "db"
                                                    ["update-in"
                                                     ["[]" ":sessions" "sid" ":notifications"]
-                                                    ["fn"
-                                                     ["xs"]
-                                                     ["conj"
-                                                      "xs"
-                                                      ["merge"
-                                                       "schema/notification"
-                                                       ["{}"
-                                                        [":id" "op-id"]
-                                                        [":kind" ":attentive"]
-                                                        [":text" ["str" "|External dep:" [":ns" "bookmark"]]]]]]]]]]
+                                                    ["add-warning"
+                                                     "op-id"
+                                                     ["str" "|External dep:" [":ns" "new-bookmark"]]]]]]
                                                  ["->"
                                                   "db"
                                                   ["update-in"
                                                    ["[]" ":sessions" "sid" ":notifications"]
-                                                   ["fn"
-                                                    ["xs"]
-                                                    ["conj"
-                                                     "xs"
-                                                     ["merge"
-                                                      "schema/notification"
-                                                      ["{}"
-                                                       [":id" "op-id"]
-                                                       [":kind" ":attentive"]
-                                                       [":text" ["str" "|Cannot locate:" "def-info"]]]]]]]]]]]},
+                                                   ["add-warning" "op-id" ["str" "|Cannot locate:" "def-info"]]]]]]]},
                             :procs []},
          "util.stack" {:ns ["ns" "server.util.stack"],
                        :defs {"push-bookmark" ["defn"

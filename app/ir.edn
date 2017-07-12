@@ -188,7 +188,9 @@
                                               [["and" "meta?" ["=" "code" "keycode/d"]]
                                                ["do"
                                                 [".preventDefault" "event"]
-                                                ["d!" ":analyze/goto-def" [":text" "leaf"]]]]
+                                                ["d!"
+                                                 ":analyze/goto-def"
+                                                 ["{}" [":text" [":text" "leaf"]] [":forced?" "shift?"]]]]]
                                               [":else"
                                                ["do"
                                                 ["println" "|Keydown leaf" "code"]
