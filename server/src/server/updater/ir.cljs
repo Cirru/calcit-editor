@@ -147,8 +147,12 @@
 (defn update-leaf [db op-data session-id op-id op-time]
   (let [writer (get-in db [:sessions session-id :writer])
         bookmark (get (:stack writer) (:pointer writer))
-        data-path (bookmark->path bookmark)]
-    (-> db (update-in data-path (fn [leaf] (assoc leaf :text op-data))))))
+        data-path (bookmark->path bookmark)
+        user-id (get-in db [:sessions session-id :user-id])]
+    (-> db
+        (update-in
+         data-path
+         (fn [leaf] (assoc leaf :text op-data :time op-time :author user-id))))))
 
 (defn unindent [db op-data session-id op-id op-time]
   (let [writer (get-in db [:sessions session-id :writer])

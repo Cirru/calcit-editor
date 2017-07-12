@@ -14,6 +14,8 @@
 
 (defn on-input [state] (fn [e d! m!] (m! {:query (:value e), :selection 0})))
 
+(def style-body {:overflow :auto, :padding-bottom 80})
+
 (def style-candidate {:padding "0 8px", :color (hsl 0 0 100 0.6), :cursor :pointer})
 
 (def style-search {:padding "0 16px"})
@@ -62,7 +64,7 @@
                            queries)))
                        (sort-by bookmark->str))]
    (div
-    {:style style-search}
+    {:style (merge ui/column style-search)}
     (div
      {}
      (input
@@ -72,7 +74,7 @@
        :style style-input,
        :on {:input (on-input state), :keydown (on-keydown state candidates)}}))
     (div
-     {}
+     {:style (merge ui/flex style-body)}
      (->> candidates
           (map-indexed
            (fn [idx bookmark]

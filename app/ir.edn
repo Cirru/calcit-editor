@@ -336,6 +336,7 @@
                                            ["fn"
                                             ["e" "d!" "m!"]
                                             ["m!" ["{}" [":query" [":value" "e"]] [":selection" "0"]]]]],
+                               "style-body" ["def" "style-body" ["{}" [":overflow" ":auto"] [":padding-bottom" "80"]]],
                                "style-candidate" ["def"
                                                   "style-candidate"
                                                   ["{}"
@@ -370,7 +371,7 @@
                                                      "queries"]]]
                                                   ["sort-by" "bookmark->str"]]]]
                                                ["div"
-                                                ["{}" [":style" "style-search"]]
+                                                ["{}" [":style" ["merge" "ui/column" "style-search"]]]
                                                 ["div"
                                                  ["{}"]
                                                  ["input"
@@ -384,7 +385,7 @@
                                                      [":input" ["on-input" "state"]]
                                                      [":keydown" ["on-keydown" "state" "candidates"]]]]]]]
                                                 ["div"
-                                                 ["{}"]
+                                                 ["{}" [":style" ["merge" "ui/flex" "style-body"]]]
                                                  ["->>"
                                                   "candidates"
                                                   ["map-indexed"
@@ -694,11 +695,13 @@
                                                            ["{}"]
                                                            ["<>" "span" ["str" "|404 page: " ["pr-str" "router"]] "nil"]]]
                                                          ["comp-login" "states"]]]
-                                                       ["comp-inspect"
+                                                       ["--"
+                                                        "comp-inspect"
                                                         "|Session"
                                                         [":session" "store"]
                                                         "style-inspector"]
-                                                       ["comp-inspect"
+                                                       ["--"
+                                                        "comp-inspect"
                                                         "|Router data"
                                                         ["get-in" "store" ["[]" ":router" ":data"]]
                                                         ["merge" "style-inspector" ["{}" [":left" "100"]]]]
