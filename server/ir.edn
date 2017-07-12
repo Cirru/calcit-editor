@@ -82,8 +82,7 @@
                                ["[]" "stack-server.analyze" ":refer" ["[]" "generate-file"]]
                                ["[]" "server.util" ":refer" ["[]" "ns->path" "file->cirru"]]
                                ["[]" "server.schema" ":as" "schema"]]],
-                         :defs {"emit-file!" ["defn" "emit-file!" []],
-                                "handle-files!" ["defn"
+                         :defs {"handle-files!" ["defn"
                                                  "handle-files!"
                                                  ["db" "configs" "dispatch!"]
                                                  ["try"
@@ -118,13 +117,34 @@
                                                      ["ns->path" "ns-text" "configs"]
                                                      ["get" "new-files" "ns-text"]
                                                      "configs"]]
-                                                   ["dispatch!" ":writer/save-files" "nil"]]
+                                                   ["dispatch!" ":writer/save-files" "nil"]
+                                                   ["persist!" "db"]]
                                                   ["catch"
                                                    "js/Error"
                                                    "e"
                                                    ["do"
                                                     [".log" "js/console" "e"]
                                                     ["dispatch!" ":notify/push-error" [".-message" "e"]]]]]],
+                                "modify-file!" ["defn"
+                                                "modify-file!"
+                                                ["file-path" "file" "configs"]
+                                                ["let"
+                                                 [["project-path" ["path.join" [":output" "configs"] "file-path"]]]
+                                                 ["println" "|Modifying" "project-path"]
+                                                 ["fs.writeFileSync"
+                                                  "project-path"
+                                                  ["generate-file" ["file->cirru" "file"]]]]],
+                                "cp" ["def" "cp" ["js/require" "|child_process"]],
+                                "path" ["def" "path" ["js/require" "|path"]],
+                                "persist!" ["defn"
+                                            "persist!"
+                                            ["db"]
+                                            ["let"
+                                             [["fs" ["js/require" "|fs"]]]
+                                             ["fs.writeFileSync"
+                                              [":storage-key" "schema/configs"]
+                                              ["pr-str"
+                                               ["->" "db" ["assoc" ":sessions" ["{}"]] ["assoc" ":saved-files" ["{}"]]]]]]],
                                 "create-file!" ["defn"
                                                 "create-file!"
                                                 ["file-path" "file" "configs"]
@@ -142,18 +162,7 @@
                                                  [["project-path" ["path.join" [":output" "configs"] "file-path"]]]
                                                  ["println" "|Removing" "project-path"]
                                                  ["cp.execSync" ["str" "|rm -rfv " "project-path"]]]],
-                                "modify-file!" ["defn"
-                                                "modify-file!"
-                                                ["file-path" "file" "configs"]
-                                                ["let"
-                                                 [["project-path" ["path.join" [":output" "configs"] "file-path"]]]
-                                                 ["println" "|Modifying" "project-path"]
-                                                 ["fs.writeFileSync"
-                                                  "project-path"
-                                                  ["generate-file" ["file->cirru" "file"]]]]],
-                                "fs" ["def" "fs" ["js/require" "|fs"]],
-                                "path" ["def" "path" ["js/require" "|path"]],
-                                "cp" ["def" "cp" ["js/require" "|child_process"]]},
+                                "fs" ["def" "fs" ["js/require" "|fs"]]},
                          :procs []},
          "updater.writer" {:ns ["ns"
                                 "server.updater.writer"
@@ -885,8 +894,7 @@
                        ["[]" "server.updater.core" ":refer" ["[]" "updater"]]
                        ["[]" "cljs.core.async" ":refer" ["[]" "<!" ">!"]]
                        ["[]" "cljs.reader" ":refer" ["[]" "read-string"]]
-                       ["[]" "fipp.edn" ":as" "fipp"]
-                       ["[]" "server.util.compile" ":refer" ["[]" "handle-files!"]]
+                       ["[]" "server.util.compile" ":refer" ["[]" "handle-files!" "persist!"]]
                        ["[]" "server.util.env" ":refer" ["[]" "pick-configs"]]]
                       [":require-macros" ["[]" "cljs.core.async.macros" ":refer" ["[]" "go-loop" "go"]]]],
                  :defs {"start-server!" ["defn"
@@ -940,7 +948,7 @@
                                           "|SIGINT"
                                           ["fn"
                                            ["code"]
-                                           ["persist!"]
+                                           ["persist!" "@*writer-db"]
                                            ["println" "|Saving file on exit" "code"]
                                            [".exit" "js/process"]]]
                                          ["println" "|Server started."]],
@@ -954,19 +962,6 @@
                                    ["=" "op" "|compile"]
                                    ["compile-all-files!" "configs"]
                                    ["start-server!" "configs"]]]],
-                        "persist!" ["defn"
-                                    "persist!"
-                                    []
-                                    ["let"
-                                     [["fs" ["js/require" "|fs"]]]
-                                     ["fs.writeFileSync"
-                                      [":storage-key" "schema/configs"]
-                                      ["with-out-str"
-                                       ["fipp/pprint"
-                                        ["->"
-                                         "@*writer-db"
-                                         ["assoc" ":sessions" ["{}"]]
-                                         ["assoc" ":saved-files" ["{}"]]]]]]]],
                         "*reader-db" ["defonce" "*reader-db" ["atom" "@*writer-db"]],
                         "compile-all-files!" ["defn"
                                               "compile-all-files!"

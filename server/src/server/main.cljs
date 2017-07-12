@@ -5,8 +5,7 @@
             [server.updater.core :refer [updater]]
             [cljs.core.async :refer [<! >!]]
             [cljs.reader :refer [read-string]]
-            [fipp.edn :as fipp]
-            [server.util.compile :refer [handle-files!]]
+            [server.util.compile :refer [handle-files! persist!]]
             [server.util.env :refer [pick-configs]])
   (:require-macros [cljs.core.async.macros :refer [go-loop go]]))
 
@@ -22,13 +21,6 @@
      (-> db
          (assoc :saved-files (get-in db [:ir :files]))
          (update :configs (fn [configs] (or configs schema/configs)))))))
-
-(defn persist! []
-  (let [fs (js/require "fs")]
-    (fs.writeFileSync
-     (:storage-key schema/configs)
-     (with-out-str
-      (fipp/pprint (-> @*writer-db (assoc :sessions {}) (assoc :saved-files {})))))))
 
 (defonce *reader-db (atom @*writer-db))
 
@@ -63,7 +55,10 @@
   (.on
    js/process
    "SIGINT"
-   (fn [code] (persist!) (println "Saving file on exit" code) (.exit js/process)))
+   (fn [code]
+     (persist! @*writer-db)
+     (println "Saving file on exit" code)
+     (.exit js/process)))
   (println "Server started."))
 
 (defn compile-all-files! [configs]
