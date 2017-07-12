@@ -10,7 +10,7 @@
 (defn on-submit [username password signup?]
   (fn [e dispatch!]
     (dispatch! (if signup? :user/sign-up :user/log-in) [username password])
-    (.setItem js/localStorage (:storage-key schema/configs) [username password])))
+    (.setItem js/window.localStorage (:storage-key schema/configs) [username password])))
 
 (defn on-input [state k] (fn [e dispatch! mutate!] (mutate! (assoc state k (:value e)))))
 

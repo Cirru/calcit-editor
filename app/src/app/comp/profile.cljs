@@ -11,7 +11,7 @@
 
 (defn on-log-out [e dispatch!]
   (dispatch! :user/log-out nil)
-  (.removeItem js/localStorage (:storage-key schema/configs)))
+  (.removeItem js/window.localStorage (:storage-key schema/configs)))
 
 (def style-profile {:padding "0 16px"})
 

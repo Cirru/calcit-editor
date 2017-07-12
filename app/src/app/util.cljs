@@ -14,12 +14,14 @@
 (defn expr? [x] (= :expr (:type x)))
 
 (def ws-host
-  (let [query (->> (-> (.-search js/location) (subs 1) (string/split "&"))
-                   (map (fn [chunk] (update (vec (string/split chunk "=")) 0 keyword)))
-                   (into {}))]
-    (println "Loading from url" query)
-    (str
-     "ws://"
-     (or (:host query) (.-hostname js/location))
-     ":"
-     (or (:port query) (:port schema/configs)))))
+  (if (and (exists? js/location) (not (string/blank? (.-search js/location))))
+    (let [query (->> (-> (.-search js/location) (subs 1) (string/split "&"))
+                     (map (fn [chunk] (update (vec (string/split chunk "=")) 0 keyword)))
+                     (into {}))]
+      (println "Loading from url" query)
+      (str
+       "ws://"
+       (or (:host query) "localhost")
+       ":"
+       (or (:port query) (:port schema/configs))))
+    "ws://localhost:6001"))
