@@ -95,11 +95,12 @@
                                             ["{}"
                                              [":value" "text"]
                                              [":spellcheck" "false"]
-                                             [":class-name" ["if" ["=" "focus" "coord"] "|cirru-focused" "nil"]]
+                                             [":class-name"
+                                              ["str" "|cirru-leaf" ["if" ["=" "focus" "coord"] "| cirru-focused" "|"]]]
                                              [":placeholder" "coord"]
                                              [":style"
                                               ["merge"
-                                               "style-leaf"
+                                               ["{}"]
                                                ["{}"
                                                 [":width"
                                                  ["+"
@@ -496,16 +497,21 @@
          "comp.page-editor" {:ns ["ns"
                                   "app.comp.page-editor"
                                   [":require-macros"
-                                   ["[]" "respo.macros" ":refer" ["[]" "defcomp" "cursor->" "<>" "span" "div" "a"]]]
+                                   ["[]"
+                                    "respo.macros"
+                                    ":refer"
+                                    ["[]" "defcomp" "cursor->" "<>" "span" "div" "a" "style"]]]
                                   [":require"
                                    ["[]" "hsl.core" ":refer" ["[]" "hsl"]]
+                                   ["[]" "respo.render.html" ":refer" ["[]" "style->string"]]
                                    ["[]" "respo-ui.style" ":as" "ui"]
                                    ["[]" "respo-ui.style.colors" ":as" "colors"]
                                    ["[]" "respo.core" ":refer" ["[]" "create-comp"]]
                                    ["[]" "respo.comp.space" ":refer" ["[]" "=<"]]
                                    ["[]" "respo.comp.inspect" ":refer" ["[]" "comp-inspect"]]
                                    ["[]" "app.comp.bookmark" ":refer" ["[]" "comp-bookmark"]]
-                                   ["[]" "app.comp.expr" ":refer" ["[]" "comp-expr"]]
+                                   ["[]" "app.comp.expr" ":refer" ["[]" "comp-expr" "style-expr"]]
+                                   ["[]" "app.comp.leaf" ":refer" ["[]" "style-leaf"]]
                                    ["[]" "app.style" ":as" "style"]]],
                              :defs {"comp-page-editor" ["defcomp"
                                                         "comp-page-editor"
@@ -529,6 +535,20 @@
                                                          ["=<" "8" "nil"]
                                                          ["div"
                                                           ["{}" [":style" "style-editor"]]
+                                                          ["style"
+                                                           ["{}"
+                                                            [":innerHTML"
+                                                             ["str"
+                                                              "|.cirru-expr {"
+                                                              ["style->string" "style-expr"]
+                                                              "|}"]]]]
+                                                          ["style"
+                                                           ["{}"
+                                                            [":innerHTML"
+                                                             ["str"
+                                                              "|.cirru-leaf {"
+                                                              ["style->string" "style-leaf"]
+                                                              "|}"]]]]
                                                           ["let"
                                                            [["others"
                                                              ["->>" [":others" "router-data"] ["vals"] ["into" ["#{}"]]]]
@@ -548,7 +568,14 @@
                                                             ["if" ["not" ["empty?" "stack"]] "ui-missing"]]]
                                                           ["--" "comp-inspect" "|Expr" "router-data" "style/inspector"]]]],
                                     "style-stack" ["def" "style-stack" ["{}" [":width" "200"]]],
-                                    "style-editor" ["def" "style-editor" ["merge" "ui/flex" ["{}"]]],
+                                    "style-editor" ["def"
+                                                    "style-editor"
+                                                    ["merge"
+                                                     "ui/flex"
+                                                     ["{}"
+                                                      [":overflow" ":auto"]
+                                                      [":padding-bottom" "80"]
+                                                      [":padding-top" "40"]]]],
                                     "style-container" ["def" "style-container" ["{}" [":position" ":relative"]]],
                                     "ui-missing" ["def"
                                                   "ui-missing"
@@ -1347,15 +1374,14 @@
                                "style-header" ["def"
                                                "style-header"
                                                ["{}"
-                                                [":height" "48"]
+                                                [":height" "40"]
                                                 [":justify-content" ":space-between"]
                                                 [":padding" "|0 16px"]
-                                                [":font-size" "16"]
+                                                [":font-size" "18"]
                                                 [":color" ":white"]
                                                 [":border-bottom" ["str" "|1px solid " ["hsl" "0" "0" "100" "0.2"]]]
                                                 [":font-family" "|Josefin Sans"]
-                                                [":font-weight" "100"]
-                                                [":font-size" "20"]]],
+                                                [":font-weight" "100"]]],
                                "render-entry" ["defn"
                                                "render-entry"
                                                ["page-name" "this-page" "router-name" "on-click"]
@@ -1500,10 +1526,11 @@
                                            ["div"
                                             ["{}"
                                              [":tab-index" "0"]
-                                             [":class-name" ["if" "focused?" "|cirru-focused" "nil"]]
+                                             [":class-name"
+                                              ["str" "|cirru-expr" ["if" "focused?" "| cirru-focused" "|"]]]
                                              [":style"
                                               ["merge"
-                                               "style-expr"
+                                               ["{}"]
                                                ["if"
                                                 ["contains?" "others" "coord"]
                                                 ["{}" [":border-color" ["hsl" "0" "0" "100" "0.6"]]]]

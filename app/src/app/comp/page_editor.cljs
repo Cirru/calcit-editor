@@ -1,19 +1,21 @@
 
 (ns app.comp.page-editor
-  (:require-macros [respo.macros :refer [defcomp cursor-> <> span div a]])
+  (:require-macros [respo.macros :refer [defcomp cursor-> <> span div a style]])
   (:require [hsl.core :refer [hsl]]
+            [respo.render.html :refer [style->string]]
             [respo-ui.style :as ui]
             [respo-ui.style.colors :as colors]
             [respo.core :refer [create-comp]]
             [respo.comp.space :refer [=<]]
             [respo.comp.inspect :refer [comp-inspect]]
             [app.comp.bookmark :refer [comp-bookmark]]
-            [app.comp.expr :refer [comp-expr]]
+            [app.comp.expr :refer [comp-expr style-expr]]
+            [app.comp.leaf :refer [style-leaf]]
             [app.style :as style]))
 
 (def style-stack {:width 200})
 
-(def style-editor (merge ui/flex {}))
+(def style-editor (merge ui/flex {:overflow :auto, :padding-bottom 80, :padding-top 40}))
 
 (def style-container {:position :relative})
 
@@ -40,6 +42,8 @@
   (=< 8 nil)
   (div
    {:style style-editor}
+   (style {:innerHTML (str ".cirru-expr {" (style->string style-expr) "}")})
+   (style {:innerHTML (str ".cirru-leaf {" (style->string style-leaf) "}")})
    (let [others (->> (:others router-data) (vals) (into #{})), expr (:expr router-data)]
      (if (some? expr)
        (cursor-> :root comp-expr states expr (:focus router-data) [] others false false)

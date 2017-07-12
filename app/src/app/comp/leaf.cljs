@@ -87,10 +87,10 @@
    (input
     {:value text,
      :spellcheck false,
-     :class-name (if (= focus coord) "cirru-focused" nil),
+     :class-name (str "cirru-leaf" (if (= focus coord) " cirru-focused" "")),
      :placeholder coord,
      :style (merge
-             style-leaf
+             {}
              {:width (+
                       6
                       (text-width* text (:font-size style-leaf) (:font-family style-leaf)))}

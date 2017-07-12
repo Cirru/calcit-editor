@@ -14,10 +14,10 @@
   (dispatch! :router/change {:name :profile, :data nil, :router nil}))
 
 (def style-header
-  {:height 48,
+  {:height 40,
    :justify-content :space-between,
    :padding "0 16px",
-   :font-size 20,
+   :font-size 18,
    :color :white,
    :border-bottom (str "1px solid " (hsl 0 0 100 0.2)),
    :font-family "Josefin Sans",

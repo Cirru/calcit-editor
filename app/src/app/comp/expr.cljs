@@ -11,20 +11,6 @@
             [app.util :refer [coord-contains? simple? leaf? expr?]]
             [app.util.shortcuts :refer [on-window-keydown]]))
 
-(def style-expr
-  {:border-width "0 0 0px 1px",
-   :border-style :solid,
-   :border-color (hsl 0 0 100 0.3),
-   :min-height 24,
-   :outline :none,
-   :padding-left 10,
-   :font-family "Menlo,monospce",
-   :font-size 14,
-   :margin-bottom 4,
-   :margin-right 2,
-   :margin-left 12,
-   :margin-top 0})
-
 (defn on-keydown [coord]
   (fn [e d! m!]
     (let [event (:original-event e)
@@ -75,9 +61,9 @@
        default-info {:after-expr? false}]
    (div
     {:tab-index 0,
-     :class-name (if focused? "cirru-focused" nil),
+     :class-name (str "cirru-expr" (if focused? " cirru-focused" "")),
      :style (merge
-             style-expr
+             {}
              (if (contains? others coord) {:border-color (hsl 0 0 100 0.6)})
              (if focused? {:border-color (hsl 0 0 100 0.9)})
              (if (and (simple? expr) (not tail?) (not after-expr?) (pos? (count coord)))
@@ -118,3 +104,17 @@
                 (:after-expr? info)))])
            (rest children)
            (assoc info :after-expr? (expr? child)))))))))
+
+(def style-expr
+  {:border-width "0 0 0px 1px",
+   :border-style :solid,
+   :border-color (hsl 0 0 100 0.3),
+   :min-height 24,
+   :outline :none,
+   :padding-left 10,
+   :font-family "Menlo,monospce",
+   :font-size 14,
+   :margin-bottom 4,
+   :margin-right 2,
+   :margin-left 12,
+   :margin-top 0})
