@@ -53,6 +53,6 @@
        :on {:click (on-submit (:username state) (:password state) true)}})
      (=< 8 nil)
      (button
-      {:inner-text "Sign in",
+      {:inner-text "Log in",
        :style style/button,
        :on {:click (on-submit (:username state) (:password state) false)}})))))

@@ -507,9 +507,8 @@
                                               ["e" "d!" "m!"]
                                               ["let"
                                                [["name-text" ["string/trim" "state"]]]
-                                               ["if"
-                                                ["not" ["string/blank?" "name-text"]]
-                                                ["do" ["d!" ":user/nickname" "name-text"] ["m!" "|"]]]]]],
+                                               ["d!" ":user/nickname" "name-text"]
+                                               ["m!" "|"]]]],
                                 "on-input" ["defn" "on-input" ["e" "d!" "m!"] ["m!" [":value" "e"]]],
                                 "style-greet" ["def"
                                                "style-greet"
@@ -1225,7 +1224,7 @@
                                                ["=<" "8" "nil"]
                                                ["button"
                                                 ["{}"
-                                                 [":inner-text" "|Sign in"]
+                                                 [":inner-text" "|Log in"]
                                                  [":style" "style/button"]
                                                  [":on"
                                                   ["{}"
@@ -1593,7 +1592,7 @@
                                               ["div"
                                                ["{}" [":style" ["merge" "ui/row-center" "style-header"]]]
                                                ["div"
-                                                ["{}" [":style" "ui/row"]]
+                                                ["{}" [":style" "ui/row-center"]]
                                                 ["render-entry" "|Files" ":files" "router-name" "on-files"]
                                                 ["render-entry" "|Editor" ":editor" "router-name" "on-editor"]
                                                 ["render-entry" "|Search" ":search" "router-name" "on-search"]

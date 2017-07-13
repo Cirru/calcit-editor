@@ -1,5 +1,6 @@
 
-(ns server.updater.user (:require [server.util :refer [find-first push-warning]]))
+(ns server.updater.user
+  (:require [server.util :refer [find-first push-warning]] [clojure.string :as string]))
 
 (defn sign-up [db op-data session-id op-id op-time]
   (let [[username password] op-data
@@ -41,4 +42,4 @@
 
 (defn nickname [db op-data sid op-id op-time]
   (let [user-id (get-in db [:sessions sid :user-id])]
-    (assoc-in db [:users user-id :nickname] op-data)))
+    (assoc-in db [:users user-id :nickname] (if (string/blank? op-data) "Someone" op-data))))

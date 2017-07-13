@@ -17,9 +17,7 @@
 (def style-profile {:padding "0 16px"})
 
 (defn on-rename [state]
-  (fn [e d! m!]
-    (let [name-text (string/trim state)]
-      (if (not (string/blank? name-text)) (do (d! :user/nickname name-text) (m! ""))))))
+  (fn [e d! m!] (let [name-text (string/trim state)] (d! :user/nickname name-text) (m! ""))))
 
 (defn on-input [e d! m!] (m! (:value e)))
 
