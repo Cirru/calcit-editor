@@ -29,7 +29,12 @@
                         (get-in session [:writer :selected-ns])
                         (:saved-files db))
                      :editor
-                       (twig-page-editor (:files ir) (:sessions db) writer (:id session))
+                       (twig-page-editor
+                        (:files ir)
+                        (:sessions db)
+                        (:users db)
+                        writer
+                        (:id session))
                      :members (twig-page-members (:sessions db) (:users db))
                      :search (twig-search (:files ir))
                      nil))}

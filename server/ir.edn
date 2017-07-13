@@ -67,6 +67,7 @@
                                                              ["twig-page-editor"
                                                               [":files" "ir"]
                                                               [":sessions" "db"]
+                                                              [":users" "db"]
                                                               "writer"
                                                               [":id" "session"]]]
                                                             [":members"
@@ -701,7 +702,6 @@
                                      ["{}"
                                       [":user-id" "nil"]
                                       [":id" "nil"]
-                                      [":nickname" "nil"]
                                       [":router" ["{}" [":name" ":files"] [":data" "nil"] [":router" "nil"]]]
                                       [":notifications" ["[]"]]
                                       [":writer"
@@ -829,10 +829,7 @@
                                               ["some?" "maybe-user"]
                                               ["if"
                                                ["=" "password" [":password" "maybe-user"]]
-                                               ["->"
-                                                "session"
-                                                ["assoc" ":user-id" [":id" "maybe-user"]]
-                                                ["assoc" ":nickname" [":name" "maybe-user"]]]
+                                               ["->" "session" ["assoc" ":user-id" [":id" "maybe-user"]]]
                                                ["update"
                                                 "session"
                                                 ":notifications"
@@ -844,7 +841,13 @@
                                 "log-out" ["defn"
                                            "log-out"
                                            ["db" "op-data" "session-id" "op-id" "op-time"]
-                                           ["assoc-in" "db" ["[]" ":sessions" "session-id" ":user-id"] "nil"]]},
+                                           ["assoc-in" "db" ["[]" ":sessions" "session-id" ":user-id"] "nil"]],
+                                "nickname" ["defn"
+                                            "nickname"
+                                            ["db" "op-data" "sid" "op-id" "op-time"]
+                                            ["let"
+                                             [["user-id" ["get-in" "db" ["[]" ":sessions" "sid" ":user-id"]]]]
+                                             ["assoc-in" "db" ["[]" ":users" "user-id" ":nickname"] "op-data"]]]},
                          :procs []},
          "updater.session" {:ns ["ns" "server.updater.session" [":require" ["[]" "server.schema" ":as" "schema"]]],
                             :defs {"connect" ["defn"
@@ -1179,14 +1182,16 @@
                                              ["session/connect" "db" "op-data" "session-id" "op-id" "op-time"]]
                                             [":session/disconnect"
                                              ["session/disconnect" "db" "op-data" "session-id" "op-id" "op-time"]]
+                                            [":session/select-ns"
+                                             ["session/select-ns" "db" "op-data" "session-id" "op-id" "op-time"]]
+                                            [":user/nickname"
+                                             ["user/nickname" "db" "op-data" "session-id" "op-id" "op-time"]]
                                             [":user/log-in"
                                              ["user/log-in" "db" "op-data" "session-id" "op-id" "op-time"]]
                                             [":user/sign-up"
                                              ["user/sign-up" "db" "op-data" "session-id" "op-id" "op-time"]]
                                             [":user/log-out"
                                              ["user/log-out" "db" "op-data" "session-id" "op-id" "op-time"]]
-                                            [":session/select-ns"
-                                             ["session/select-ns" "db" "op-data" "session-id" "op-id" "op-time"]]
                                             [":router/change"
                                              ["router/change" "db" "op-data" "session-id" "op-id" "op-time"]]
                                             [":writer/edit"
@@ -1455,7 +1460,7 @@
                                                         ["create-twig"
                                                          ":page-editor"
                                                          ["fn"
-                                                          ["files" "sessions" "writer" "session-id"]
+                                                          ["files" "sessions" "users" "writer" "session-id"]
                                                           ["let"
                                                            [["pointer" [":pointer" "writer"]]
                                                             ["stack" [":stack" "writer"]]
@@ -1484,7 +1489,10 @@
                                                                       ["same-buffer?" "bookmark" "a-bookmark"]
                                                                       ["{}"
                                                                        [":focus" [":focus" "a-bookmark"]]
-                                                                       [":name" [":nickname" "session"]]
+                                                                       [":name"
+                                                                        ["get-in"
+                                                                         "users"
+                                                                         ["[]" [":user-id" "session"] ":nickname"]]]
                                                                        [":session-id" [":id" "session"]]]
                                                                       "nil"]]]]]
                                                                  ["filter" ["fn" ["pair"] ["some?" ["last" "pair"]]]]

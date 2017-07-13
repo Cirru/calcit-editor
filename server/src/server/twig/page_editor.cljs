@@ -5,7 +5,7 @@
 (def twig-page-editor
   (create-twig
    :page-editor
-   (fn [files sessions writer session-id]
+   (fn [files sessions users writer session-id]
      (let [pointer (:pointer writer), stack (:stack writer), bookmark (get stack pointer)]
        (if (some? bookmark)
          (let [ns-text (:ns bookmark)]
@@ -20,7 +20,7 @@
                                [(key entry)
                                 (if (same-buffer? bookmark a-bookmark)
                                   {:focus (:focus a-bookmark),
-                                   :name (:nickname session),
+                                   :name (get-in users [(:user-id session) :nickname]),
                                    :session-id (:id session)}
                                   nil)])))
                           (filter (fn [pair] (some? (last pair))))

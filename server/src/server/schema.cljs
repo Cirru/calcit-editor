@@ -22,7 +22,6 @@
 (def session
   {:user-id nil,
    :id nil,
-   :nickname nil,
    :router {:name :files, :data nil, :router nil},
    :notifications [],
    :writer {:selected-ns nil, :pointer 0, :stack [], :clipboard nil}})

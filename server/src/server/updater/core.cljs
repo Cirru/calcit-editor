@@ -12,10 +12,11 @@
   (case op
     :session/connect (session/connect db op-data session-id op-id op-time)
     :session/disconnect (session/disconnect db op-data session-id op-id op-time)
+    :session/select-ns (session/select-ns db op-data session-id op-id op-time)
+    :user/nickname (user/nickname db op-data session-id op-id op-time)
     :user/log-in (user/log-in db op-data session-id op-id op-time)
     :user/sign-up (user/sign-up db op-data session-id op-id op-time)
     :user/log-out (user/log-out db op-data session-id op-id op-time)
-    :session/select-ns (session/select-ns db op-data session-id op-id op-time)
     :router/change (router/change db op-data session-id op-id op-time)
     :writer/edit (writer/edit db op-data session-id op-id op-time)
     :writer/edit-ns (writer/edit-ns db op-data session-id op-id op-time)

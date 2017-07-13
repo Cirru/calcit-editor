@@ -26,7 +26,7 @@
      (fn [session]
        (if (some? maybe-user)
          (if (= password (:password maybe-user))
-           (-> session (assoc :user-id (:id maybe-user)) (assoc :nickname (:name maybe-user)))
+           (-> session (assoc :user-id (:id maybe-user)))
            (update
             session
             :notifications
@@ -38,3 +38,7 @@
 
 (defn log-out [db op-data session-id op-id op-time]
   (assoc-in db [:sessions session-id :user-id] nil))
+
+(defn nickname [db op-data sid op-id op-time]
+  (let [user-id (get-in db [:sessions sid :user-id])]
+    (assoc-in db [:users user-id :nickname] op-data)))

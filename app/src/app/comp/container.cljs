@@ -47,7 +47,7 @@
        {:style (merge ui/row ui/flex style-body)}
        (if (:logged-in? store)
          (case (:name router)
-           :profile (comp-profile (:user store))
+           :profile (cursor-> :profile comp-profile states (:user store))
            :files
              (cursor-> :files comp-page-files states (:selected-ns writer) (:data router))
            :editor

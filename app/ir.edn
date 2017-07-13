@@ -450,8 +450,9 @@
          "comp.profile" {:ns ["ns"
                               "app.comp.profile"
                               [":require-macros"
-                               ["[]" "respo.macros" ":refer" ["[]" "defcomp" "<>" "span" "div" "button" "a"]]]
+                               ["[]" "respo.macros" ":refer" ["[]" "defcomp" "<>" "span" "div" "button" "input" "a"]]]
                               [":require"
+                               ["[]" "clojure.string" ":as" "string"]
                                ["[]" "hsl.core" ":refer" ["[]" "hsl"]]
                                ["[]" "app.schema" ":as" "schema"]
                                ["[]" "respo-ui.style" ":as" "ui"]
@@ -466,17 +467,63 @@
                                               [".removeItem" "js/window.localStorage" [":storage-key" "schema/configs"]]],
                                 "comp-profile" ["defcomp"
                                                 "comp-profile"
-                                                ["user"]
-                                                ["div"
-                                                 ["{}" [":style" ["merge" "ui/flex" "style-profile"]]]
-                                                 ["<>" "span" ["str" "|Hello! " [":name" "user"]] "nil"]
-                                                 ["=<" "8" "nil"]
-                                                 ["button"
-                                                  ["{}"
-                                                   [":inner-text" "|Log out"]
-                                                   [":style" "style/button"]
-                                                   [":on" ["{}" [":click" "on-log-out"]]]]]]],
-                                "style-profile" ["def" "style-profile" ["{}" [":padding" "|0 16px"]]]},
+                                                ["states" "user"]
+                                                ["let"
+                                                 [["state" ["or" [":data" "states"] "|"]]]
+                                                 ["div"
+                                                  ["{}" [":style" ["merge" "ui/flex" "style-profile"]]]
+                                                  ["div"
+                                                   ["{}"]
+                                                   ["<>" "span" ["str" "|Hello! " [":nickname" "user"]] "style-greet"]
+                                                   ["=<" "8" "nil"]
+                                                   ["<>" "span" ["str" "|id: " [":name" "user"]] "style-id"]]
+                                                  ["div"
+                                                   ["{}"]
+                                                   ["input"
+                                                    ["{}"
+                                                     [":placeholder" "|A nickname"]
+                                                     [":value" "state"]
+                                                     [":style" "style/input"]
+                                                     [":on" ["{}" [":input" "on-input"]]]]]
+                                                   ["=<" "8" "nil"]
+                                                   ["button"
+                                                    ["{}"
+                                                     [":inner-text" "|Change"]
+                                                     [":style" "style/button"]
+                                                     [":on" ["{}" [":click" ["on-rename" "state"]]]]]]]
+                                                  ["=<" "nil" "100"]
+                                                  ["div"
+                                                   ["{}"]
+                                                   ["button"
+                                                    ["{}"
+                                                     [":inner-text" "|Log out"]
+                                                     [":style" "style/button"]
+                                                     [":on" ["{}" [":click" "on-log-out"]]]]]]]]],
+                                "style-profile" ["def" "style-profile" ["{}" [":padding" "|0 16px"]]],
+                                "on-rename" ["defn"
+                                             "on-rename"
+                                             ["state"]
+                                             ["fn"
+                                              ["e" "d!" "m!"]
+                                              ["let"
+                                               [["name-text" ["string/trim" "state"]]]
+                                               ["if"
+                                                ["not" ["string/blank?" "name-text"]]
+                                                ["do" ["d!" ":user/nickname" "name-text"] ["m!" "|"]]]]]],
+                                "on-input" ["defn" "on-input" ["e" "d!" "m!"] ["m!" [":value" "e"]]],
+                                "style-greet" ["def"
+                                               "style-greet"
+                                               ["{}"
+                                                [":font-family" "|Josefin Sans"]
+                                                [":font-size" "40"]
+                                                [":font-weight" "100"]
+                                                [":color" ["hsl" "0" "0" "100" "0.8"]]]],
+                                "style-id" ["def"
+                                            "style-id"
+                                            ["{}"
+                                             [":font-family" "|Josefin Sans"]
+                                             [":font-weight" "100"]
+                                             [":color" ["hsl" "0" "0" "60"]]]]},
                          :procs []},
          "util.keycode" {:ns ["ns" "app.util.keycode"],
                          :defs {"d" ["def" "d" "68"],
@@ -824,7 +871,12 @@
                                                          [":logged-in?" "store"]
                                                          ["case"
                                                           [":name" "router"]
-                                                          [":profile" ["comp-profile" [":user" "store"]]]
+                                                          [":profile"
+                                                           ["cursor->"
+                                                            ":profile"
+                                                            "comp-profile"
+                                                            "states"
+                                                            [":user" "store"]]]
                                                           [":files"
                                                            ["cursor->"
                                                             ":files"
@@ -1113,7 +1165,8 @@
                              ["[]" "respo.comp.space" ":refer" ["[]" "=<"]]
                              ["[]" "respo.comp.inspect" ":refer" ["[]" "comp-inspect"]]
                              ["[]" "respo-ui.style" ":as" "ui"]
-                             ["[]" "app.schema" ":as" "schema"]]],
+                             ["[]" "app.schema" ":as" "schema"]
+                             ["[]" "app.style" ":as" "style"]]],
                        :defs {"on-submit" ["defn"
                                            "on-submit"
                                            ["username" "password" "signup?"]
@@ -1138,7 +1191,7 @@
                                             ["let"
                                              [["state" ["or" [":data" "states"] "initial-state"]]]
                                              ["div"
-                                              ["{}"]
+                                              ["{}" [":style" "style-login"]]
                                               ["div"
                                                ["{}" [":style" ["{}"]]]
                                                ["div"
@@ -1147,7 +1200,7 @@
                                                  ["{}"
                                                   [":placeholder" "|Username"]
                                                   [":value" [":username" "state"]]
-                                                  [":style" "ui/input"]
+                                                  [":style" "style/input"]
                                                   [":on" ["{}" [":input" ["on-input" "state" ":username"]]]]]]]
                                                ["=<" "nil" "8"]
                                                ["div"
@@ -1156,16 +1209,15 @@
                                                  ["{}"
                                                   [":placeholder" "|Password"]
                                                   [":value" [":password" "state"]]
-                                                  [":style" "ui/input"]
+                                                  [":style" "style/input"]
                                                   [":on" ["{}" [":input" ["on-input" "state" ":password"]]]]]]]]
                                               ["=<" "nil" "8"]
                                               ["div"
-                                               ["{}" [":style" "ui/flex"]]
+                                               ["{}" [":style" "style-control"]]
                                                ["button"
                                                 ["{}"
                                                  [":inner-text" "|Sign up"]
-                                                 [":style"
-                                                  ["merge" "ui/button" ["{}" [":outline" ":none"] [":border" ":none"]]]]
+                                                 [":style" "style/button"]
                                                  [":on"
                                                   ["{}"
                                                    [":click"
@@ -1174,13 +1226,16 @@
                                                ["button"
                                                 ["{}"
                                                  [":inner-text" "|Sign in"]
-                                                 [":style"
-                                                  ["merge" "ui/button" ["{}" [":outline" ":none"] [":border" ":none"]]]]
+                                                 [":style" "style/button"]
                                                  [":on"
                                                   ["{}"
                                                    [":click"
                                                     ["on-submit" [":username" "state"] [":password" "state"] "false"]]]]]]]]]],
-                              "initial-state" ["def" "initial-state" ["{}" [":username" "|"] [":password" "|"]]]},
+                              "initial-state" ["def" "initial-state" ["{}" [":username" "|"] [":password" "|"]]],
+                              "style-control" ["def"
+                                               "style-control"
+                                               ["merge" "ui/flex" ["{}" [":text-align" ":right"]]]],
+                              "style-login" ["def" "style-login" ["{}" [":padding" "16"]]]},
                        :procs []},
          "comp.page-files" {:ns ["ns"
                                  "app.comp.page-files"
