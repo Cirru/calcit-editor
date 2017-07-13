@@ -3,7 +3,7 @@
   (:require [app.util.keycode :as keycode] [app.util.dom :refer [focus-search!]]))
 
 (defn on-window-keydown [event dispatch!]
-  (let [meta? (.-metaKey event), code (.-keyCode event)]
+  (let [meta? (or (.-metaKey event) (.-ctrlKey event)), code (.-keyCode event)]
     (cond
       (and meta? (= code keycode/p))
         (do

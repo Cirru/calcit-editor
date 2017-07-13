@@ -41,7 +41,7 @@
     :background-color :transparent,
     :min-width 8,
     :color (hsl 200 14 60),
-    :font-family "Menlo",
+    :font-family "Menlo,Iosevka,monospace",
     :font-size 15,
     :vertical-align :baseline,
     :transition-duration "200ms",
@@ -56,7 +56,7 @@
     (let [event (:original-event e)
           code (:key-code e)
           shift? (.-shiftKey event)
-          meta? (.-metaKey event)
+          meta? (or (.-metaKey event) (.-ctrlKey event))
           text (if (> (:time state) (:time leaf)) (:text state) (:text leaf))
           text-length (count text)]
       (cond

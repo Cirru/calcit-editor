@@ -141,7 +141,7 @@
                                              [":background-color" ":transparent"]
                                              [":min-width" "8"]
                                              [":color" ["hsl" "200" "14" "60"]]
-                                             [":font-family" "|Menlo"]
+                                             [":font-family" "|Menlo,Iosevka,monospace"]
                                              [":font-size" "15"]
                                              [":vertical-align" ":baseline"]
                                              [":transition-duration" "|200ms"]
@@ -158,7 +158,7 @@
                                              [["event" [":original-event" "e"]]
                                               ["code" [":key-code" "e"]]
                                               ["shift?" [".-shiftKey" "event"]]
-                                              ["meta?" [".-metaKey" "event"]]
+                                              ["meta?" ["or" [".-metaKey" "event"] [".-ctrlKey" "event"]]]
                                               ["text"
                                                ["if"
                                                 [">" [":time" "state"] [":time" "leaf"]]
@@ -1802,8 +1802,7 @@
                                             ["let"
                                              [["event" [":original-event" "e"]]
                                               ["shift?" [".-shiftKey" "event"]]
-                                              ["meta?" [".-metaKey" "event"]]
-                                              ["ctrl?" [".-ctrlKey" "event"]]
+                                              ["meta?" ["or" [".-metaKey" "event"] [".-ctrlKey" "event"]]]
                                               ["code" [":key-code" "e"]]]
                                              ["cond"
                                               [["and" "meta?" ["=" "code" "keycode/enter"]]
@@ -1868,7 +1867,8 @@
                                                        "on-window-keydown"
                                                        ["event" "dispatch!"]
                                                        ["let"
-                                                        [["meta?" [".-metaKey" "event"]] ["code" [".-keyCode" "event"]]]
+                                                        [["meta?" ["or" [".-metaKey" "event"] [".-ctrlKey" "event"]]]
+                                                         ["code" [".-keyCode" "event"]]]
                                                         ["cond"
                                                          [["and" "meta?" ["=" "code" "keycode/p"]]
                                                           ["do"

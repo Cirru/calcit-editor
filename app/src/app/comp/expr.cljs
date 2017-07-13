@@ -15,8 +15,7 @@
   (fn [e d! m!]
     (let [event (:original-event e)
           shift? (.-shiftKey event)
-          meta? (.-metaKey event)
-          ctrl? (.-ctrlKey event)
+          meta? (or (.-metaKey event) (.-ctrlKey event))
           code (:key-code e)]
       (cond
         (and meta? (= code keycode/enter)) (d! :ir/prepend-leaf nil)
