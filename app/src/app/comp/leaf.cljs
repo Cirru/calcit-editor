@@ -17,13 +17,17 @@
     (d! :ir/update-leaf (:value e))
     (m! (assoc state :text (:value e) :time (util/now!)))))
 
-(def style-first {:color (hsl 40 85 66)})
+(def style-first {:color (hsl 40 85 60)})
 
-(def style-space {:background-color (hsl 0 0 100 0.3)})
+(def style-space {:background-color (hsl 0 0 100 0.12)})
 
-(def style-highlight {:opacity 1})
+(def style-number {:color (hsl 0 70 40)})
+
+(def style-highlight {:background-color (hsl 0 0 100 0.2)})
 
 (defn on-focus [coord] (fn [e d! m!] (d! :writer/focus coord)))
+
+(def style-keyword {:color (hsl 240 30 64)})
 
 (def initial-state {:text "", :time 0})
 
@@ -36,16 +40,16 @@
     :padding "0px 4px",
     :background-color :transparent,
     :min-width 8,
-    :color (hsl 200 18 66),
-    :opacity 0.8,
+    :color (hsl 200 14 60),
     :font-family "Menlo",
     :font-size 15,
-    :border-radius "4px",
     :vertical-align :baseline,
     :transition-duration "200ms",
     :transition-property "color",
     :text-align :center,
     :border-width "1px 1px 1px 1px"}))
+
+(def style-string {:color (hsl 120 60 56)})
 
 (defn on-keydown [state leaf coord]
   (fn [e d! m!]
@@ -85,6 +89,7 @@
        text (if (> (:time state) (:time leaf)) (:text state) (:text leaf))
        focused? (= focus coord)
        has-blank? (or (= text "") (string/includes? text " "))]
+   (println "text" text)
    (input
     {:value text,
      :spellcheck false,
@@ -96,6 +101,9 @@
                       10
                       (text-width* text (:font-size style-leaf) (:font-family style-leaf)))}
              (if first? style-first)
+             (if (string/starts-with? text ":") style-keyword)
+             (if (string/starts-with? text "|") style-string)
+             (if (re-find (re-pattern "^-?\\d") text) style-number)
              (if has-blank? style-space)
              (if (or focused? by-other?) style-highlight)),
      :on {:click (on-focus coord),
