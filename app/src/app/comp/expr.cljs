@@ -51,9 +51,11 @@
 
 (def style-tail {:display :inline-block, :vertical-align :top, :padding-left 10})
 
+(def style-beginner {:border-width "1px"})
+
 (defcomp
  comp-expr
- (states expr focus coord others tail? after-expr?)
+ (states expr focus coord others tail? after-expr? beginner?)
  (let [focused? (= focus coord)
        first-id (apply min (keys (:data expr)))
        last-id (apply max (keys (:data expr)))
@@ -68,7 +70,8 @@
              (if focused? {:border-color (hsl 0 0 100 0.9)})
              (if (and (simple? expr) (not tail?) (not after-expr?) (pos? (count coord)))
                style-simple)
-             (if tail? style-tail)),
+             (if tail? style-tail)
+             (if beginner? style-beginner)),
      :on {:keydown (on-keydown coord), :click (on-focus coord)}}
     (loop [result [], children sorted-children, info default-info]
       (if (empty? children)
@@ -101,7 +104,8 @@
                 child-coord
                 partial-others
                 (= last-id k)
-                (:after-expr? info)))])
+                (:after-expr? info)
+                beginner?))])
            (rest children)
            (assoc info :after-expr? (expr? child)))))))))
 

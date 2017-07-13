@@ -44,7 +44,8 @@
     :vertical-align :baseline,
     :transition-duration "200ms",
     :transition-property "color",
-    :text-align :center}))
+    :text-align :center,
+    :border-width "1px 1px 1px 1px"}))
 
 (defn on-keydown [state leaf coord]
   (fn [e d! m!]
