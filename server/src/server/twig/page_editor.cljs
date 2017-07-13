@@ -14,11 +14,14 @@
                      (->> sessions
                           (map
                            (fn [entry]
-                             (let [writer (:writer (val entry))
+                             (let [session (val entry)
+                                   writer (:writer session)
                                    a-bookmark (get (:stack writer) (:pointer writer))]
                                [(key entry)
                                 (if (same-buffer? bookmark a-bookmark)
-                                  (:focus a-bookmark)
+                                  {:focus (:focus a-bookmark),
+                                   :name (:nickname session),
+                                   :session-id (:id session)}
                                   nil)])))
                           (filter (fn [pair] (some? (last pair))))
                           (into {}))

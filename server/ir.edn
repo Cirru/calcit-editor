@@ -826,7 +826,10 @@
                                               ["some?" "maybe-user"]
                                               ["if"
                                                ["=" "password" [":password" "maybe-user"]]
-                                               ["assoc" "session" ":user-id" [":id" "maybe-user"]]
+                                               ["->"
+                                                "session"
+                                                ["assoc" ":user-id" [":id" "maybe-user"]]
+                                                ["assoc" ":nickname" [":name" "maybe-user"]]]
                                                ["update"
                                                 "session"
                                                 ":notifications"
@@ -1496,14 +1499,18 @@
                                                                   ["fn"
                                                                    ["entry"]
                                                                    ["let"
-                                                                    [["writer" [":writer" ["val" "entry"]]]
+                                                                    [["session" ["val" "entry"]]
+                                                                     ["writer" [":writer" "session"]]
                                                                      ["a-bookmark"
                                                                       ["get" [":stack" "writer"] [":pointer" "writer"]]]]
                                                                     ["[]"
                                                                      ["key" "entry"]
                                                                      ["if"
                                                                       ["same-buffer?" "bookmark" "a-bookmark"]
-                                                                      [":focus" "a-bookmark"]
+                                                                      ["{}"
+                                                                       [":focus" [":focus" "a-bookmark"]]
+                                                                       [":name" [":nickname" "session"]]
+                                                                       [":session-id" [":id" "session"]]]
                                                                       "nil"]]]]]
                                                                  ["filter" ["fn" ["pair"] ["some?" ["last" "pair"]]]]
                                                                  ["into" ["{}"]]]

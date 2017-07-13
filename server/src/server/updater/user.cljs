@@ -29,7 +29,7 @@
      (fn [session]
        (if (some? maybe-user)
          (if (= password (:password maybe-user))
-           (assoc session :user-id (:id maybe-user))
+           (-> session (assoc :user-id (:id maybe-user)) (assoc :nickname (:name maybe-user)))
            (update
             session
             :notifications
