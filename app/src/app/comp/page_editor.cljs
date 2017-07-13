@@ -91,7 +91,12 @@
              (map (fn [info] [(:session-id info) (<> span (:name info) style-watcher)])))))
       (div
        {}
-       (div
+       (a
+        {:inner-text "Shortcuts",
+         :href "https://github.com/Cirru/stack-editor/wiki/Keyboard-Shortcuts",
+         :target "_blank"})
+       (=< 8 nil)
+       (span
         {:style (merge style-beginner (if state style-active)),
          :on {:click (on-toggle state)}}
         (<> span "Beginner" nil))))
