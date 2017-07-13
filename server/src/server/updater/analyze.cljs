@@ -10,7 +10,7 @@
               tree->cirru
               cirru->tree
               parse-def
-              add-warning]]
+              push-warning]]
             [server.util.stack :refer [push-bookmark]]
             [server.schema :as schema]))
 
@@ -53,14 +53,14 @@
             (-> db
                 (update-in
                  [:sessions sid :notifications]
-                 (add-warning
+                 (push-warning
                   op-id
                   (str "Does not exist: " (:ns new-bookmark) " " (:extra new-bookmark)))))))
         (-> db
             (update-in
              [:sessions sid :notifications]
-             (add-warning op-id (str "External dep:" (:ns new-bookmark))))))
+             (push-warning op-id (str "External dep:" (:ns new-bookmark))))))
       (-> db
           (update-in
            [:sessions sid :notifications]
-           (add-warning op-id (str "Cannot locate:" def-info)))))))
+           (push-warning op-id (str "Cannot locate:" def-info)))))))

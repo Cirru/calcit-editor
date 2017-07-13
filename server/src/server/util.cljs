@@ -34,10 +34,10 @@
 
 (defn prepend-data [x] [:data x])
 
-(defn expr? [x] (= :expr (:type x)))
+(defn push-info [op-id text]
+  (fn [xs] (conj xs (merge schema/notification {:id op-id, :kind :info, :text text}))))
 
-(defn add-warning [op-id text]
-  (fn [xs] (conj xs (merge schema/notification {:id op-id, :kind :attentive, :text text}))))
+(defn expr? [x] (= :expr (:type x)))
 
 (defn to-bookmark [writer] (get (:stack writer) (:pointer writer)))
 
@@ -73,6 +73,9 @@
   (and (= (:kind x) (:kind y)) (= (:ns x) (:ns y)) (= (:extra x) (:extra y))))
 
 (defn to-keys [target-expr] (vec (sort (keys (:data target-expr)))))
+
+(defn push-warning [op-id text]
+  (fn [xs] (conj xs (merge schema/notification {:id op-id, :kind :warning, :text text}))))
 
 (defn to-writer [db session-id] (get-in db [:sessions session-id :writer]))
 

@@ -1,6 +1,6 @@
 
 (ns server.updater.writer
-  (:require [server.util :refer [bookmark->path to-writer to-bookmark]]
+  (:require [server.util :refer [bookmark->path to-writer to-bookmark push-info]]
             [server.util.stack :refer [push-bookmark]]
             [server.schema :as schema]))
 
@@ -137,15 +137,7 @@
 
 (defn save-files [db op-data sid op-id op-time]
   (let [user-id (get-in db [:sessions sid :user-id])
-        user-name (get-in db [:users user-id :name])
-        message (assoc
-                 schema/notification
-                 :kind
-                 :verdant
-                 :text
-                 (str user-name " saved files!")
-                 :id
-                 op-id)]
+        user-name (get-in db [:users user-id :name])]
     (-> db
         (assoc :saved-files (get-in db [:ir :files]))
         (update
@@ -155,7 +147,11 @@
                 (map
                  (fn [entry]
                    (let [[k session] entry]
-                     [k (update session :notifications (fn [notes] (conj notes message)))])))
+                     [k
+                      (update
+                       session
+                       :notifications
+                       (push-info op-id (str user-name " saved files!")))])))
                 (into {})))))))
 
 (defn go-left [db op-data session-id op-id op-time]

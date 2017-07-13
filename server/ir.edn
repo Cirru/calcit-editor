@@ -167,7 +167,10 @@
          "updater.writer" {:ns ["ns"
                                 "server.updater.writer"
                                 [":require"
-                                 ["[]" "server.util" ":refer" ["[]" "bookmark->path" "to-writer" "to-bookmark"]]
+                                 ["[]"
+                                  "server.util"
+                                  ":refer"
+                                  ["[]" "bookmark->path" "to-writer" "to-bookmark" "push-info"]]
                                  ["[]" "server.util.stack" ":refer" ["[]" "push-bookmark"]]
                                  ["[]" "server.schema" ":as" "schema"]]],
                            :defs {"collapse" ["defn"
@@ -423,16 +426,7 @@
                                                 ["db" "op-data" "sid" "op-id" "op-time"]
                                                 ["let"
                                                  [["user-id" ["get-in" "db" ["[]" ":sessions" "sid" ":user-id"]]]
-                                                  ["user-name" ["get-in" "db" ["[]" ":users" "user-id" ":name"]]]
-                                                  ["message"
-                                                   ["assoc"
-                                                    "schema/notification"
-                                                    ":kind"
-                                                    ":verdant"
-                                                    ":text"
-                                                    ["str" "user-name" "| saved files!"]
-                                                    ":id"
-                                                    "op-id"]]]
+                                                  ["user-name" ["get-in" "db" ["[]" ":users" "user-id" ":name"]]]]
                                                  ["->"
                                                   "db"
                                                   ["assoc" ":saved-files" ["get-in" "db" ["[]" ":ir" ":files"]]]
@@ -452,7 +446,7 @@
                                                          ["update"
                                                           "session"
                                                           ":notifications"
-                                                          ["fn" ["notes"] ["conj" "notes" "message"]]]]]]]
+                                                          ["push-info" "op-id" ["str" "user-name" "| saved files!"]]]]]]]
                                                      ["into" ["{}"]]]]]]]],
                                   "go-left" ["defn"
                                              "go-left"
@@ -529,6 +523,16 @@
                                         ["{}" [":method" ":as"] [":key" "ns-text"] [":def" "def-text"]]]
                                        ["{}" [":method" ":refer"] [":key" "clean-text"] [":def" "clean-text"]]]]],
                         "prepend-data" ["defn" "prepend-data" ["x"] ["[]" ":data" "x"]],
+                        "push-info" ["defn"
+                                     "push-info"
+                                     ["op-id" "text"]
+                                     ["fn"
+                                      ["xs"]
+                                      ["conj"
+                                       "xs"
+                                       ["merge"
+                                        "schema/notification"
+                                        ["{}" [":id" "op-id"] [":kind" ":info"] [":text" "text"]]]]]],
                         "expr?" ["defn" "expr?" ["x"] ["=" ":expr" [":type" "x"]]],
                         "parse-require" ["defn"
                                          "parse-require"
@@ -548,16 +552,6 @@
                                                "def-text"
                                                ["{}" [":method" ":refer"] [":ns" "ns-text"] [":def" "def-text"]]]]]
                                             ["into" ["{}"]]]]]],
-                        "add-warning" ["defn"
-                                       "add-warning"
-                                       ["op-id" "text"]
-                                       ["fn"
-                                        ["xs"]
-                                        ["conj"
-                                         "xs"
-                                         ["merge"
-                                          "schema/notification"
-                                          ["{}" [":id" "op-id"] [":kind" ":attentive"] [":text" "text"]]]]]],
                         "to-bookmark" ["defn"
                                        "to-bookmark"
                                        ["writer"]
@@ -616,6 +610,16 @@
                                          ["=" [":ns" "x"] [":ns" "y"]]
                                          ["=" [":extra" "x"] [":extra" "y"]]]],
                         "to-keys" ["defn" "to-keys" ["target-expr"] ["vec" ["sort" ["keys" [":data" "target-expr"]]]]],
+                        "push-warning" ["defn"
+                                        "push-warning"
+                                        ["op-id" "text"]
+                                        ["fn"
+                                         ["xs"]
+                                         ["conj"
+                                          "xs"
+                                          ["merge"
+                                           "schema/notification"
+                                           ["{}" [":id" "op-id"] [":kind" ":warning"] [":text" "text"]]]]]],
                         "to-writer" ["defn"
                                      "to-writer"
                                      ["db" "session-id"]
@@ -772,9 +776,15 @@
                                                   ["notifications"]
                                                   ["conj"
                                                    "notifications"
-                                                   ["{}" [":id" "op-id"] [":kind" ":irreversible"] [":text" "op-data"]]]]]]},
+                                                   ["{}" [":id" "op-id"] [":kind" ":error"] [":text" "op-data"]]]]]],
+                                  "clear" ["defn"
+                                           "clear"
+                                           ["db" "op-data" "session-id" "op-id" "op-time"]
+                                           ["assoc-in" "db" ["[]" ":sessions" "session-id" ":notifications"] ["[]"]]]},
                            :procs []},
-         "updater.user" {:ns ["ns" "server.updater.user" [":require" ["[]" "server.util" ":refer" ["[]" "find-first"]]]],
+         "updater.user" {:ns ["ns"
+                              "server.updater.user"
+                              [":require" ["[]" "server.util" ":refer" ["[]" "find-first" "push-warning"]]]],
                          :defs {"sign-up" ["defn"
                                            "sign-up"
                                            ["db" "op-data" "session-id" "op-id" "op-time"]
@@ -789,14 +799,7 @@
                                              ["update-in"
                                               "db"
                                               ["[]" ":sessions" "session-id" ":notifications"]
-                                              ["fn"
-                                               ["notifications"]
-                                               ["conj"
-                                                "notifications"
-                                                ["{}"
-                                                 [":id" "op-id"]
-                                                 [":kind" ":attentive"]
-                                                 [":text" ["str" "|Name is token: " "username"]]]]]]
+                                              ["push-warning" "op-id" ["str" "|Name is token: " "username"]]]
                                              ["->"
                                               "db"
                                               ["assoc-in" ["[]" ":sessions" "session-id" ":user-id"] "op-id"]
@@ -833,25 +836,11 @@
                                                ["update"
                                                 "session"
                                                 ":notifications"
-                                                ["fn"
-                                                 ["notifications"]
-                                                 ["conj"
-                                                  "notifications"
-                                                  ["{}"
-                                                   [":id" "op-id"]
-                                                   [":kind" ":attentive"]
-                                                   [":text" ["str" "|Wrong password for " "username"]]]]]]]
+                                                ["push-warning" "op-id" ["str" "|Wrong password for " "username"]]]]
                                               ["update"
                                                "session"
                                                ":notifications"
-                                               ["fn"
-                                                ["notifications"]
-                                                ["conj"
-                                                 "notifications"
-                                                 ["{}"
-                                                  [":id" "op-id"]
-                                                  [":kind" ":attentive"]
-                                                  [":text" ["str" "|No user named: " "username"]]]]]]]]]]],
+                                               ["push-warning" "op-id" ["str" "|No user named: " "username"]]]]]]]],
                                 "log-out" ["defn"
                                            "log-out"
                                            ["db" "op-data" "session-id" "op-id" "op-time"]
@@ -872,15 +861,6 @@
                                                   "db"
                                                   ":sessions"
                                                   ["fn" ["session"] ["dissoc" "session" "session-id"]]]],
-                                   "remove-notification" ["defn"
-                                                          "remove-notification"
-                                                          ["db" "op-data" "session-id" "op-id" "op-time"]
-                                                          ["update-in"
-                                                           "db"
-                                                           ["[]" ":sessions" "session-id" ":notifications"]
-                                                           ["fn"
-                                                            ["notifications"]
-                                                            ["subvec" "notifications" "0" "op-data"]]]],
                                    "select-ns" ["defn"
                                                 "select-ns"
                                                 ["db" "op-data" "session-id" "op-id" "op-time"]
@@ -1205,13 +1185,6 @@
                                              ["user/sign-up" "db" "op-data" "session-id" "op-id" "op-time"]]
                                             [":user/log-out"
                                              ["user/log-out" "db" "op-data" "session-id" "op-id" "op-time"]]
-                                            [":session/remove-notification"
-                                             ["session/remove-notification"
-                                              "db"
-                                              "op-data"
-                                              "session-id"
-                                              "op-id"
-                                              "op-time"]]
                                             [":session/select-ns"
                                              ["session/select-ns" "db" "op-data" "session-id" "op-id" "op-time"]]
                                             [":router/change"
@@ -1279,6 +1252,8 @@
                                             [":ir/rename" ["ir/rename" "db" "op-data" "session-id" "op-id" "op-time"]]
                                             [":notify/push-error"
                                              ["notify/push-error" "db" "op-data" "session-id" "op-id" "op-time"]]
+                                            [":notify/clear"
+                                             ["notify/clear" "db" "op-data" "session-id" "op-id" "op-time"]]
                                             [":analyze/goto-def"
                                              ["analyze/goto-def" "db" "op-data" "session-id" "op-id" "op-time"]]
                                             "db"]]},
@@ -1323,7 +1298,7 @@
                                     "tree->cirru"
                                     "cirru->tree"
                                     "parse-def"
-                                    "add-warning"]]
+                                    "push-warning"]]
                                   ["[]" "server.util.stack" ":refer" ["[]" "push-bookmark"]]
                                   ["[]" "server.schema" ":as" "schema"]]],
                             :defs {"goto-def" ["defn"
@@ -1415,7 +1390,7 @@
                                                      "db"
                                                      ["update-in"
                                                       ["[]" ":sessions" "sid" ":notifications"]
-                                                      ["add-warning"
+                                                      ["push-warning"
                                                        "op-id"
                                                        ["str"
                                                         "|Does not exist: "
@@ -1426,14 +1401,14 @@
                                                    "db"
                                                    ["update-in"
                                                     ["[]" ":sessions" "sid" ":notifications"]
-                                                    ["add-warning"
+                                                    ["push-warning"
                                                      "op-id"
                                                      ["str" "|External dep:" [":ns" "new-bookmark"]]]]]]
                                                  ["->"
                                                   "db"
                                                   ["update-in"
                                                    ["[]" ":sessions" "sid" ":notifications"]
-                                                   ["add-warning" "op-id" ["str" "|Cannot locate:" "def-info"]]]]]]]},
+                                                   ["push-warning" "op-id" ["str" "|Cannot locate:" "def-info"]]]]]]]},
                             :procs []},
          "util.stack" {:ns ["ns" "server.util.stack"],
                        :defs {"push-bookmark" ["defn"

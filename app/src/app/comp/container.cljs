@@ -9,11 +9,11 @@
             [app.comp.header :refer [comp-header]]
             [app.comp.profile :refer [comp-profile]]
             [app.comp.login :refer [comp-login]]
-            [respo-message.comp.msg-list :refer [comp-msg-list]]
             [app.comp.page-files :refer [comp-page-files]]
             [app.comp.page-editor :refer [comp-page-editor]]
             [app.comp.page-members :refer [comp-page-members]]
-            [app.comp.search :refer [comp-search]]))
+            [app.comp.search :refer [comp-search]]
+            [app.comp.messages :refer [comp-messages]]))
 
 (def style-alert {:font-family "Josefin Sans", :font-weight 100, :font-size 40})
 
@@ -68,4 +68,4 @@
        "Router data"
        (get-in store [:router :data])
        (merge style-inspector {:left 100}))
-      (comp-msg-list (get-in store [:session :notifications]) :session/remove-notification)))))
+      (comp-messages (get-in store [:session :notifications]))))))

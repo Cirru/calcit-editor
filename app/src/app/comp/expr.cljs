@@ -37,7 +37,7 @@
         (and meta? (= code keycode/x)) (d! :writer/cut nil)
         (and meta? (= code keycode/v)) (d! :writer/paste nil)
         (and meta? (= code keycode/b)) (d! :ir/duplicate nil)
-        :else (do (println "Keydown" (:key-code e)) (on-window-keydown event d!))))))
+        :else (do (comment println "Keydown" (:key-code e)) (on-window-keydown event d!))))))
 
 (defn on-focus [coord] (fn [e d! m!] (d! :writer/focus coord)))
 

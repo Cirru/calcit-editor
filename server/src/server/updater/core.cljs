@@ -15,8 +15,6 @@
     :user/log-in (user/log-in db op-data session-id op-id op-time)
     :user/sign-up (user/sign-up db op-data session-id op-id op-time)
     :user/log-out (user/log-out db op-data session-id op-id op-time)
-    :session/remove-notification
-      (session/remove-notification db op-data session-id op-id op-time)
     :session/select-ns (session/select-ns db op-data session-id op-id op-time)
     :router/change (router/change db op-data session-id op-id op-time)
     :writer/edit (writer/edit db op-data session-id op-id op-time)
@@ -53,5 +51,6 @@
     :ir/duplicate (ir/duplicate db op-data session-id op-id op-time)
     :ir/rename (ir/rename db op-data session-id op-id op-time)
     :notify/push-error (notify/push-error db op-data session-id op-id op-time)
+    :notify/clear (notify/clear db op-data session-id op-id op-time)
     :analyze/goto-def (analyze/goto-def db op-data session-id op-id op-time)
     db))

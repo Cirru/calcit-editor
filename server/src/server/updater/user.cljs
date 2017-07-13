@@ -1,5 +1,5 @@
 
-(ns server.updater.user (:require [server.util :refer [find-first]]))
+(ns server.updater.user (:require [server.util :refer [find-first push-warning]]))
 
 (defn sign-up [db op-data session-id op-id op-time]
   (let [[username password] op-data
@@ -8,10 +8,7 @@
       (update-in
        db
        [:sessions session-id :notifications]
-       (fn [notifications]
-         (conj
-          notifications
-          {:id op-id, :kind :attentive, :text (str "Name is token: " username)})))
+       (push-warning op-id (str "Name is token: " username)))
       (-> db
           (assoc-in [:sessions session-id :user-id] op-id)
           (assoc-in
@@ -33,17 +30,11 @@
            (update
             session
             :notifications
-            (fn [notifications]
-              (conj
-               notifications
-               {:id op-id, :kind :attentive, :text (str "Wrong password for " username)}))))
+            (push-warning op-id (str "Wrong password for " username))))
          (update
           session
           :notifications
-          (fn [notifications]
-            (conj
-             notifications
-             {:id op-id, :kind :attentive, :text (str "No user named: " username)}))))))))
+          (push-warning op-id (str "No user named: " username))))))))
 
 (defn log-out [db op-data session-id op-id op-time]
   (assoc-in db [:sessions session-id :user-id] nil))

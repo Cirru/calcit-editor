@@ -17,3 +17,10 @@ body * {
 .hoverable.is-selected {
   background-color: hsla(0, 0%, 100%,0.2);
 }
+
+.is-minor {
+  opacity: 0.5;
+}
+.is-minor:hover {
+  opacity: 1;
+}

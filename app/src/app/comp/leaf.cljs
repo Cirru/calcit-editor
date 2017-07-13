@@ -73,14 +73,14 @@
             (do (d! :writer/go-left nil) (.preventDefault event)))
         (= code keycode/right)
           (if (= text-length event.target.selectionEnd)
-            (do (println text-length) (d! :writer/go-right nil) (.preventDefault event)))
+            (do (d! :writer/go-right nil) (.preventDefault event)))
         (and meta? shift? (= code keycode/v))
           (do (d! :writer/paste nil) (.preventDefault event))
         (and meta? (= code keycode/d))
           (do
            (.preventDefault event)
            (d! :analyze/goto-def {:text (:text leaf), :forced? shift?}))
-        :else (do (println "Keydown leaf" code) (on-window-keydown event d!))))))
+        :else (do (comment println "Keydown leaf" code) (on-window-keydown event d!))))))
 
 (defcomp
  comp-leaf
@@ -89,7 +89,6 @@
        text (if (> (:time state) (:time leaf)) (:text state) (:text leaf))
        focused? (= focus coord)
        has-blank? (or (= text "") (string/includes? text " "))]
-   (println "text" text)
    (input
     {:value text,
      :spellcheck false,

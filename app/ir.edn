@@ -94,7 +94,6 @@
                                               [":text" "leaf"]]]
                                             ["focused?" ["=" "focus" "coord"]]
                                             ["has-blank?" ["or" ["=" "text" "|"] ["string/includes?" "text" "| "]]]]
-                                           ["println" "|text" "text"]
                                            ["input"
                                             ["{}"
                                              [":value" "text"]
@@ -188,10 +187,7 @@
                                               [["=" "code" "keycode/right"]
                                                ["if"
                                                 ["=" "text-length" "event.target.selectionEnd"]
-                                                ["do"
-                                                 ["println" "text-length"]
-                                                 ["d!" ":writer/go-right" "nil"]
-                                                 [".preventDefault" "event"]]]]
+                                                ["do" ["d!" ":writer/go-right" "nil"] [".preventDefault" "event"]]]]
                                               [["and" "meta?" "shift?" ["=" "code" "keycode/v"]]
                                                ["do" ["d!" ":writer/paste" "nil"] [".preventDefault" "event"]]]
                                               [["and" "meta?" ["=" "code" "keycode/d"]]
@@ -202,7 +198,7 @@
                                                  ["{}" [":text" [":text" "leaf"]] [":forced?" "shift?"]]]]]
                                               [":else"
                                                ["do"
-                                                ["println" "|Keydown leaf" "code"]
+                                                ["--" "println" "|Keydown leaf" "code"]
                                                 ["on-window-keydown" "event" "d!"]]]]]]]},
                       :procs []},
          "comp.bookmark" {:ns ["ns"
@@ -714,6 +710,64 @@
                       "app.util"
                       [":require" ["[]" "clojure.string" ":as" "string"] ["[]" "app.schema" ":as" "schema"]]],
                  :procs []},
+         "comp.messages" {:ns ["ns"
+                               "app.comp.messages"
+                               [":require-macros"
+                                ["[]"
+                                 "respo.macros"
+                                 ":refer"
+                                 ["[]" "defcomp" "<>" "span" "div" "pre" "input" "button" "a"]]]
+                               [":require"
+                                ["[]" "clojure.string" ":as" "string"]
+                                ["[]" "hsl.core" ":refer" ["[]" "hsl"]]
+                                ["[]" "respo-ui.style" ":as" "ui"]
+                                ["[]" "respo-ui.style.colors" ":as" "colors"]
+                                ["[]" "respo.core" ":refer" ["[]" "create-comp"]]
+                                ["[]" "respo.comp.space" ":refer" ["[]" "=<"]]
+                                ["[]" "app.util" ":as" "util"]
+                                ["[]" "app.style" ":as" "style"]]],
+                          :defs {"comp-messages" ["defcomp"
+                                                  "comp-messages"
+                                                  ["messages"]
+                                                  ["div"
+                                                   ["{}"]
+                                                   ["->>"
+                                                    "messages"
+                                                    ["map-indexed"
+                                                     ["fn"
+                                                      ["idx" "msg"]
+                                                      ["[]"
+                                                       [":id" "msg"]
+                                                       ["div"
+                                                        ["{}"
+                                                         [":style"
+                                                          ["merge"
+                                                           "style-message"
+                                                           ["{}" [":bottom" ["+" "8" ["*" "idx" "40"]]]]
+                                                           ["{}"
+                                                            [":color"
+                                                             ["case"
+                                                              [":kind" "msg"]
+                                                              [":error" ["hsl" "0" "80" "80"]]
+                                                              [":warning" ["hsl" "60" "80" "80"]]
+                                                              [":info" ["hsl" "240" "80" "80"]]
+                                                              ["hsl" "120" "80" "80"]]]]]]
+                                                         [":on" ["{}" [":click" "on-clear"]]]]
+                                                        ["<>" "span" [":text" "msg"] "nil"]]]]]]]],
+                                 "style-message" ["def"
+                                                  "style-message"
+                                                  ["{}"
+                                                   [":position" ":absolute"]
+                                                   [":right" "8"]
+                                                   [":bottom" "8"]
+                                                   [":cursor" ":pointer"]
+                                                   [":font-weight" "100"]
+                                                   [":font-family" "|Hind"]
+                                                   [":background-color" ["hsl" "0" "0" "0" "0.7"]]
+                                                   [":border" ["str" "|1px solid " ["hsl" "0" "0" "100" "0.2"]]]
+                                                   [":padding" "|0 8px"]]],
+                                 "on-clear" ["defn" "on-clear" ["e" "d!" "m!"] ["d!" ":notify/clear" "nil"]]},
+                          :procs []},
          "schema" {:ns ["ns" "app.schema"],
                    :defs {"configs" ["def" "configs" ["{}" [":storage-key" "|workflow-storage"] [":port" "6001"]]]},
                    :procs []},
@@ -730,11 +784,11 @@
                                  ["[]" "app.comp.header" ":refer" ["[]" "comp-header"]]
                                  ["[]" "app.comp.profile" ":refer" ["[]" "comp-profile"]]
                                  ["[]" "app.comp.login" ":refer" ["[]" "comp-login"]]
-                                 ["[]" "respo-message.comp.msg-list" ":refer" ["[]" "comp-msg-list"]]
                                  ["[]" "app.comp.page-files" ":refer" ["[]" "comp-page-files"]]
                                  ["[]" "app.comp.page-editor" ":refer" ["[]" "comp-page-editor"]]
                                  ["[]" "app.comp.page-members" ":refer" ["[]" "comp-page-members"]]
-                                 ["[]" "app.comp.search" ":refer" ["[]" "comp-search"]]]],
+                                 ["[]" "app.comp.search" ":refer" ["[]" "comp-search"]]
+                                 ["[]" "app.comp.messages" ":refer" ["[]" "comp-messages"]]]],
                            :defs {"style-alert" ["def"
                                                  "style-alert"
                                                  ["{}"
@@ -807,9 +861,8 @@
                                                         "|Router data"
                                                         ["get-in" "store" ["[]" ":router" ":data"]]
                                                         ["merge" "style-inspector" ["{}" [":left" "100"]]]]
-                                                       ["comp-msg-list"
-                                                        ["get-in" "store" ["[]" ":session" ":notifications"]]
-                                                        ":session/remove-notification"]]]]],
+                                                       ["comp-messages"
+                                                        ["get-in" "store" ["[]" ":session" ":notifications"]]]]]]],
                                   "style-body" ["def" "style-body" ["{}" [":padding-top" "16"]]],
                                   "style-container" ["def"
                                                      "style-container"
@@ -1198,7 +1251,7 @@
                                                          ["=<" "16" "nil"]
                                                          ["span"
                                                           ["{}"
-                                                           [":class-name" "|ion-md-trash"]
+                                                           [":class-name" "|ion-md-trash is-minor"]
                                                            [":title" "|Remove def"]
                                                            [":style" "style-remove"]
                                                            [":on" ["{}" [":click" ["on-remove-def" "def-text"]]]]]]]]]]]]
@@ -1349,7 +1402,7 @@
                                                          ["span" ["{}" [":inner-text" "ns-text"]]]
                                                          ["span"
                                                           ["{}"
-                                                           [":class-name" "|ion-md-trash"]
+                                                           [":class-name" "|ion-md-trash is-minor"]
                                                            [":title" "|Remove ns"]
                                                            [":style" "style-remove"]
                                                            [":on" ["{}" [":click" ["on-remove-ns" "ns-text"]]]]]]]]]]]]
@@ -1722,7 +1775,7 @@
                                               [["and" "meta?" ["=" "code" "keycode/b"]] ["d!" ":ir/duplicate" "nil"]]
                                               [":else"
                                                ["do"
-                                                ["println" "|Keydown" [":key-code" "e"]]
+                                                ["--" "println" "|Keydown" [":key-code" "e"]]
                                                 ["on-window-keydown" "event" "d!"]]]]]]],
                              "on-focus" ["defn"
                                          "on-focus"
