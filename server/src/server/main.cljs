@@ -44,7 +44,7 @@
        (try
         (do
          (cond
-           (= op :effect/save-files) (handle-files! @*writer-db configs dispatch!)
+           (= op :effect/save-files) (handle-files! @*writer-db configs dispatch! true)
            :else
              (let [new-db (updater @*writer-db op op-data session-id op-id op-time)]
                (reset! *writer-db new-db))))
@@ -65,7 +65,8 @@
   (handle-files!
    (assoc @*writer-db :saved-files {})
    configs
-   (fn [op op-data] (println "After compile:" op op-data))))
+   (fn [op op-data] (println "After compile:" op op-data))
+   false))
 
 (defn main! []
   (let [configs (pick-configs (:configs @*writer-db)), op (get configs :op)]

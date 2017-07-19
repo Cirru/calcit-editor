@@ -37,7 +37,7 @@
     (println "Removing" project-path)
     (cp.execSync (str "rm -rfv " project-path))))
 
-(defn handle-files! [db configs dispatch!]
+(defn handle-files! [db configs dispatch! save-ir?]
   (try
    (let [new-files (get-in db [:ir :files])
          old-files (get db :saved-files)
@@ -55,5 +55,5 @@
      (doseq [ns-text changed-names]
        (modify-file! (ns->path ns-text configs) (get new-files ns-text) configs))
      (dispatch! :writer/save-files nil)
-     (do (println "Writing coir.edn") (js/setTimeout (fn [] (persist! db)))))
+     (if save-ir? (do (println "Writing coir.edn") (js/setTimeout (fn [] (persist! db))))))
    (catch js/Error e (do (.log js/console e) (dispatch! :notify/push-error (.-message e))))))

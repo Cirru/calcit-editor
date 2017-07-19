@@ -86,7 +86,7 @@
                                ["[]" "server.schema" ":as" "schema"]]],
                          :defs {"handle-files!" ["defn"
                                                  "handle-files!"
-                                                 ["db" "configs" "dispatch!"]
+                                                 ["db" "configs" "dispatch!" "save-ir?"]
                                                  ["try"
                                                   ["let"
                                                    [["new-files" ["get-in" "db" ["[]" ":ir" ":files"]]]
@@ -120,9 +120,11 @@
                                                      ["get" "new-files" "ns-text"]
                                                      "configs"]]
                                                    ["dispatch!" ":writer/save-files" "nil"]
-                                                   ["do"
-                                                    ["println" "|Writing coir.edn"]
-                                                    ["js/setTimeout" ["fn" [] ["persist!" "db"]]]]]
+                                                   ["if"
+                                                    "save-ir?"
+                                                    ["do"
+                                                     ["println" "|Writing coir.edn"]
+                                                     ["js/setTimeout" ["fn" [] ["persist!" "db"]]]]]]
                                                   ["catch"
                                                    "js/Error"
                                                    "e"
@@ -924,7 +926,7 @@
                                              ["do"
                                               ["cond"
                                                [["=" "op" ":effect/save-files"]
-                                                ["handle-files!" "@*writer-db" "configs" "dispatch!"]]
+                                                ["handle-files!" "@*writer-db" "configs" "dispatch!" "true"]]
                                                [":else"
                                                 ["let"
                                                  [["new-db"
@@ -966,7 +968,8 @@
                                               ["handle-files!"
                                                ["assoc" "@*writer-db" ":saved-files" ["{}"]]
                                                "configs"
-                                               ["fn" ["op" "op-data"] ["println" "|After compile:" "op" "op-data"]]]],
+                                               ["fn" ["op" "op-data"] ["println" "|After compile:" "op" "op-data"]]
+                                               "false"]],
                         "reload!" ["defn" "reload!" [] ["println" "|Code updated."] ["render-clients!" "@*reader-db"]],
                         "*writer-db" ["defonce"
                                       "*writer-db"
