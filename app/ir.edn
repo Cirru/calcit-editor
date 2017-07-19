@@ -567,7 +567,10 @@
                                                         "comp-page-editor"
                                                         ["states" "stack" "router-data" "pointer"]
                                                         ["let"
-                                                         [["state" ["or" [":data" "states"] "false"]]]
+                                                         [["state" ["or" [":data" "states"] "false"]]
+                                                          ["bookmark" ["get" "stack" "pointer"]]
+                                                          ["editor-id"
+                                                           ["str" [":ns" "bookmark"] "|/" [":extra" "bookmark"]]]]
                                                          ["div"
                                                           ["{}"
                                                            [":style" ["merge" "ui/row" "ui/flex" "style-container"]]]
@@ -614,7 +617,7 @@
                                                              ["if"
                                                               ["some?" "expr"]
                                                               ["cursor->"
-                                                               ":root"
+                                                               "editor-id"
                                                                "comp-expr"
                                                                "states"
                                                                "expr"

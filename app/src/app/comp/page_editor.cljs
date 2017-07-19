@@ -47,7 +47,9 @@
 (defcomp
  comp-page-editor
  (states stack router-data pointer)
- (let [state (or (:data states) false)]
+ (let [state (or (:data states) false)
+       bookmark (get stack pointer)
+       editor-id (str (:ns bookmark) "/" (:extra bookmark))]
    (div
     {:style (merge ui/row ui/flex style-container)}
     (div
@@ -68,7 +70,7 @@
         (style {:innerHTML (str ".cirru-leaf {" (style->string style-leaf) "}")})
         (if (some? expr)
           (cursor->
-           :root
+           editor-id
            comp-expr
            states
            expr
