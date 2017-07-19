@@ -23,7 +23,7 @@
   (let [start-time (now!)]
     (fs.writeFileSync
      (:storage-key schema/configs)
-     (with-out-str (fipp/pprint (-> db (assoc :sessions {}) (assoc :saved-files {})))))
+     (pr-str (-> db (assoc :sessions {}) (assoc :saved-files {}))))
     (println (str "Took " (- (now!) start-time) "ms to wrote!"))))
 
 (defn create-file! [file-path file configs]
