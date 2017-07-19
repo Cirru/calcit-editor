@@ -56,8 +56,8 @@
    js/process
    "SIGINT"
    (fn [code]
+     (println "Saving coir.edn with code" code)
      (persist! @*writer-db)
-     (println "Saving file on exit" code)
      (.exit js/process)))
   (println "Server started."))
 

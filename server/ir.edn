@@ -82,6 +82,7 @@
                                ["[]" "clojure.set" ":refer" ["[]" "difference" "intersection"]]
                                ["[]" "stack-server.analyze" ":refer" ["[]" "generate-file"]]
                                ["[]" "server.util" ":refer" ["[]" "ns->path" "file->cirru"]]
+                               ["[]" "fipp.edn" ":as" "fipp"]
                                ["[]" "server.schema" ":as" "schema"]]],
                          :defs {"handle-files!" ["defn"
                                                  "handle-files!"
@@ -119,7 +120,9 @@
                                                      ["get" "new-files" "ns-text"]
                                                      "configs"]]
                                                    ["dispatch!" ":writer/save-files" "nil"]
-                                                   ["persist!" "db"]]
+                                                   ["do"
+                                                    ["println" "|Writing coir.edn"]
+                                                    ["js/setTimeout" ["fn" [] ["persist!" "db"]]]]]
                                                   ["catch"
                                                    "js/Error"
                                                    "e"
@@ -141,11 +144,13 @@
                                             "persist!"
                                             ["db"]
                                             ["let"
-                                             [["fs" ["js/require" "|fs"]]]
+                                             [["start-time" ["now!"]]]
                                              ["fs.writeFileSync"
                                               [":storage-key" "schema/configs"]
-                                              ["pr-str"
-                                               ["->" "db" ["assoc" ":sessions" ["{}"]] ["assoc" ":saved-files" ["{}"]]]]]]],
+                                              ["with-out-str"
+                                               ["fipp/pprint"
+                                                ["->" "db" ["assoc" ":sessions" ["{}"]] ["assoc" ":saved-files" ["{}"]]]]]]
+                                             ["println" ["str" "|Took " ["-" ["now!"] "start-time"] "|ms to wrote!"]]]],
                                 "create-file!" ["defn"
                                                 "create-file!"
                                                 ["file-path" "file" "configs"]
@@ -163,7 +168,8 @@
                                                  [["project-path" ["path.join" [":output" "configs"] "file-path"]]]
                                                  ["println" "|Removing" "project-path"]
                                                  ["cp.execSync" ["str" "|rm -rfv " "project-path"]]]],
-                                "fs" ["def" "fs" ["js/require" "|fs"]]},
+                                "fs" ["def" "fs" ["js/require" "|fs"]],
+                                "now!" ["defn" "now!" [] [".valueOf" ["js/Date."]]]},
                          :procs []},
          "updater.writer" {:ns ["ns"
                                 "server.updater.writer"
@@ -939,8 +945,8 @@
                                           "|SIGINT"
                                           ["fn"
                                            ["code"]
+                                           ["println" "|Saving coir.edn with code" "code"]
                                            ["persist!" "@*writer-db"]
-                                           ["println" "|Saving file on exit" "code"]
                                            [".exit" "js/process"]]]
                                          ["println" "|Server started."]],
                         "main!" ["defn"

@@ -3,6 +3,7 @@
   (:require [clojure.set :refer [difference intersection]]
             [stack-server.analyze :refer [generate-file]]
             [server.util :refer [ns->path file->cirru]]
+            [fipp.edn :as fipp]
             [server.schema :as schema]))
 
 (def path (js/require "path"))
@@ -16,11 +17,14 @@
 
 (def cp (js/require "child_process"))
 
+(defn now! [] (.valueOf (js/Date.)))
+
 (defn persist! [db]
-  (let [fs (js/require "fs")]
+  (let [start-time (now!)]
     (fs.writeFileSync
      (:storage-key schema/configs)
-     (pr-str (-> db (assoc :sessions {}) (assoc :saved-files {}))))))
+     (with-out-str (fipp/pprint (-> db (assoc :sessions {}) (assoc :saved-files {})))))
+    (println (str "Took " (- (now!) start-time) "ms to wrote!"))))
 
 (defn create-file! [file-path file configs]
   (let [project-path (path.join (:output configs) file-path)]
@@ -51,5 +55,5 @@
      (doseq [ns-text changed-names]
        (modify-file! (ns->path ns-text configs) (get new-files ns-text) configs))
      (dispatch! :writer/save-files nil)
-     (persist! db))
+     (do (println "Writing coir.edn") (js/setTimeout (fn [] (persist! db)))))
    (catch js/Error e (do (.log js/console e) (dispatch! :notify/push-error (.-message e))))))
