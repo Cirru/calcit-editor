@@ -11,7 +11,7 @@
 
 (def bookmark {:kind :def, :ns nil, :extra nil, :focus []})
 
-(def leaf {:type :leaf, :author nil, :time nil, :text ""})
+(def leaf {:type :leaf, :author nil, :time nil, :text "", :id nil})
 
 (def database {:sessions {}, :users {}, :ir ir-file, :saved-files {}, :configs configs})
 

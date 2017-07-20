@@ -21,7 +21,7 @@
 (defonce *store (atom nil))
 
 (defn simulate-login! []
-  (let [raw (.getItem js/localStorage (:storage-key schema/configs))]
+  (let [raw (.getItem js/window.localStorage (:storage-key schema/configs))]
     (if (some? raw)
       (do (println "Found storage.") (dispatch! :user/log-in (read-string raw)))
       (do (println "Found no storage.")))))

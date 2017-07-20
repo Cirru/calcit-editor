@@ -46,12 +46,15 @@
     (:text x)
     (->> (:data x) (sort-by first) (map (fn [entry] (tree->cirru (val entry)))) (vec))))
 
+(def shortid (js/require "shortid"))
+
 (defn cirru->tree [xs author timestamp]
   (if (vector? xs)
     (merge
      schema/expr
      {:time timestamp,
       :author author,
+      :id (.generate shortid),
       :data (loop [result {}, ys xs, next-id bisection/mid-id]
         (if (empty? ys)
           result
@@ -60,7 +63,7 @@
              (assoc result next-id (cirru->tree y author timestamp))
              (rest ys)
              (bisection/bisect next-id bisection/max-id)))))})
-    (merge schema/leaf {:time timestamp, :author author, :text xs})))
+    (merge schema/leaf {:time timestamp, :author author, :text xs, :id (.generate shortid)})))
 
 (def kinds #{:ns :def :proc})
 

@@ -79,14 +79,16 @@
               child-coord (conj coord k)
               partial-others (->> others
                                   (filter (fn [x] (coord-contains? x child-coord)))
-                                  (into #{}))]
+                                  (into #{}))
+              cursor-key (:id child)]
+          (if (nil? cursor-key) (.warn js/console "[Editor] missing :id" (clj->js child)))
           (recur
            (conj
             result
             [k
              (if (= :leaf (:type child))
                (cursor->
-                k
+                cursor-key
                 comp-leaf
                 states
                 child
@@ -95,7 +97,7 @@
                 (contains? partial-others child-coord)
                 (= first-id k))
                (cursor->
-                k
+                cursor-key
                 comp-expr
                 states
                 child

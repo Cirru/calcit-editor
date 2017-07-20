@@ -100,7 +100,6 @@
                                              [":spellcheck" "false"]
                                              [":class-name"
                                               ["str" "|cirru-leaf" ["if" ["=" "focus" "coord"] "| cirru-focused" "|"]]]
-                                             [":placeholder" "coord"]
                                              [":style"
                                               ["merge"
                                                ["{}"]
@@ -568,9 +567,7 @@
                                                         ["states" "stack" "router-data" "pointer"]
                                                         ["let"
                                                          [["state" ["or" [":data" "states"] "false"]]
-                                                          ["bookmark" ["get" "stack" "pointer"]]
-                                                          ["editor-id"
-                                                           ["str" [":ns" "bookmark"] "|/" [":extra" "bookmark"]]]]
+                                                          ["bookmark" ["get" "stack" "pointer"]]]
                                                          ["div"
                                                           ["{}"
                                                            [":style" ["merge" "ui/row" "ui/flex" "style-container"]]]
@@ -617,7 +614,7 @@
                                                              ["if"
                                                               ["some?" "expr"]
                                                               ["cursor->"
-                                                               "editor-id"
+                                                               [":id" "expr"]
                                                                "comp-expr"
                                                                "states"
                                                                "expr"
@@ -1019,7 +1016,7 @@
                                                ["let"
                                                 [["target" [".querySelector" "js/document" "|.search-input"]]]
                                                 ["if" ["some?" "target"] [".focus" "target"]]]]
-                                              "300"]]},
+                                              "200"]]},
                      :procs []},
          "style" {:ns ["ns"
                        "app.style"
@@ -1112,7 +1109,8 @@
                                            "simulate-login!"
                                            []
                                            ["let"
-                                            [["raw" [".getItem" "js/localStorage" [":storage-key" "schema/configs"]]]]
+                                            [["raw"
+                                              [".getItem" "js/window.localStorage" [":storage-key" "schema/configs"]]]]
                                             ["if"
                                              ["some?" "raw"]
                                              ["do"
@@ -1752,7 +1750,11 @@
                                                  ["->>"
                                                   "others"
                                                   ["filter" ["fn" ["x"] ["coord-contains?" "x" "child-coord"]]]
-                                                  ["into" ["#{}"]]]]]
+                                                  ["into" ["#{}"]]]]
+                                                ["cursor-key" [":id" "child"]]]
+                                               ["if"
+                                                ["nil?" "cursor-key"]
+                                                [".warn" "js/console" "|[Editor] missing :id" ["clj->js" "child"]]]
                                                ["recur"
                                                 ["conj"
                                                  "result"
@@ -1761,7 +1763,7 @@
                                                   ["if"
                                                    ["=" ":leaf" [":type" "child"]]
                                                    ["cursor->"
-                                                    "k"
+                                                    "cursor-key"
                                                     "comp-leaf"
                                                     "states"
                                                     "child"
@@ -1770,7 +1772,7 @@
                                                     ["contains?" "partial-others" "child-coord"]
                                                     ["=" "first-id" "k"]]
                                                    ["cursor->"
-                                                    "k"
+                                                    "cursor-key"
                                                     "comp-expr"
                                                     "states"
                                                     "child"

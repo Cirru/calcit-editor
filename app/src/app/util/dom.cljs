@@ -15,4 +15,4 @@
    (fn [timestamp]
      (let [target (.querySelector js/document ".search-input")]
        (if (some? target) (.focus target))))
-   300))
+   200))

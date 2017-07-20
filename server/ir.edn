@@ -585,6 +585,7 @@
                                          ["{}"
                                           [":time" "timestamp"]
                                           [":author" "author"]
+                                          [":id" [".generate" "shortid"]]
                                           [":data"
                                            ["loop"
                                             ["[]" "result" ["{}"] "ys" "xs" "next-id" "bisection/mid-id"]
@@ -599,7 +600,12 @@
                                                ["bisection/bisect" "next-id" "bisection/max-id"]]]]]]]]
                                         ["merge"
                                          "schema/leaf"
-                                         ["{}" [":time" "timestamp"] [":author" "author"] [":text" "xs"]]]]],
+                                         ["{}"
+                                          [":time" "timestamp"]
+                                          [":author" "author"]
+                                          [":text" "xs"]
+                                          [":id" [".generate" "shortid"]]]]]],
+                        "shortid" ["def" "shortid" ["js/require" "|shortid"]],
                         "kinds" ["def" "kinds" ["#{}" ":ns" ":def" ":proc"]],
                         "leaf?" ["defn" "leaf?" ["x"] ["=" ":leaf" [":type" "x"]]],
                         "ns->path" ["defn"
@@ -691,7 +697,9 @@
                           "bookmark" ["def"
                                       "bookmark"
                                       ["{}" [":kind" ":def"] [":ns" "nil"] [":extra" "nil"] [":focus" ["[]"]]]],
-                          "leaf" ["def" "leaf" ["{}" [":type" ":leaf"] [":author" "nil"] [":time" "nil"] [":text" "|"]]],
+                          "leaf" ["def"
+                                  "leaf"
+                                  ["{}" [":type" ":leaf"] [":author" "nil"] [":time" "nil"] [":text" "|"] [":id" "nil"]]],
                           "database" ["def"
                                       "database"
                                       ["{}"
@@ -1046,6 +1054,7 @@
                                                 ["swap!" "socket-registry" "dissoc" "session-id"]
                                                 ["handle-message" ":session/disconnect" "nil" "session-id"]]]]]]]
                                           "server-chan"],
+                           "diff-options" ["def" "diff-options" ["{}" [":key" ":id"]]],
                            "render-clients!" ["defn"
                                               "render-clients!"
                                               ["db"]
@@ -1056,21 +1065,19 @@
                                                  ["old-store" ["or" ["get" "@client-caches" "session-id"] "nil"]]
                                                  ["new-store"
                                                   ["render-bunch" ["twig-container" "db" "session"] "old-store"]]
-                                                 ["*changes" ["atom" ["[]"]]]
-                                                 ["collect!" ["fn" ["x"] ["swap!" "*changes" "conj" "x"]]]
+                                                 ["changes" ["diff-bunch" "old-store" "new-store" "diff-options"]]
                                                  ["socket" ["get" "@socket-registry" "session-id"]]]
-                                                ["diff-bunch" "collect!" ["[]"] "old-store" "new-store"]
                                                 ["--"
                                                  ".info"
                                                  "js/console"
                                                  "|Changes for"
                                                  "session-id"
                                                  "|:"
-                                                 ["clj->js" "@*changes"]]
+                                                 ["clj->js" "changes"]]
                                                 ["if"
-                                                 ["and" ["not=" "*changes" ["[]"]] ["some?" "socket"]]
+                                                 ["and" ["not" ["empty?" "changes"]] ["some?" "socket"]]
                                                  ["do"
-                                                  [".send" "socket" ["pr-str" "@*changes"]]
+                                                  [".send" "socket" ["pr-str" "changes"]]
                                                   ["swap!" "client-caches" "assoc" "session-id" "new-store"]]]]]],
                            "client-caches" ["defonce" "client-caches" ["atom" ["{}"]]],
                            "server-chan" ["defonce" "server-chan" ["chan"]],
@@ -1635,7 +1642,14 @@
                                                  "current-key"]]
                                                ["user-id" ["get-in" "db" ["[]" ":sessions" "session-id" ":user-id"]]]
                                                ["new-leaf"
-                                                ["assoc" "schema/leaf" ":time" "op-time" ":author" "user-id"]]]
+                                                ["assoc"
+                                                 "schema/leaf"
+                                                 ":time"
+                                                 "op-time"
+                                                 ":author"
+                                                 "user-id"
+                                                 ":id"
+                                                 "op-id"]]]
                                               ["->"
                                                "db"
                                                ["update-in"
@@ -1671,7 +1685,15 @@
                                                  "bisection/max-id"
                                                  ["get" "child-keys" ["inc" "idx"]]]]]
                                               ["user-id" ["get-in" "db" ["[]" ":sessions" "session-id" ":user-id"]]]
-                                              ["new-leaf" ["assoc" "schema/leaf" ":time" "op-time" ":author" "user-id"]]]
+                                              ["new-leaf"
+                                               ["assoc"
+                                                "schema/leaf"
+                                                ":time"
+                                                "op-time"
+                                                ":author"
+                                                "user-id"
+                                                ":id"
+                                                "op-id"]]]
                                              ["->"
                                               "db"
                                               ["update-in"
@@ -1704,7 +1726,14 @@
                                                 ["focus" [":focus" "bookmark"]]
                                                 ["user-id" ["get-in" "db" ["[]" ":sessions" "session-id" ":user-id"]]]
                                                 ["new-leaf"
-                                                 ["assoc" "schema/leaf" ":author" "user-id" ":time" "op-time"]]
+                                                 ["assoc"
+                                                  "schema/leaf"
+                                                  ":author"
+                                                  "user-id"
+                                                  ":time"
+                                                  "op-time"
+                                                  ":id"
+                                                  "op-id"]]
                                                 ["expr-path" ["bookmark->path" "bookmark"]]
                                                 ["target-expr" ["get-in" "db" "expr-path"]]
                                                 ["new-id"
@@ -1790,11 +1819,18 @@
                                                  "current-key"]]
                                                ["user-id" ["get-in" "db" ["[]" ":sessions" "session-id" ":user-id"]]]
                                                ["new-leaf"
-                                                ["assoc" "schema/leaf" ":time" "op-time" ":author" "user-id"]]
+                                                ["assoc"
+                                                 "schema/leaf"
+                                                 ":time"
+                                                 "op-time"
+                                                 ":author"
+                                                 "user-id"
+                                                 ":id"
+                                                 ["str" "op-id" "|leaf"]]]
                                                ["new-expr"
                                                 ["->"
                                                  "schema/expr"
-                                                 ["assoc" ":time" "op-time" ":author" "user-id"]
+                                                 ["assoc" ":time" "op-time" ":author" "user-id" ":id" "op-id"]
                                                  ["assoc-in" ["[]" ":data" "bisection/mid-id"] "new-leaf"]]]]
                                               ["->"
                                                "db"
@@ -1877,7 +1913,8 @@
                                           ["bookmark" ["get" "stack" "pointer"]]
                                           ["data-path" ["bookmark->path" "bookmark"]]
                                           ["user-id" ["get-in" "db" ["[]" ":sessions" "session-id" ":user-id"]]]
-                                          ["new-expr" ["assoc" "schema/expr" ":time" "op-time" ":author" "user-id"]]]
+                                          ["new-expr"
+                                           ["assoc" "schema/expr" ":time" "op-time" ":author" "user-id" ":id" "op-id"]]]
                                          ["->"
                                           "db"
                                           ["update-in"
@@ -1921,11 +1958,19 @@
                                                  "bisection/max-id"
                                                  ["get" "child-keys" ["inc" "idx"]]]]]
                                               ["user-id" ["get-in" "db" ["[]" ":sessions" "session-id" ":user-id"]]]
-                                              ["new-leaf" ["assoc" "schema/leaf" ":time" "op-time" ":author" "user-id"]]
+                                              ["new-leaf"
+                                               ["assoc"
+                                                "schema/leaf"
+                                                ":time"
+                                                "op-time"
+                                                ":author"
+                                                "user-id"
+                                                ":id"
+                                                ["str" "op-id" "|leaf"]]]
                                               ["new-expr"
                                                ["->"
                                                 "schema/expr"
-                                                ["assoc" ":time" "op-time" ":author" "user-id"]
+                                                ["assoc" ":time" "op-time" ":author" "user-id" ":id" "op-id"]
                                                 ["assoc-in" ["[]" ":data" "bisection/mid-id"] "new-leaf"]]]]
                                              ["->"
                                               "db"

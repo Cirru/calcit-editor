@@ -68,7 +68,7 @@
                  (if (zero? idx) bisection/min-id (get child-keys (dec idx)))
                  current-key)
         user-id (get-in db [:sessions session-id :user-id])
-        new-leaf (assoc schema/leaf :time op-time :author user-id)]
+        new-leaf (assoc schema/leaf :time op-time :author user-id :id op-id)]
     (-> db
         (update-in data-path (fn [expr] (assoc-in expr [:data next-id] new-leaf)))
         (update-in
@@ -91,7 +91,7 @@
                    bisection/max-id
                    (get child-keys (inc idx))))
         user-id (get-in db [:sessions session-id :user-id])
-        new-leaf (assoc schema/leaf :time op-time :author user-id)]
+        new-leaf (assoc schema/leaf :time op-time :author user-id :id op-id)]
     (-> db
         (update-in data-path (fn [expr] (assoc-in expr [:data next-id] new-leaf)))
         (update-in
@@ -107,7 +107,7 @@
         bookmark (get stack pointer)
         focus (:focus bookmark)
         user-id (get-in db [:sessions session-id :user-id])
-        new-leaf (assoc schema/leaf :author user-id :time op-time)
+        new-leaf (assoc schema/leaf :author user-id :time op-time :id op-id)
         expr-path (bookmark->path bookmark)
         target-expr (get-in db expr-path)
         new-id (if (empty? (:data target-expr))
@@ -155,9 +155,9 @@
                  (if (zero? idx) bisection/min-id (get child-keys (dec idx)))
                  current-key)
         user-id (get-in db [:sessions session-id :user-id])
-        new-leaf (assoc schema/leaf :time op-time :author user-id)
+        new-leaf (assoc schema/leaf :time op-time :author user-id :id (str op-id "leaf"))
         new-expr (-> schema/expr
-                     (assoc :time op-time :author user-id)
+                     (assoc :time op-time :author user-id :id op-id)
                      (assoc-in [:data bisection/mid-id] new-leaf))]
     (-> db
         (update-in data-path (fn [expr] (assoc-in expr [:data next-id] new-expr)))
@@ -206,7 +206,7 @@
         bookmark (get stack pointer)
         data-path (bookmark->path bookmark)
         user-id (get-in db [:sessions session-id :user-id])
-        new-expr (assoc schema/expr :time op-time :author user-id)]
+        new-expr (assoc schema/expr :time op-time :author user-id :id op-id)]
     (-> db
         (update-in data-path (fn [node] (assoc-in new-expr [:data bisection/mid-id] node)))
         (update-in
@@ -232,9 +232,9 @@
                    bisection/max-id
                    (get child-keys (inc idx))))
         user-id (get-in db [:sessions session-id :user-id])
-        new-leaf (assoc schema/leaf :time op-time :author user-id)
+        new-leaf (assoc schema/leaf :time op-time :author user-id :id (str op-id "leaf"))
         new-expr (-> schema/expr
-                     (assoc :time op-time :author user-id)
+                     (assoc :time op-time :author user-id :id op-id)
                      (assoc-in [:data bisection/mid-id] new-leaf))]
     (-> db
         (update-in data-path (fn [expr] (assoc-in expr [:data next-id] new-expr)))

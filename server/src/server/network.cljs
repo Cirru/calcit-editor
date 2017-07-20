@@ -48,6 +48,8 @@
             (handle-message :session/disconnect nil session-id)))))))
   server-chan)
 
+(def diff-options {:key :id})
+
 (defonce client-caches (atom {}))
 
 (defn render-clients! [db]
@@ -55,12 +57,8 @@
     (let [[session-id session] session-entry
           old-store (or (get @client-caches session-id) nil)
           new-store (render-bunch (twig-container db session) old-store)
-          *changes (atom [])
-          collect! (fn [x] (swap! *changes conj x))
+          changes (diff-bunch old-store new-store diff-options)
           socket (get @socket-registry session-id)]
-      (diff-bunch collect! [] old-store new-store)
-      (comment .info js/console "Changes for" session-id ":" (clj->js @*changes))
-      (if (and (not= *changes []) (some? socket))
-        (do
-         (.send socket (pr-str @*changes))
-         (swap! client-caches assoc session-id new-store))))))
+      (comment .info js/console "Changes for" session-id ":" (clj->js changes))
+      (if (and (not (empty? changes)) (some? socket))
+        (do (.send socket (pr-str changes)) (swap! client-caches assoc session-id new-store))))))

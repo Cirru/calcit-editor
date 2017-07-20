@@ -93,7 +93,6 @@
     {:value text,
      :spellcheck false,
      :class-name (str "cirru-leaf" (if (= focus coord) " cirru-focused" "")),
-     :placeholder coord,
      :style (merge
              {}
              {:width (+
