@@ -1861,7 +1861,9 @@
                                             [":display" ":inline-block"]
                                             [":vertical-align" ":top"]
                                             [":padding-left" "10"]]],
-                             "style-beginner" ["def" "style-beginner" ["{}" [":border-width" "|1px"]]]},
+                             "style-beginner" ["def"
+                                               "style-beginner"
+                                               ["{}" [":outline" ["str" "|1px solid " ["hsl" "200" "80" "70" "0.2"]]]]]},
                       :procs []},
          "util.shortcuts" {:ns ["ns"
                                 "app.util.shortcuts"

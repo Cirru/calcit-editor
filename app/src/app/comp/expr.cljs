@@ -50,7 +50,7 @@
 
 (def style-tail {:display :inline-block, :vertical-align :top, :padding-left 10})
 
-(def style-beginner {:border-width "1px"})
+(def style-beginner {:outline (str "1px solid " (hsl 200 80 70 0.2))})
 
 (defcomp
  comp-expr
