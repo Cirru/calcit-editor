@@ -84,7 +84,7 @@
 
 (defcomp
  comp-leaf
- (states leaf focus coord by-other? first?)
+ (states leaf focus coord by-other? first? readonly?)
  (let [state (or (:data states) initial-state)
        text (if (> (:time state) (:time leaf)) (:text state) (:text leaf))
        focused? (= focus coord)
@@ -93,6 +93,7 @@
     {:value text,
      :spellcheck false,
      :class-name (str "cirru-leaf" (if (= focus coord) " cirru-focused" "")),
+     :read-only readonly?,
      :style (merge
              {}
              {:width (+
@@ -104,6 +105,8 @@
              (if (re-find (re-pattern "^-?\\d") text) style-number)
              (if has-blank? style-space)
              (if (or focused? by-other?) style-highlight)),
-     :on {:click (on-focus coord),
-          :keydown (on-keydown state leaf coord),
-          :input (on-input state coord)}})))
+     :on (if readonly?
+       {}
+       {:click (on-focus coord),
+        :keydown (on-keydown state leaf coord),
+        :input (on-input state coord)})})))

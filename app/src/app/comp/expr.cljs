@@ -54,7 +54,7 @@
 
 (defcomp
  comp-expr
- (states expr focus coord others tail? after-expr? beginner?)
+ (states expr focus coord others tail? after-expr? beginner? readonly?)
  (let [focused? (= focus coord)
        first-id (apply min (keys (:data expr)))
        last-id (apply max (keys (:data expr)))
@@ -71,7 +71,7 @@
                style-simple)
              (if tail? style-tail)
              (if beginner? style-beginner)),
-     :on {:keydown (on-keydown coord), :click (on-focus coord)}}
+     :on (if readonly? {} {:keydown (on-keydown coord), :click (on-focus coord)})}
     (loop [result [], children sorted-children, info default-info]
       (if (empty? children)
         result
@@ -95,7 +95,8 @@
                 focus
                 child-coord
                 (contains? partial-others child-coord)
-                (= first-id k))
+                (= first-id k)
+                readonly?)
                (cursor->
                 cursor-key
                 comp-expr
@@ -106,7 +107,8 @@
                 partial-others
                 (= last-id k)
                 (:after-expr? info)
-                beginner?))])
+                beginner?
+                readonly?))])
            (rest children)
            (assoc info :after-expr? (expr? child)))))))))
 

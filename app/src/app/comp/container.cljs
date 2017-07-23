@@ -13,7 +13,8 @@
             [app.comp.page-editor :refer [comp-page-editor]]
             [app.comp.page-members :refer [comp-page-members]]
             [app.comp.search :refer [comp-search]]
-            [app.comp.messages :refer [comp-messages]]))
+            [app.comp.messages :refer [comp-messages]]
+            [app.comp.watching :refer [comp-watching]]))
 
 (def style-alert {:font-family "Josefin Sans", :font-weight 100, :font-size 40})
 
@@ -58,8 +59,9 @@
               (:stack writer)
               (:data router)
               (:pointer writer))
-           :members (comp-page-members (:data router))
+           :members (comp-page-members (:data router) (:id session))
            :search (cursor-> :search comp-search states (:data router))
+           :watching (cursor-> :watching comp-watching states (:data router))
            (div {} (<> span (str "404 page: " (pr-str router)) nil)))
          (comp-login states)))
       (comment comp-inspect "Session" (:session store) style-inspector)

@@ -17,9 +17,14 @@
 
 (def style-members {:padding "0 16px"})
 
+(def style-row {:cursor :pointer})
+
+(defn on-watch [session-id]
+  (fn [e d! m!] (d! :router/change {:name :watching, :data session-id})))
+
 (defcomp
  comp-page-members
- (router-data)
+ (router-data session-id)
  (div
   {:style (merge ui/flex style-members)}
   (div
@@ -27,13 +32,14 @@
    (->> router-data
         (map
          (fn [entry]
-           (let [[k member] entry]
+           (let [[k member] entry
+                 member-name (if (some? (:user member))
+                               (get-in member [:user :nickname])
+                               "Guest")]
              [k
               (div
-               {}
-               (if (some? (:user member))
-                 (<> span (get-in member [:user :name]) style-name)
-                 (<> span "Guest" style-name))
+               {:style style-row, :on {:click (on-watch k)}}
+               (<> span (str member-name (if (= k session-id) " (yourself)")) style-name)
                (=< 32 nil)
                (<> span (:page member) style-page)
                (=< 32 nil)

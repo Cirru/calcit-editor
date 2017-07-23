@@ -84,7 +84,7 @@
                                                 ["{}" [":background-color" ["hsl" "0" "0" "100" "0.2"]]]],
                              "comp-leaf" ["defcomp"
                                           "comp-leaf"
-                                          ["states" "leaf" "focus" "coord" "by-other?" "first?"]
+                                          ["states" "leaf" "focus" "coord" "by-other?" "first?" "readonly?"]
                                           ["let"
                                            [["state" ["or" [":data" "states"] "initial-state"]]
                                             ["text"
@@ -100,6 +100,7 @@
                                              [":spellcheck" "false"]
                                              [":class-name"
                                               ["str" "|cirru-leaf" ["if" ["=" "focus" "coord"] "| cirru-focused" "|"]]]
+                                             [":read-only" "readonly?"]
                                              [":style"
                                               ["merge"
                                                ["{}"]
@@ -118,10 +119,13 @@
                                                ["if" "has-blank?" "style-space"]
                                                ["if" ["or" "focused?" "by-other?"] "style-highlight"]]]
                                              [":on"
-                                              ["{}"
-                                               [":click" ["on-focus" "coord"]]
-                                               [":keydown" ["on-keydown" "state" "leaf" "coord"]]
-                                               [":input" ["on-input" "state" "coord"]]]]]]]],
+                                              ["if"
+                                               "readonly?"
+                                               ["{}"]
+                                               ["{}"
+                                                [":click" ["on-focus" "coord"]]
+                                                [":keydown" ["on-keydown" "state" "leaf" "coord"]]
+                                                [":input" ["on-input" "state" "coord"]]]]]]]]],
                              "on-focus" ["defn"
                                          "on-focus"
                                          ["coord"]
@@ -549,10 +553,9 @@
                                    ["[]"
                                     "respo.macros"
                                     ":refer"
-                                    ["[]" "defcomp" "cursor->" "<>" "span" "div" "a" "style" "pre"]]]
+                                    ["[]" "defcomp" "cursor->" "<>" "span" "div" "a" "pre"]]]
                                   [":require"
                                    ["[]" "hsl.core" ":refer" ["[]" "hsl"]]
-                                   ["[]" "respo.render.html" ":refer" ["[]" "style->string"]]
                                    ["[]" "respo-ui.style" ":as" "ui"]
                                    ["[]" "respo-ui.style.colors" ":as" "colors"]
                                    ["[]" "respo.core" ":refer" ["[]" "create-comp"]]
@@ -561,13 +564,15 @@
                                    ["[]" "app.comp.bookmark" ":refer" ["[]" "comp-bookmark"]]
                                    ["[]" "app.comp.expr" ":refer" ["[]" "comp-expr" "style-expr"]]
                                    ["[]" "app.comp.leaf" ":refer" ["[]" "style-leaf"]]
-                                   ["[]" "app.style" ":as" "style"]]],
+                                   ["[]" "app.style" ":as" "style"]
+                                   ["[]" "app.util.dom" ":refer" ["[]" "inject-style"]]]],
                              :defs {"comp-page-editor" ["defcomp"
                                                         "comp-page-editor"
                                                         ["states" "stack" "router-data" "pointer"]
                                                         ["let"
                                                          [["state" ["or" [":data" "states"] "false"]]
-                                                          ["bookmark" ["get" "stack" "pointer"]]]
+                                                          ["bookmark" ["get" "stack" "pointer"]]
+                                                          ["readonly?" "false"]]
                                                          ["div"
                                                           ["{}"
                                                            [":style" ["merge" "ui/row" "ui/flex" "style-container"]]]
@@ -594,23 +599,13 @@
                                                                ["vals"]
                                                                ["map" ":focus"]
                                                                ["into" ["#{}"]]]]
-                                                             ["expr" [":expr" "router-data"]]]
+                                                             ["expr" [":expr" "router-data"]]
+                                                             ["focus" [":focus" "router-data"]]
+                                                             ["beginner?" "state"]]
                                                             ["div"
                                                              ["{}" [":style" "style-area"]]
-                                                             ["style"
-                                                              ["{}"
-                                                               [":innerHTML"
-                                                                ["str"
-                                                                 "|.cirru-expr {"
-                                                                 ["style->string" "style-expr"]
-                                                                 "|}"]]]]
-                                                             ["style"
-                                                              ["{}"
-                                                               [":innerHTML"
-                                                                ["str"
-                                                                 "|.cirru-leaf {"
-                                                                 ["style->string" "style-leaf"]
-                                                                 "|}"]]]]
+                                                             ["inject-style" "|.cirru-expr" "style-expr"]
+                                                             ["inject-style" "|.cirru-leaf" "style-leaf"]
                                                              ["if"
                                                               ["some?" "expr"]
                                                               ["cursor->"
@@ -618,12 +613,13 @@
                                                                "comp-expr"
                                                                "states"
                                                                "expr"
-                                                               [":focus" "router-data"]
+                                                               "focus"
                                                                ["[]"]
                                                                "others"
                                                                "false"
                                                                "false"
-                                                               "state"]
+                                                               "beginner?"
+                                                               "readonly?"]
                                                               ["if" ["not" ["empty?" "stack"]] "ui-missing"]]]]
                                                            ["div"
                                                             ["{}" [":style" "style-status"]]
@@ -821,6 +817,86 @@
                                                    [":padding" "|0 8px"]]],
                                  "on-clear" ["defn" "on-clear" ["e" "d!" "m!"] ["d!" ":notify/clear" "nil"]]},
                           :procs []},
+         "comp.watching" {:ns ["ns"
+                               "app.comp.watching"
+                               [":require-macros"
+                                ["[]"
+                                 "respo.macros"
+                                 ":refer"
+                                 ["[]" "defcomp" "cursor->" "<>" "span" "div" "input" "pre" "a"]]]
+                               [":require"
+                                ["[]" "clojure.string" ":as" "string"]
+                                ["[]" "hsl.core" ":refer" ["[]" "hsl"]]
+                                ["[]" "respo-ui.style" ":as" "ui"]
+                                ["[]" "respo-ui.style.colors" ":as" "colors"]
+                                ["[]" "respo.core" ":refer" ["[]" "create-comp"]]
+                                ["[]" "respo.comp.space" ":refer" ["[]" "=<"]]
+                                ["[]" "app.util.keycode" ":as" "keycode"]
+                                ["[]" "app.util" ":as" "util"]
+                                ["[]" "app.style" ":as" "style"]
+                                ["[]" "app.comp.expr" ":refer" ["[]" "comp-expr" "style-expr"]]
+                                ["[]" "app.comp.leaf" ":refer" ["[]" "style-leaf"]]
+                                ["[]" "app.util.dom" ":refer" ["[]" "inject-style"]]]],
+                          :defs {"comp-watching" ["defcomp"
+                                                  "comp-watching"
+                                                  ["states" "router-data"]
+                                                  ["let"
+                                                   [["expr" [":expr" "router-data"]]
+                                                    ["focus" [":focus" "router-data"]]
+                                                    ["bookmark" [":bookmark" "router-data"]]
+                                                    ["others" ["{}"]]
+                                                    ["beginner?" ["or" [":data" "states"] "false"]]
+                                                    ["member-name"
+                                                     ["get-in" "router-data" ["[]" ":member" ":nickname"]]]
+                                                    ["readonly?" "true"]]
+                                                   ["if"
+                                                    [":self?" "router-data"]
+                                                    ["div"
+                                                     ["{}" [":style" "style-container"]]
+                                                     ["<>" "span" "|Watching at yourself :)" "style-title"]]
+                                                    ["div"
+                                                     ["{}" [":style" "style-container"]]
+                                                     ["div"
+                                                      ["{}"]
+                                                      ["<>" "span" "|Watching mode" "style-tip"]
+                                                      ["=<" "16" "nil"]
+                                                      ["<>" "span" "member-name" "nil"]
+                                                      ["=<" "16" "nil"]
+                                                      ["<>" "span" [":kind" "bookmark"] "nil"]
+                                                      ["=<" "16" "nil"]
+                                                      ["<>"
+                                                       "span"
+                                                       ["str" [":ns" "bookmark"] "|/" [":extra" "bookmark"]]
+                                                       "nil"]]
+                                                     ["=<" "nil" "16"]
+                                                     ["if"
+                                                      [":working?" "router-data"]
+                                                      ["div"
+                                                       ["{}"]
+                                                       ["inject-style" "|.cirru-expr" "style-expr"]
+                                                       ["inject-style" "|.cirru-leaf" "style-leaf"]
+                                                       ["cursor->"
+                                                        [":id" "expr"]
+                                                        "comp-expr"
+                                                        "states"
+                                                        "expr"
+                                                        "focus"
+                                                        ["[]"]
+                                                        "others"
+                                                        "false"
+                                                        "false"
+                                                        "beginner?"
+                                                        "readonly?"]]]]]]],
+                                 "style-container" ["def" "style-container" ["{}" [":padding" "|0 16px"]]],
+                                 "style-title" ["def" "style-title" ["{}" [":font-family" "|Josefin Sans"]]],
+                                 "style-tip" ["def"
+                                              "style-tip"
+                                              ["{}"
+                                               [":font-family" "|Josefin Sans"]
+                                               [":background-color" ["hsl" "0" "0" "100" "0.3"]]
+                                               [":border-radius" "|4px"]
+                                               [":padding" "|4px 8px"]]]},
+                          :procs []},
          "schema" {:ns ["ns" "app.schema"],
                    :defs {"configs" ["def" "configs" ["{}" [":storage-key" "|workflow-storage"] [":port" "6001"]]]},
                    :procs []},
@@ -841,7 +917,8 @@
                                  ["[]" "app.comp.page-editor" ":refer" ["[]" "comp-page-editor"]]
                                  ["[]" "app.comp.page-members" ":refer" ["[]" "comp-page-members"]]
                                  ["[]" "app.comp.search" ":refer" ["[]" "comp-search"]]
-                                 ["[]" "app.comp.messages" ":refer" ["[]" "comp-messages"]]]],
+                                 ["[]" "app.comp.messages" ":refer" ["[]" "comp-messages"]]
+                                 ["[]" "app.comp.watching" ":refer" ["[]" "comp-watching"]]]],
                            :defs {"style-alert" ["def"
                                                  "style-alert"
                                                  ["{}"
@@ -898,11 +975,18 @@
                                                             [":stack" "writer"]
                                                             [":data" "router"]
                                                             [":pointer" "writer"]]]
-                                                          [":members" ["comp-page-members" [":data" "router"]]]
+                                                          [":members"
+                                                           ["comp-page-members" [":data" "router"] [":id" "session"]]]
                                                           [":search"
                                                            ["cursor->"
                                                             ":search"
                                                             "comp-search"
+                                                            "states"
+                                                            [":data" "router"]]]
+                                                          [":watching"
+                                                           ["cursor->"
+                                                            ":watching"
+                                                            "comp-watching"
                                                             "states"
                                                             [":data" "router"]]]
                                                           ["div"
@@ -993,7 +1077,12 @@
                                                     [":padding" "8"]
                                                     [":margin-bottom" "8"]]]},
                               :procs []},
-         "util.dom" {:ns ["ns" "app.util.dom"],
+         "util.dom" {:ns ["ns"
+                          "app.util.dom"
+                          [":require-macros" ["[]" "respo.macros" ":refer" ["[]" "style"]]]
+                          [":require"
+                           ["[]" "respo.core" ":refer" ["[]" "create-element"]]
+                           ["[]" "respo.render.html" ":refer" ["[]" "style->string"]]]],
                      :defs {"focus!" ["defn"
                                       "focus!"
                                       []
@@ -1016,7 +1105,13 @@
                                                ["let"
                                                 [["target" [".querySelector" "js/document" "|.search-input"]]]
                                                 ["if" ["some?" "target"] [".focus" "target"]]]]
-                                              "200"]]},
+                                              "200"]],
+                            "inject-style" ["defn"
+                                            "inject-style"
+                                            ["class-name" "styles"]
+                                            ["style"
+                                             ["{}"
+                                              [":innerHTML" ["str" "class-name" "| {" ["style->string" "styles"] "|}"]]]]]},
                      :procs []},
          "style" {:ns ["ns"
                        "app.style"
@@ -1636,7 +1731,7 @@
                                     ["[]" "respo.comp.space" ":refer" ["[]" "=<"]]]],
                               :defs {"comp-page-members" ["defcomp"
                                                           "comp-page-members"
-                                                          ["router-data"]
+                                                          ["router-data" "session-id"]
                                                           ["div"
                                                            ["{}" [":style" ["merge" "ui/flex" "style-members"]]]
                                                            ["div"
@@ -1647,18 +1742,24 @@
                                                               ["fn"
                                                                ["entry"]
                                                                ["let"
-                                                                [[["[]" "k" "member"] "entry"]]
+                                                                [[["[]" "k" "member"] "entry"]
+                                                                 ["member-name"
+                                                                  ["if"
+                                                                   ["some?" [":user" "member"]]
+                                                                   ["get-in" "member" ["[]" ":user" ":nickname"]]
+                                                                   "|Guest"]]]
                                                                 ["[]"
                                                                  "k"
                                                                  ["div"
-                                                                  ["{}"]
-                                                                  ["if"
-                                                                   ["some?" [":user" "member"]]
-                                                                   ["<>"
-                                                                    "span"
-                                                                    ["get-in" "member" ["[]" ":user" ":name"]]
-                                                                    "style-name"]
-                                                                   ["<>" "span" "|Guest" "style-name"]]
+                                                                  ["{}"
+                                                                   [":style" "style-row"]
+                                                                   [":on" ["{}" [":click" ["on-watch" "k"]]]]]
+                                                                  ["<>"
+                                                                   "span"
+                                                                   ["str"
+                                                                    "member-name"
+                                                                    ["if" ["=" "k" "session-id"] "| (yourself)"]]
+                                                                   "style-name"]
                                                                   ["=<" "32" "nil"]
                                                                   ["<>" "span" [":page" "member"] "style-page"]
                                                                   ["=<" "32" "nil"]
@@ -1690,7 +1791,16 @@
                                      "style-page" ["def"
                                                    "style-page"
                                                    ["{}" [":min-width" "160"] [":display" ":inline-block"]]],
-                                     "style-members" ["def" "style-members" ["{}" [":padding" "|0 16px"]]]},
+                                     "style-members" ["def" "style-members" ["{}" [":padding" "|0 16px"]]],
+                                     "style-row" ["def" "style-row" ["{}" [":cursor" ":pointer"]]],
+                                     "on-watch" ["defn"
+                                                 "on-watch"
+                                                 ["session-id"]
+                                                 ["fn"
+                                                  ["e" "d!" "m!"]
+                                                  ["d!"
+                                                   ":router/change"
+                                                   ["{}" [":name" ":watching"] [":data" "session-id"]]]]]},
                               :procs []},
          "comp.expr" {:ns ["ns"
                            "app.comp.expr"
@@ -1708,7 +1818,15 @@
                             ["[]" "app.util.shortcuts" ":refer" ["[]" "on-window-keydown"]]]],
                       :defs {"comp-expr" ["defcomp"
                                           "comp-expr"
-                                          ["states" "expr" "focus" "coord" "others" "tail?" "after-expr?" "beginner?"]
+                                          ["states"
+                                           "expr"
+                                           "focus"
+                                           "coord"
+                                           "others"
+                                           "tail?"
+                                           "after-expr?"
+                                           "beginner?"
+                                           "readonly?"]
                                           ["let"
                                            [["focused?" ["=" "focus" "coord"]]
                                             ["first-id" ["apply" "min" ["keys" [":data" "expr"]]]]
@@ -1737,7 +1855,12 @@
                                                ["if" "tail?" "style-tail"]
                                                ["if" "beginner?" "style-beginner"]]]
                                              [":on"
-                                              ["{}" [":keydown" ["on-keydown" "coord"]] [":click" ["on-focus" "coord"]]]]]
+                                              ["if"
+                                               "readonly?"
+                                               ["{}"]
+                                               ["{}"
+                                                [":keydown" ["on-keydown" "coord"]]
+                                                [":click" ["on-focus" "coord"]]]]]]
                                             ["loop"
                                              ["[]" "result" ["[]"] "children" "sorted-children" "info" "default-info"]
                                              ["if"
@@ -1770,7 +1893,8 @@
                                                     "focus"
                                                     "child-coord"
                                                     ["contains?" "partial-others" "child-coord"]
-                                                    ["=" "first-id" "k"]]
+                                                    ["=" "first-id" "k"]
+                                                    "readonly?"]
                                                    ["cursor->"
                                                     "cursor-key"
                                                     "comp-expr"
@@ -1781,7 +1905,8 @@
                                                     "partial-others"
                                                     ["=" "last-id" "k"]
                                                     [":after-expr?" "info"]
-                                                    "beginner?"]]]]
+                                                    "beginner?"
+                                                    "readonly?"]]]]
                                                 ["rest" "children"]
                                                 ["assoc" "info" ":after-expr?" ["expr?" "child"]]]]]]]]],
                              "style-expr" ["def"

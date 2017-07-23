@@ -1,5 +1,7 @@
 
-(ns app.util.dom )
+(ns app.util.dom
+  (:require-macros [respo.macros :refer [style]])
+  (:require [respo.core :refer [create-element]] [respo.render.html :refer [style->string]]))
 
 (defn focus! []
   (js/requestAnimationFrame
@@ -16,3 +18,6 @@
      (let [target (.querySelector js/document ".search-input")]
        (if (some? target) (.focus target))))
    200))
+
+(defn inject-style [class-name styles]
+  (style {:innerHTML (str class-name " {" (style->string styles) "}")}))
