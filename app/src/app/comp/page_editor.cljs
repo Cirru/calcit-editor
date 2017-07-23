@@ -37,7 +37,7 @@
 
 (def style-editor (merge ui/flex ui/column))
 
-(def style-watcher {:color (hsl 0 0 100 0.7), :margin "0 8px"})
+(def style-watcher {:color (hsl 0 0 100 0.7), :margin-right 8})
 
 (defn on-toggle [state] (fn [e d! m!] (m! (not state))))
 

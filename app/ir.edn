@@ -715,7 +715,7 @@
                                     "style-editor" ["def" "style-editor" ["merge" "ui/flex" "ui/column"]],
                                     "style-watcher" ["def"
                                                      "style-watcher"
-                                                     ["{}" [":color" ["hsl" "0" "0" "100" "0.7"]] [":margin" "|0 8px"]]],
+                                                     ["{}" [":color" ["hsl" "0" "0" "100" "0.7"]] [":margin-right" "8"]]],
                                     "style-missing" ["def"
                                                      "style-missing"
                                                      ["{}"
