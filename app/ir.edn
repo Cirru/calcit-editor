@@ -562,6 +562,7 @@
                                    ["[]" "respo.comp.space" ":refer" ["[]" "=<"]]
                                    ["[]" "respo.comp.inspect" ":refer" ["[]" "comp-inspect"]]
                                    ["[]" "app.comp.bookmark" ":refer" ["[]" "comp-bookmark"]]
+                                   ["[]" "app.comp.beginner-mode" ":refer" ["[]" "comp-beginner-mode" "on-toggle"]]
                                    ["[]" "app.comp.expr" ":refer" ["[]" "comp-expr" "style-expr"]]
                                    ["[]" "app.comp.leaf" ":refer" ["[]" "style-leaf"]]
                                    ["[]" "app.style" ":as" "style"]
@@ -570,7 +571,11 @@
                                                         "comp-page-editor"
                                                         ["states" "stack" "router-data" "pointer"]
                                                         ["let"
-                                                         [["state" ["or" [":data" "states"] "false"]]
+                                                         [["state"
+                                                           ["if"
+                                                            ["boolean?" [":data" "states"]]
+                                                            [":data" "states"]
+                                                            "false"]]
                                                           ["bookmark" ["get" "stack" "pointer"]]
                                                           ["readonly?" "false"]]
                                                          ["div"
@@ -628,7 +633,7 @@
                                                              ["<>"
                                                               "span"
                                                               ["str"
-                                                               "|Workers("
+                                                               "|Writers("
                                                                ["count" [":others" "router-data"]]
                                                                "|)"]
                                                               "style-hint"]
@@ -655,13 +660,14 @@
                                                               ["{}" [":style" "style-watchers"]]
                                                               ["->>"
                                                                [":watchers" "router-data"]
-                                                               ["vals"]
                                                                ["map"
                                                                 ["fn"
-                                                                 ["info"]
-                                                                 ["[]"
-                                                                  [":session-id" "info"]
-                                                                  ["<>" "span" [":nickname" "info"] "style-watcher"]]]]]]]
+                                                                 ["entry"]
+                                                                 ["let"
+                                                                  [[["[]" "sid" "member"] "entry"]]
+                                                                  ["[]"
+                                                                   "sid"
+                                                                   ["<>" "span" [":nickname" "member"] "style-watcher"]]]]]]]]
                                                             ["div"
                                                              ["{}"]
                                                              ["a"
@@ -671,12 +677,9 @@
                                                                 "|https://github.com/Cirru/stack-editor/wiki/Keyboard-Shortcuts"]
                                                                [":target" "|_blank"]]]
                                                              ["=<" "8" "nil"]
-                                                             ["span"
-                                                              ["{}"
-                                                               [":style"
-                                                                ["merge" "style-beginner" ["if" "state" "style-active"]]]
-                                                               [":on" ["{}" [":click" ["on-toggle" "state"]]]]]
-                                                              ["<>" "span" "|Beginner" "nil"]]]]
+                                                             ["comp-beginner-mode"
+                                                              "state"
+                                                              ["on-toggle" "state" "cursor"]]]]
                                                            ["--" "comp-inspect" "|Expr" "router-data" "style/inspector"]]]]],
                                     "style-status" ["def"
                                                     "style-status"
@@ -692,7 +695,6 @@
                                                       [":color" ["hsl" "0" "0" "100" "0.4"]]
                                                       [":padding" "|0 16px"]
                                                       [":font-family" "|Josefin Sans"]]],
-                                    "style-active" ["def" "style-active" ["{}" [":color" ["hsl" "0" "0" "100"]]]],
                                     "ui-missing" ["def"
                                                   "ui-missing"
                                                   ["div"
@@ -715,25 +717,14 @@
                                     "style-editor" ["def" "style-editor" ["merge" "ui/flex" "ui/column"]],
                                     "style-watcher" ["def"
                                                      "style-watcher"
-                                                     ["{}" [":color" ["hsl" "0" "0" "100" "0.7"]] [":margin-right" "8"]]],
+                                                     ["{}" [":color" ["hsl" "0" "0" "100" "0.7"]] [":margin-left" "8"]]],
                                     "style-missing" ["def"
                                                      "style-missing"
                                                      ["{}"
                                                       [":font-family" "|Josefin Sans"]
                                                       [":color" ["hsl" "10" "60" "50"]]
                                                       [":font-size" "20"]
-                                                      [":font-weight" "100"]]],
-                                    "on-toggle" ["defn"
-                                                 "on-toggle"
-                                                 ["state"]
-                                                 ["fn" ["e" "d!" "m!"] ["m!" ["not" "state"]]]],
-                                    "style-beginner" ["def"
-                                                      "style-beginner"
-                                                      ["{}"
-                                                       [":color" ["hsl" "0" "0" "100" "0.5"]]
-                                                       [":font-family" "|Josefin Sans"]
-                                                       [":font-weight" "100"]
-                                                       [":cursor" ":pointer"]]]},
+                                                      [":font-weight" "100"]]]},
                              :procs []},
          "util" {:defs {"now!" ["defn" "now!" [] [".valueOf" ["js/Date."]]],
                         "coord-contains?" ["defn"
@@ -836,6 +827,47 @@
                                                    [":padding" "|0 8px"]]],
                                  "on-clear" ["defn" "on-clear" ["e" "d!" "m!"] ["d!" ":notify/clear" "nil"]]},
                           :procs []},
+         "comp.beginner-mode" {:ns ["ns"
+                                    "app.comp.beginner-mode"
+                                    [":require-macros"
+                                     ["[]"
+                                      "respo.macros"
+                                      ":refer"
+                                      ["[]" "defcomp" "cursor->" "<>" "span" "div" "a" "pre"]]]
+                                    [":require"
+                                     ["[]" "hsl.core" ":refer" ["[]" "hsl"]]
+                                     ["[]" "respo-ui.style" ":as" "ui"]
+                                     ["[]" "respo-ui.style.colors" ":as" "colors"]
+                                     ["[]" "respo.core" ":refer" ["[]" "create-comp"]]
+                                     ["[]" "respo.comp.space" ":refer" ["[]" "=<"]]
+                                     ["[]" "app.style" ":as" "style"]]],
+                               :defs {"comp-beginner-mode" ["defn"
+                                                            "comp-beginner-mode"
+                                                            ["beginner?" "toggler"]
+                                                            ["span"
+                                                             ["{}"
+                                                              [":style"
+                                                               ["merge"
+                                                                "style-beginner"
+                                                                ["if" "beginner?" "style-active"]]]
+                                                              [":on" ["{}" [":click" "toggler"]]]]
+                                                             ["<>" "span" "|Beginner?" "nil"]]],
+                                      "style-beginner" ["def"
+                                                        "style-beginner"
+                                                        ["{}"
+                                                         [":color" ["hsl" "0" "0" "100" "0.5"]]
+                                                         [":font-family" "|Josefin Sans"]
+                                                         [":font-weight" "100"]
+                                                         [":cursor" ":pointer"]]],
+                                      "style-active" ["def" "style-active" ["{}" [":color" ["hsl" "0" "0" "100"]]]],
+                                      "on-toggle" ["defn"
+                                                   "on-toggle"
+                                                   ["state" "cursor"]
+                                                   ["fn"
+                                                    ["e" "d!" "m!"]
+                                                    ["println" "|Toggleing" "cursor" "state"]
+                                                    ["m!" "cursor" ["not" "state"]]]]},
+                               :procs []},
          "comp.watching" {:ns ["ns"
                                "app.comp.watching"
                                [":require-macros"
@@ -855,7 +887,8 @@
                                 ["[]" "app.style" ":as" "style"]
                                 ["[]" "app.comp.expr" ":refer" ["[]" "comp-expr" "style-expr"]]
                                 ["[]" "app.comp.leaf" ":refer" ["[]" "style-leaf"]]
-                                ["[]" "app.util.dom" ":refer" ["[]" "inject-style"]]]],
+                                ["[]" "app.util.dom" ":refer" ["[]" "inject-style"]]
+                                ["[]" "app.comp.beginner-mode" ":refer" ["[]" "comp-beginner-mode" "on-toggle"]]]],
                           :defs {"comp-watching" ["defcomp"
                                                   "comp-watching"
                                                   ["states" "router-data"]
@@ -864,7 +897,8 @@
                                                     ["focus" [":focus" "router-data"]]
                                                     ["bookmark" [":bookmark" "router-data"]]
                                                     ["others" ["{}"]]
-                                                    ["beginner?" ["or" [":data" "states"] "false"]]
+                                                    ["beginner?"
+                                                     ["if" ["boolean?" [":data" "states"]] [":data" "states"] "false"]]
                                                     ["member-name"
                                                      ["get-in" "router-data" ["[]" ":member" ":nickname"]]]
                                                     ["readonly?" "true"]]
@@ -878,6 +912,10 @@
                                                      ["div"
                                                       ["{}"]
                                                       ["<>" "span" "|Watching mode" "style-tip"]
+                                                      ["=<" "16" "nil"]
+                                                      ["comp-beginner-mode"
+                                                       "beginner?"
+                                                       ["on-toggle" "beginner?" "cursor"]]
                                                       ["=<" "16" "nil"]
                                                       ["<>" "span" "member-name" "nil"]
                                                       ["=<" "16" "nil"]

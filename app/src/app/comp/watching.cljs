@@ -12,7 +12,8 @@
             [app.style :as style]
             [app.comp.expr :refer [comp-expr style-expr]]
             [app.comp.leaf :refer [style-leaf]]
-            [app.util.dom :refer [inject-style]]))
+            [app.util.dom :refer [inject-style]]
+            [app.comp.beginner-mode :refer [comp-beginner-mode on-toggle]]))
 
 (def style-container {:padding "0 16px"})
 
@@ -31,7 +32,7 @@
        focus (:focus router-data)
        bookmark (:bookmark router-data)
        others {}
-       beginner? (or (:data states) false)
+       beginner? (if (boolean? (:data states)) (:data states) false)
        member-name (get-in router-data [:member :nickname])
        readonly? true]
    (if (:self? router-data)
@@ -41,6 +42,8 @@
       (div
        {}
        (<> span "Watching mode" style-tip)
+       (=< 16 nil)
+       (comp-beginner-mode beginner? (on-toggle beginner? cursor))
        (=< 16 nil)
        (<> span member-name nil)
        (=< 16 nil)

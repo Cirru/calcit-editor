@@ -8,6 +8,7 @@
             [respo.comp.space :refer [=<]]
             [respo.comp.inspect :refer [comp-inspect]]
             [app.comp.bookmark :refer [comp-bookmark]]
+            [app.comp.beginner-mode :refer [comp-beginner-mode on-toggle]]
             [app.comp.expr :refer [comp-expr style-expr]]
             [app.comp.leaf :refer [style-leaf]]
             [app.style :as style]
@@ -19,8 +20,6 @@
 
 (def style-nothing
   {:color (hsl 0 0 100 0.4), :padding "0 16px", :font-family "Josefin Sans"})
-
-(def style-active {:color (hsl 0 0 100)})
 
 (def style-missing
   {:font-family "Josefin Sans", :color (hsl 10 60 50), :font-size 20, :font-weight 100})
@@ -37,17 +36,14 @@
 
 (def style-editor (merge ui/flex ui/column))
 
-(def style-watcher {:color (hsl 0 0 100 0.7), :margin-right 8})
-
-(defn on-toggle [state] (fn [e d! m!] (m! (not state))))
-
-(def style-beginner
-  {:color (hsl 0 0 100 0.5), :font-family "Josefin Sans", :font-weight 100, :cursor :pointer})
+(def style-watcher {:color (hsl 0 0 100 0.7), :margin-left 8})
 
 (defcomp
  comp-page-editor
  (states stack router-data pointer)
- (let [state (or (:data states) false), bookmark (get stack pointer), readonly? false]
+ (let [state (if (boolean? (:data states)) (:data states) false)
+       bookmark (get stack pointer)
+       readonly? false]
    (div
     {:style (merge ui/row ui/flex style-container)}
     (div
@@ -86,7 +82,7 @@
       {:style style-status}
       (div
        {}
-       (<> span (str "Workers(" (count (:others router-data)) ")") style-hint)
+       (<> span (str "Writers(" (count (:others router-data)) ")") style-hint)
        (div
         {:style style-watchers}
         (->> (:others router-data)
@@ -97,8 +93,9 @@
        (div
         {:style style-watchers}
         (->> (:watchers router-data)
-             (vals)
-             (map (fn [info] [(:session-id info) (<> span (:nickname info) style-watcher)])))))
+             (map
+              (fn [entry]
+                (let [[sid member] entry] [sid (<> span (:nickname member) style-watcher)]))))))
       (div
        {}
        (a
@@ -106,8 +103,5 @@
          :href "https://github.com/Cirru/stack-editor/wiki/Keyboard-Shortcuts",
          :target "_blank"})
        (=< 8 nil)
-       (span
-        {:style (merge style-beginner (if state style-active)),
-         :on {:click (on-toggle state)}}
-        (<> span "Beginner" nil))))
+       (comp-beginner-mode state (on-toggle state cursor))))
      (comment comp-inspect "Expr" router-data style/inspector)))))

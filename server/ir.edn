@@ -1555,7 +1555,7 @@
                                                                        ["same-buffer?" "bookmark" "a-bookmark"]]
                                                                       ["{}"
                                                                        [":focus" [":focus" "a-bookmark"]]
-                                                                       [":name"
+                                                                       [":nickname"
                                                                         ["get-in"
                                                                          "users"
                                                                          ["[]" [":user-id" "session"] ":nickname"]]]

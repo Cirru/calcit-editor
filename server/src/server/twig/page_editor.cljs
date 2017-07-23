@@ -24,7 +24,7 @@
                                 (if (and (= :editor (:name router))
                                          (same-buffer? bookmark a-bookmark))
                                   {:focus (:focus a-bookmark),
-                                   :name (get-in users [(:user-id session) :nickname]),
+                                   :nickname (get-in users [(:user-id session) :nickname]),
                                    :session-id (:id session)}
                                   nil)])))
                           (filter (fn [pair] (some? (last pair))))
