@@ -86,12 +86,19 @@
       {:style style-status}
       (div
        {}
-       (<> span (str "Others(" (count (:others router-data)) ")") style-hint)
+       (<> span (str "Workers(" (count (:others router-data)) ")") style-hint)
        (div
         {:style style-watchers}
         (->> (:others router-data)
              (vals)
-             (map (fn [info] [(:session-id info) (<> span (:name info) style-watcher)])))))
+             (map (fn [info] [(:session-id info) (<> span (:nickname info) style-watcher)]))))
+       (=< 16 nil)
+       (<> span (str "Watchers(" (count (:watchers router-data)) ")") style-hint)
+       (div
+        {:style style-watchers}
+        (->> (:watchers router-data)
+             (vals)
+             (map (fn [info] [(:session-id info) (<> span (:nickname info) style-watcher)])))))
       (div
        {}
        (a
