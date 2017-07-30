@@ -125,15 +125,17 @@
 (defn duplicate [db op-data session-id op-id op-time]
   (let [writer (to-writer db session-id)
         bookmark (to-bookmark writer)
-        target-expr (get-in db (bookmark->path bookmark))
+        target-expr (assoc (get-in db (bookmark->path bookmark)) :id op-id)
         parent-path (bookmark->path (update bookmark :focus butlast))
         parent-expr (get-in db parent-path)
         child-keys (to-keys parent-expr)
         last-coord (last (:focus bookmark))
         idx (.indexOf child-keys last-coord)
-        next-id (if (= idx (dec (count child-keys)))
-                  bisection/max-id
-                  (bisection/bisect last-coord (get child-keys (inc idx))))]
+        next-id (bisection/bisect
+                 last-coord
+                 (if (= idx (dec (count child-keys)))
+                   bisection/max-id
+                   (get child-keys (inc idx))))]
     (-> db
         (update-in
          parent-path
