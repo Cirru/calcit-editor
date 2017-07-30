@@ -249,7 +249,11 @@
         cirru-expr ["ns" op-data]
         default-expr (cirru->tree cirru-expr user-id op-time)
         empty-expr (cirru->tree [] user-id op-time)]
-    (assoc-in db [:ir :files op-data] (assoc schema/file :ns default-expr :proc empty-expr))))
+    (-> db
+        (assoc-in
+         [:ir :files op-data]
+         (assoc schema/file :ns default-expr :proc empty-expr))
+        (assoc-in [:sessions session-id :writer :selected-ns] op-data))))
 
 (defn delete-node [db op-data session-id op-id op-time]
   (let [writer (get-in db [:sessions session-id :writer])
