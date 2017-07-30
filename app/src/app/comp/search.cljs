@@ -25,7 +25,7 @@
 (def style-input (merge style/input {:width 400}))
 
 (defn on-select [bookmark]
-  (fn [e d! m!] (m! {:position :0, :query ""}) (d! :writer/select bookmark)))
+  (fn [e d! m!] (d! :writer/select bookmark) (m! {:position :0, :query ""})))
 
 (def initial-state {:query "", :selection 0})
 
@@ -38,12 +38,14 @@
       (cond
         (= keycode/enter code)
           (do
-           (m! {:query "", :position 0})
-           (d! :writer/select (get (vec candidates) (:selection state))))
+           (d! :writer/select (get (vec candidates) (:selection state)))
+           (m! {:query "", :position 0}))
         (= keycode/up code)
           (do
            (.preventDefault event)
            (if (pos? (:selection state)) (m! (update state :selection dec))))
+        (= keycode/esc code)
+          (do (d! :router/change {:name :editor}) (m! {:query "", :position 0}))
         (= keycode/down code)
           (do
            (.preventDefault event)

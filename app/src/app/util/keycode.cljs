@@ -11,6 +11,8 @@
 
 (def right 39)
 
+(def f 70)
+
 (def e 69)
 
 (def up 38)
@@ -32,6 +34,8 @@
 (def b 66)
 
 (def enter 13)
+
+(def esc 27)
 
 (def c 67)
 

@@ -362,8 +362,8 @@
                                             ["bookmark"]
                                             ["fn"
                                              ["e" "d!" "m!"]
-                                             ["m!" ["{}" [":position" ":0"] [":query" "|"]]]
-                                             ["d!" ":writer/select" "bookmark"]]],
+                                             ["d!" ":writer/select" "bookmark"]
+                                             ["m!" ["{}" [":position" ":0"] [":query" "|"]]]]],
                                "comp-search" ["defcomp"
                                               "comp-search"
                                               ["states" "router-data"]
@@ -435,16 +435,20 @@
                                                ["cond"
                                                 [["=" "keycode/enter" "code"]
                                                  ["do"
-                                                  ["m!" ["{}" [":query" "|"] [":position" "0"]]]
                                                   ["d!"
                                                    ":writer/select"
-                                                   ["get" ["vec" "candidates"] [":selection" "state"]]]]]
+                                                   ["get" ["vec" "candidates"] [":selection" "state"]]]
+                                                  ["m!" ["{}" [":query" "|"] [":position" "0"]]]]]
                                                 [["=" "keycode/up" "code"]
                                                  ["do"
                                                   [".preventDefault" "event"]
                                                   ["if"
                                                    ["pos?" [":selection" "state"]]
                                                    ["m!" ["update" "state" ":selection" "dec"]]]]]
+                                                [["=" "keycode/esc" "code"]
+                                                 ["do"
+                                                  ["d!" ":router/change" ["{}" [":name" ":editor"]]]
+                                                  ["m!" ["{}" [":query" "|"] [":position" "0"]]]]]
                                                 [["=" "keycode/down" "code"]
                                                  ["do"
                                                   [".preventDefault" "event"]
@@ -536,6 +540,7 @@
                                 "s" ["def" "s" "83"],
                                 "tab" ["def" "tab" "9"],
                                 "right" ["def" "right" "39"],
+                                "f" ["def" "f" "70"],
                                 "e" ["def" "e" "69"],
                                 "up" ["def" "up" "38"],
                                 "delete" ["def" "delete" "8"],
@@ -547,6 +552,7 @@
                                 "down" ["def" "down" "40"],
                                 "b" ["def" "b" "66"],
                                 "enter" ["def" "enter" "13"],
+                                "esc" ["def" "esc" "27"],
                                 "c" ["def" "c" "67"],
                                 "left" ["def" "left" "37"]},
                          :procs []},
@@ -2069,6 +2075,7 @@
                                                        ["event" "dispatch!"]
                                                        ["let"
                                                         [["meta?" ["or" [".-metaKey" "event"] [".-ctrlKey" "event"]]]
+                                                         ["shift?" [".-shiftKey" "event"]]
                                                          ["code" [".-keyCode" "event"]]]
                                                         ["cond"
                                                          [["and" "meta?" ["=" "code" "keycode/p"]]
@@ -2085,5 +2092,7 @@
                                                          [["and" "meta?" ["=" "code" "keycode/s"]]
                                                           ["do"
                                                            [".preventDefault" "event"]
-                                                           ["dispatch!" ":effect/save-files" "nil"]]]]]]},
+                                                           ["dispatch!" ":effect/save-files" "nil"]]]
+                                                         [["and" "meta?" "shift?" ["=" "code" "keycode/f"]]
+                                                          ["dispatch!" ":router/change" ["{}" [":name" ":files"]]]]]]]},
                            :procs []}}}
