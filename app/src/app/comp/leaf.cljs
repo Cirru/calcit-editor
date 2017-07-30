@@ -57,8 +57,10 @@
           code (:key-code e)
           shift? (.-shiftKey event)
           meta? (or (.-metaKey event) (.-ctrlKey event))
+          selected? (not= event.target.selectionStart event.target.selectionEnd)
           text (if (> (:time state) (:time leaf)) (:text state) (:text leaf))
           text-length (count text)]
+      (println "selected?" selected?)
       (cond
         (= code keycode/delete) (if (and (= "" text)) (d! :ir/delete-node nil))
         (and (not shift?) (= code keycode/space))
@@ -68,10 +70,10 @@
           (do (d! (if shift? :ir/unindent-leaf :ir/indent) nil) (.preventDefault event))
         (= code keycode/up)
           (do (if (not (empty? coord)) (d! :writer/go-up nil)) (.preventDefault event))
-        (= code keycode/left)
+        (and (not selected?) (= code keycode/left))
           (if (zero? event.target.selectionStart)
             (do (d! :writer/go-left nil) (.preventDefault event)))
-        (= code keycode/right)
+        (and (not selected?) (= code keycode/right))
           (if (= text-length event.target.selectionEnd)
             (do (d! :writer/go-right nil) (.preventDefault event)))
         (and meta? shift? (= code keycode/v))

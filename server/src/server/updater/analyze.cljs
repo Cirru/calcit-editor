@@ -23,17 +23,17 @@
         deps-info (parse-deps (subvec ns-expr 2))
         def-info (parse-def (:text op-data))
         forced? (:forced? op-data)
-        new-bookmark (if (and (contains? deps-info (:key def-info))
-                              (=
-                               (:method def-info)
-                               (:method (get deps-info (:key def-info)))))
-                       (let [rule (get deps-info (:key def-info))]
-                         (merge
-                          schema/bookmark
+        new-bookmark (merge
+                      schema/bookmark
+                      (if (and (contains? deps-info (:key def-info))
+                               (=
+                                (:method def-info)
+                                (:method (get deps-info (:key def-info)))))
+                        (let [rule (get deps-info (:key def-info))]
                           (if (= :refer (:method def-info))
                             {:kind :def, :ns (:ns rule), :extra (:key def-info)}
-                            {:kind :def, :ns (:ns rule), :extra (:def def-info)})))
-                       {:kind :def, :ns (:ns bookmark), :extra (:def def-info)})
+                            {:kind :def, :ns (:ns rule), :extra (:def def-info)}))
+                        {:kind :def, :ns (:ns bookmark), :extra (:def def-info), :focus []}))
         def-existed? (some?
                       (get-in
                        db

@@ -44,7 +44,7 @@
 
 (defn on-edit-def [text] (fn [e d! m!] (d! :writer/edit {:kind :def, :extra text})))
 
-(def style-file {:width 280})
+(def style-file {:width 280, :overflow :auto, :padding-bottom 120})
 
 (defn render-file [state selected-ns defs-set]
   (div
@@ -85,7 +85,7 @@
 (def style-ns
   {:cursor :pointer, :vertical-align :middle, :position :relative, :padding "0 8px"})
 
-(def style-list {:width 280})
+(def style-list {:width 280, :overflow :auto, :padding-bottom 120})
 
 (defn on-checkout [state ns-text] (fn [e d! m!] (d! :session/select-ns ns-text)))
 

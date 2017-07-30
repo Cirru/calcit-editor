@@ -162,12 +162,15 @@
                                               ["code" [":key-code" "e"]]
                                               ["shift?" [".-shiftKey" "event"]]
                                               ["meta?" ["or" [".-metaKey" "event"] [".-ctrlKey" "event"]]]
+                                              ["selected?"
+                                               ["not=" "event.target.selectionStart" "event.target.selectionEnd"]]
                                               ["text"
                                                ["if"
                                                 [">" [":time" "state"] [":time" "leaf"]]
                                                 [":text" "state"]
                                                 [":text" "leaf"]]]
                                               ["text-length" ["count" "text"]]]
+                                             ["println" "|selected?" "selected?"]
                                              ["cond"
                                               [["=" "code" "keycode/delete"]
                                                ["if" ["and" ["=" "|" "text"]] ["d!" ":ir/delete-node" "nil"]]]
@@ -183,11 +186,11 @@
                                                ["do"
                                                 ["if" ["not" ["empty?" "coord"]] ["d!" ":writer/go-up" "nil"]]
                                                 [".preventDefault" "event"]]]
-                                              [["=" "code" "keycode/left"]
+                                              [["and" ["not" "selected?"] ["=" "code" "keycode/left"]]
                                                ["if"
                                                 ["zero?" "event.target.selectionStart"]
                                                 ["do" ["d!" ":writer/go-left" "nil"] [".preventDefault" "event"]]]]
-                                              [["=" "code" "keycode/right"]
+                                              [["and" ["not" "selected?"] ["=" "code" "keycode/right"]]
                                                ["if"
                                                 ["=" "text-length" "event.target.selectionEnd"]
                                                 ["do" ["d!" ":writer/go-right" "nil"] [".preventDefault" "event"]]]]
@@ -700,7 +703,12 @@
                                                   ["div"
                                                    ["{}" [":style" "style-missing"]]
                                                    ["<>" "span" "|Expression is missing!" "nil"]]],
-                                    "style-stack" ["def" "style-stack" ["{}" [":width" "200"]]],
+                                    "style-stack" ["def"
+                                                   "style-stack"
+                                                   ["{}"
+                                                    [":width" "200"]
+                                                    [":overflow" ":auto"]
+                                                    [":padding-bottom" "120"]]],
                                     "style-hint" ["def"
                                                   "style-hint"
                                                   ["{}"
@@ -1498,7 +1506,9 @@
                                                     "on-remove-def"
                                                     ["def-text"]
                                                     ["fn" ["e" "d!" "m!"] ["d!" ":ir/remove-def" "def-text"]]],
-                                   "style-list" ["def" "style-list" ["{}" [":width" "280"]]],
+                                   "style-list" ["def"
+                                                 "style-list"
+                                                 ["{}" [":width" "280"] [":overflow" ":auto"] [":padding-bottom" "120"]]],
                                    "on-checkout" ["defn"
                                                   "on-checkout"
                                                   ["state" "ns-text"]
@@ -1643,7 +1653,9 @@
                                                   ["fn"
                                                    ["e" "d!" "m!"]
                                                    ["d!" ":writer/edit" ["{}" [":kind" ":def"] [":extra" "text"]]]]],
-                                   "style-file" ["def" "style-file" ["{}" [":width" "280"]]]},
+                                   "style-file" ["def"
+                                                 "style-file"
+                                                 ["{}" [":width" "280"] [":overflow" ":auto"] [":padding-bottom" "120"]]]},
                             :procs []},
          "render" {:ns ["ns"
                         "app.render"

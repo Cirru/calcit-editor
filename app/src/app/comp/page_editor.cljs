@@ -26,7 +26,7 @@
 
 (def ui-missing (div {:style style-missing} (<> span "Expression is missing!" nil)))
 
-(def style-stack {:width 200})
+(def style-stack {:width 200, :overflow :auto, :padding-bottom 120})
 
 (def style-hint {:color (hsl 0 0 100 0.6), :font-family "Josefin Sans"})
 
