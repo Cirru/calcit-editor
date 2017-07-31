@@ -22,6 +22,8 @@
 
 (defn on-remove-def [def-text] (fn [e d! m!] (d! :ir/remove-def def-text)))
 
+(def style-input (merge style/input {:width "100%"}))
+
 (defn on-keydown-def [state]
   (fn [e d! m!]
     (let [text (string/trim (:def-text state)), code (:key-code e)]
@@ -79,7 +81,7 @@
     (input
      {:value (:def-text state),
       :placeholder "a def",
-      :style style/input,
+      :style style-input,
       :on {:input (on-input-def state), :keydown (on-keydown-def state)}}))))
 
 (def style-ns
@@ -103,7 +105,16 @@
   (fn [e d! m!]
     (let [text (string/trim (:ns-text state)), code (:key-code e)]
       (if (and (= code keycode/enter) (not (string/blank? text)))
-        (do (d! :ir/add-ns text) (m! (assoc state :ns-text "")))))))
+        (cond
+          (string/starts-with? text "mv ")
+            (let [[_ from to] (string/split text " ")]
+              (d! :ir/mv-ns {:from from, :to to})
+              (m! (assoc state :ns-text "")))
+          (string/starts-with? text "cp ")
+            (let [[_ from to] (string/split text " ")]
+              (d! :ir/cp-ns {:from from, :to to})
+              (m! (assoc state :ns-text "")))
+          :else (do (d! :ir/add-ns text) (m! (assoc state :ns-text ""))))))))
 
 (defn render-list [state ns-set selected-ns]
   (div
@@ -132,7 +143,7 @@
     (input
      {:value (:ns-text state),
       :placeholder "a namespace",
-      :style style/input,
+      :style style-input,
       :on {:input (on-input-ns state), :keydown (on-keydown-ns state)}}))))
 
 (defcomp

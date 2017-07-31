@@ -21,7 +21,7 @@
                                                             "comp-changed-files"
                                                             ["states" "changed-files"]
                                                             ["div"
-                                                             ["{}"]
+                                                             ["{}" [":style" "style-column"]]
                                                              ["<>" "div" "|Changed" "style/title"]
                                                              ["div"
                                                               ["{}"]
@@ -50,7 +50,10 @@
                                                        "style-nothing"
                                                        ["{}"
                                                         [":font-family" "|Josefin Sans"]
-                                                        [":color" ["hsl" "0" "0" "100" "0.5"]]]]},
+                                                        [":color" ["hsl" "0" "0" "100" "0.5"]]]],
+                                      "style-column" ["def"
+                                                      "style-column"
+                                                      ["{}" [":overflow" ":auto"] [":padding-bottom" "120"]]]},
                                :procs []},
          "comp.leaf" {:ns ["ns"
                            "app.comp.leaf"
@@ -1490,7 +1493,7 @@
                                                      ["{}"
                                                       [":value" [":def-text" "state"]]
                                                       [":placeholder" "|a def"]
-                                                      [":style" "style/input"]
+                                                      [":style" "style-input"]
                                                       [":on"
                                                        ["{}"
                                                         [":input" ["on-input-def" "state"]]
@@ -1515,6 +1518,7 @@
                                    "style-list" ["def"
                                                  "style-list"
                                                  ["{}" [":width" "280"] [":overflow" ":auto"] [":padding-bottom" "120"]]],
+                                   "style-input" ["def" "style-input" ["merge" "style/input" ["{}" [":width" "|100%"]]]],
                                    "on-checkout" ["defn"
                                                   "on-checkout"
                                                   ["state" "ns-text"]
@@ -1587,9 +1591,21 @@
                                                        ["and"
                                                         ["=" "code" "keycode/enter"]
                                                         ["not" ["string/blank?" "text"]]]
-                                                       ["do"
-                                                        ["d!" ":ir/add-ns" "text"]
-                                                        ["m!" ["assoc" "state" ":ns-text" "|"]]]]]]],
+                                                       ["cond"
+                                                        [["string/starts-with?" "text" "|mv "]
+                                                         ["let"
+                                                          [[["[]" "_" "from" "to"] ["string/split" "text" "| "]]]
+                                                          ["d!" ":ir/mv-ns" ["{}" [":from" "from"] [":to" "to"]]]
+                                                          ["m!" ["assoc" "state" ":ns-text" "|"]]]]
+                                                        [["string/starts-with?" "text" "|cp "]
+                                                         ["let"
+                                                          [[["[]" "_" "from" "to"] ["string/split" "text" "| "]]]
+                                                          ["d!" ":ir/cp-ns" ["{}" [":from" "from"] [":to" "to"]]]
+                                                          ["m!" ["assoc" "state" ":ns-text" "|"]]]]
+                                                        [":else"
+                                                         ["do"
+                                                          ["d!" ":ir/add-ns" "text"]
+                                                          ["m!" ["assoc" "state" ":ns-text" "|"]]]]]]]]],
                                    "style-def" ["def"
                                                 "style-def"
                                                 ["{}" [":padding" "|0 8px"] [":position" ":relative"]]],
@@ -1643,7 +1659,7 @@
                                                      ["{}"
                                                       [":value" [":ns-text" "state"]]
                                                       [":placeholder" "|a namespace"]
-                                                      [":style" "style/input"]
+                                                      [":style" "style-input"]
                                                       [":on"
                                                        ["{}"
                                                         [":input" ["on-input-ns" "state"]]

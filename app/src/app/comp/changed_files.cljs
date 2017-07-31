@@ -15,11 +15,13 @@
 
 (def style-nothing {:font-family "Josefin Sans", :color (hsl 0 0 100 0.5)})
 
+(def style-column {:overflow :auto, :padding-bottom 120})
+
 (defcomp
  comp-changed-files
  (states changed-files)
  (div
-  {}
+  {:style style-column}
   (<> div "Changed" style/title)
   (div
    {}

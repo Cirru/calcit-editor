@@ -219,6 +219,19 @@
   (let [selected-ns (get-in db [:sessions session-id :writer :selected-ns])]
     (update-in db [:ir :files selected-ns :defs] (fn [defs] (dissoc defs op-data)))))
 
+(defn cp-ns [db op-data session-id op-id op-time]
+  (update-in
+   db
+   [:ir :files]
+   (fn [files] (-> files (assoc (:to op-data) (get files (:from op-data)))))))
+
+(defn mv-ns [db op-data session-id op-id op-time]
+  (update-in
+   db
+   [:ir :files]
+   (fn [files]
+     (-> files (dissoc (:from op-data)) (assoc (:to op-data) (get files (:from op-data)))))))
+
 (defn expr-after [db op-data session-id op-id op-time]
   (let [writer (to-writer db session-id)
         bookmark (to-bookmark writer)
