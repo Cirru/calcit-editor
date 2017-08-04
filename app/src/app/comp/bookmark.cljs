@@ -12,8 +12,14 @@
 
 (defn on-pick [bookmark idx]
   (fn [e d! m!]
-    (let [event (:original-event e), shift? (.-shiftKey event), meta? (.-metaKey event)]
-      (cond meta? (d! :writer/collapse idx) :else (d! :writer/point-to idx)))))
+    (let [event (:original-event e)
+          shift? (.-shiftKey event)
+          alt? (.-altKey event)
+          meta? (.-metaKey event)]
+      (cond
+        meta? (d! :writer/collapse idx)
+        alt? (d! :writer/remove-idx idx)
+        :else (d! :writer/point-to idx)))))
 
 (def style-highlight {:color (hsl 0 0 100)})
 
@@ -39,22 +45,19 @@
  (case (:kind bookmark)
    :def
      (div
-      {:style (merge style-bookmark), :on {:click (on-pick bookmark idx)}}
+      {:class-name "stack-bookmark",
+       :style (merge style-bookmark),
+       :on {:click (on-pick bookmark idx)}}
       (div
        {}
        (span
         {:inner-text (:extra bookmark),
          :style (merge style-main (if selected? style-highlight))}))
-      (div
-       {}
-       (<> span "def" style-kind)
-       (=< 8 nil)
-       (<> span (:ns bookmark) style-minor)
-       (=< 8 nil)
-       (span
-        {:class-name "ion-md-close", :style style-remove, :on {:click (on-remove idx)}})))
+      (div {} (<> span "def" style-kind) (=< 8 nil) (<> span (:ns bookmark) style-minor)))
    (div
-    {:style (merge style-bookmark), :on {:click (on-pick bookmark idx)}}
+    {:class-name "stack-bookmark",
+     :style (merge style-bookmark),
+     :on {:click (on-pick bookmark idx)}}
     (div {} (<> span (:ns bookmark) (merge style-main (if selected? style-highlight))))
     (div
      {}

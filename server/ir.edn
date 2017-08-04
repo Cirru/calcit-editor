@@ -187,6 +187,7 @@
                                   ":refer"
                                   ["[]" "bookmark->path" "to-writer" "to-bookmark" "push-info"]]
                                  ["[]" "server.util.stack" ":refer" ["[]" "push-bookmark"]]
+                                 ["[]" "server.util.list" ":refer" ["[]" "dissoc-idx"]]
                                  ["[]" "server.schema" ":as" "schema"]]],
                            :defs {"collapse" ["defn"
                                               "collapse"
@@ -247,12 +248,7 @@
                                                     "writer"
                                                     ["update"
                                                      ":stack"
-                                                     ["fn"
-                                                      ["stack"]
-                                                      ["vec"
-                                                       ["concat"
-                                                        ["take" "op-data" "stack"]
-                                                        ["drop" ["inc" "op-data"] "stack"]]]]]
+                                                     ["fn" ["stack"] ["dissoc-idx" "stack" "op-data"]]]
                                                     ["update"
                                                      ":pointer"
                                                      ["fn"
@@ -1301,6 +1297,8 @@
                                             [":ir/mv-ns" ["ir/mv-ns" "db" "op-data" "session-id" "op-id" "op-time"]]
                                             [":ir/delete-entry"
                                              ["ir/delete-entry" "db" "op-data" "session-id" "op-id" "op-time"]]
+                                            [":ir/reset-files"
+                                             ["ir/reset-files" "db" "op-data" "session-id" "op-id" "op-time"]]
                                             [":notify/push-error"
                                              ["notify/push-error" "db" "op-data" "session-id" "op-id" "op-time"]]
                                             [":notify/clear"
@@ -1807,6 +1805,10 @@
                                                 [":pointer" "writer"]
                                                 ":focus"]
                                                ["fn" ["focus"] ["conj" ["vec" ["butlast" "focus"]] "next-id"]]]]]],
+                              "reset-files" ["defn"
+                                             "reset-files"
+                                             ["db" "op-data" "session-id" "op-id" "op-time"]
+                                             ["assoc-in" "db" ["[]" ":ir" ":files"] [":saved-files" "db"]]],
                               "remove-ns" ["defn"
                                            "remove-ns"
                                            ["db" "op-data" "session-id" "op-id" "op-time"]

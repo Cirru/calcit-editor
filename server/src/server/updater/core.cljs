@@ -54,6 +54,7 @@
     :ir/cp-ns (ir/cp-ns db op-data session-id op-id op-time)
     :ir/mv-ns (ir/mv-ns db op-data session-id op-id op-time)
     :ir/delete-entry (ir/delete-entry db op-data session-id op-id op-time)
+    :ir/reset-files (ir/reset-files db op-data session-id op-id op-time)
     :notify/push-error (notify/push-error db op-data session-id op-id op-time)
     :notify/clear (notify/clear db op-data session-id op-id op-time)
     :analyze/goto-def (analyze/goto-def db op-data session-id op-id op-time)

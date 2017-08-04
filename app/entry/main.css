@@ -25,3 +25,8 @@ body * {
 .is-minor:hover {
   opacity: 1;
 }
+
+
+.stack-bookmark:hover {
+  background-color: hsla(0, 0%, 100%, 0.1);
+}

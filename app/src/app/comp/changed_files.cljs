@@ -17,6 +17,8 @@
 
 (def style-column {:overflow :auto, :padding-bottom 120})
 
+(defn on-reset [e d! m!] (d! :ir/reset-files nil))
+
 (defcomp
  comp-changed-files
  (states changed-files)
@@ -29,4 +31,7 @@
         (map (fn [entry] (let [[k info] entry] [k (comp-changed-info info k)])))))
   (if (empty? changed-files)
     (div {:style style-nothing} (<> span "No changes" nil))
-    (div {} (button {:inner-text "Save", :style style/button, :on {:click on-save}})))))
+    (div
+     {}
+     (button {:inner-text "Save", :style style/button, :on {:click on-save}})
+     (button {:inner-text "Reset", :style style/button, :on {:click on-reset}})))))

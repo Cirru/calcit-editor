@@ -100,6 +100,9 @@
          [:sessions session-id :writer :stack (:pointer writer) :focus]
          (fn [focus] (conj (vec (butlast focus)) next-id))))))
 
+(defn reset-files [db op-data session-id op-id op-time]
+  (assoc-in db [:ir :files] (:saved-files db)))
+
 (defn remove-ns [db op-data session-id op-id op-time]
   (-> db (update-in [:ir :files] (fn [files] (dissoc files op-data)))))
 

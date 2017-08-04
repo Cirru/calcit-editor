@@ -44,7 +44,12 @@
                                                                 ["{}"
                                                                  [":inner-text" "|Save"]
                                                                  [":style" "style/button"]
-                                                                 [":on" ["{}" [":click" "on-save"]]]]]]]]],
+                                                                 [":on" ["{}" [":click" "on-save"]]]]]
+                                                               ["button"
+                                                                ["{}"
+                                                                 [":inner-text" "|Reset"]
+                                                                 [":style" "style/button"]
+                                                                 [":on" ["{}" [":click" "on-reset"]]]]]]]]],
                                       "on-save" ["defn" "on-save" ["e" "d!" "m!"] ["d!" ":effect/save-files" "nil"]],
                                       "style-nothing" ["def"
                                                        "style-nothing"
@@ -53,7 +58,8 @@
                                                         [":color" ["hsl" "0" "0" "100" "0.5"]]]],
                                       "style-column" ["def"
                                                       "style-column"
-                                                      ["{}" [":overflow" ":auto"] [":padding-bottom" "120"]]]},
+                                                      ["{}" [":overflow" ":auto"] [":padding-bottom" "120"]]],
+                                      "on-reset" ["defn" "on-reset" ["e" "d!" "m!"] ["d!" ":ir/reset-files" "nil"]]},
                                :procs []},
          "comp.leaf" {:ns ["ns"
                            "app.comp.leaf"
@@ -231,9 +237,11 @@
                                              ["let"
                                               [["event" [":original-event" "e"]]
                                                ["shift?" [".-shiftKey" "event"]]
+                                               ["alt?" [".-altKey" "event"]]
                                                ["meta?" [".-metaKey" "event"]]]
                                               ["cond"
                                                ["meta?" ["d!" ":writer/collapse" "idx"]]
+                                               ["alt?" ["d!" ":writer/remove-idx" "idx"]]
                                                [":else" ["d!" ":writer/point-to" "idx"]]]]]],
                                  "style-highlight" ["def" "style-highlight" ["{}" [":color" ["hsl" "0" "0" "100"]]]],
                                  "style-remove" ["def"
@@ -269,6 +277,7 @@
                                                    [":def"
                                                     ["div"
                                                      ["{}"
+                                                      [":class-name" "|stack-bookmark"]
                                                       [":style" ["merge" "style-bookmark"]]
                                                       [":on" ["{}" [":click" ["on-pick" "bookmark" "idx"]]]]]
                                                      ["div"
@@ -282,15 +291,10 @@
                                                       ["{}"]
                                                       ["<>" "span" "|def" "style-kind"]
                                                       ["=<" "8" "nil"]
-                                                      ["<>" "span" [":ns" "bookmark"] "style-minor"]
-                                                      ["=<" "8" "nil"]
-                                                      ["span"
-                                                       ["{}"
-                                                        [":class-name" "|ion-md-close"]
-                                                        [":style" "style-remove"]
-                                                        [":on" ["{}" [":click" ["on-remove" "idx"]]]]]]]]]
+                                                      ["<>" "span" [":ns" "bookmark"] "style-minor"]]]]
                                                    ["div"
                                                     ["{}"
+                                                     [":class-name" "|stack-bookmark"]
                                                      [":style" ["merge" "style-bookmark"]]
                                                      [":on" ["{}" [":click" ["on-pick" "bookmark" "idx"]]]]]
                                                     ["div"

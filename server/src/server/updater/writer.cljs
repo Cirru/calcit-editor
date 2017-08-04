@@ -2,6 +2,7 @@
 (ns server.updater.writer
   (:require [server.util :refer [bookmark->path to-writer to-bookmark push-info]]
             [server.util.stack :refer [push-bookmark]]
+            [server.util.list :refer [dissoc-idx]]
             [server.schema :as schema]))
 
 (defn collapse [db op-data session-id op-id op-time]
@@ -42,9 +43,7 @@
        [:sessions session-id :writer]
        (fn [writer]
          (-> writer
-             (update
-              :stack
-              (fn [stack] (vec (concat (take op-data stack) (drop (inc op-data) stack)))))
+             (update :stack (fn [stack] (dissoc-idx stack op-data)))
              (update :pointer (fn [pointer] (if (pos? pointer) (dec pointer) pointer))))))))
 
 (defn copy [db op-data session-id op-id op-time]
