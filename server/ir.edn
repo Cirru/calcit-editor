@@ -290,7 +290,10 @@
                                            ["db" "op-data" "session-id" "op-id" "op-time"]
                                            ["let"
                                             [["piece"
-                                              ["get-in" "db" ["[]" ":sessions" "session-id" ":writer" ":clipboard"]]]
+                                              ["assoc"
+                                               ["get-in" "db" ["[]" ":sessions" "session-id" ":writer" ":clipboard"]]
+                                               ":id"
+                                               "op-id"]]
                                              ["writer" ["to-writer" "db" "session-id"]]
                                              ["bookmark" ["to-bookmark" "writer"]]
                                              ["data-path" ["bookmark->path" "bookmark"]]]
@@ -681,6 +684,18 @@
                                       ["f" "xs"]
                                       ["reduce" ["fn" ["_" "x"] ["when" ["f" "x"] ["reduced" "x"]]] "nil" "xs"]]},
                  :procs []},
+         "util.list" {:ns ["ns" "server.util.list"],
+                      :defs {"dissoc-idx" ["defn"
+                                           "dissoc-idx"
+                                           ["xs" "idx"]
+                                           ["if"
+                                            ["or" ["neg?" "idx"] [">" "idx" ["dec" ["count" "xs"]]]]
+                                            ["throw" ["js/Error." "|Index out of bound!"]]]
+                                           ["cond"
+                                            [["zero?" "idx"] ["subvec" "xs" "1"]]
+                                            [["=" "idx" ["dec" ["count" "xs"]]] ["pop" "xs"]]
+                                            [":else" ["vec" ["concat" ["take" "idx" "xs"] ["drop" ["inc" "idx"] "xs"]]]]]]},
+                      :procs []},
          "schema" {:ns ["ns" "server.schema"],
                    :defs {"ir-file" ["def" "ir-file" ["{}" [":pkg" "|app"] [":files" ["{}"]]]],
                           "expr" ["def"
@@ -1284,6 +1299,8 @@
                                             [":ir/rename" ["ir/rename" "db" "op-data" "session-id" "op-id" "op-time"]]
                                             [":ir/cp-ns" ["ir/cp-ns" "db" "op-data" "session-id" "op-id" "op-time"]]
                                             [":ir/mv-ns" ["ir/mv-ns" "db" "op-data" "session-id" "op-id" "op-time"]]
+                                            [":ir/delete-entry"
+                                             ["ir/delete-entry" "db" "op-data" "session-id" "op-id" "op-time"]]
                                             [":notify/push-error"
                                              ["notify/push-error" "db" "op-data" "session-id" "op-id" "op-time"]]
                                             [":notify/clear"
@@ -1632,12 +1649,14 @@
                                "to-bookmark"
                                "to-keys"
                                "cirru->tree"
-                               "pick-second-key"]]]],
+                               "pick-second-key"]]
+                             ["[]" "server.util.list" ":refer" ["[]" "dissoc-idx"]]]],
                        :defs {"rename" ["defn"
                                         "rename"
                                         ["db" "op-data" "session-id" "op-id" "op-time"]
                                         ["let"
-                                         [[["{}" ["kind" ":kind"] ["ns-info" ":ns"] ["extra-info" ":extra"]] "op-data"]]
+                                         [[["{}" ["kind" ":kind"] ["ns-info" ":ns"] ["extra-info" ":extra"]] "op-data"]
+                                          ["idx" ["get-in" "db" ["[]" ":sessions" "session-id" ":writer" ":pointer"]]]]
                                          ["cond"
                                           [["=" ":ns" "kind"]
                                            ["let"
@@ -1655,13 +1674,7 @@
                                                 ["dissoc" "old-ns"]
                                                 ["assoc" "new-ns" ["get" "files" "old-ns"]]]]]
                                              ["assoc-in"
-                                              ["[]"
-                                               ":sessions"
-                                               "session-id"
-                                               ":writer"
-                                               ":stack"
-                                               [":index" "op-data"]
-                                               ":ns"]
+                                              ["[]" ":sessions" "session-id" ":writer" ":stack" "idx" ":ns"]
                                               "new-ns"]
                                              ["update-in"
                                               ["[]" ":ir" ":files" "new-ns" ":ns" ":data" "next-id" ":text"]
@@ -1687,7 +1700,7 @@
                                                  ["[]" "new-ns" ":defs" "new-def"]
                                                  ["get-in" "files" ["[]" "old-ns" ":defs" "old-def"]]]]]]
                                              ["update-in"
-                                              ["[]" ":sessions" "session-id" ":writer" ":stack" [":index" "op-data"]]
+                                              ["[]" ":sessions" "session-id" ":writer" ":stack" "idx"]
                                               ["fn"
                                                ["bookmark"]
                                                ["->" "bookmark" ["assoc" ":ns" "new-ns"] ["assoc" ":extra" "new-def"]]]]
@@ -2114,6 +2127,45 @@
                                           ["assoc-in"
                                            ["[]" ":sessions" "session-id" ":writer" ":selected-ns"]
                                            "op-data"]]]],
+                              "delete-entry" ["defn"
+                                              "delete-entry"
+                                              ["db" "op-data" "session-id" "op-id" "op-time"]
+                                              ["println" "|delete" "op-data"]
+                                              ["case"
+                                               [":kind" "op-data"]
+                                               [":def"
+                                                ["->"
+                                                 "db"
+                                                 ["update-in"
+                                                  ["[]" ":ir" ":files" [":ns" "op-data"] ":defs"]
+                                                  ["fn" ["defs"] ["dissoc" "defs" [":extra" "op-data"]]]]
+                                                 ["update-in"
+                                                  ["[]" ":sessions" "session-id" ":writer"]
+                                                  ["fn"
+                                                   ["writer"]
+                                                   ["->"
+                                                    "writer"
+                                                    ["update"
+                                                     ":stack"
+                                                     ["fn" ["stack"] ["dissoc-idx" "stack" [":pointer" "writer"]]]]
+                                                    ["update" ":pointer" "dec"]]]]]]
+                                               [":ns"
+                                                ["->"
+                                                 "db"
+                                                 ["update-in"
+                                                  ["[]" ":ir" ":files"]
+                                                  ["fn" ["files"] ["dissoc" "files" [":ns" "op-data"]]]]
+                                                 ["update-in"
+                                                  ["[]" ":sessions" "session-id" ":writer"]
+                                                  ["fn"
+                                                   ["writer"]
+                                                   ["->"
+                                                    "writer"
+                                                    ["update"
+                                                     ":stack"
+                                                     ["fn" ["stack"] ["dissoc-idx" "stack" [":pointer" "writer"]]]]
+                                                    ["update" ":pointer" "dec"]]]]]]
+                                               [":else" "db"]]],
                               "delete-leaf" ["defn"
                                              "delete-node"
                                              ["db" "op-data" "session-id" "op-id" "op-time"]

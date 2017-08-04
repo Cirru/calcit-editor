@@ -2,6 +2,7 @@
 (ns app.comp.page-editor
   (:require-macros [respo.macros :refer [defcomp cursor-> <> span div a pre]])
   (:require [hsl.core :refer [hsl]]
+            [clojure.string :as string]
             [respo-ui.style :as ui]
             [respo-ui.style.colors :as colors]
             [respo.core :refer [create-comp]]
@@ -37,6 +38,58 @@
 (def style-editor (merge ui/flex ui/column))
 
 (def style-watcher {:color (hsl 0 0 100 0.7), :margin-left 8})
+
+(defn on-rename [bookmark]
+  (fn [e d! m!]
+    (let [new-name (js/prompt
+                    "Rename:"
+                    (if (= :def (:kind bookmark))
+                      (str (:ns bookmark) "/" (:extra bookmark))
+                      (:ns bookmark)))
+          [ns-text def-text] (string/split new-name "/")]
+      (if (some? new-name)
+        (d!
+         :ir/rename
+         {:kind (:kind bookmark),
+          :ns {:from (:ns bookmark), :to ns-text},
+          :extra {:from (:extra bookmark), :to def-text}})))))
+
+(def style-link
+  {:font-family "Josefin Sans", :cursor :pointer, :font-size 14, :color (hsl 200 50 80)})
+
+(defn on-delete [bookmark] (fn [e d! m!] (d! :ir/delete-entry (dissoc bookmark :focus))))
+
+(defn render-status [router-data state cursor bookmark]
+  (div
+   {:style style-status}
+   (div
+    {}
+    (<> span (str "Writers(" (count (:others router-data)) ")") style-hint)
+    (div
+     {:style style-watchers}
+     (->> (:others router-data)
+          (vals)
+          (map (fn [info] [(:session-id info) (<> span (:nickname info) style-watcher)]))))
+    (=< 16 nil)
+    (<> span (str "Watchers(" (count (:watchers router-data)) ")") style-hint)
+    (div
+     {:style style-watchers}
+     (->> (:watchers router-data)
+          (map
+           (fn [entry]
+             (let [[sid member] entry] [sid (<> span (:nickname member) style-watcher)])))))
+    (=< 16 nil)
+    (span {:inner-text "Delete", :style style-link, :on {:click (on-delete bookmark)}})
+    (=< 8 nil)
+    (span {:inner-text "Rename", :style style-link, :on {:click (on-rename bookmark)}}))
+   (div
+    {}
+    (a
+     {:inner-text "Shortcuts",
+      :href "https://github.com/Cirru/stack-editor/wiki/Keyboard-Shortcuts",
+      :target "_blank"})
+    (=< 8 nil)
+    (comp-beginner-mode state (on-toggle state cursor)))))
 
 (defcomp
  comp-page-editor
@@ -78,30 +131,5 @@
            beginner?
            readonly?)
           (if (not (empty? stack)) ui-missing))))
-     (div
-      {:style style-status}
-      (div
-       {}
-       (<> span (str "Writers(" (count (:others router-data)) ")") style-hint)
-       (div
-        {:style style-watchers}
-        (->> (:others router-data)
-             (vals)
-             (map (fn [info] [(:session-id info) (<> span (:nickname info) style-watcher)]))))
-       (=< 16 nil)
-       (<> span (str "Watchers(" (count (:watchers router-data)) ")") style-hint)
-       (div
-        {:style style-watchers}
-        (->> (:watchers router-data)
-             (map
-              (fn [entry]
-                (let [[sid member] entry] [sid (<> span (:nickname member) style-watcher)]))))))
-      (div
-       {}
-       (a
-        {:inner-text "Shortcuts",
-         :href "https://github.com/Cirru/stack-editor/wiki/Keyboard-Shortcuts",
-         :target "_blank"})
-       (=< 8 nil)
-       (comp-beginner-mode state (on-toggle state cursor))))
+     (render-status router-data state cursor bookmark)
      (comment comp-inspect "Expr" router-data style/inspector)))))

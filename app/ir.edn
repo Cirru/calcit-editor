@@ -233,23 +233,6 @@
                                                ["shift?" [".-shiftKey" "event"]]
                                                ["meta?" [".-metaKey" "event"]]]
                                               ["cond"
-                                               ["shift?"
-                                                ["let"
-                                                 [["new-name"
-                                                   ["js/prompt"
-                                                    "|Rename:"
-                                                    ["if"
-                                                     ["=" ":def" [":kind" "bookmark"]]
-                                                     ["str" [":ns" "bookmark"] "|/" [":extra" "bookmark"]]
-                                                     [":ns" "bookmark"]]]]
-                                                  [["[]" "ns-text" "def-text"] ["string/split" "new-name" "|/"]]]
-                                                 ["d!"
-                                                  ":ir/rename"
-                                                  ["{}"
-                                                   [":kind" [":kind" "bookmark"]]
-                                                   [":ns" ["{}" [":from" [":ns" "bookmark"]] [":to" "ns-text"]]]
-                                                   [":extra" ["{}" [":from" [":extra" "bookmark"]] [":to" "def-text"]]]
-                                                   [":index" "idx"]]]]]
                                                ["meta?" ["d!" ":writer/collapse" "idx"]]
                                                [":else" ["d!" ":writer/point-to" "idx"]]]]]],
                                  "style-highlight" ["def" "style-highlight" ["{}" [":color" ["hsl" "0" "0" "100"]]]],
@@ -568,6 +551,7 @@
                                     ["[]" "defcomp" "cursor->" "<>" "span" "div" "a" "pre"]]]
                                   [":require"
                                    ["[]" "hsl.core" ":refer" ["[]" "hsl"]]
+                                   ["[]" "clojure.string" ":as" "string"]
                                    ["[]" "respo-ui.style" ":as" "ui"]
                                    ["[]" "respo-ui.style.colors" ":as" "colors"]
                                    ["[]" "respo.core" ":refer" ["[]" "create-comp"]]
@@ -638,60 +622,7 @@
                                                                "beginner?"
                                                                "readonly?"]
                                                               ["if" ["not" ["empty?" "stack"]] "ui-missing"]]]]
-                                                           ["div"
-                                                            ["{}" [":style" "style-status"]]
-                                                            ["div"
-                                                             ["{}"]
-                                                             ["<>"
-                                                              "span"
-                                                              ["str"
-                                                               "|Writers("
-                                                               ["count" [":others" "router-data"]]
-                                                               "|)"]
-                                                              "style-hint"]
-                                                             ["div"
-                                                              ["{}" [":style" "style-watchers"]]
-                                                              ["->>"
-                                                               [":others" "router-data"]
-                                                               ["vals"]
-                                                               ["map"
-                                                                ["fn"
-                                                                 ["info"]
-                                                                 ["[]"
-                                                                  [":session-id" "info"]
-                                                                  ["<>" "span" [":nickname" "info"] "style-watcher"]]]]]]
-                                                             ["=<" "16" "nil"]
-                                                             ["<>"
-                                                              "span"
-                                                              ["str"
-                                                               "|Watchers("
-                                                               ["count" [":watchers" "router-data"]]
-                                                               "|)"]
-                                                              "style-hint"]
-                                                             ["div"
-                                                              ["{}" [":style" "style-watchers"]]
-                                                              ["->>"
-                                                               [":watchers" "router-data"]
-                                                               ["map"
-                                                                ["fn"
-                                                                 ["entry"]
-                                                                 ["let"
-                                                                  [[["[]" "sid" "member"] "entry"]]
-                                                                  ["[]"
-                                                                   "sid"
-                                                                   ["<>" "span" [":nickname" "member"] "style-watcher"]]]]]]]]
-                                                            ["div"
-                                                             ["{}"]
-                                                             ["a"
-                                                              ["{}"
-                                                               [":inner-text" "|Shortcuts"]
-                                                               [":href"
-                                                                "|https://github.com/Cirru/stack-editor/wiki/Keyboard-Shortcuts"]
-                                                               [":target" "|_blank"]]]
-                                                             ["=<" "8" "nil"]
-                                                             ["comp-beginner-mode"
-                                                              "state"
-                                                              ["on-toggle" "state" "cursor"]]]]
+                                                           ["render-status" "router-data" "state" "cursor" "bookmark"]
                                                            ["--" "comp-inspect" "|Expr" "router-data" "style/inspector"]]]]],
                                     "style-status" ["def"
                                                     "style-status"
@@ -741,7 +672,104 @@
                                                       [":font-family" "|Josefin Sans"]
                                                       [":color" ["hsl" "10" "60" "50"]]
                                                       [":font-size" "20"]
-                                                      [":font-weight" "100"]]]},
+                                                      [":font-weight" "100"]]],
+                                    "render-status" ["defn"
+                                                     "render-status"
+                                                     ["router-data" "state" "cursor" "bookmark"]
+                                                     ["div"
+                                                      ["{}" [":style" "style-status"]]
+                                                      ["div"
+                                                       ["{}"]
+                                                       ["<>"
+                                                        "span"
+                                                        ["str" "|Writers(" ["count" [":others" "router-data"]] "|)"]
+                                                        "style-hint"]
+                                                       ["div"
+                                                        ["{}" [":style" "style-watchers"]]
+                                                        ["->>"
+                                                         [":others" "router-data"]
+                                                         ["vals"]
+                                                         ["map"
+                                                          ["fn"
+                                                           ["info"]
+                                                           ["[]"
+                                                            [":session-id" "info"]
+                                                            ["<>" "span" [":nickname" "info"] "style-watcher"]]]]]]
+                                                       ["=<" "16" "nil"]
+                                                       ["<>"
+                                                        "span"
+                                                        ["str" "|Watchers(" ["count" [":watchers" "router-data"]] "|)"]
+                                                        "style-hint"]
+                                                       ["div"
+                                                        ["{}" [":style" "style-watchers"]]
+                                                        ["->>"
+                                                         [":watchers" "router-data"]
+                                                         ["map"
+                                                          ["fn"
+                                                           ["entry"]
+                                                           ["let"
+                                                            [[["[]" "sid" "member"] "entry"]]
+                                                            ["[]"
+                                                             "sid"
+                                                             ["<>" "span" [":nickname" "member"] "style-watcher"]]]]]]]
+                                                       ["=<" "16" "nil"]
+                                                       ["span"
+                                                        ["{}"
+                                                         [":inner-text" "|Delete"]
+                                                         [":style" "style-link"]
+                                                         [":on" ["{}" [":click" ["on-delete" "bookmark"]]]]]]
+                                                       ["=<" "8" "nil"]
+                                                       ["span"
+                                                        ["{}"
+                                                         [":inner-text" "|Rename"]
+                                                         [":style" "style-link"]
+                                                         [":on" ["{}" [":click" ["on-rename" "bookmark"]]]]]]]
+                                                      ["div"
+                                                       ["{}"]
+                                                       ["a"
+                                                        ["{}"
+                                                         [":inner-text" "|Shortcuts"]
+                                                         [":href"
+                                                          "|https://github.com/Cirru/stack-editor/wiki/Keyboard-Shortcuts"]
+                                                         [":target" "|_blank"]]]
+                                                       ["=<" "8" "nil"]
+                                                       ["comp-beginner-mode" "state" ["on-toggle" "state" "cursor"]]]]],
+                                    "on-rename" ["defn"
+                                                 "on-rename"
+                                                 ["bookmark"]
+                                                 ["fn"
+                                                  ["e" "d!" "m!"]
+                                                  ["let"
+                                                   [["new-name"
+                                                     ["js/prompt"
+                                                      "|Rename:"
+                                                      ["if"
+                                                       ["=" ":def" [":kind" "bookmark"]]
+                                                       ["str" [":ns" "bookmark"] "|/" [":extra" "bookmark"]]
+                                                       [":ns" "bookmark"]]]]
+                                                    [["[]" "ns-text" "def-text"] ["string/split" "new-name" "|/"]]]
+                                                   ["if"
+                                                    ["some?" "new-name"]
+                                                    ["d!"
+                                                     ":ir/rename"
+                                                     ["{}"
+                                                      [":kind" [":kind" "bookmark"]]
+                                                      [":ns" ["{}" [":from" [":ns" "bookmark"]] [":to" "ns-text"]]]
+                                                      [":extra"
+                                                       ["{}" [":from" [":extra" "bookmark"]] [":to" "def-text"]]]]]]]]],
+                                    "style-link" ["def"
+                                                  "style-link"
+                                                  ["{}"
+                                                   [":font-family" "|Josefin Sans"]
+                                                   [":cursor" ":pointer"]
+                                                   [":font-size" "14"]
+                                                   [":color" ["hsl" "200" "50" "80"]]]],
+                                    "on-delete" ["defn"
+                                                 "on-delete"
+                                                 ["bookmark"]
+                                                 ["fn"
+                                                  ["e" "d!" "m!"]
+                                                  ["d!" ":ir/delete-entry" ["dissoc" "bookmark" ":focus"]]]]},
                              :procs []},
          "util" {:defs {"now!" ["defn" "now!" [] [".valueOf" ["js/Date."]]],
                         "coord-contains?" ["defn"

@@ -62,7 +62,7 @@
            (assoc writer :pointer (if (pos? pointer) (dec pointer) 0)))))))
 
 (defn paste [db op-data session-id op-id op-time]
-  (let [piece (get-in db [:sessions session-id :writer :clipboard])
+  (let [piece (assoc (get-in db [:sessions session-id :writer :clipboard]) :id op-id)
         writer (to-writer db session-id)
         bookmark (to-bookmark writer)
         data-path (bookmark->path bookmark)]

@@ -11,10 +11,12 @@
               to-bookmark
               to-keys
               cirru->tree
-              pick-second-key]]))
+              pick-second-key]]
+            [server.util.list :refer [dissoc-idx]]))
 
 (defn rename [db op-data session-id op-id op-time]
-  (let [{kind :kind, ns-info :ns, extra-info :extra} op-data]
+  (let [{kind :kind, ns-info :ns, extra-info :extra} op-data
+        idx (get-in db [:sessions session-id :writer :pointer])]
     (cond
       (= :ns kind)
         (let [{old-ns :from, new-ns :to} ns-info
@@ -24,7 +26,7 @@
               (update-in
                [:ir :files]
                (fn [files] (-> files (dissoc old-ns) (assoc new-ns (get files old-ns)))))
-              (assoc-in [:sessions session-id :writer :stack (:index op-data) :ns] new-ns)
+              (assoc-in [:sessions session-id :writer :stack idx :ns] new-ns)
               (update-in [:ir :files new-ns :ns :data next-id :text] (fn [x] new-ns))))
       (= :def kind)
         (let [{old-ns :from, new-ns :to} ns-info
@@ -39,7 +41,7 @@
                      (update-in [old-ns :defs] (fn [file] (dissoc file old-def)))
                      (assoc-in [new-ns :defs new-def] (get-in files [old-ns :defs old-def])))))
               (update-in
-               [:sessions session-id :writer :stack (:index op-data)]
+               [:sessions session-id :writer :stack idx]
                (fn [bookmark] (-> bookmark (assoc :ns new-ns) (assoc :extra new-def))))
               (update-in
                [:ir :files new-ns :defs new-def :data next-id :text]
@@ -267,6 +269,31 @@
          [:ir :files op-data]
          (assoc schema/file :ns default-expr :proc empty-expr))
         (assoc-in [:sessions session-id :writer :selected-ns] op-data))))
+
+(defn delete-entry [db op-data session-id op-id op-time]
+  (println "delete" op-data)
+  (case (:kind op-data)
+    :def
+      (-> db
+          (update-in
+           [:ir :files (:ns op-data) :defs]
+           (fn [defs] (dissoc defs (:extra op-data))))
+          (update-in
+           [:sessions session-id :writer]
+           (fn [writer]
+             (-> writer
+                 (update :stack (fn [stack] (dissoc-idx stack (:pointer writer))))
+                 (update :pointer dec)))))
+    :ns
+      (-> db
+          (update-in [:ir :files] (fn [files] (dissoc files (:ns op-data))))
+          (update-in
+           [:sessions session-id :writer]
+           (fn [writer]
+             (-> writer
+                 (update :stack (fn [stack] (dissoc-idx stack (:pointer writer))))
+                 (update :pointer dec)))))
+    (:else db)))
 
 (defn delete-node [db op-data session-id op-id op-time]
   (let [writer (get-in db [:sessions session-id :writer])
