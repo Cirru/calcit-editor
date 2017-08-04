@@ -51,15 +51,25 @@
 (defn render-file [state selected-ns defs-set]
   (div
    {:style style-file}
-   (div {} (<> span "File" style/title) (=< 16 nil) (<> span selected-ns nil))
    (div
     {}
-    (span {:inner-text "ns", :style style-link, :on {:click on-edit-ns}})
+    (<> span "File" style/title)
+    (=< 16 nil)
+    (span {:inner-text selected-ns, :style style-link, :on {:click on-edit-ns}})
     (=< 16 nil)
     (span {:inner-text "proc", :style style-link, :on {:click on-edit-proc}}))
    (div
     {}
+    (input
+     {:value (:def-text state),
+      :placeholder "a def",
+      :style style-input,
+      :on {:input (on-input-def state), :keydown (on-keydown-def state)}}))
+   (=< nil 8)
+   (div
+    {}
     (->> defs-set
+         (filter (fn [def-text] (string/includes? def-text (:def-text state))))
          (sort)
          (map
           (fn [def-text]
@@ -74,15 +84,7 @@
                {:class-name "ion-md-trash is-minor",
                 :title "Remove def",
                 :style style-remove,
-                :on {:click (on-remove-def def-text)}}))]))))
-   (=< nil 8)
-   (div
-    {}
-    (input
-     {:value (:def-text state),
-      :placeholder "a def",
-      :style style-input,
-      :on {:input (on-input-def state), :keydown (on-keydown-def state)}}))))
+                :on {:click (on-remove-def def-text)}}))]))))))
 
 (def style-ns
   {:cursor :pointer, :vertical-align :middle, :position :relative, :padding "0 8px"})
@@ -122,7 +124,16 @@
    (div {:style style/title} (<> span "Namespaces" nil))
    (div
     {}
+    (input
+     {:value (:ns-text state),
+      :placeholder "a namespace",
+      :style style-input,
+      :on {:input (on-input-ns state), :keydown (on-keydown-ns state)}}))
+   (=< nil 8)
+   (div
+    {}
     (->> ns-set
+         (filter (fn [ns-text] (string/includes? ns-text (:ns-text state))))
          (sort)
          (map
           (fn [ns-text]
@@ -136,15 +147,7 @@
                {:class-name "ion-md-trash is-minor",
                 :title "Remove ns",
                 :style style-remove,
-                :on {:click (on-remove-ns ns-text)}}))]))))
-   (=< nil 8)
-   (div
-    {}
-    (input
-     {:value (:ns-text state),
-      :placeholder "a namespace",
-      :style style-input,
-      :on {:input (on-input-ns state), :keydown (on-keydown-ns state)}}))))
+                :on {:click (on-remove-ns ns-text)}}))]))))))
 
 (defcomp
  comp-page-files

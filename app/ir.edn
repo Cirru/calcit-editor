@@ -1481,12 +1481,9 @@
                                                     ["{}"]
                                                     ["<>" "span" "|File" "style/title"]
                                                     ["=<" "16" "nil"]
-                                                    ["<>" "span" "selected-ns" "nil"]]
-                                                   ["div"
-                                                    ["{}"]
                                                     ["span"
                                                      ["{}"
-                                                      [":inner-text" "|ns"]
+                                                      [":inner-text" "selected-ns"]
                                                       [":style" "style-link"]
                                                       [":on" ["{}" [":click" "on-edit-ns"]]]]]
                                                     ["=<" "16" "nil"]
@@ -1497,8 +1494,24 @@
                                                       [":on" ["{}" [":click" "on-edit-proc"]]]]]]
                                                    ["div"
                                                     ["{}"]
+                                                    ["input"
+                                                     ["{}"
+                                                      [":value" [":def-text" "state"]]
+                                                      [":placeholder" "|a def"]
+                                                      [":style" "style-input"]
+                                                      [":on"
+                                                       ["{}"
+                                                        [":input" ["on-input-def" "state"]]
+                                                        [":keydown" ["on-keydown-def" "state"]]]]]]]
+                                                   ["=<" "nil" "8"]
+                                                   ["div"
+                                                    ["{}"]
                                                     ["->>"
                                                      "defs-set"
+                                                     ["filter"
+                                                      ["fn"
+                                                       ["def-text"]
+                                                       ["string/includes?" "def-text" [":def-text" "state"]]]]
                                                      ["sort"]
                                                      ["map"
                                                       ["fn"
@@ -1517,19 +1530,7 @@
                                                            [":class-name" "|ion-md-trash is-minor"]
                                                            [":title" "|Remove def"]
                                                            [":style" "style-remove"]
-                                                           [":on" ["{}" [":click" ["on-remove-def" "def-text"]]]]]]]]]]]]
-                                                   ["=<" "nil" "8"]
-                                                   ["div"
-                                                    ["{}"]
-                                                    ["input"
-                                                     ["{}"
-                                                      [":value" [":def-text" "state"]]
-                                                      [":placeholder" "|a def"]
-                                                      [":style" "style-input"]
-                                                      [":on"
-                                                       ["{}"
-                                                        [":input" ["on-input-def" "state"]]
-                                                        [":keydown" ["on-keydown-def" "state"]]]]]]]]],
+                                                           [":on" ["{}" [":click" ["on-remove-def" "def-text"]]]]]]]]]]]]]],
                                    "on-input-def" ["defn"
                                                    "on-input-def"
                                                    ["state"]
@@ -1660,8 +1661,24 @@
                                                     ["<>" "span" "|Namespaces" "nil"]]
                                                    ["div"
                                                     ["{}"]
+                                                    ["input"
+                                                     ["{}"
+                                                      [":value" [":ns-text" "state"]]
+                                                      [":placeholder" "|a namespace"]
+                                                      [":style" "style-input"]
+                                                      [":on"
+                                                       ["{}"
+                                                        [":input" ["on-input-ns" "state"]]
+                                                        [":keydown" ["on-keydown-ns" "state"]]]]]]]
+                                                   ["=<" "nil" "8"]
+                                                   ["div"
+                                                    ["{}"]
                                                     ["->>"
                                                      "ns-set"
+                                                     ["filter"
+                                                      ["fn"
+                                                       ["ns-text"]
+                                                       ["string/includes?" "ns-text" [":ns-text" "state"]]]]
                                                      ["sort"]
                                                      ["map"
                                                       ["fn"
@@ -1683,19 +1700,7 @@
                                                            [":class-name" "|ion-md-trash is-minor"]
                                                            [":title" "|Remove ns"]
                                                            [":style" "style-remove"]
-                                                           [":on" ["{}" [":click" ["on-remove-ns" "ns-text"]]]]]]]]]]]]
-                                                   ["=<" "nil" "8"]
-                                                   ["div"
-                                                    ["{}"]
-                                                    ["input"
-                                                     ["{}"
-                                                      [":value" [":ns-text" "state"]]
-                                                      [":placeholder" "|a namespace"]
-                                                      [":style" "style-input"]
-                                                      [":on"
-                                                       ["{}"
-                                                        [":input" ["on-input-ns" "state"]]
-                                                        [":keydown" ["on-keydown-ns" "state"]]]]]]]]],
+                                                           [":on" ["{}" [":click" ["on-remove-ns" "ns-text"]]]]]]]]]]]]]],
                                    "style-link" ["def" "style-link" ["{}" [":cursor" ":pointer"]]],
                                    "on-edit-ns" ["defn"
                                                  "on-edit-ns"
