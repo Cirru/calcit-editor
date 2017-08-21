@@ -84,13 +84,19 @@
            (d! :analyze/goto-def {:text (:text leaf), :forced? shift?}))
         :else (do (comment println "Keydown leaf" code) (on-window-keydown event d!))))))
 
+(def style-partial {:border-right (str "8px solid " (hsl 0 0 30)), :padding-right 0})
+
 (defcomp
  comp-leaf
  (states leaf focus coord by-other? first? readonly?)
  (let [state (or (:data states) initial-state)
        text (if (> (:time state) (:time leaf)) (:text state) (:text leaf))
        focused? (= focus coord)
-       has-blank? (or (= text "") (string/includes? text " "))]
+       has-blank? (or (= text "") (string/includes? text " "))
+       best-width (+
+                   10
+                   (text-width* text (:font-size style-leaf) (:font-family style-leaf)))
+       max-width 240]
    (input
     {:value text,
      :spellcheck false,
@@ -98,12 +104,11 @@
      :read-only readonly?,
      :style (merge
              {}
-             {:width (+
-                      10
-                      (text-width* text (:font-size style-leaf) (:font-family style-leaf)))}
+             {:width (min best-width max-width)}
              (if first? style-first)
              (if (string/starts-with? text ":") style-keyword)
              (if (string/starts-with? text "|") style-string)
+             (if (> best-width max-width) style-partial)
              (if (re-find (re-pattern "^-?\\d") text) style-number)
              (if has-blank? style-space)
              (if (or focused? by-other?) style-highlight)),

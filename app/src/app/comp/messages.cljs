@@ -29,6 +29,7 @@
  (div
   {}
   (->> messages
+       (take-last 4)
        (map-indexed
         (fn [idx msg]
           [(:id msg)

@@ -102,7 +102,15 @@
                                               [":text" "state"]
                                               [":text" "leaf"]]]
                                             ["focused?" ["=" "focus" "coord"]]
-                                            ["has-blank?" ["or" ["=" "text" "|"] ["string/includes?" "text" "| "]]]]
+                                            ["has-blank?" ["or" ["=" "text" "|"] ["string/includes?" "text" "| "]]]
+                                            ["best-width"
+                                             ["+"
+                                              "10"
+                                              ["text-width*"
+                                               "text"
+                                               [":font-size" "style-leaf"]
+                                               [":font-family" "style-leaf"]]]]
+                                            ["max-width" "240"]]
                                            ["input"
                                             ["{}"
                                              [":value" "text"]
@@ -113,17 +121,11 @@
                                              [":style"
                                               ["merge"
                                                ["{}"]
-                                               ["{}"
-                                                [":width"
-                                                 ["+"
-                                                  "10"
-                                                  ["text-width*"
-                                                   "text"
-                                                   [":font-size" "style-leaf"]
-                                                   [":font-family" "style-leaf"]]]]]
+                                               ["{}" [":width" ["min" "best-width" "max-width"]]]
                                                ["if" "first?" "style-first"]
                                                ["if" ["string/starts-with?" "text" "|:"] "style-keyword"]
                                                ["if" ["string/starts-with?" "text" "||"] "style-string"]
+                                               ["if" [">" "best-width" "max-width"] "style-partial"]
                                                ["if" ["re-find" ["re-pattern" "|^-?\\d"] "text"] "style-number"]
                                                ["if" "has-blank?" "style-space"]
                                                ["if" ["or" "focused?" "by-other?"] "style-highlight"]]]
@@ -214,7 +216,12 @@
                                               [":else"
                                                ["do"
                                                 ["--" "println" "|Keydown leaf" "code"]
-                                                ["on-window-keydown" "event" "d!"]]]]]]]},
+                                                ["on-window-keydown" "event" "d!"]]]]]]],
+                             "style-partial" ["def"
+                                              "style-partial"
+                                              ["{}"
+                                               [":border-right" ["str" "|8px solid " ["hsl" "0" "0" "30"]]]
+                                               [":padding-right" "0"]]]},
                       :procs []},
          "comp.bookmark" {:ns ["ns"
                                "app.comp.bookmark"
@@ -305,13 +312,7 @@
                                                       ["merge" "style-main" ["if" "selected?" "style-highlight"]]]]
                                                     ["div"
                                                      ["{}"]
-                                                     ["<>" "span" ["name" [":kind" "bookmark"]] "style-kind"]
-                                                     ["=<" "8" "nil"]
-                                                     ["span"
-                                                      ["{}"
-                                                       [":class-name" "|ion-md-close"]
-                                                       [":style" "style-remove"]
-                                                       [":on" ["{}" [":click" ["on-remove" "idx"]]]]]]]]]],
+                                                     ["<>" "span" ["name" [":kind" "bookmark"]] "style-kind"]]]]],
                                  "style-main" ["def"
                                                "style-main"
                                                ["{}" [":vertical-align" ":middle"] [":color" ["hsl" "0" "0" "70"]]]]},
@@ -841,6 +842,7 @@
                                                    ["{}"]
                                                    ["->>"
                                                     "messages"
+                                                    ["take-last" "4"]
                                                     ["map-indexed"
                                                      ["fn"
                                                       ["idx" "msg"]

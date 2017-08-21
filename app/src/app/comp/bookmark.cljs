@@ -59,8 +59,4 @@
      :style (merge style-bookmark),
      :on {:click (on-pick bookmark idx)}}
     (div {} (<> span (:ns bookmark) (merge style-main (if selected? style-highlight))))
-    (div
-     {}
-     (<> span (name (:kind bookmark)) style-kind)
-     (=< 8 nil)
-     (span {:class-name "ion-md-close", :style style-remove, :on {:click (on-remove idx)}})))))
+    (div {} (<> span (name (:kind bookmark)) style-kind)))))
