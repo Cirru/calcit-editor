@@ -16,7 +16,8 @@
             [app.comp.messages :refer [comp-messages]]
             [app.comp.watching :refer [comp-watching]]))
 
-(def style-alert {:font-family "Josefin Sans", :font-weight 100, :font-size 40})
+(def style-alert
+  {:font-family "Josefin Sans", :font-weight 100, :font-size 40, :color (hsl 0 80 60)})
 
 (def style-body {:padding-top 16})
 
