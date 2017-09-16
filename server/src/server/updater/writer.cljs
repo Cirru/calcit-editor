@@ -126,7 +126,14 @@
         last-coord (last (:focus bookmark))
         parent-path (bookmark->path (update bookmark :focus butlast))]
     (-> db
-        (assoc-in [:sessions session-id :writer :clipboard] (get-in db data-path))
+        (update-in
+         [:sessions session-id :writer]
+         (fn [writer]
+           (-> writer
+               (assoc :clipboard (get-in db data-path))
+               (update-in
+                [:stack (:pointer writer) :focus]
+                (fn [focus] (vec (butlast focus)))))))
         (update-in
          parent-path
          (fn [expr] (update expr :data (fn [data] (dissoc data last-coord))))))))

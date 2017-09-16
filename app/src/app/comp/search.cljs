@@ -78,6 +78,7 @@
     (div
      {:style (merge ui/flex style-body)}
      (->> candidates
+          (take 20)
           (map-indexed
            (fn [idx bookmark]
              (let [text (bookmark->str bookmark)]
