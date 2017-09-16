@@ -43,7 +43,7 @@
        {}
        (<> span "Watching mode" style-tip)
        (=< 16 nil)
-       (comp-beginner-mode beginner? (on-toggle beginner? cursor))
+       (comp-beginner-mode beginner? (on-toggle beginner? *cursor*))
        (=< 16 nil)
        (<> span member-name nil)
        (=< 16 nil)

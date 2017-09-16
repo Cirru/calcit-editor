@@ -18,5 +18,5 @@
    {:style (merge style-beginner (if beginner? style-active)), :on {:click toggler}}
    (<> span "Beginner?" nil)))
 
-(defn on-toggle [state cursor]
-  (fn [e d! m!] (println "Toggleing" cursor state) (m! cursor (not state))))
+(defn on-toggle [state *cursor*]
+  (fn [e d! m!] (println "Toggleing" *cursor* state) (m! *cursor* (not state))))

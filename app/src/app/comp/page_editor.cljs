@@ -59,7 +59,7 @@
 
 (defn on-delete [bookmark] (fn [e d! m!] (d! :ir/delete-entry (dissoc bookmark :focus))))
 
-(defn render-status [router-data state cursor bookmark]
+(defn render-status [router-data state *cursor* bookmark]
   (div
    {:style style-status}
    (div
@@ -89,7 +89,7 @@
       :href "https://github.com/Cirru/stack-editor/wiki/Keyboard-Shortcuts",
       :target "_blank"})
     (=< 8 nil)
-    (comp-beginner-mode state (on-toggle state cursor)))))
+    (comp-beginner-mode state (on-toggle state *cursor*)))))
 
 (defcomp
  comp-page-editor
@@ -131,5 +131,5 @@
            beginner?
            readonly?)
           (if (not (empty? stack)) ui-missing))))
-     (render-status router-data state cursor bookmark)
+     (render-status router-data state *cursor* bookmark)
      (comment comp-inspect "Expr" router-data style/inspector)))))
