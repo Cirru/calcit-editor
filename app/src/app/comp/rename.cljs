@@ -15,17 +15,22 @@
 
 (defn on-keydown [new-name bookmark close-rename!]
   (fn [e d! m!]
-    (if (= 13 (:key-code e))
-      (let [[ns-text def-text] (string/split new-name "/")]
-        (if (not (string/blank? new-name))
-          (do
-           (d!
-            :ir/rename
-            {:kind (:kind bookmark),
-             :ns {:from (:ns bookmark), :to ns-text},
-             :extra {:from (:extra bookmark), :to def-text}})
-           (m! nil)
-           (close-rename! m!)))))))
+    (case (:key-code e)
+      13
+        (let [[ns-text def-text] (string/split new-name "/")]
+          (if (not (string/blank? new-name))
+            (do
+             (d!
+              :ir/rename
+              {:kind (:kind bookmark),
+               :ns {:from (:ns bookmark), :to ns-text},
+               :extra {:from (:extra bookmark), :to def-text}})
+             (m! nil)
+             (close-rename! m!))))
+      27 (close-rename! m!)
+      (println "unkown keycode" e))))
+
+(def style-input {:min-width 360})
 
 (defcomp
  comp-rename
@@ -36,7 +41,7 @@
      {}
      (div {} (<> (str "Rename " old-name " to:")))
      (input
-      {:style style/input,
+      {:style (merge style/input style-input),
        :class-name "el-rename",
        :value current-name,
        :placeholder old-name,
