@@ -13,7 +13,8 @@
             [app.comp.expr :refer [comp-expr style-expr]]
             [app.comp.leaf :refer [style-leaf]]
             [app.style :as style]
-            [app.util.dom :refer [inject-style]]))
+            [app.util.dom :refer [inject-style]]
+            [app.comp.rename :refer [comp-rename]]))
 
 (def style-status (merge ui/row {:justify-content :space-between, :padding "0 8px"}))
 
@@ -39,20 +40,12 @@
 
 (def style-watcher {:color (hsl 0 0 100 0.7), :margin-left 8})
 
-(defn on-rename [bookmark]
+(def initial-state {:beginner? false, :renaming? false})
+
+(defn on-rename [state]
   (fn [e d! m!]
-    (let [new-name (js/prompt
-                    "Rename:"
-                    (if (= :def (:kind bookmark))
-                      (str (:ns bookmark) "/" (:extra bookmark))
-                      (:ns bookmark)))
-          [ns-text def-text] (string/split new-name "/")]
-      (if (some? new-name)
-        (d!
-         :ir/rename
-         {:kind (:kind bookmark),
-          :ns {:from (:ns bookmark), :to ns-text},
-          :extra {:from (:extra bookmark), :to def-text}})))))
+    (m! (update state :renaming? not))
+    (js/setTimeout (fn [] (let [el (.querySelector js/document ".el-rename")] (.focus el))))))
 
 (def style-link
   {:font-family "Josefin Sans", :cursor :pointer, :font-size 14, :color (hsl 200 50 80)})
@@ -81,7 +74,7 @@
     (=< 16 nil)
     (span {:inner-text "Delete", :style style-link, :on {:click (on-delete bookmark)}})
     (=< 8 nil)
-    (span {:inner-text "Rename", :style style-link, :on {:click (on-rename bookmark)}}))
+    (span {:inner-text "Rename", :style style-link, :on {:click (on-rename state)}}))
    (div
     {}
     (a
@@ -94,9 +87,13 @@
 (defcomp
  comp-page-editor
  (states stack router-data pointer)
- (let [state (if (boolean? (:data states)) (:data states) false)
+ (let [state (or (:data states) initial-state)
        bookmark (get stack pointer)
-       readonly? false]
+       readonly? false
+       old-name (if (= :def (:kind bookmark))
+                  (str (:ns bookmark) "/" (:extra bookmark))
+                  (:ns bookmark))
+       close-rename! (fn [mutate!] (mutate! *cursor* (assoc state :renaming? false)))]
    (div
     {:style (merge ui/row ui/flex style-container)}
     (div
@@ -112,7 +109,7 @@
      (let [others (->> (:others router-data) (vals) (map :focus) (into #{}))
            expr (:expr router-data)
            focus (:focus router-data)
-           beginner? state]
+           beginner? (:beginner? state)]
        (div
         {:style style-area}
         (inject-style ".cirru-expr" style-expr)
@@ -132,4 +129,6 @@
            readonly?)
           (if (not (empty? stack)) ui-missing))))
      (render-status router-data state *cursor* bookmark)
+     (if (:renaming? state)
+       (cursor-> :rename comp-rename states old-name close-rename! bookmark))
      (comment comp-inspect "Expr" router-data style/inspector)))))

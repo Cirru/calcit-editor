@@ -19,4 +19,6 @@
    (<> span "Beginner?" nil)))
 
 (defn on-toggle [state *cursor*]
-  (fn [e d! m!] (println "Toggleing" *cursor* state) (m! *cursor* (not state))))
+  (fn [e d! m!]
+    (println "Toggleing" *cursor* state)
+    (m! *cursor* (update state :beginner? not))))
