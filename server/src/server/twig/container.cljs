@@ -16,10 +16,10 @@
            router (:router session)
            writer (:writer session)
            ir (:ir db)]
-       (if logged-in?
+       (if (or logged-in? (= :watching (:name router)))
          {:session (dissoc session :router),
-          :logged-in? true,
-          :user (twig-user (get-in db [:users (:user-id session)])),
+          :logged-in? logged-in?,
+          :user (if logged-in? (twig-user (get-in db [:users (:user-id session)]))),
           :router (assoc
                    router
                    :data
@@ -39,10 +39,13 @@
                      :members (twig-page-members (:sessions db) (:users db))
                      :search (twig-search (:files ir))
                      :watching
-                       (twig-watching
-                        (get-in db [:sessions (:data router)])
-                        (:id session)
-                        (:files ir)
-                        (:users db))
+                       (let [sessions (:sessions db), his-sid (:data router)]
+                         (if (contains? sessions his-sid)
+                           (twig-watching
+                            (get sessions his-sid)
+                            (:id session)
+                            (:files ir)
+                            (:users db))
+                           nil))
                      nil))}
          {:session session, :logged-in? false})))))

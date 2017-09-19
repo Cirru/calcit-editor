@@ -6,7 +6,7 @@
             [cljs.reader :refer [read-string]]
             [app.network :refer [send! setup-socket!]]
             [app.schema :as schema]
-            [app.util :refer [ws-host]]
+            [app.util :refer [ws-host parse-query!]]
             [app.util.dom :refer [focus!]]
             [app.util.shortcuts :refer [on-window-keydown]]))
 
@@ -26,6 +26,13 @@
       (do (println "Found storage.") (dispatch! :user/log-in (read-string raw)))
       (do (println "Found no storage.")))))
 
+(defn detect-watching! []
+  (let [query (parse-query!)]
+    (if (some? (:watching query))
+      (do
+       (println "say watching")
+       (dispatch! :router/change {:name :watching, :data (:watching query)})))))
+
 (def mount-target (.querySelector js/document ".app"))
 
 (defn render-app! [renderer]
@@ -38,7 +45,7 @@
    *store
    {:url ws-host,
     :on-close! (fn [event] (reset! *store nil) (.error js/console "Lost connection!")),
-    :on-open! (fn [event] (simulate-login!))})
+    :on-open! (fn [event] (simulate-login!) (detect-watching!))})
   (add-watch
    *store
    :changes

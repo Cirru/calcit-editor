@@ -56,4 +56,9 @@
                      " _"
                      (string/join "_" (:focus bookmark))
                      "_")
-                    style-bookmark))))])))))))
+                    style-bookmark)))
+               (=< 32 nil)
+               (if (= k session-id)
+                 (a
+                  {:href (str (.-href js/location) "&watching=" k), :target "_blank"}
+                  (<> span "Watching url" nil))))])))))))

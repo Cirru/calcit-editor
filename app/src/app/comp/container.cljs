@@ -64,8 +64,10 @@
            :search (cursor-> :search comp-search states (:data router))
            :watching (cursor-> :watching comp-watching states (:data router))
            (div {} (<> span (str "404 page: " (pr-str router)) nil)))
-         (comp-login states)))
-      (comment comp-inspect "Session" (:session store) style-inspector)
+         (if (= :watching (:name router))
+           (cursor-> :watching comp-watching states (:data router))
+           (comp-login states))))
+      (comment comp-inspect "Session" store style-inspector)
       (comment
        comp-inspect
        "Router data"

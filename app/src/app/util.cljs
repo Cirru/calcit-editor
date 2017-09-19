@@ -13,11 +13,14 @@
 
 (defn expr? [x] (= :expr (:type x)))
 
+(defn parse-query! []
+  (->> (-> (.-search js/location) (subs 1) (string/split "&"))
+       (map (fn [chunk] (update (vec (string/split chunk "=")) 0 keyword)))
+       (into {})))
+
 (def ws-host
   (if (and (exists? js/location) (not (string/blank? (.-search js/location))))
-    (let [query (->> (-> (.-search js/location) (subs 1) (string/split "&"))
-                     (map (fn [chunk] (update (vec (string/split chunk "=")) 0 keyword)))
-                     (into {}))]
+    (let [query (parse-query!)]
       (println "Loading from url" query)
       (str
        "ws://"

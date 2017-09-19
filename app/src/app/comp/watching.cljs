@@ -35,36 +35,38 @@
        beginner? (if (boolean? (:data states)) (:data states) false)
        member-name (get-in router-data [:member :nickname])
        readonly? true]
-   (if (:self? router-data)
-     (div {:style style-container} (<> span "Watching at yourself :)" style-title))
-     (div
-      {:style style-container}
-      (div
-       {}
-       (<> span "Watching mode" style-tip)
-       (=< 16 nil)
-       (comp-beginner-mode beginner? (on-toggle beginner? *cursor*))
-       (=< 16 nil)
-       (<> span member-name nil)
-       (=< 16 nil)
-       (<> span (:kind bookmark) nil)
-       (=< 16 nil)
-       (<> span (str (:ns bookmark) "/" (:extra bookmark)) nil))
-      (=< nil 16)
-      (if (:working? router-data)
+   (if (nil? router-data)
+     (div {:style style-container} (<> span "Session is missing!" nil))
+     (if (:self? router-data)
+       (div {:style style-container} (<> span "Watching at yourself :)" style-title))
+       (div
+        {:style style-container}
         (div
          {}
-         (inject-style ".cirru-expr" style-expr)
-         (inject-style ".cirru-leaf" style-leaf)
-         (cursor->
-          (:id expr)
-          comp-expr
-          states
-          expr
-          focus
-          []
-          others
-          false
-          false
-          beginner?
-          readonly?)))))))
+         (<> span "Watching mode" style-tip)
+         (=< 16 nil)
+         (comp-beginner-mode beginner? (on-toggle beginner? *cursor*))
+         (=< 16 nil)
+         (<> span member-name nil)
+         (=< 16 nil)
+         (<> span (:kind bookmark) nil)
+         (=< 16 nil)
+         (<> span (str (:ns bookmark) "/" (:extra bookmark)) nil))
+        (=< nil 16)
+        (if (:working? router-data)
+          (div
+           {}
+           (inject-style ".cirru-expr" style-expr)
+           (inject-style ".cirru-leaf" style-leaf)
+           (cursor->
+            (:id expr)
+            comp-expr
+            states
+            expr
+            focus
+            []
+            others
+            false
+            false
+            beginner?
+            readonly?))))))))
