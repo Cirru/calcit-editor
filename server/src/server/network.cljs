@@ -5,7 +5,8 @@
             [cljs.core.async :refer [chan >!]]
             [server.twig.container :refer [twig-container]]
             [recollect.diff :refer [diff-bunch]]
-            [recollect.bunch :refer [render-bunch]])
+            [recollect.bunch :refer [render-bunch]]
+            ["chalk" :as chalk])
   (:require-macros [cljs.core.async.macros :refer [go]]))
 
 (defonce socket-registry (atom {}))
@@ -24,7 +25,6 @@
 
 (defn run-server! [configs]
   (let [port (:port configs), wss (new WebSocketServer (js-obj "port" port))]
-    (println "Edit with " (str "http://cumulo-editor.cirru.org?port=" port))
     (.on
      wss
      "connection"
@@ -32,7 +32,7 @@
        (let [session-id (.generate shortid)]
          (handle-message :session/connect nil session-id)
          (swap! socket-registry assoc session-id socket)
-         (.info js/console "New client.")
+         (println (.gray chalk (str "client connected: " session-id)))
          (.on
           socket
           "message"
@@ -43,7 +43,7 @@
           socket
           "close"
           (fn []
-            (.warn js/console "Client closed!")
+            (println (.gray chalk (str "client disconnected: " session-id)))
             (swap! socket-registry dissoc session-id)
             (handle-message :session/disconnect nil session-id)))))))
   server-chan)

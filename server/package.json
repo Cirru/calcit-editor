@@ -24,6 +24,7 @@
   },
   "homepage": "https://github.com/mvc-works/boot-workflow#readme",
   "dependencies": {
+    "chalk": "^2.1.0",
     "shortid": "^2.2.8",
     "uws": "^8.14.1"
   },

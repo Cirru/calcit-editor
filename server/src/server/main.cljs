@@ -6,7 +6,8 @@
             [cljs.core.async :refer [<! >!]]
             [cljs.reader :refer [read-string]]
             [server.util.compile :refer [handle-files! persist!]]
-            [server.util.env :refer [pick-configs]])
+            [server.util.env :refer [pick-configs]]
+            ["chalk" :as chalk])
   (:require-macros [cljs.core.async.macros :refer [go-loop go]]))
 
 (defonce *writer-db
@@ -14,10 +15,8 @@
    (let [fs (js/require "fs")
          filepath (:storage-key schema/configs)
          db (if (fs.existsSync filepath)
-              (do
-               (println "Loading existing database storagte...")
-               (read-string (fs.readFileSync filepath "utf8")))
-              (do (println "Using default schema.") schema/database))]
+              (read-string (fs.readFileSync filepath "utf8"))
+              (do (println (.yellow chalk "Using default schema.")) schema/database))]
      (-> db
          (assoc :saved-files (get-in db [:ir :files]))
          (update :configs (fn [configs] (or configs schema/configs)))))))
@@ -48,7 +47,7 @@
            :else
              (let [new-db (updater @*writer-db op op-data session-id op-id op-time)]
                (reset! *writer-db new-db))))
-        (catch js/Error e (.log js/console e)))
+        (catch js/Error e (println (.red chalk e))))
        (recur)))
     (render-loop!))
   (add-watch *reader-db :log (fn [] ))
@@ -56,10 +55,12 @@
    js/process
    "SIGINT"
    (fn [code]
-     (println "Saving coir.edn with code" code)
      (persist! @*writer-db)
+     (println (str "\n" "Saved coir.edn") (str (if (some? code) (str "with " code))))
      (.exit js/process)))
-  (println "Server started."))
+  (println
+   "Server started, please edit on"
+   (.blue chalk (str "http://cumulo-editor.cirru.org?port=" (:port configs)))))
 
 (defn compile-all-files! [configs]
   (handle-files!
@@ -72,4 +73,4 @@
   (let [configs (pick-configs (:configs @*writer-db)), op (get configs :op)]
     (if (= op "compile") (compile-all-files! configs) (start-server! configs))))
 
-(defn reload! [] (println "Code updated.") (render-clients! @*reader-db))
+(defn reload! [] (println (.gray chalk "code updated.")) (render-clients! @*reader-db))

@@ -4,7 +4,8 @@
             [stack-server.analyze :refer [generate-file]]
             [server.util :refer [ns->path file->cirru]]
             [fipp.edn :as fipp]
-            [server.schema :as schema]))
+            [server.schema :as schema]
+            ["chalk" :as chalk]))
 
 (def path (js/require "path"))
 
@@ -12,8 +13,8 @@
 
 (defn modify-file! [file-path file configs]
   (let [project-path (path.join (:output configs) file-path)]
-    (println "Modifying" project-path)
-    (fs.writeFileSync project-path (generate-file (file->cirru file)))))
+    (fs.writeFileSync project-path (generate-file (file->cirru file)))
+    (println (.gray chalk (str "modified" project-path)))))
 
 (def cp (js/require "child_process"))
 
@@ -24,18 +25,20 @@
     (fs.writeFileSync
      (:storage-key schema/configs)
      (pr-str (-> db (assoc :sessions {}) (assoc :saved-files {}))))
-    (println (str "Took " (- (now!) start-time) "ms to wrote!"))))
+    (comment
+     println
+     (.gray chalk (str "took " (- (now!) start-time) "ms to wrote coir.edn")))))
 
 (defn create-file! [file-path file configs]
   (let [project-path (path.join (:output configs) file-path)]
-    (println "Creating" project-path)
     (cp.execSync (str "mkdir -p " (path.dirname project-path)))
-    (fs.writeFileSync project-path (generate-file (file->cirru file)))))
+    (fs.writeFileSync project-path (generate-file (file->cirru file)))
+    (println (.gray chalk (str "created " project-path)))))
 
 (defn remove-file! [file-path configs]
   (let [project-path (path.join (:output configs) file-path)]
-    (println "Removing" project-path)
-    (cp.execSync (str "rm -rfv " project-path))))
+    (cp.execSync (str "rm -rfv " project-path))
+    (println (.red chalk (str "removed " project-path)))))
 
 (defn handle-files! [db configs dispatch! save-ir?]
   (try
@@ -55,5 +58,8 @@
      (doseq [ns-text changed-names]
        (modify-file! (ns->path ns-text configs) (get new-files ns-text) configs))
      (dispatch! :writer/save-files nil)
-     (if save-ir? (do (println "Writing coir.edn") (js/setTimeout (fn [] (persist! db))))))
-   (catch js/Error e (do (.log js/console e) (dispatch! :notify/push-error (.-message e))))))
+     (if save-ir? (do (js/setTimeout (fn [] (persist! db))))))
+   (catch
+    js/Error
+    e
+    (do (println (.red chalk e)) (dispatch! :notify/push-error (.-message e))))))

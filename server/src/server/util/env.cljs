@@ -1,5 +1,5 @@
 
-(ns server.util.env )
+(ns server.util.env (:require ["chalk" :as chalk]))
 
 (defn pick-configs [configs]
   (let [cli-port (if (some? (aget js/process.env "port"))
@@ -10,5 +10,5 @@
                    (update :port (fn [port] (or cli-port port)))
                    (update :op (fn [op] (or cli-op op)))
                    (update :extension (fn [extension] (or cli-extension extension))))]
-    (println "Using configs:" result)
+    (comment println (.gray chalk result))
     result))
