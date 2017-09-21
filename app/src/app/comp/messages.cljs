@@ -36,7 +36,7 @@
            (div
             {:style (merge
                      style-message
-                     {:bottom (+ 8 (* idx 40))}
+                     {:bottom (+ 40 (* idx 40))}
                      {:color (case (:kind msg)
                         :error (hsl 0 80 80)
                         :warning (hsl 60 80 80)
