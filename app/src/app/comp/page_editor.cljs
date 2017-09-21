@@ -14,7 +14,8 @@
             [app.comp.leaf :refer [style-leaf]]
             [app.style :as style]
             [app.util.dom :refer [inject-style]]
-            [app.comp.rename :refer [comp-rename]]))
+            [app.comp.rename :refer [comp-rename]]
+            [app.comp.draft-box :refer [comp-draft-box]]))
 
 (def style-status (merge ui/row {:justify-content :space-between, :padding "0 8px"}))
 
@@ -40,7 +41,14 @@
 
 (def style-watcher {:color (hsl 0 0 100 0.7), :margin-left 8})
 
-(def initial-state {:beginner? false, :renaming? false})
+(def initial-state {:beginner? false, :renaming? false, :draft-box? false})
+
+(defn on-draft-box [state]
+  (fn [e d! m!]
+    (m! (update state :draft-box? not))
+    (js/setTimeout
+     (fn []
+       (let [el (.querySelector js/document ".el-draft-box")] (if (some? el) (.focus el)))))))
 
 (defn on-rename [state]
   (fn [e d! m!]
@@ -74,7 +82,9 @@
     (=< 16 nil)
     (span {:inner-text "Delete", :style style-link, :on {:click (on-delete bookmark)}})
     (=< 8 nil)
-    (span {:inner-text "Rename", :style style-link, :on {:click (on-rename state)}}))
+    (span {:inner-text "Rename", :style style-link, :on {:click (on-rename state)}})
+    (=< 8 nil)
+    (span {:inner-text "Draft-box", :style style-link, :on {:click (on-draft-box state)}}))
    (div
     {}
     (a
@@ -89,11 +99,14 @@
  (states stack router-data pointer)
  (let [state (or (:data states) initial-state)
        bookmark (get stack pointer)
+       expr (:expr router-data)
+       focus (:focus router-data)
        readonly? false
        old-name (if (= :def (:kind bookmark))
                   (str (:ns bookmark) "/" (:extra bookmark))
                   (:ns bookmark))
-       close-rename! (fn [mutate!] (mutate! *cursor* (assoc state :renaming? false)))]
+       close-rename! (fn [mutate!] (mutate! *cursor* (assoc state :renaming? false)))
+       close-draft-box! (fn [mutate!] (mutate! *cursor* (assoc state :draft-box? false)))]
    (div
     {:style (merge ui/row ui/flex style-container)}
     (div
@@ -107,8 +120,6 @@
     (div
      {:style style-editor}
      (let [others (->> (:others router-data) (vals) (map :focus) (into #{}))
-           expr (:expr router-data)
-           focus (:focus router-data)
            beginner? (:beginner? state)]
        (div
         {:style style-area}
@@ -131,4 +142,6 @@
      (render-status router-data state *cursor* bookmark)
      (if (:renaming? state)
        (cursor-> :rename comp-rename states old-name close-rename! bookmark))
+     (if (:draft-box? state)
+       (cursor-> :draft-box comp-draft-box states expr focus close-draft-box!))
      (comment comp-inspect "Expr" router-data style/inspector)))))

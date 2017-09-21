@@ -37,6 +37,7 @@
  (states old-name close-rename! bookmark)
  (let [current-name (or (:data states) old-name)]
    (comp-modal
+    close-rename!
     (div
      {}
      (div {} (<> (str "Rename " old-name " to:")))
@@ -45,5 +46,4 @@
        :class-name "el-rename",
        :value current-name,
        :placeholder old-name,
-       :on {:input on-input, :keydown (on-keydown current-name bookmark close-rename!)}}))
-    close-rename!)))
+       :on {:input on-input, :keydown (on-keydown current-name bookmark close-rename!)}})))))
