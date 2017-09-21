@@ -58,4 +58,5 @@
     :notify/push-error (notify/push-error db op-data session-id op-id op-time)
     :notify/clear (notify/clear db op-data session-id op-id op-time)
     :analyze/goto-def (analyze/goto-def db op-data session-id op-id op-time)
+    :analyze/abstract-def (analyze/abstract-def db op-data session-id op-id op-time)
     db))

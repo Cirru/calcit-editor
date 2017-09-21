@@ -15,7 +15,8 @@
             [app.style :as style]
             [app.util.dom :refer [inject-style]]
             [app.comp.rename :refer [comp-rename]]
-            [app.comp.draft-box :refer [comp-draft-box]]))
+            [app.comp.draft-box :refer [comp-draft-box]]
+            [app.comp.abstract :refer [comp-abstract]]))
 
 (def style-status (merge ui/row {:justify-content :space-between, :padding "0 8px"}))
 
@@ -106,7 +107,8 @@
                   (str (:ns bookmark) "/" (:extra bookmark))
                   (:ns bookmark))
        close-rename! (fn [mutate!] (mutate! *cursor* (assoc state :renaming? false)))
-       close-draft-box! (fn [mutate!] (mutate! *cursor* (assoc state :draft-box? false)))]
+       close-draft-box! (fn [mutate!] (mutate! *cursor* (assoc state :draft-box? false)))
+       close-abstract! (fn [mutate!] (mutate! *cursor* (assoc state :abstract? false)))]
    (div
     {:style (merge ui/row ui/flex style-container)}
     (div
@@ -144,4 +146,5 @@
        (cursor-> :rename comp-rename states old-name close-rename! bookmark))
      (if (:draft-box? state)
        (cursor-> :draft-box comp-draft-box states expr focus close-draft-box!))
+     (if (:abstract? state) (cursor-> :abstract comp-abstract states close-abstract!))
      (comment comp-inspect "Expr" router-data style/inspector)))))

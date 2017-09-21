@@ -1,7 +1,8 @@
 
 (ns app.comp.expr
   (:require-macros [respo.macros :refer [defcomp cursor-> <> span div a]])
-  (:require [hsl.core :refer [hsl]]
+  (:require [clojure.string :as string]
+            [hsl.core :refer [hsl]]
             [respo-ui.style :as ui]
             [respo-ui.style.colors :as colors]
             [respo.core :refer [create-comp]]
@@ -37,6 +38,14 @@
         (and meta? (= code keycode/x)) (d! :writer/cut nil)
         (and meta? (= code keycode/v)) (d! :writer/paste nil)
         (and meta? (= code keycode/b)) (d! :ir/duplicate nil)
+        (and meta? (= code keycode/d))
+          (do
+           (d! :manual-state/abstract nil)
+           (.preventDefault event)
+           (js/setTimeout
+            (fn []
+              (let [el (.querySelector js/document ".el-abstract")]
+                (if (some? el) (.focus el))))))
         :else (do (comment println "Keydown" (:key-code e)) (on-window-keydown event d!))))))
 
 (defn on-focus [coord] (fn [e d! m!] (d! :writer/focus coord)))

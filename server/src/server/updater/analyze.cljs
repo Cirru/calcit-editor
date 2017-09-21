@@ -64,3 +64,41 @@
           (update-in
            [:sessions sid :notifications]
            (push-warning op-id (str "Cannot locate:" def-info)))))))
+
+(defn abstract-def [db op-data sid op-id op-time]
+  (let [writer (to-writer db sid)
+        files (get-in db [:ir :files])
+        bookmark (to-bookmark writer)
+        ns-text (:ns bookmark)
+        def-text op-data
+        def-existed? (some? (get-in files [(:ns bookmark) :defs def-text]))
+        user-id (get-in db [:sessions sid :user-id])
+        new-bookmark (merge schema/bookmark {:ns ns-text, :kind :def, :extra def-text})]
+    (if def-existed?
+      (-> db
+          (update-in
+           [:sessions sid :notifications]
+           (push-warning op-id (str def-text " already defined!")))
+          (update-in [:sessions sid :writer] (push-bookmark new-bookmark)))
+      (let [target-path (->> (:focus bookmark) (mapcat (fn [x] [:data x])))
+            target-expr (-> files
+                            (get-in [ns-text :defs (:extra bookmark)])
+                            (get-in target-path))]
+        (-> db
+            (update-in
+             [:ir :files ns-text :defs]
+             (fn [defs]
+               (comment
+                println
+                target-path
+                (cons def-text target-path)
+                (tree->cirru target-expr)
+                (keys defs))
+               (-> defs
+                   (assoc
+                    def-text
+                    (cirru->tree ["def" def-text (tree->cirru target-expr)] user-id op-time))
+                   (assoc-in
+                    (cons (:extra bookmark) target-path)
+                    (cirru->tree def-text user-id op-time)))))
+            (update-in [:sessions sid :writer] (push-bookmark new-bookmark)))))))

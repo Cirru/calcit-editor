@@ -8,7 +8,8 @@
             [app.schema :as schema]
             [app.util :refer [ws-host parse-query!]]
             [app.util.dom :refer [focus!]]
-            [app.util.shortcuts :refer [on-window-keydown]]))
+            [app.util.shortcuts :refer [on-window-keydown]]
+            [app.updater :as updater]))
 
 (def ssr? (some? (.querySelector js/document "meta.respo-ssr")))
 
@@ -16,7 +17,10 @@
 
 (defn dispatch! [op op-data]
   (.info js/console "Dispatch" (str op) (clj->js op-data))
-  (if (= op :states) (reset! *states ((mutate op-data) @*states)) (send! op op-data)))
+  (case op
+    :states (reset! *states ((mutate op-data) @*states))
+    :manual-state/abstract (reset! *states (updater/abstract @*states))
+    (send! op op-data)))
 
 (defonce *store (atom nil))
 

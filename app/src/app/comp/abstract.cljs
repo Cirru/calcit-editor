@@ -1,0 +1,45 @@
+
+(ns app.comp.abstract
+  (:require-macros [respo.macros :refer [defcomp cursor-> <> span div pre input button a]])
+  (:require [clojure.string :as string]
+            [hsl.core :refer [hsl]]
+            [respo-ui.style :as ui]
+            [respo-ui.style.colors :as colors]
+            [respo.core :refer [create-comp]]
+            [respo.comp.inspect :refer [comp-inspect]]
+            [respo.comp.space :refer [=<]]
+            [app.style :as style]
+            [app.comp.modal :refer [comp-modal]]
+            [app.util.keycode :as keycode]))
+
+(defn on-input [e d! m!] (m! (:value e)))
+
+(defn on-submit [state close-modal!]
+  (fn [e d! m!]
+    (if (not (string/blank? state))
+      (do (d! :analyze/abstract-def state) (m! nil) (close-modal! m!)))))
+
+(defn on-keydown [state close-modal!]
+  (fn [e d! m!]
+    (if (= keycode/enter (:key-code e))
+      (if (not (string/blank? state))
+        (do (d! :analyze/abstract-def state) (m! nil) (close-modal! m!))))))
+
+(defcomp
+ comp-abstract
+ (states close-modal!)
+ (comp-modal
+  close-modal!
+  (let [state (or (:data states) "style-")]
+    (div
+     {}
+     (input
+      {:style style/input,
+       :class-name "el-abstract",
+       :value state,
+       :on {:input on-input, :keydown (on-keydown state close-modal!)}})
+     (=< nil 8)
+     (button
+      {:style style/button,
+       :inner-text "Submit",
+       :on {:click (on-submit state close-modal!)}})))))

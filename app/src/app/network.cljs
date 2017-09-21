@@ -20,6 +20,6 @@
      ws.onmessage
      (fn [event]
        (let [changes (reader/read-string event.data)]
-         (println "Changes" (count changes))
+         (comment println "Changes" (count changes))
          (reset! *store (patch-bunch @*store changes)))))
     (go (loop [] (.send ws (pr-str (<! sender))) (recur)))))
