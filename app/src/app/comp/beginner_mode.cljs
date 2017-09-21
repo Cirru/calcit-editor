@@ -13,10 +13,13 @@
 
 (def style-active {:color (hsl 0 0 100)})
 
-(defn comp-beginner-mode [beginner? toggler]
+(defn comp-beginner-mode [state toggler]
   (span
-   {:style (merge style-beginner (if beginner? style-active)), :on {:click toggler}}
+   {:style (merge style-beginner (if (:beginner? state) style-active)),
+    :on {:click toggler}}
    (<> span "Beginner?" nil)))
 
 (defn on-toggle [state *cursor*]
-  (fn [e d! m!] (comment println "Toggleing" *cursor* state) (m! *cursor* (not state))))
+  (fn [e d! m!]
+    (comment println "Toggleing" *cursor* state)
+    (m! *cursor* (update state :beginner? not))))
