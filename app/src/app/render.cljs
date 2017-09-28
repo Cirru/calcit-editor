@@ -14,18 +14,21 @@
     base-info
     {:styles [], :scripts ["/main.js" "/browser/lib.js" "/browser/main.js"]})))
 
+(def preview? (= "preview" js/process.env.prod))
+
 (defn prod-page []
   (let [html-content (make-string (comp-container {} nil))
         manifest (.parse js/JSON (slurp "dist/assets-manifest.json"))
-        cljs-manifest (.parse js/JSON (slurp "dist/manifest.json"))]
+        cljs-manifest (.parse js/JSON (slurp "dist/manifest.json"))
+        cdn (if preview? "" "http://repo-cdn.b0.upaiyun.com/cumulo-editor/")]
     (make-page
      html-content
      (merge
       base-info
-      {:styles [(aget manifest "main.css")],
-       :scripts [(aget manifest "main.js")
-                 (-> cljs-manifest (aget 0) (aget "js-name"))
-                 (-> cljs-manifest (aget 1) (aget "js-name"))]}))))
+      {:styles [(str cdn (aget manifest "main.css"))],
+       :scripts [(str cdn (aget manifest "main.js"))
+                 (str cdn (-> cljs-manifest (aget 0) (aget "js-name")))
+                 (str cdn (-> cljs-manifest (aget 1) (aget "js-name")))]}))))
 
 (defn main! []
   (if (= js/process.env.env "dev")
