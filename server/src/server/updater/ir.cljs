@@ -280,6 +280,13 @@
          [:sessions session-id :writer :stack (:pointer writer) :focus]
          (fn [focus] (conj (vec (butlast focus)) next-id bisection/mid-id))))))
 
+(defn draft-expr [db op-data session-id op-id op-time]
+  (let [writer (get-in db [:sessions session-id :writer])
+        bookmark (get (:stack writer) (:pointer writer))
+        data-path (bookmark->path bookmark)
+        user-id (get-in db [:sessions session-id :user-id])]
+    (-> db (update-in data-path (fn [expr] (cirru->tree op-data user-id op-time))))))
+
 (defn add-ns [db op-data session-id op-id op-time]
   (let [user-id (get-in db [:sessions session-id :user-id])
         cirru-expr ["ns" op-data]

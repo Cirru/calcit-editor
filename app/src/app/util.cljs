@@ -28,3 +28,8 @@
        ":"
        (or (:port query) (:port schema/configs))))
     "ws://localhost:6001"))
+
+(defn tree->cirru [x]
+  (if (= :leaf (:type x))
+    (:text x)
+    (->> (:data x) (sort-by first) (map (fn [entry] (tree->cirru (val entry)))) (vec))))

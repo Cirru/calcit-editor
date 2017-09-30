@@ -57,6 +57,7 @@
     :ir/reset-files (ir/reset-files db op-data session-id op-id op-time)
     :ir/reset-at (ir/reset-at db op-data session-id op-id op-time)
     :ir/reset-ns (ir/reset-ns db op-data session-id op-id op-time)
+    :ir/draft-expr (ir/draft-expr db op-data session-id op-id op-time)
     :notify/push-error (notify/push-error db op-data session-id op-id op-time)
     :notify/clear (notify/clear db op-data session-id op-id op-time)
     :analyze/goto-def (analyze/goto-def db op-data session-id op-id op-time)
