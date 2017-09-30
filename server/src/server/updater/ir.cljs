@@ -208,6 +208,9 @@
         parent-path (bookmark->path parent-bookmark)]
     (-> db
         (update-in
+         [:sessions session-id :writer :stack (:pointer writer) :focus]
+         (fn [focus] (vec (butlast focus))))
+        (update-in
          parent-path
          (fn [base-expr]
            (let [expr (get-in base-expr [:data last-coord])
