@@ -49,6 +49,8 @@
     :text-align :center,
     :border-width "1px 1px 1px 1px"}))
 
+(defn on-blur [e d! m!] (m! nil))
+
 (def style-string {:color (hsl 120 60 56)})
 
 (defn on-keydown [state leaf coord]
@@ -116,4 +118,5 @@
        {}
        {:click (on-focus coord),
         :keydown (on-keydown state leaf coord),
-        :input (on-input state coord)})})))
+        :input (on-input state coord),
+        :blur on-blur})})))

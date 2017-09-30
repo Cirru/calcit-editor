@@ -77,6 +77,20 @@
          [:sessions session-id :writer :stack (:pointer writer) :focus]
          (fn [focus] (conj (vec (butlast focus)) next-id))))))
 
+(defn reset-at [db op-data session-id op-id op-time]
+  (let [saved-files (:saved-files db), old-file (get saved-files (:ns op-data))]
+    (update-in
+     db
+     [:ir :files (:ns op-data)]
+     (fn [file]
+       (case (:kind op-data)
+         :ns (assoc file :ns (:ns old-file))
+         :proc (assoc file :proc (:proc old-file))
+         :def
+           (let [def-text (:extra op-data)]
+             (assoc-in file [:defs def-text] (get-in old-file [:defs def-text])))
+         (throw (js/Error. (str "Malformed data: " (pr-str op-data)))))))))
+
 (defn leaf-after [db op-data session-id op-id op-time]
   (let [writer (get-in db [:sessions session-id :writer])
         {stack :stack, pointer :pointer} writer
@@ -99,6 +113,10 @@
         (update-in
          [:sessions session-id :writer :stack (:pointer writer) :focus]
          (fn [focus] (conj (vec (butlast focus)) next-id))))))
+
+(defn reset-ns [db op-data session-id op-id op-time]
+  (let [ns-text op-data]
+    (assoc-in db [:ir :files ns-text] (get-in db [:saved-files ns-text]))))
 
 (defn reset-files [db op-data session-id op-id op-time]
   (assoc-in db [:ir :files] (:saved-files db)))

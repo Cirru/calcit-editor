@@ -8,7 +8,8 @@
   (cond
     (and (nil? old-x) (some? new-x)) :add
     (and (some? old-x) (nil? new-x)) :remove
-    :else :changed))
+    (and (some? old-x) (some? new-x) (not (identical? old-x new-x))) :changed
+    :else :same))
 
 (defn render-changed-files [files saved-files]
   (->> (union (keys-set files) (keys-set saved-files))
