@@ -44,7 +44,10 @@
        (fn [writer]
          (-> writer
              (update :stack (fn [stack] (dissoc-idx stack op-data)))
-             (update :pointer (fn [pointer] (if (pos? pointer) (dec pointer) pointer))))))))
+             (update
+              :pointer
+              (fn [pointer]
+                (if (and (> pointer 0) (<= op-data pointer)) (dec pointer) pointer))))))))
 
 (defn copy [db op-data session-id op-id op-time]
   (let [writer (to-writer db session-id)
