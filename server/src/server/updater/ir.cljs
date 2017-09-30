@@ -274,7 +274,7 @@
         (assoc-in [:sessions session-id :writer :selected-ns] op-data))))
 
 (defn delete-entry [db op-data session-id op-id op-time]
-  (println "delete" op-data)
+  (comment println "delete" op-data)
   (case (:kind op-data)
     :def
       (-> db

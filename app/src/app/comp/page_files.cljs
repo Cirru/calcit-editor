@@ -81,7 +81,7 @@
               (<> span def-text nil)
               (=< 16 nil)
               (span
-               {:class-name "ion-md-trash is-minor",
+               {:class-name "ion-trash-b is-minor",
                 :title "Remove def",
                 :style style-remove,
                 :on {:click (on-remove-def def-text)}}))]))))))
@@ -144,7 +144,7 @@
                :on {:click (on-checkout state ns-text)}}
               (span {:inner-text ns-text})
               (span
-               {:class-name "ion-md-trash is-minor",
+               {:class-name "ion-trash-b is-minor",
                 :title "Remove ns",
                 :style style-remove,
                 :on {:click (on-remove-ns ns-text)}}))]))))))

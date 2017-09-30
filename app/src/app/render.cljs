@@ -4,15 +4,16 @@
             [shell-page.core :refer [make-page spit slurp]]
             [app.comp.container :refer [comp-container]]))
 
-(def base-info
-  {:title "Editor", :icon "http://logo.cumulo.org/cumulo.png", :ssr nil, :inner-html nil})
+(def base-info {:title "Editor", :icon "http://logo.cumulo.org/cumulo.png", :ssr nil})
 
 (defn dev-page []
   (make-page
    ""
    (merge
     base-info
-    {:styles [], :scripts ["/main.js" "/browser/lib.js" "/browser/main.js"]})))
+    {:styles [],
+     :scripts ["/main.js" "/browser/lib.js" "/browser/main.js"],
+     :inline-html "<link rel=\"stylesheet\" href=\"http://127.0.0.1:8100/main.css\" />"})))
 
 (def preview? (= "preview" js/process.env.prod))
 
@@ -28,7 +29,8 @@
       {:styles [(str cdn (aget manifest "main.css"))],
        :scripts [(str cdn (aget manifest "main.js"))
                  (str cdn (-> cljs-manifest (aget 0) (aget "js-name")))
-                 (str cdn (-> cljs-manifest (aget 1) (aget "js-name")))]}))))
+                 (str cdn (-> cljs-manifest (aget 1) (aget "js-name")))],
+       :inline-html "<link rel=\"stylesheet\" href=\"http://repo-cdn.b0.upaiyun.com/favored-fonts/main.css\" />"}))))
 
 (defn main! []
   (if (= js/process.env.env "dev")
