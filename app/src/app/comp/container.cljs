@@ -14,10 +14,8 @@
             [app.comp.page-members :refer [comp-page-members]]
             [app.comp.search :refer [comp-search]]
             [app.comp.messages :refer [comp-messages]]
-            [app.comp.watching :refer [comp-watching]]))
-
-(def style-alert
-  {:font-family "Josefin Sans", :font-weight 100, :font-size 40, :color (hsl 0 80 60)})
+            [app.comp.watching :refer [comp-watching]]
+            [app.comp.about :refer [comp-about]]))
 
 (def style-body {:padding-top 16})
 
@@ -39,9 +37,7 @@
        writer (:writer session)
        router (:router store)]
    (if (nil? store)
-     (div
-      {:style (merge ui/global ui/fullscreen ui/center)}
-      (<> span "No connection!" style-alert))
+     (div {:style (merge ui/global ui/fullscreen ui/center)} (comp-about))
      (div
       {:style (merge ui/global ui/fullscreen ui/column style-container)}
       (comp-header (:name router) (:logged-in? store))

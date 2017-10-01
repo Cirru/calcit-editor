@@ -30,3 +30,14 @@ body * {
 .stack-bookmark:hover {
   background-color: hsla(0, 0%, 100%, 0.1);
 }
+
+.comp-about {
+  color: #ccc;
+  font-family: Hind;
+  font-size: 14px;
+  font-weight: 300;
+}
+
+.comp-about a {
+  color: #aaf;
+}

@@ -50,7 +50,8 @@
     :transition-property "color",
     :text-align :left,
     :border-width "1px 1px 1px 1px",
-    :resize :none}))
+    :resize :none,
+    :white-space :nowrap}))
 
 (def style-string {:color (hsl 120 60 56)})
 
