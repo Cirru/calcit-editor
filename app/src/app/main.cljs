@@ -1,6 +1,6 @@
 
 (ns app.main
-  (:require [respo.core :refer [render! clear-cache! realize-ssr!]]
+  (:require [respo.core :refer [render! clear-cache! realize-ssr! *changes-logger]]
             [respo.cursor :refer [mutate]]
             [app.comp.container :refer [comp-container]]
             [cljs.reader :refer [read-string]]
@@ -44,6 +44,10 @@
 
 (defn main! []
   (if ssr? (render-app! realize-ssr!))
+  (comment
+   reset!
+   *changes-logger
+   (fn [global-element element changes] (println "Changes:" changes)))
   (render-app! render!)
   (setup-socket!
    *store

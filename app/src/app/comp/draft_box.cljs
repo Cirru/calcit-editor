@@ -14,11 +14,13 @@
 
 (defn on-input [e d! m!] (m! (:value e)))
 
+(def style-original {:max-height 240, :overflow :auto})
+
 (def style-toolbar {:justify-content :flex-end})
 
 (def style-area
   {:background-color (hsl 0 0 100 0.2),
-   :min-height 60,
+   :min-height 120,
    :min-width 600,
    :color :white,
    :font-family "Source Code Pro, monospace",
@@ -67,7 +69,7 @@
         (div
          {:style ui/column}
          (div
-          {}
+          {:style style-original}
           (<> span original-text style-text)
           (if expr? (<> span "Cirru Mode" style-mode)))
          (=< nil 8)

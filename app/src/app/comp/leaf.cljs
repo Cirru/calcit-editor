@@ -1,6 +1,6 @@
 
 (ns app.comp.leaf
-  (:require-macros [respo.macros :refer [defcomp <> span div input a]])
+  (:require-macros [respo.macros :refer [defcomp <> span div input textarea a]])
   (:require [clojure.string :as string]
             [hsl.core :refer [hsl]]
             [respo-ui.style :as ui]
@@ -27,6 +27,8 @@
 
 (defn on-focus [coord] (fn [e d! m!] (d! :writer/focus coord)))
 
+(def style-big {:border-right (str "16px solid " (hsl 0 0 30))})
+
 (def style-keyword {:color (hsl 240 30 64)})
 
 (def initial-state {:text "", :time 0})
@@ -46,10 +48,9 @@
     :vertical-align :baseline,
     :transition-duration "200ms",
     :transition-property "color",
-    :text-align :center,
-    :border-width "1px 1px 1px 1px"}))
-
-(defn on-blur [e d! m!] (m! nil))
+    :text-align :left,
+    :border-width "1px 1px 1px 1px",
+    :resize :none}))
 
 (def style-string {:color (hsl 120 60 56)})
 
@@ -67,7 +68,8 @@
         (= code keycode/delete) (if (and (= "" text)) (d! :ir/delete-node nil))
         (and (not shift?) (= code keycode/space))
           (do (d! :ir/leaf-after nil) (.preventDefault event))
-        (= code keycode/enter) (d! (if shift? :ir/leaf-before :ir/leaf-after) nil)
+        (= code keycode/enter)
+          (do (d! (if shift? :ir/leaf-before :ir/leaf-after) nil) (.preventDefault event))
         (= code keycode/tab)
           (do (d! (if shift? :ir/unindent-leaf :ir/indent) nil) (.preventDefault event))
         (= code keycode/up)
@@ -92,14 +94,14 @@
  comp-leaf
  (states leaf focus coord by-other? first? readonly?)
  (let [state (or (:data states) initial-state)
-       text (if (> (:time state) (:time leaf)) (:text state) (:text leaf))
+       text (or (if (> (:time state) (:time leaf)) (:text state) (:text leaf)) "")
        focused? (= focus coord)
        has-blank? (or (= text "") (string/includes? text " "))
        best-width (+
                    10
                    (text-width* text (:font-size style-leaf) (:font-family style-leaf)))
        max-width 240]
-   (input
+   (textarea
     {:value text,
      :spellcheck false,
      :class-name (str "cirru-leaf" (if (= focus coord) " cirru-focused" "")),
@@ -111,6 +113,7 @@
              (if (string/starts-with? text ":") style-keyword)
              (if (string/starts-with? text "|") style-string)
              (if (> best-width max-width) style-partial)
+             (if (string/includes? text "\n") style-big)
              (if (re-find (re-pattern "^-?\\d") text) style-number)
              (if has-blank? style-space)
              (if (or focused? by-other?) style-highlight)),
@@ -118,5 +121,4 @@
        {}
        {:click (on-focus coord),
         :keydown (on-keydown state leaf coord),
-        :input (on-input state coord),
-        :blur on-blur})})))
+        :input (on-input state coord)})})))
