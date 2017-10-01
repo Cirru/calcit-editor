@@ -14,7 +14,7 @@
 (defn modify-file! [file-path file configs]
   (let [project-path (path.join (:output configs) file-path)]
     (fs.writeFileSync project-path (generate-file (file->cirru file)))
-    (println (.gray chalk (str "modified" project-path)))))
+    (println (.gray chalk (str "modified " project-path)))))
 
 (def cp (js/require "child_process"))
 
