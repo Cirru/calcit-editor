@@ -2,35 +2,60 @@
 Cumulo Editor
 ------
 
-> Refactoring Stack Editor to realtime collaborate.
+> A collabrative syntax tree editor of Clojure(Script).
 
-Address http://cumulo-editor.cirru.org/
+* Editor UI http://cumulo-editor.cirru.org/
+* Keyboard Shortcuts: [Editor](https://github.com/Cirru/stack-editor/wiki/Keyboard-Shortcuts), [Syntax tree](https://github.com/Cirru/respo-cirru-editor/wiki/Keyboard-Shortcuts).
+* [Overview Video](https://www.youtube.com/watch?v=u5Eb_6KYGsA&t)
 
-### Usage
+### Guide
+
+Run editor:
 
 ```bash
 npm i -g cumulo-editor
-```
-
-```bash
 cumulo-editor
-# or
-port=6001 cumulo-editor
-# then edit via a web app
-open http://cumulo-editor.cirru.org/?port=6001
+# open http://cumulo-editor.cirru.org/?port=6001
 ```
 
-By default, ClojureScript will be emitted in `src/`.
-When server is stopped with `Ctrl c`, a `coir.edn` will be generated.
+![Run in command line](https://pbs.twimg.com/media/DLSmv0cVwAEUCMi.png:large)
+![Files browser](https://pbs.twimg.com/media/DLSnADUVYAAr43C.png:large)
+![Expression editor](https://pbs.twimg.com/media/DLSnJ0FVAAA0Ehd.png:large)
+
+### Options
+
+To run editor with options:
 
 ```bash
-# with an existing coir.edn
+port=6001 cumulo-editor
+```
+
+There are several options to configure:
+
+* `port`, defaults to `6001`
+* `output`, defaults to `src/`
+* `extension`, defaults to `.cljs`
+
+Those options are also stored in the snapshot file `coir.edn`.
+
+To compile code at once from existing `coir.edn`:
+
+```bash
 op=compile cumulo-editor
 ```
 
+The UI part takes options too:
+
+```
+http://cumulo-editor.cirru.org/?host=localhost&port=6001
+```
+
+* `port`, defaults to `6001`
+* `host`, defaults to `localhost`
+
 ### Workflow
 
-https://github.com/Cumulo/cumulo-workflow
+Based on https://github.com/Cumulo/cumulo-workflow
 
 ### License
 
