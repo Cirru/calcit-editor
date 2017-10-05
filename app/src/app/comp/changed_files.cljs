@@ -24,7 +24,7 @@
  (states changed-files)
  (div
   {:style style-column}
-  (<> div "Changed" style/title)
+  (<> div "Changes" style/title)
   (div
    {}
    (->> changed-files

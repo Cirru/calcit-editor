@@ -3139,8 +3139,8 @@ shadow-cljs-jar@^0.10.0:
   resolved "https://registry.yarnpkg.com/shadow-cljs-jar/-/shadow-cljs-jar-0.10.0.tgz#9895e6e5ccfde1c7b673737b1dfd9149194b644f"
 
 shadow-cljs@^2.0.2:
-  version "2.0.3"
-  resolved "https://registry.yarnpkg.com/shadow-cljs/-/shadow-cljs-2.0.3.tgz#e487c3c1d015fbc7fd9be998ad4acc881bf0c705"
+  version "2.0.7"
+  resolved "https://registry.yarnpkg.com/shadow-cljs/-/shadow-cljs-2.0.7.tgz#2e094150c6f78b4499737f40c7c323d6436ae175"
   dependencies:
     mkdirp "^0.5.1"
     node-libs-browser "^2.0.0"

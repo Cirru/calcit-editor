@@ -57,10 +57,7 @@
    (fn [code]
      (persist! @*writer-db)
      (println (str "\n" "Saved coir.edn") (str (if (some? code) (str "with " code))))
-     (.exit js/process)))
-  (println
-   "Server started, please edit on"
-   (.blue chalk (str "http://cumulo-editor.cirru.org?port=" (:port configs)))))
+     (.exit js/process))))
 
 (defn compile-all-files! [configs]
   (handle-files!

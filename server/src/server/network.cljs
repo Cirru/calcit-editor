@@ -6,7 +6,8 @@
             [server.twig.container :refer [twig-container]]
             [recollect.diff :refer [diff-bunch]]
             [recollect.bunch :refer [render-bunch]]
-            ["chalk" :as chalk])
+            ["chalk" :as chalk]
+            [server.util.detect :refer [port-taken?]])
   (:require-macros [cljs.core.async.macros :refer [go]]))
 
 (defonce socket-registry (atom {}))
@@ -24,28 +25,49 @@
     (go (>! server-chan [op op-data session-id op-id op-time]))))
 
 (defn run-server! [configs]
-  (let [port (:port configs), wss (new WebSocketServer (js-obj "port" port))]
-    (.on
-     wss
-     "connection"
-     (fn [socket]
-       (let [session-id (.generate shortid)]
-         (handle-message :session/connect nil session-id)
-         (swap! socket-registry assoc session-id socket)
-         (println (.gray chalk (str "client connected: " session-id)))
-         (.on
-          socket
-          "message"
-          (fn [rawData]
-            (let [action (reader/read-string rawData), [op op-data] action]
-              (handle-message op op-data session-id))))
-         (.on
-          socket
-          "close"
-          (fn []
-            (println (.gray chalk (str "client disconnected: " session-id)))
-            (swap! socket-registry dissoc session-id)
-            (handle-message :session/disconnect nil session-id)))))))
+  (let [port (:port configs)]
+    (port-taken?
+     port
+     (fn [err taken?]
+       (if (some? err)
+         (do (.error js/console err) (.exit js/process 1))
+         (if taken?
+           (do
+            (println
+             (.red
+              chalk
+              (str
+               "Failed to start server, port "
+               port
+               " is in use!\nYou can try `port="
+               (inc port)
+               " cumulo-editor`.")))
+            (.exit js/process 1))
+           (let [wss (new WebSocketServer (js-obj "port" port))]
+             (.on
+              wss
+              "connection"
+              (fn [socket]
+                (let [session-id (.generate shortid)]
+                  (handle-message :session/connect nil session-id)
+                  (swap! socket-registry assoc session-id socket)
+                  (println (.gray chalk (str "client connected: " session-id)))
+                  (.on
+                   socket
+                   "message"
+                   (fn [rawData]
+                     (let [action (reader/read-string rawData), [op op-data] action]
+                       (handle-message op op-data session-id))))
+                  (.on
+                   socket
+                   "close"
+                   (fn []
+                     (println (.gray chalk (str "client disconnected: " session-id)))
+                     (swap! socket-registry dissoc session-id)
+                     (handle-message :session/disconnect nil session-id))))))
+             (println
+              "Server started, please edit on"
+              (.blue chalk (str "http://cumulo-editor.cirru.org?port=" port)))))))))
   server-chan)
 
 (def diff-options {:key :id})
