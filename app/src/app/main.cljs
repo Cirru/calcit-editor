@@ -27,15 +27,21 @@
 (defn simulate-login! []
   (let [raw (.getItem js/window.localStorage (:storage-key schema/configs))]
     (if (some? raw)
-      (do (println "Found storage.") (dispatch! :user/log-in (read-string raw)))
+      (do (dispatch! :user/log-in (read-string raw)))
       (do (println "Found no storage.")))))
 
 (defn detect-watching! []
   (let [query (parse-query!)]
     (if (some? (:watching query))
-      (do
-       (println "say watching")
-       (dispatch! :router/change {:name :watching, :data (:watching query)})))))
+      (do (dispatch! :router/change {:name :watching, :data (:watching query)})))))
+
+(defn connect []
+  (.info js/console "Connecting...")
+  (setup-socket!
+   *store
+   {:url ws-host,
+    :on-close! (fn [event] (reset! *store nil) (.error js/console "Lost connection!")),
+    :on-open! (fn [event] (simulate-login!) (detect-watching!))}))
 
 (def mount-target (.querySelector js/document ".app"))
 
@@ -49,17 +55,14 @@
    *changes-logger
    (fn [global-element element changes] (println "Changes:" changes)))
   (render-app! render!)
-  (setup-socket!
-   *store
-   {:url ws-host,
-    :on-close! (fn [event] (reset! *store nil) (.error js/console "Lost connection!")),
-    :on-open! (fn [event] (simulate-login!) (detect-watching!))})
+  (connect)
   (add-watch
    *store
    :changes
    (fn [] (render-app! render!) (if (= :editor (get-in @*store [:router :name])) (focus!))))
   (add-watch *states :changes (fn [] (render-app! render!)))
   (.addEventListener js/window "keydown" (fn [event] (on-window-keydown event dispatch!)))
+  (.addEventListener js/window "focus" (fn [event] (if (nil? @*store) (connect))))
   (println "App started!"))
 
 (defn reload! [] (clear-cache!) (render-app! render!) (println "Code updated."))

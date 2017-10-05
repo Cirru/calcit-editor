@@ -7,8 +7,7 @@
                 [mvc-works/polyfill     "0.1.1"]
                 [mvc-works/verbosely    "0.1.0-rc2"]
                 [respo                  "0.6.2"]
-                [respo/markdown         "0.1.4"]
-                [org.clojure/core.async "0.3.443"]]
+                [respo/markdown         "0.1.4"]]
  :http {:host "localhost" :port 8081}
  :open-file-command ["subl" ["%s:%s:%s" :file :line :column]]
  :builds {:browser {:output-dir "target/browser"
