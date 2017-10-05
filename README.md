@@ -5,7 +5,7 @@ Cumulo Editor
 > A collabrative syntax tree editor of Clojure(Script).
 
 * Editor UI http://cumulo-editor.cirru.org/
-* Keyboard Shortcuts: [Editor](https://github.com/Cirru/stack-editor/wiki/Keyboard-Shortcuts), [Syntax tree](https://github.com/Cirru/respo-cirru-editor/wiki/Keyboard-Shortcuts).
+* [Keyboard Shortcuts](https://github.com/Cirru/cumulo-editor/wiki/Keyboard-Shortcuts)
 * [Overview Video](https://www.youtube.com/watch?v=u5Eb_6KYGsA&t)
 
 ### Guide
