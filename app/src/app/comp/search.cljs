@@ -37,9 +37,8 @@
     (let [code (:key-code e), event (:original-event e)]
       (cond
         (= keycode/enter code)
-          (do
-           (d! :writer/select (get (vec candidates) (:selection state)))
-           (m! {:query "", :position 0}))
+          (let [target (get (vec candidates) (:selection state))]
+            (if (some? target) (do (d! :writer/select target) (m! {:query "", :position 0}))))
         (= keycode/up code)
           (do
            (.preventDefault event)
