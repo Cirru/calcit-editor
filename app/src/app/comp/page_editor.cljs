@@ -42,6 +42,8 @@
 
 (def style-watcher {:color (hsl 0 0 100 0.7), :margin-left 8})
 
+(def style-shortcut {:color (hsl 240 80 70 0.5)})
+
 (def initial-state {:beginner? false, :renaming? false, :draft-box? false})
 
 (defn on-draft-box [state]
@@ -91,7 +93,8 @@
     (a
      {:inner-text "Shortcuts",
       :href "https://github.com/Cirru/stack-editor/wiki/Keyboard-Shortcuts",
-      :target "_blank"})
+      :target "_blank",
+      :style style-shortcut})
     (=< 8 nil)
     (comp-beginner-mode state (on-toggle state *cursor*)))))
 

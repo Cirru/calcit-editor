@@ -19,17 +19,16 @@
 
 (defn prod-page []
   (let [html-content (make-string (comp-container {} nil))
-        manifest (.parse js/JSON (slurp "dist/assets-manifest.json"))
-        cljs-manifest (.parse js/JSON (slurp "dist/manifest.json"))
+        webpack-info (.parse js/JSON (slurp "dist/webpack-manifest.json"))
+        cljs-info (.parse js/JSON (slurp "dist/cljs-manifest.json"))
         cdn (if preview? "" "http://repo-cdn.b0.upaiyun.com/cumulo-editor/")]
     (make-page
      html-content
      (merge
       base-info
-      {:styles [(str cdn (aget manifest "main.css"))],
-       :scripts [(str cdn (aget manifest "main.js"))
-                 (str cdn (-> cljs-manifest (aget 0) (aget "js-name")))
-                 (str cdn (-> cljs-manifest (aget 1) (aget "js-name")))],
+      {:styles [(str cdn (aget webpack-info "main.css"))],
+       :scripts [(str cdn (-> cljs-info (aget 0) (aget "js-name")))
+                 (str cdn (-> cljs-info (aget 1) (aget "js-name")))],
        :inline-html "<link rel=\"stylesheet\" href=\"http://repo-cdn.b0.upaiyun.com/favored-fonts/main.css\" />"}))))
 
 (defn main! []

@@ -1,10 +1,10 @@
 {
-  "short_name": "Cumulo",
-  "name": "Cumulo",
+  "short_name": "Cumulo Editor",
+  "name": "Cumulo Editor",
   "icons": [
     {
-      "src": "cumulo.png",
-      "sizes": "460x460"
+      "src": "http://repo-cdn.b0.upaiyun.com/logo/cumulo.png",
+      "sizes": "600x600"
     }
   ],
   "start_url": "index.html",

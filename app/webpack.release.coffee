@@ -33,5 +33,5 @@ module.exports =
     new ExtractTextPlugin('[name].[chunkhash:8].css'),
     new UglifyJSPlugin sourceMap: true
     new ManifestPlugin
-      fileName: 'assets-manifest.json'
+      fileName: 'webpack-manifest.json'
   ]
