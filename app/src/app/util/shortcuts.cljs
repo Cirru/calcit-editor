@@ -15,6 +15,7 @@
       (and meta? (= code keycode/e)) (do (dispatch! :writer/edit-ns nil))
       (and meta? (= code keycode/j)) (do (dispatch! :writer/move-next nil))
       (and meta? (= code keycode/k)) (do (dispatch! :writer/move-previous nil))
+      (and meta? (= code keycode/i)) (do (dispatch! :writer/finish nil))
       (and meta? (= code keycode/s))
         (do (.preventDefault event) (dispatch! :effect/save-files nil))
       (and meta? shift? (= code keycode/f)) (dispatch! :router/change {:name :files}))))

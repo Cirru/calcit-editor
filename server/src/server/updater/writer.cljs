@@ -94,6 +94,18 @@
         (update-in [:sessions session-id :writer] (push-bookmark bookmark))
         (assoc-in [:sessions session-id :router] {:name :editor}))))
 
+(defn finish [db op-data sid op-id op-time]
+  (-> db
+      (update-in
+       [:sessions sid :writer]
+       (fn [writer]
+         (let [pointer (:pointer writer)]
+           (if (pos? pointer)
+             (-> writer
+                 (update :stack (fn [stack] (dissoc-idx stack pointer)))
+                 (update :pointer dec))
+             writer))))))
+
 (defn go-right [db op-data session-id op-id op-time]
   (let [writer (get-in db [:sessions session-id :writer])
         bookmark (get (:stack writer) (:pointer writer))

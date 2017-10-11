@@ -467,9 +467,9 @@ shadow-cljs-jar@^0.10.0:
   version "0.10.0"
   resolved "https://registry.yarnpkg.com/shadow-cljs-jar/-/shadow-cljs-jar-0.10.0.tgz#9895e6e5ccfde1c7b673737b1dfd9149194b644f"
 
-shadow-cljs@^2.0.2:
-  version "2.0.7"
-  resolved "https://registry.yarnpkg.com/shadow-cljs/-/shadow-cljs-2.0.7.tgz#2e094150c6f78b4499737f40c7c323d6436ae175"
+shadow-cljs@^2.0.9:
+  version "2.0.10"
+  resolved "https://registry.yarnpkg.com/shadow-cljs/-/shadow-cljs-2.0.10.tgz#84efe0ddf57f480d6d1f77c4d3070b5d6d44ca58"
   dependencies:
     mkdirp "^0.5.1"
     node-libs-browser "^2.0.0"
@@ -488,7 +488,7 @@ source-map-support@^0.4.15:
   dependencies:
     source-map "^0.5.6"
 
-source-map-support@^0.4.17:
+source-map-support@^0.4.18:
   version "0.4.18"
   resolved "https://registry.yarnpkg.com/source-map-support/-/source-map-support-0.4.18.tgz#0286a6de8be42641338594e97ccea75f0a2c585f"
   dependencies:

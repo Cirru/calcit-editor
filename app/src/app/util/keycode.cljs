@@ -27,11 +27,15 @@
 
 (def v 86)
 
+(def i 73)
+
 (def k 75)
 
 (def down 40)
 
 (def b 66)
+
+(def h 72)
 
 (def enter 13)
 
