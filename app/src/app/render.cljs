@@ -26,7 +26,7 @@
         cdn (if (or local? preview?) "" "http://cdn.tiye.me/cumulo-editor/")
         font-styles (if local?
                       "favored-fonts/main.css"
-                      "|http://cdn.tiye.me/favored-fonts/main.css")]
+                      "http://cdn.tiye.me/favored-fonts/main.css")]
     (make-page
      html-content
      (merge
