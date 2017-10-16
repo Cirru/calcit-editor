@@ -7,7 +7,10 @@
             [cljs.reader :refer [read-string]]
             [server.util.compile :refer [handle-files! persist!]]
             [server.util.env :refer [pick-configs]]
-            ["chalk" :as chalk])
+            ["chalk" :as chalk]
+            ["path" :as path]
+            ["express" :as express]
+            ["serve-index" :as serve-index])
   (:require-macros [cljs.core.async.macros :refer [go-loop go]]))
 
 (defonce *writer-db
@@ -66,8 +69,17 @@
    (fn [op op-data] (println "After compile:" op op-data))
    false))
 
+(defn serve-app! [port]
+  (let [app (express), dir (path/join js/__dirname "app"), file-port (+ 100 port)]
+    (.use app "/" (.static express dir) (serve-index dir (clj->js {:icons true})))
+    (.listen app file-port)
+    (println
+     (str "Serving local editor at " (.blue chalk (str "http://localhost:" file-port))))))
+
 (defn main! []
   (let [configs (pick-configs (:configs @*writer-db)), op (get configs :op)]
-    (if (= op "compile") (compile-all-files! configs) (start-server! configs))))
+    (if (= op "compile")
+      (compile-all-files! configs)
+      (do (start-server! configs) (serve-app! (:port configs))))))
 
 (defn reload! [] (println (.gray chalk "code updated.")) (render-clients! @*reader-db))

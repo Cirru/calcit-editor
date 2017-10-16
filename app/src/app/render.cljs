@@ -17,19 +17,23 @@
 
 (def preview? (= "preview" js/process.env.prod))
 
+(def local? (= "true" js/process.env.local))
+
 (defn prod-page []
   (let [html-content (make-string (comp-container {} nil))
         webpack-info (.parse js/JSON (slurp "dist/webpack-manifest.json"))
         cljs-info (.parse js/JSON (slurp "dist/cljs-manifest.json"))
-        cdn (if preview? "" "http://repo-cdn.b0.upaiyun.com/cumulo-editor/")]
+        cdn (if (or local? preview?) "" "http://cdn.tiye.me/cumulo-editor/")
+        font-styles (if local?
+                      "favored-fonts/main.css"
+                      "|http://cdn.tiye.me/favored-fonts/main.css")]
     (make-page
      html-content
      (merge
       base-info
-      {:styles [(str cdn (aget webpack-info "main.css"))],
+      {:styles [font-styles (str cdn (aget webpack-info "main.css"))],
        :scripts [(str cdn (-> cljs-info (aget 0) (aget "js-name")))
-                 (str cdn (-> cljs-info (aget 1) (aget "js-name")))],
-       :inline-html "<link rel=\"stylesheet\" href=\"http://repo-cdn.b0.upaiyun.com/favored-fonts/main.css\" />"}))))
+                 (str cdn (-> cljs-info (aget 1) (aget "js-name")))]}))))
 
 (defn main! []
   (if (= js/process.env.env "dev")
