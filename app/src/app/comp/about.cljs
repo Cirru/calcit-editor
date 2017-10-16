@@ -18,7 +18,7 @@
   {}
   (<>
    span
-   "No connection!"
+   "Editor server is not started!"
    {:font-family "Josefin Sans", :font-weight 100, :font-size 40, :color (hsl 0 80 60)})
   (div
    {:class-name "comp-about"}

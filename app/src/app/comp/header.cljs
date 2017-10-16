@@ -1,6 +1,6 @@
 
 (ns app.comp.header
-  (:require-macros [respo.macros :refer [defcomp <> span div]])
+  (:require-macros [respo.macros :refer [defcomp <> span div a]])
   (:require [hsl.core :refer [hsl]]
             [respo-ui.style :as ui]
             [respo-ui.style.colors :as colors]
@@ -25,7 +25,8 @@
 
 (def style-highlight {:color (hsl 0 0 100)})
 
-(def style-entry {:cursor :pointer, :width 80, :color (hsl 0 0 100 0.6)})
+(def style-entry
+  {:cursor :pointer, :padding-right 32, :color (hsl 0 0 100 0.6), :text-decoration :none})
 
 (defn render-entry [page-name this-page router-name on-click]
   (div
@@ -49,5 +50,10 @@
    (render-entry "Files" :files router-name on-files)
    (render-entry "Editor" :editor router-name on-editor)
    (render-entry "Search" :search router-name on-search)
-   (render-entry "Members" :members router-name on-members))
+   (render-entry "Members" :members router-name on-members)
+   (a
+    {:inner-text "Shortcuts",
+     :href "https://github.com/Cirru/stack-editor/wiki/Keyboard-Shortcuts",
+     :target "_blank",
+     :style style-entry}))
   (div {} (render-entry (if logged-in? "Profile" "Guest") :profile router-name on-profile))))

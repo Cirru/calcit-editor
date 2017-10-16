@@ -42,8 +42,6 @@
 
 (def style-watcher {:color (hsl 0 0 100 0.7), :margin-left 8})
 
-(def style-shortcut {:color (hsl 240 80 70 0.5)})
-
 (def initial-state {:beginner? false, :renaming? false, :draft-box? false})
 
 (defn on-draft-box [state]
@@ -88,15 +86,7 @@
     (span {:inner-text "Rename", :style style-link, :on {:click (on-rename state)}})
     (=< 8 nil)
     (span {:inner-text "Draft-box", :style style-link, :on {:click (on-draft-box state)}}))
-   (div
-    {}
-    (a
-     {:inner-text "Shortcuts",
-      :href "https://github.com/Cirru/stack-editor/wiki/Keyboard-Shortcuts",
-      :target "_blank",
-      :style style-shortcut})
-    (=< 8 nil)
-    (comp-beginner-mode state (on-toggle state *cursor*)))))
+   (div {} (comp-beginner-mode state (on-toggle state *cursor*)))))
 
 (defcomp
  comp-page-editor
