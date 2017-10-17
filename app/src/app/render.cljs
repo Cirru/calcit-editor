@@ -4,7 +4,7 @@
             [shell-page.core :refer [make-page spit slurp]]
             [app.comp.container :refer [comp-container]]))
 
-(def base-info {:title "Editor", :icon "http://logo.cumulo.org/cumulo.png", :ssr nil})
+(def base-info {:title "Editor", :icon "http://cdn.tiye.me/logo/cirru.png", :ssr nil})
 
 (defn dev-page []
   (make-page
