@@ -19,6 +19,7 @@
   (.info js/console "Dispatch" (str op) (clj->js op-data))
   (case op
     :states (reset! *states ((mutate op-data) @*states))
+    :states/clear (reset! *states {})
     :manual-state/abstract (reset! *states (updater/abstract @*states))
     (send! op op-data)))
 
@@ -40,7 +41,10 @@
   (setup-socket!
    *store
    {:url ws-host,
-    :on-close! (fn [event] (reset! *store nil) (.error js/console "Lost connection!")),
+    :on-close! (fn [event]
+      (reset! *store nil)
+      (.error js/console "Lost connection!")
+      (dispatch! :states/clear nil)),
     :on-open! (fn [event] (simulate-login!) (detect-watching!))}))
 
 (def mount-target (.querySelector js/document ".app"))

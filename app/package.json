@@ -4,8 +4,8 @@
   "description": "Stack Workflow",
   "main": "index.js",
   "scripts": {
-    "cdn": "rsync -r dist/* tiye.me:cdn/cumulo-editor/",
-    "tiye": "rsync dist/{index.html,manifest.json} tiye.me:repo/Cirru/cumulo-editor",
+    "cdn": "rsync -avr --progress dist/* tiye.me:cdn/cumulo-editor/",
+    "tiye": "rsync -av --progress dist/{index.html,manifest.json} tiye.me:repo/Cirru/cumulo-editor",
     "upload": "yarn cdn && yarn tiye",
     "release": "shadow-cljs release browser --debug",
     "watch": "shadow-cljs watch browser",
