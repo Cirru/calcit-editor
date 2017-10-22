@@ -1,6 +1,6 @@
 {
   "name": "cumulo-editor",
-  "version": "0.2.17",
+  "version": "0.2.18",
   "description": "Command line for Cumulo Editor",
   "bin": {
     "cumulo-editor": "dist/main.js",
@@ -15,14 +15,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/mvc-works/boot-workflow.git"
+    "url": "git+https://github.com/Cirru/cumulo-editor.git"
   },
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
-    "url": "https://github.com/mvc-works/boot-workflow/issues"
+    "url": "https://github.com/Cirru/cumulo-editor/issues"
   },
-  "homepage": "https://github.com/mvc-works/boot-workflow#readme",
+  "homepage": "https://github.com/Cirru/cumulo-editor#readme",
   "dependencies": {
     "chalk": "^2.1.0",
     "express": "^4.16.2",
