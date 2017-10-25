@@ -1,11 +1,10 @@
 
 (ns app.comp.watching
-  (:require-macros [respo.macros :refer [defcomp cursor-> <> span div input pre a]])
   (:require [clojure.string :as string]
             [hsl.core :refer [hsl]]
             [respo-ui.style :as ui]
             [respo-ui.style.colors :as colors]
-            [respo.core :refer [create-comp]]
+            [respo.macros :refer [defcomp cursor-> <> span div input pre a]]
             [respo.comp.space :refer [=<]]
             [app.util.keycode :as keycode]
             [app.util :as util]

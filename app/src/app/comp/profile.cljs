@@ -1,12 +1,11 @@
 
 (ns app.comp.profile
-  (:require-macros [respo.macros :refer [defcomp <> span div button input a]])
   (:require [clojure.string :as string]
             [hsl.core :refer [hsl]]
             [app.schema :as schema]
             [respo-ui.style :as ui]
             [respo-ui.style.colors :as colors]
-            [respo.core :refer [create-comp]]
+            [respo.macros :refer [defcomp <> span div button input a]]
             [respo.comp.space :refer [=<]]
             [app.style :as style]))
 

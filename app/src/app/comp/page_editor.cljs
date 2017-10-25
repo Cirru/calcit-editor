@@ -1,11 +1,10 @@
 
 (ns app.comp.page-editor
-  (:require-macros [respo.macros :refer [defcomp cursor-> <> span div a pre]])
   (:require [hsl.core :refer [hsl]]
             [clojure.string :as string]
             [respo-ui.style :as ui]
             [respo-ui.style.colors :as colors]
-            [respo.core :refer [create-comp]]
+            [respo.macros :refer [defcomp cursor-> <> span div a pre]]
             [respo.comp.space :refer [=<]]
             [respo.comp.inspect :refer [comp-inspect]]
             [app.comp.bookmark :refer [comp-bookmark]]

@@ -1,12 +1,11 @@
 
 (ns app.comp.draft-box
-  (:require-macros [respo.macros :refer [defcomp <> span div textarea button a]])
   (:require [clojure.string :as string]
             [cljs.reader :refer [read-string]]
             [hsl.core :refer [hsl]]
             [respo-ui.style :as ui]
             [respo-ui.style.colors :as colors]
-            [respo.core :refer [create-comp]]
+            [respo.macros :refer [defcomp <> span div textarea button a]]
             [respo.comp.space :refer [=<]]
             [app.comp.modal :refer [comp-modal]]
             [app.style :as style]

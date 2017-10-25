@@ -1,11 +1,10 @@
 
 (ns app.comp.bookmark
-  (:require-macros [respo.macros :refer [defcomp <> span div a]])
   (:require [clojure.string :as string]
             [hsl.core :refer [hsl]]
             [respo-ui.style :as ui]
             [respo-ui.style.colors :as colors]
-            [respo.core :refer [create-comp]]
+            [respo.macros :refer [defcomp <> span div a]]
             [respo.comp.space :refer [=<]]))
 
 (def style-minor {:color (hsl 0 0 50), :font-size 12})

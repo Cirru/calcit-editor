@@ -1,10 +1,9 @@
 
 (ns app.comp.container
-  (:require-macros [respo.macros :refer [defcomp cursor-> <> div span]])
   (:require [hsl.core :refer [hsl]]
             [respo-ui.style :as ui]
             [respo-ui.style.colors :as colors]
-            [respo.core :refer [create-comp]]
+            [respo.macros :refer [defcomp cursor-> <> div span]]
             [respo.comp.inspect :refer [comp-inspect]]
             [app.comp.header :refer [comp-header]]
             [app.comp.profile :refer [comp-profile]]

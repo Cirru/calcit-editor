@@ -1,7 +1,6 @@
 
 (ns app.util.dom
-  (:require-macros [respo.macros :refer [style]])
-  (:require [respo.core :refer [create-element]] [respo.render.html :refer [style->string]]))
+  (:require [respo.macros :refer [style]] [respo.render.html :refer [style->string]]))
 
 (defn focus! []
   (js/requestAnimationFrame
