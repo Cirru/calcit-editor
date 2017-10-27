@@ -52,7 +52,7 @@
    (render-entry "Members" :members router-name on-members)
    (a
     {:inner-text "Shortcuts",
-     :href "https://github.com/Cirru/stack-editor/wiki/Keyboard-Shortcuts",
+     :href "https://github.com/Cirru/cumulo-editor/wiki/Keyboard-Shortcuts",
      :target "_blank",
      :style style-entry}))
   (div {} (render-entry (if logged-in? "Profile" "Guest") :profile router-name on-profile))))

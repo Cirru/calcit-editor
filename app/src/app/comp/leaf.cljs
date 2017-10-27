@@ -42,7 +42,7 @@
     :background-color :transparent,
     :min-width 8,
     :color (hsl 200 14 60),
-    :font-family "Menlo,Iosevka,monospace",
+    :font-family "Menlo,Iosevka,Consolas,monospace",
     :font-size 15,
     :vertical-align :baseline,
     :transition-duration "200ms",
