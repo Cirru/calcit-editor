@@ -4,7 +4,7 @@
             [clojure.string :as string]
             [respo-ui.style :as ui]
             [respo-ui.style.colors :as colors]
-            [respo.macros :refer [defcomp cursor-> <> span div a pre]]
+            [respo.macros :refer [defcomp list-> cursor-> <> span div a pre]]
             [respo.comp.space :refer [=<]]
             [respo.comp.inspect :refer [comp-inspect]]
             [app.comp.bookmark :refer [comp-bookmark]]
@@ -66,14 +66,16 @@
    (div
     {}
     (<> span (str "Writers(" (count (:others router-data)) ")") style-hint)
-    (div
+    (list->
+     :div
      {:style style-watchers}
      (->> (:others router-data)
           (vals)
           (map (fn [info] [(:session-id info) (<> span (:nickname info) style-watcher)]))))
     (=< 16 nil)
     (<> span (str "Watchers(" (count (:watchers router-data)) ")") style-hint)
-    (div
+    (list->
+     :div
      {:style style-watchers}
      (->> (:watchers router-data)
           (map
@@ -103,10 +105,11 @@
        close-abstract! (fn [mutate!] (mutate! *cursor* (assoc state :abstract? false)))]
    (div
     {:style (merge ui/row ui/flex style-container)}
-    (div
-     {:style style-stack}
-     (if (empty? stack)
-       (<> span "Nothing selected" style-nothing)
+    (if (empty? stack)
+      (div {:style style-stack} (<> span "Nothing selected" style-nothing))
+      (list->
+       :div
+       {:style style-stack}
        (->> stack
             (map-indexed
              (fn [idx bookmark] [idx (comp-bookmark bookmark idx (= idx pointer))])))))

@@ -4,7 +4,7 @@
             [hsl.core :refer [hsl]]
             [respo-ui.style :as ui]
             [respo-ui.style.colors :as colors]
-            [respo.macros :refer [defcomp cursor-> <> span div pre input button a]]
+            [respo.macros :refer [defcomp cursor-> list-> <> span div pre input button a]]
             [respo.comp.inspect :refer [comp-inspect]]
             [respo.comp.space :refer [=<]]
             [app.style :as style]
@@ -65,7 +65,8 @@
       :style style-input,
       :on {:input (on-input-def state), :keydown (on-keydown-def state)}}))
    (=< nil 8)
-   (div
+   (list->
+    :div
     {}
     (->> defs-set
          (filter (fn [def-text] (string/includes? def-text (:def-text state))))
@@ -129,7 +130,8 @@
       :style style-input,
       :on {:input (on-input-ns state), :keydown (on-keydown-ns state)}}))
    (=< nil 8)
-   (div
+   (list->
+    :div
     {}
     (->> ns-set
          (filter (fn [ns-text] (string/includes? ns-text (:ns-text state))))

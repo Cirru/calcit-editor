@@ -4,7 +4,7 @@
             [hsl.core :refer [hsl]]
             [respo-ui.style :as ui]
             [respo-ui.style.colors :as colors]
-            [respo.macros :refer [defcomp cursor-> <> span div pre input button a]]
+            [respo.macros :refer [defcomp list-> cursor-> <> span div pre input button a]]
             [respo.comp.space :refer [=<]]
             [app.style :as style]))
 
@@ -73,7 +73,8 @@
    (if (not= :same (:ns info)) (render-status ns-text :ns (:ns info)))
    (=< 8 nil)
    (if (not= :same (:proc info)) (render-status ns-text :proc (:proc info))))
-  (div
+  (list->
+   :div
    {:style style-defs}
    (->> (:defs info)
         (map

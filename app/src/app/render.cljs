@@ -4,16 +4,19 @@
             [shell-page.core :refer [make-page spit slurp]]
             [app.comp.container :refer [comp-container]]))
 
-(def base-info {:title "Editor", :icon "http://cdn.tiye.me/logo/cirru.png", :ssr nil})
+(def base-info
+  {:title "Editor",
+   :icon "http://cdn.tiye.me/logo/cirru.png",
+   :ssr nil,
+   :inline-styles [(slurp "entry/main.css")]})
 
 (defn dev-page []
   (make-page
    ""
    (merge
     base-info
-    {:styles [],
-     :scripts ["/main.js" "/browser/lib.js" "/browser/main.js"],
-     :inline-html "<link rel=\"stylesheet\" href=\"http://127.0.0.1:8100/main.css\" />"})))
+    {:styles ["http://127.0.0.1:8100/main.css"],
+     :scripts ["/browser/lib.js" "/browser/main.js"]})))
 
 (def preview? (= "preview" js/process.env.prod))
 
@@ -21,7 +24,6 @@
 
 (defn prod-page []
   (let [html-content (make-string (comp-container {} nil))
-        webpack-info (.parse js/JSON (slurp "dist/webpack-manifest.json"))
         cljs-info (.parse js/JSON (slurp "dist/cljs-manifest.json"))
         cdn (if (or local? preview?) "" "http://cdn.tiye.me/cumulo-editor/")
         font-styles (if local?
@@ -31,7 +33,7 @@
      html-content
      (merge
       base-info
-      {:styles [font-styles (str cdn (aget webpack-info "main.css"))],
+      {:styles [font-styles],
        :scripts [(str cdn (-> cljs-info (aget 0) (aget "js-name")))
                  (str cdn (-> cljs-info (aget 1) (aget "js-name")))]}))))
 

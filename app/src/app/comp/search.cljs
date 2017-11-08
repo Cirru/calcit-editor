@@ -4,7 +4,7 @@
             [hsl.core :refer [hsl]]
             [respo-ui.style :as ui]
             [respo-ui.style.colors :as colors]
-            [respo.macros :refer [defcomp <> span div input a]]
+            [respo.macros :refer [defcomp list-> <> span div input a]]
             [respo.comp.space :refer [=<]]
             [polyfill.core :refer [text-width*]]
             [app.util.keycode :as keycode]
@@ -73,7 +73,8 @@
        :class-name "search-input",
        :style style-input,
        :on {:input (on-input state), :keydown (on-keydown state candidates)}}))
-    (div
+    (list->
+     :div
      {:style (merge ui/flex style-body)}
      (->> candidates
           (take 20)

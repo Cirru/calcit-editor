@@ -4,7 +4,7 @@
             [hsl.core :refer [hsl]]
             [respo-ui.style :as ui]
             [respo-ui.style.colors :as colors]
-            [respo.macros :refer [defcomp <> span div pre input button a]]
+            [respo.macros :refer [defcomp list-> <> span div pre input button a]]
             [respo.comp.space :refer [=<]]
             [app.util :as util]
             [app.style :as style]
@@ -24,7 +24,8 @@
  (div
   {:style style-column}
   (<> div "Changes" style/title)
-  (div
+  (list->
+   :div
    {}
    (->> changed-files
         (map (fn [entry] (let [[k info] entry] [k (comp-changed-info info k)])))))

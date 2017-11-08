@@ -1,7 +1,7 @@
 
 (ns server.schema )
 
-(def ir-file {:pkg "app", :files {}})
+(def ir-file {:package "app", :files {}})
 
 (def expr {:type :expr, :author nil, :time nil, :data {}})
 
