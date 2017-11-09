@@ -4,7 +4,7 @@
             [hsl.core :refer [hsl]]
             [respo-ui.style :as ui]
             [respo-ui.style.colors :as colors]
-            [respo.macros :refer [defcomp cursor-> <> span div a]]
+            [respo.macros :refer [defcomp list-> cursor-> <> span div a]]
             [respo.comp.space :refer [=<]]
             [app.util.keycode :as keycode]
             [app.comp.leaf :refer [comp-leaf]]
@@ -69,7 +69,8 @@
        last-id (apply max (keys (:data expr)))
        sorted-children (->> (:data expr) (sort-by first))
        default-info {:after-expr? false}]
-   (div
+   (list->
+    :div
     {:tab-index 0,
      :class-name (str "cirru-expr" (if focused? " cirru-focused" "")),
      :style (merge
