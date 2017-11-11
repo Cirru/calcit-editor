@@ -1,6 +1,6 @@
 {
   "name": "cumulo-editor",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "description": "Command line for Cumulo Editor",
   "bin": {
     "cumulo-editor": "dist/main.js",

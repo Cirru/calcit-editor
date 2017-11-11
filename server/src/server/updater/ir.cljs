@@ -239,7 +239,10 @@
         (update-in data-path (fn [node] (assoc-in new-expr [:data bisection/mid-id] node)))
         (update-in
          [:sessions session-id :writer :stack pointer :focus]
-         (fn [focus] (vec (concat (butlast focus) [(last focus) bisection/mid-id])))))))
+         (fn [focus]
+           (if (empty? focus)
+             [bisection/mid-id]
+             (vec (concat (butlast focus) [(last focus) bisection/mid-id]))))))))
 
 (defn remove-def [db op-data session-id op-id op-time]
   (let [selected-ns (get-in db [:sessions session-id :writer :selected-ns])]
