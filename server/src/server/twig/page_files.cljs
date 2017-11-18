@@ -1,6 +1,6 @@
 
 (ns server.twig.page-files
-  (:require [recollect.bunch :refer [create-twig]] [clojure.set :refer [union]]))
+  (:require [recollect.macros :refer [deftwig]] [clojure.set :refer [union]]))
 
 (defn keys-set [x] (set (keys x)))
 
@@ -36,12 +36,11 @@
                      (into {})))}])))
        (into {})))
 
-(def twig-page-files
-  (create-twig
-   :page-files
-   (fn [files selected-ns saved-files]
-     {:ns-set (into #{} (keys files)),
-      :defs-set (if (some? selected-ns)
-        (do (->> (get-in files [selected-ns :defs]) (keys) (into #{})))
-        #{}),
-      :changed-files (render-changed-files files saved-files)})))
+(deftwig
+ twig-page-files
+ (files selected-ns saved-files)
+ {:ns-set (into #{} (keys files)),
+  :defs-set (if (some? selected-ns)
+    (do (->> (get-in files [selected-ns :defs]) (keys) (into #{})))
+    #{}),
+  :changed-files (render-changed-files files saved-files)})

@@ -4,8 +4,8 @@
             [cljs.reader :as reader]
             [cljs.core.async :refer [chan >!]]
             [server.twig.container :refer [twig-container]]
-            [recollect.diff :refer [diff-bunch]]
-            [recollect.bunch :refer [render-bunch]]
+            [recollect.diff :refer [diff-twig]]
+            [recollect.twig :refer [render-twig]]
             ["chalk" :as chalk]
             [server.util.detect :refer [port-taken?]])
   (:require-macros [cljs.core.async.macros :refer [go]]))
@@ -78,8 +78,8 @@
   (doseq [session-entry (:sessions db)]
     (let [[session-id session] session-entry
           old-store (or (get @client-caches session-id) nil)
-          new-store (render-bunch (twig-container db session) old-store)
-          changes (diff-bunch old-store new-store diff-options)
+          new-store (render-twig (twig-container db session) old-store)
+          changes (diff-twig old-store new-store diff-options)
           socket (get @socket-registry session-id)]
       (comment .info js/console "Changes for" session-id ":" (clj->js changes))
       (if (and (not (empty? changes)) (some? socket))

@@ -1,4 +1,4 @@
 
-(ns server.twig.user (:require [recollect.bunch :refer [create-twig]]))
+(ns server.twig.user (:require [recollect.macros :refer [deftwig]]))
 
-(def twig-user (create-twig :user (fn [user] (dissoc user :password))))
+(deftwig twig-user (user) (dissoc user :password))

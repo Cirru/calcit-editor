@@ -1,5 +1,5 @@
 
-(ns app.network (:require [cljs.reader :as reader] [recollect.patch :refer [patch-bunch]]))
+(ns app.network (:require [cljs.reader :as reader] [recollect.patch :refer [patch-twig]]))
 
 (defonce *global-ws (atom nil))
 
@@ -17,4 +17,4 @@
      (fn [event]
        (let [changes (reader/read-string event.data)]
          (comment println "Changes" (count changes))
-         (reset! *store (patch-bunch @*store changes)))))))
+         (reset! *store (patch-twig @*store changes)))))))

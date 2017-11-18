@@ -1,9 +1,9 @@
 
 {:source-paths ["src"],
  :dependencies [[mvc-works/hsl          "0.1.2"]
-                [fipp                   "0.6.8"]
-                [cumulo/recollect       "0.3.0"]
-                [mvc-works/verbosely    "0.1.0-rc"]
+                [fipp                   "0.6.10"]
+                [cumulo/recollect       "0.4.1"]
+                [mvc-works/verbosely    "0.1.1"]
                 [org.clojure/core.async "0.3.443"]
                 [cirru/stack-server     "0.3.1"]
                 [cirru/bisection-key    "0.1.2"]]

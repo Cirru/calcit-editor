@@ -3,7 +3,6 @@
   (:require [clojure.set :refer [difference intersection]]
             [stack-server.analyze :refer [generate-file]]
             [server.util :refer [ns->path file->cirru]]
-            [fipp.edn :as fipp]
             [server.schema :as schema]
             ["chalk" :as chalk]))
 
