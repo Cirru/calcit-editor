@@ -106,6 +106,9 @@
                  (update :pointer dec))
              writer))))))
 
+(defn peek-ns [db op-data sid op-id op-time]
+  (-> db (update-in [:sessions sid :writer] (fn [writer] (assoc writer :peek-ns op-data)))))
+
 (defn go-right [db op-data session-id op-id op-time]
   (let [writer (get-in db [:sessions session-id :writer])
         bookmark (get (:stack writer) (:pointer writer))

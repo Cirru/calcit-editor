@@ -24,7 +24,7 @@
    :id nil,
    :router {:name :files, :data nil, :router nil},
    :notifications [],
-   :writer {:selected-ns nil, :pointer 0, :stack [], :clipboard nil}})
+   :writer {:selected-ns nil, :peek-ns nil, :pointer 0, :stack [], :clipboard nil}})
 
 (def notification {:id nil, :kind nil, :text nil})
 

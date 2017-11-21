@@ -65,6 +65,17 @@
              (bisection/bisect next-id bisection/max-id)))))})
     (merge schema/leaf {:time timestamp, :author author, :text xs, :id (.generate shortid)})))
 
+(defn cirru->file [file author timestamp]
+  (-> file
+      (update :ns #(cirru->tree % author timestamp))
+      (update :proc #(cirru->tree % author timestamp))
+      (update
+       :defs
+       (fn [defs]
+         (->> defs
+              (map (fn [entry] (let [[k xs] entry] [k (cirru->tree xs author timestamp)])))
+              (into {}))))))
+
 (def kinds #{:ns :def :proc})
 
 (defn leaf? [x] (= :leaf (:type x)))

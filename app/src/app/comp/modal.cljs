@@ -22,5 +22,5 @@
  comp-modal
  (close-modal! inner-tree)
  (div
-  {:style style-backdrop, :on {:click (fn [e d! m!] (close-modal! m!))}}
+  {:style style-backdrop, :on {:click (fn [e d! m!] (close-modal! m! d!))}}
   (div {:on {:click (fn [e d! m!] (println "nothing!"))}} inner-tree)))

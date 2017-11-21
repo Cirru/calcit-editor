@@ -11,7 +11,8 @@
               to-bookmark
               to-keys
               cirru->tree
-              pick-second-key]]
+              pick-second-key
+              cirru->file]]
             [server.util.list :refer [dissoc-idx]]))
 
 (defn rename [db op-data session-id op-id op-time]
@@ -247,6 +248,13 @@
 (defn remove-def [db op-data session-id op-id op-time]
   (let [selected-ns (get-in db [:sessions session-id :writer :selected-ns])]
     (update-in db [:ir :files selected-ns :defs] (fn [defs] (dissoc defs op-data)))))
+
+(defn replace-file [db op-data sid op-id op-time]
+  (let [user-id (get-in db [:sessions sid :user-id])
+        ns-text (get-in db [:sessions sid :writer :peek-ns])]
+    (if (some? ns-text)
+      (assoc-in db [:ir :files ns-text] (cirru->file op-data user-id op-time))
+      (do (println "undefined peek-ns") db))))
 
 (defn cp-ns [db op-data session-id op-id op-time]
   (update-in

@@ -1,6 +1,8 @@
 
 (ns server.twig.page-files
-  (:require [recollect.macros :refer [deftwig]] [clojure.set :refer [union]]))
+  (:require [recollect.macros :refer [deftwig]]
+            [clojure.set :refer [union]]
+            [server.util :refer [file->cirru]]))
 
 (defn keys-set [x] (set (keys x)))
 
@@ -38,9 +40,10 @@
 
 (deftwig
  twig-page-files
- (files selected-ns saved-files)
+ (files selected-ns saved-files peek-ns)
  {:ns-set (into #{} (keys files)),
   :defs-set (if (some? selected-ns)
     (do (->> (get-in files [selected-ns :defs]) (keys) (into #{})))
     #{}),
-  :changed-files (render-changed-files files saved-files)})
+  :changed-files (render-changed-files files saved-files),
+  :peeking-file (if (some? peek-ns) (file->cirru (get files peek-ns)) nil)})

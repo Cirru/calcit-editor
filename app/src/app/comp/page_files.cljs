@@ -9,7 +9,8 @@
             [respo.comp.space :refer [=<]]
             [app.style :as style]
             [app.comp.changed-files :refer [comp-changed-files]]
-            [app.util.keycode :as keycode]))
+            [app.util.keycode :as keycode]
+            [app.comp.file-replacer :refer [comp-file-replacer]]))
 
 (defn on-remove-ns [ns-text] (fn [e d! m!] (d! :ir/remove-ns ns-text)))
 
@@ -56,7 +57,12 @@
     (=< 16 nil)
     (span {:inner-text selected-ns, :style style-link, :on {:click on-edit-ns}})
     (=< 16 nil)
-    (span {:inner-text "proc", :style style-link, :on {:click on-edit-proc}}))
+    (span {:inner-text "proc", :style style-link, :on {:click on-edit-proc}})
+    (=< 16 nil)
+    (span
+     {:inner-text "Replacer",
+      :style style/button,
+      :on {:click (fn [e d! m!] (d! :writer/peek-ns selected-ns))}}))
    (div
     {}
     (input
@@ -163,4 +169,6 @@
       (render-empty))
     (=< 32 nil)
     (cursor-> :files comp-changed-files states (:changed-files router-data))
-    (comment comp-inspect selected-ns nil style-inspect))))
+    (comp-inspect selected-ns router-data style-inspect)
+    (if (some? (:peeking-file router-data))
+      (cursor-> :replacer comp-file-replacer states (:peeking-file router-data))))))
