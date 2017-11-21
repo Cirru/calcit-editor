@@ -7,6 +7,7 @@
                 [mvc-works/polyfill     "0.1.1"]
                 [mvc-works/verbosely    "0.1.1"]
                 [respo                  "0.7.1"]
+                [fipp                   "0.6.12"]
                 [respo/markdown         "0.1.7"]]
  :open-file-command ["subl" ["%s:%s:%s" :file :line :column]]
  :builds {:browser {:output-dir "target/browser"
@@ -22,7 +23,7 @@
                                :http-port 8080}
                     :release {:output-dir "dist/"
                               :module-hash-names true
-                              :build-options {:manifest-name "cljs-manifest.json"}}}
+                              :build-options {:manifest-name "assets.edn"}}}
           :ssr {:target :node-script
                 :output-to "target/ssr.js"
                 :main app.render/main!

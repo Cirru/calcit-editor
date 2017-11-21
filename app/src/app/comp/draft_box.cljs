@@ -9,7 +9,8 @@
             [respo.comp.space :refer [=<]]
             [app.comp.modal :refer [comp-modal]]
             [app.style :as style]
-            [app.util :refer [tree->cirru]]))
+            [app.util :refer [tree->cirru]]
+            [fipp.edn :refer [pprint]]))
 
 (defn on-input [e d! m!] (m! (:value e)))
 
@@ -69,12 +70,11 @@
          {:style ui/column}
          (div
           {:style style-original}
-          (<> span original-text style-text)
-          (if expr? (<> span "Cirru Mode" style-mode)))
+          (if expr? (<> span "Cirru Mode" style-mode) (<> span original-text style-text)))
          (=< nil 8)
          (textarea
           {:style (merge ui/textarea style-area),
-           :value state,
+           :value (if expr? (with-out-str (pprint (read-string state))) state),
            :class-name "el-draft-box",
            :on {:input on-input}})
          (=< nil 8)

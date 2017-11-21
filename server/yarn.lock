@@ -1387,9 +1387,9 @@ shadow-cljs-jar@1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/shadow-cljs-jar/-/shadow-cljs-jar-1.1.0.tgz#17fee311c5832b12eec65072b5d265f1c35ff67a"
 
-shadow-cljs@^2.0.88:
-  version "2.0.89"
-  resolved "https://registry.yarnpkg.com/shadow-cljs/-/shadow-cljs-2.0.89.tgz#ecd26f8eb90fa0ec72e5af87280141940c151d2c"
+shadow-cljs@^2.0.95:
+  version "2.0.95"
+  resolved "https://registry.yarnpkg.com/shadow-cljs/-/shadow-cljs-2.0.95.tgz#ae8c9b6fd19704cf530ee201551a9ca6e99c0d04"
   dependencies:
     babel-core "^6.26.0"
     babel-preset-env "^1.6.0"
@@ -1538,9 +1538,9 @@ utils-merge@1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/utils-merge/-/utils-merge-1.0.1.tgz#9f95710f50a267947b2ccc124741c1028427e713"
 
-uws@^8.14.1:
-  version "8.14.1"
-  resolved "https://registry.yarnpkg.com/uws/-/uws-8.14.1.tgz#de09619f305f6174d5516a9c6942cb120904b20b"
+uws@^9.14.0:
+  version "9.14.0"
+  resolved "https://registry.yarnpkg.com/uws/-/uws-9.14.0.tgz#fac8386befc33a7a3705cbd58dc47b430ca4dd95"
 
 vary@~1.1.2:
   version "1.1.2"
@@ -1559,9 +1559,9 @@ ws@^3.0.0:
     safe-buffer "~5.1.0"
     ultron "~1.1.0"
 
-ws@^3.1.0:
-  version "3.2.0"
-  resolved "https://registry.yarnpkg.com/ws/-/ws-3.2.0.tgz#d5d3d6b11aff71e73f808f40cc69d52bb6d4a185"
+ws@^3.3.2:
+  version "3.3.2"
+  resolved "https://registry.yarnpkg.com/ws/-/ws-3.3.2.tgz#96c1d08b3fefda1d5c1e33700d3bfaa9be2d5608"
   dependencies:
     async-limiter "~1.0.0"
     safe-buffer "~5.1.0"

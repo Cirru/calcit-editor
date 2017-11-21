@@ -24,18 +24,17 @@
 
 (defn prod-page []
   (let [html-content (make-string (comp-container {} nil))
-        cljs-info (.parse js/JSON (slurp "dist/cljs-manifest.json"))
+        assets (read-string (slurp "dist/assets.edn"))
         cdn (if (or local? preview?) "" "http://cdn.tiye.me/cumulo-editor/")
         font-styles (if local?
                       "favored-fonts/main.css"
-                      "http://cdn.tiye.me/favored-fonts/main.css")]
+                      "http://cdn.tiye.me/favored-fonts/main.css")
+        prefix-cdn #(str cdn %)]
     (make-page
      html-content
      (merge
       base-info
-      {:styles [font-styles],
-       :scripts [(str cdn (-> cljs-info (aget 0) (aget "js-name")))
-                 (str cdn (-> cljs-info (aget 1) (aget "js-name")))]}))))
+      {:styles [font-styles], :scripts (map #(-> % :output-name prefix-cdn) assets)}))))
 
 (defn main! []
   (if (= js/process.env.env "dev")
