@@ -2,7 +2,8 @@
 (ns app.render
   (:require [respo.render.html :refer [make-string]]
             [shell-page.core :refer [make-page spit slurp]]
-            [app.comp.container :refer [comp-container]]))
+            [app.comp.container :refer [comp-container]]
+            [cljs.reader :refer [read-string]]))
 
 (def base-info
   {:title "Editor",

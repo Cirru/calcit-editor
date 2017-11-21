@@ -169,6 +169,6 @@
       (render-empty))
     (=< 32 nil)
     (cursor-> :files comp-changed-files states (:changed-files router-data))
-    (comp-inspect selected-ns router-data style-inspect)
+    (comment comp-inspect selected-ns router-data style-inspect)
     (if (some? (:peeking-file router-data))
       (cursor-> :replacer comp-file-replacer states (:peeking-file router-data))))))
