@@ -1,7 +1,7 @@
 
 (ns server.util.compile
   (:require [clojure.set :refer [difference intersection]]
-            [stack-server.analyze :refer [generate-file]]
+            [cirru-sepal.analyze :refer [write-file]]
             [server.util :refer [ns->path file->cirru]]
             [server.schema :as schema]
             ["chalk" :as chalk]))
@@ -12,7 +12,7 @@
 
 (defn modify-file! [file-path file configs]
   (let [project-path (path.join (:output configs) file-path)]
-    (fs.writeFileSync project-path (generate-file (file->cirru file)))
+    (fs.writeFileSync project-path (write-file (file->cirru file)))
     (println (.gray chalk (str "modified " project-path)))))
 
 (def cp (js/require "child_process"))
@@ -31,7 +31,7 @@
 (defn create-file! [file-path file configs]
   (let [project-path (path.join (:output configs) file-path)]
     (cp.execSync (str "mkdir -p " (path.dirname project-path)))
-    (fs.writeFileSync project-path (generate-file (file->cirru file)))
+    (fs.writeFileSync project-path (write-file (file->cirru file)))
     (println (.gray chalk (str "created " project-path)))))
 
 (defn remove-file! [file-path configs]

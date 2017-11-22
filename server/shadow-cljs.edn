@@ -1,10 +1,10 @@
 
 {:source-paths ["src"],
  :dependencies [[mvc-works/hsl          "0.1.2"]
-                [fipp                   "0.6.10"]
+                [fipp                   "0.6.12"]
                 [cumulo/recollect       "0.4.1"]
                 [mvc-works/verbosely    "0.1.1"]
-                [cirru/stack-server     "0.3.1"]
+                [cirru/sepal            "0.2.0"]
                 [cirru/bisection-key    "0.1.2"]]
  :builds {:app {:target :node-script
                 :output-to "target/main.js"
