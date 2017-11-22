@@ -80,8 +80,9 @@
 
 (defn leaf? [x] (= :leaf (:type x)))
 
-(defn ns->path [ns-text configs]
-  (-> ns-text (string/replace "." "/") (string/replace "-" "_") (str (:extension configs))))
+(defn ns->path [ns-text extension]
+  (assert (string? extension) (str "extension should be string but got: " extension))
+  (-> ns-text (string/replace "." "/") (string/replace "-" "_") (str extension)))
 
 (defn same-buffer? [x y]
   (and (= (:kind x) (:kind y)) (= (:ns x) (:ns y)) (= (:extra x) (:extra y))))

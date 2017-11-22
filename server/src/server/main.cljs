@@ -24,11 +24,13 @@
          (assoc :saved-files (get-in db [:ir :files]))
          (update :configs (fn [configs] (or configs schema/configs)))))))
 
+(def global-configs (pick-configs (:configs @*writer-db)))
+
 (defn dispatch! [op op-data sid op-id op-time]
   (comment .log js/console "Action" (str op) (clj->js op-data) sid op-id op-time)
   (comment .log js/console "Database:" (clj->js @*writer-db))
   (cond
-    (= op :effect/save-files) (handle-files! @*writer-db schema/configs dispatch! true)
+    (= op :effect/save-files) (handle-files! @*writer-db global-configs dispatch! true)
     :else
       (try
        (let [new-db (updater @*writer-db op op-data sid op-id op-time)]
@@ -54,7 +56,7 @@
    js/process
    "SIGINT"
    (fn [code]
-     (persist! @*writer-db)
+     (persist! (:storage-key configs) @*writer-db)
      (println (str "\n" "Saved coir.edn") (str (if (some? code) (str "with " code))))
      (.exit js/process))))
 
@@ -73,7 +75,7 @@
    false))
 
 (defn main! []
-  (let [configs (pick-configs (:configs @*writer-db)), op (get configs :op)]
+  (let [configs global-configs, op (get configs :op)]
     (if (= op "compile")
       (compile-all-files! configs)
       (do (start-server! configs) (serve-app! (:port configs))))))

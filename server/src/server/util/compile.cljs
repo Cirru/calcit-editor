@@ -10,8 +10,8 @@
 
 (def fs (js/require "fs"))
 
-(defn modify-file! [file-path file configs]
-  (let [project-path (path.join (:output configs) file-path)]
+(defn modify-file! [file-path file output-dir]
+  (let [project-path (path.join output-dir file-path)]
     (fs.writeFileSync project-path (write-file (file->cirru file)))
     (println (.gray chalk (str "modified " project-path)))))
 
@@ -19,23 +19,23 @@
 
 (defn now! [] (.valueOf (js/Date.)))
 
-(defn persist! [db]
+(defn persist! [storage-path db]
   (let [start-time (now!)]
     (fs.writeFileSync
-     (:storage-key schema/configs)
+     storage-path
      (pr-str (-> db (assoc :sessions {}) (assoc :saved-files {}))))
     (comment
      println
      (.gray chalk (str "took " (- (now!) start-time) "ms to wrote coir.edn")))))
 
-(defn create-file! [file-path file configs]
-  (let [project-path (path.join (:output configs) file-path)]
+(defn create-file! [file-path file output-dir]
+  (let [project-path (path.join output-dir file-path)]
     (cp.execSync (str "mkdir -p " (path.dirname project-path)))
     (fs.writeFileSync project-path (write-file (file->cirru file)))
     (println (.gray chalk (str "created " project-path)))))
 
-(defn remove-file! [file-path configs]
-  (let [project-path (path.join (:output configs) file-path)]
+(defn remove-file! [file-path output-dir]
+  (let [project-path (path.join output-dir file-path)]
     (cp.execSync (str "rm -rfv " project-path))
     (println (.red chalk (str "removed " project-path)))))
 
@@ -50,14 +50,16 @@
          changed-names (->> (intersection new-names old-names)
                             (filter
                              (fn [ns-text]
-                               (not= (get new-files ns-text) (get old-files ns-text)))))]
+                               (not= (get new-files ns-text) (get old-files ns-text)))))
+         extension (:extension configs)
+         output-dir (:output configs)]
      (doseq [ns-text added-names]
-       (create-file! (ns->path ns-text configs) (get new-files ns-text) configs))
-     (doseq [ns-text removed-names] (remove-file! (ns->path ns-text configs) configs))
+       (create-file! (ns->path ns-text extension) (get new-files ns-text) output-dir))
+     (doseq [ns-text removed-names] (remove-file! (ns->path ns-text extension) output-dir))
      (doseq [ns-text changed-names]
-       (modify-file! (ns->path ns-text configs) (get new-files ns-text) configs))
+       (modify-file! (ns->path ns-text extension) (get new-files ns-text) output-dir))
      (dispatch! :writer/save-files nil)
-     (if save-ir? (do (js/setTimeout (fn [] (persist! db))))))
+     (if save-ir? (do (js/setTimeout (fn [] (persist! (:storage-key configs) db))))))
    (catch
     js/Error
     e
