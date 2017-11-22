@@ -9,8 +9,8 @@
             [app.util.keycode :as keycode]
             [app.util :as util]
             [app.style :as style]
-            [app.comp.expr :refer [comp-expr style-expr]]
-            [app.comp.leaf :refer [style-leaf]]
+            [app.comp.expr :refer [comp-expr]]
+            [app.theme.star-trail :refer [base-style-leaf base-style-expr]]
             [app.util.dom :refer [inject-style]]
             [app.comp.beginner-mode :refer [comp-beginner-mode on-toggle]]))
 
@@ -55,8 +55,8 @@
         (if (:working? router-data)
           (div
            {}
-           (inject-style ".cirru-expr" style-expr)
-           (inject-style ".cirru-leaf" style-leaf)
+           (inject-style ".cirru-expr" (base-style-expr))
+           (inject-style ".cirru-leaf" (base-style-leaf))
            (cursor->
             (:id expr)
             comp-expr

@@ -9,50 +9,17 @@
             [polyfill.core :refer [text-width*]]
             [app.util.keycode :as keycode]
             [app.util :as util]
-            [app.util.shortcuts :refer [on-window-keydown]]))
+            [app.util.shortcuts :refer [on-window-keydown]]
+            [app.theme.star-trail :refer [decide-leaf-style]]))
 
 (defn on-input [state coord]
   (fn [e d! m!]
     (d! :ir/update-leaf (:value e))
     (m! (assoc state :text (:value e) :time (util/now!)))))
 
-(def style-first {:color (hsl 40 85 60)})
-
-(def style-space {:background-color (hsl 0 0 100 0.12)})
-
-(def style-number {:color (hsl 0 70 40)})
-
-(def style-highlight {:background-color (hsl 0 0 100 0.2)})
-
 (defn on-focus [coord] (fn [e d! m!] (d! :writer/focus coord)))
 
-(def style-big {:border-right (str "16px solid " (hsl 0 0 30))})
-
-(def style-keyword {:color (hsl 240 30 64)})
-
 (def initial-state {:text "", :time 0})
-
-(def style-leaf
-  (merge
-   ui/input
-   {:line-height "24px",
-    :height 24,
-    :margin "2px 2px",
-    :padding "0px 4px",
-    :background-color :transparent,
-    :min-width 8,
-    :color (hsl 200 14 60),
-    :font-family "Menlo,Iosevka,Consolas,monospace",
-    :font-size 15,
-    :vertical-align :baseline,
-    :transition-duration "200ms",
-    :transition-property "color",
-    :text-align :left,
-    :border-width "1px 1px 1px 1px",
-    :resize :none,
-    :white-space :nowrap}))
-
-(def style-string {:color (hsl 120 60 56)})
 
 (defn on-keydown [state leaf coord]
   (fn [e d! m!]
@@ -88,35 +55,18 @@
            (d! :analyze/goto-def {:text (:text leaf), :forced? shift?}))
         :else (do (comment println "Keydown leaf" code) (on-window-keydown event d!))))))
 
-(def style-partial {:border-right (str "8px solid " (hsl 0 0 30)), :padding-right 0})
-
 (defcomp
  comp-leaf
  (states leaf focus coord by-other? first? readonly?)
  (let [state (or (:data states) initial-state)
        text (or (if (> (:time state) (:time leaf)) (:text state) (:text leaf)) "")
-       focused? (= focus coord)
-       has-blank? (or (= text "") (string/includes? text " "))
-       best-width (+
-                   10
-                   (text-width* text (:font-size style-leaf) (:font-family style-leaf)))
-       max-width 240]
+       focused? (= focus coord)]
    (textarea
     {:value text,
      :spellcheck false,
      :class-name (str "cirru-leaf" (if (= focus coord) " cirru-focused" "")),
      :read-only readonly?,
-     :style (merge
-             {}
-             {:width (min best-width max-width)}
-             (if first? style-first)
-             (if (string/starts-with? text ":") style-keyword)
-             (if (string/starts-with? text "|") style-string)
-             (if (> best-width max-width) style-partial)
-             (if (string/includes? text "\n") style-big)
-             (if (re-find (re-pattern "^-?\\d") text) style-number)
-             (if has-blank? style-space)
-             (if (or focused? by-other?) style-highlight)),
+     :style (decide-leaf-style text focused? first? by-other?),
      :on (if readonly?
        {}
        {:click (on-focus coord),

@@ -9,7 +9,8 @@
             [app.util.keycode :as keycode]
             [app.comp.leaf :refer [comp-leaf]]
             [app.util :refer [coord-contains? simple? leaf? expr?]]
-            [app.util.shortcuts :refer [on-window-keydown]]))
+            [app.util.shortcuts :refer [on-window-keydown]]
+            [app.theme.star-trail :refer [decide-expr-style]]))
 
 (defn on-keydown [coord]
   (fn [e d! m!]
@@ -49,18 +50,6 @@
 
 (defn on-focus [coord] (fn [e d! m!] (d! :writer/focus coord)))
 
-(def style-simple
-  {:display :inline-block,
-   :border-width "0 0 1px 0",
-   :min-width 32,
-   :padding-left 11,
-   :padding-right 11,
-   :vertical-align :top})
-
-(def style-tail {:display :inline-block, :vertical-align :top, :padding-left 10})
-
-(def style-beginner {:outline (str "1px solid " (hsl 200 80 70 0.2))})
-
 (defcomp
  comp-expr
  (states expr focus coord others tail? after-expr? beginner? readonly?)
@@ -73,14 +62,14 @@
     :div
     {:tab-index 0,
      :class-name (str "cirru-expr" (if focused? " cirru-focused" "")),
-     :style (merge
-             {}
-             (if (contains? others coord) {:border-color (hsl 0 0 100 0.6)})
-             (if focused? {:border-color (hsl 0 0 100 0.9)})
-             (if (and (simple? expr) (not tail?) (not after-expr?) (pos? (count coord)))
-               style-simple)
-             (if tail? style-tail)
-             (if beginner? style-beginner)),
+     :style (decide-expr-style
+             expr
+             (contains? others coord)
+             focused?
+             tail?
+             after-expr?
+             beginner?
+             (count coord)),
      :on (if readonly? {} {:keydown (on-keydown coord), :click (on-focus coord)})}
     (loop [result [], children sorted-children, info default-info]
       (if (empty? children)
@@ -121,17 +110,3 @@
                 readonly?))])
            (rest children)
            (assoc info :after-expr? (expr? child)))))))))
-
-(def style-expr
-  {:border-width "0 0 0px 1px",
-   :border-style :solid,
-   :border-color (hsl 0 0 100 0.3),
-   :min-height 24,
-   :outline :none,
-   :padding-left 10,
-   :font-family "Menlo,monospace",
-   :font-size 14,
-   :margin-bottom 4,
-   :margin-right 2,
-   :margin-left 12,
-   :margin-top 0})
