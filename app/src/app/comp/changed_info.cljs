@@ -42,7 +42,7 @@
    (<> span kind nil)
    (=< 8 nil)
    (<> span (name status) style-status)
-   (=< 2 nil)
+   (=< 4 nil)
    (span
     {:class-name "ion-arrow-return-left",
      :title "Reset this",
@@ -63,7 +63,7 @@
   (div
    {}
    (<> span ns-text nil)
-   (=< 2 nil)
+   (=< 4 nil)
    (span
     {:class-name "ion-arrow-return-left",
      :title "Reset this",

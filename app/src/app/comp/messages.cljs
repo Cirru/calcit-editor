@@ -12,7 +12,6 @@
 (def style-message
   {:position :absolute,
    :right 8,
-   :bottom 8,
    :cursor :pointer,
    :font-weight 100,
    :font-family "Hind",
@@ -36,7 +35,7 @@
            (div
             {:style (merge
                      style-message
-                     {:bottom (+ 40 (* idx 40))}
+                     {:top (+ 52 (* idx 40))}
                      {:color (case (:kind msg)
                         :error (hsl 0 80 80)
                         :warning (hsl 60 80 80)

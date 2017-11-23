@@ -10,7 +10,7 @@
             [app.comp.bookmark :refer [comp-bookmark]]
             [app.comp.beginner-mode :refer [comp-beginner-mode on-toggle]]
             [app.comp.expr :refer [comp-expr]]
-            [app.theme.star-trail :refer [base-style-leaf base-style-expr]]
+            [app.theme :refer [base-style-leaf base-style-expr]]
             [app.style :as style]
             [app.util.dom :refer [inject-style]]
             [app.comp.rename :refer [comp-rename]]
@@ -126,8 +126,8 @@
            beginner? (:beginner? state)]
        (div
         {:style style-area}
-        (inject-style ".cirru-expr" (base-style-expr))
-        (inject-style ".cirru-leaf" (base-style-leaf))
+        (inject-style ".cirru-expr" (base-style-expr theme))
+        (inject-style ".cirru-leaf" (base-style-leaf theme))
         (if (some? expr)
           (cursor->
            (:id expr)
