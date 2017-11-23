@@ -71,7 +71,7 @@
 
 (def style-expr-tail {:display :inline-block, :vertical-align :top, :padding-left 10})
 
-(defn decide-expr-style [expr has-others? focused? tail? after-expr? beginner? length]
+(defn decide-expr-style [expr has-others? focused? tail? after-expr? beginner? length depth]
   (merge
    {}
    (if has-others? {:border-color (hsl 0 0 100 0.6)})

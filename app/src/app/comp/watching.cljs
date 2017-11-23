@@ -26,7 +26,7 @@
 
 (defcomp
  comp-watching
- (states router-data)
+ (states router-data theme)
  (let [expr (:expr router-data)
        focus (:focus router-data)
        bookmark (:bookmark router-data)
@@ -68,4 +68,6 @@
             false
             false
             beginner?
-            readonly?))))))))
+            readonly?
+            theme
+            0))))))))

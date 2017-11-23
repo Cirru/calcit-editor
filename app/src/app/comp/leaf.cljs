@@ -10,7 +10,7 @@
             [app.util.keycode :as keycode]
             [app.util :as util]
             [app.util.shortcuts :refer [on-window-keydown]]
-            [app.theme.star-trail :refer [decide-leaf-style]]))
+            [app.theme :refer [decide-leaf-theme]]))
 
 (defn on-input [state coord]
   (fn [e d! m!]
@@ -57,7 +57,7 @@
 
 (defcomp
  comp-leaf
- (states leaf focus coord by-other? first? readonly?)
+ (states leaf focus coord by-other? first? readonly? theme)
  (let [state (or (:data states) initial-state)
        text (or (if (> (:time state) (:time leaf)) (:text state) (:text leaf)) "")
        focused? (= focus coord)]
@@ -66,7 +66,7 @@
      :spellcheck false,
      :class-name (str "cirru-leaf" (if (= focus coord) " cirru-focused" "")),
      :read-only readonly?,
-     :style (decide-leaf-style text focused? first? by-other?),
+     :style (decide-leaf-theme text focused? first? by-other? theme),
      :on (if readonly?
        {}
        {:click (on-focus coord),

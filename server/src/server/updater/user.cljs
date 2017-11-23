@@ -43,3 +43,7 @@
 (defn nickname [db op-data sid op-id op-time]
   (let [user-id (get-in db [:sessions sid :user-id])]
     (assoc-in db [:users user-id :nickname] (if (string/blank? op-data) "Someone" op-data))))
+
+(defn change-theme [db op-data sid op-id op-time]
+  (let [user-id (get-in db [:sessions sid :user-id])]
+    (assoc-in db [:users user-id :theme] op-data)))

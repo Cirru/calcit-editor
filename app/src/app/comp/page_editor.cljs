@@ -15,7 +15,8 @@
             [app.util.dom :refer [inject-style]]
             [app.comp.rename :refer [comp-rename]]
             [app.comp.draft-box :refer [comp-draft-box]]
-            [app.comp.abstract :refer [comp-abstract]]))
+            [app.comp.abstract :refer [comp-abstract]]
+            [app.comp.theme-menu :refer [comp-theme-menu]]))
 
 (def style-status (merge ui/row {:justify-content :space-between, :padding "0 8px"}))
 
@@ -60,38 +61,43 @@
 
 (defn on-delete [bookmark] (fn [e d! m!] (d! :ir/delete-entry (dissoc bookmark :focus))))
 
-(defn render-status [router-data state *cursor* bookmark]
-  (div
-   {:style style-status}
-   (div
-    {}
-    (<> span (str "Writers(" (count (:others router-data)) ")") style-hint)
-    (list->
-     :div
-     {:style style-watchers}
-     (->> (:others router-data)
-          (vals)
-          (map (fn [info] [(:session-id info) (<> span (:nickname info) style-watcher)]))))
-    (=< 16 nil)
-    (<> span (str "Watchers(" (count (:watchers router-data)) ")") style-hint)
-    (list->
-     :div
-     {:style style-watchers}
-     (->> (:watchers router-data)
-          (map
-           (fn [entry]
-             (let [[sid member] entry] [sid (<> span (:nickname member) style-watcher)])))))
-    (=< 16 nil)
-    (span {:inner-text "Delete", :style style-link, :on {:click (on-delete bookmark)}})
-    (=< 8 nil)
-    (span {:inner-text "Rename", :style style-link, :on {:click (on-rename state)}})
-    (=< 8 nil)
-    (span {:inner-text "Draft-box", :style style-link, :on {:click (on-draft-box state)}}))
-   (div {} (comp-beginner-mode state (on-toggle state *cursor*)))))
+(defn render-status [router-data states *cursor* bookmark theme]
+  (let [state (:data states)]
+    (div
+     {:style style-status}
+     (div
+      {}
+      (<> span (str "Writers(" (count (:others router-data)) ")") style-hint)
+      (list->
+       :div
+       {:style style-watchers}
+       (->> (:others router-data)
+            (vals)
+            (map (fn [info] [(:session-id info) (<> span (:nickname info) style-watcher)]))))
+      (=< 16 nil)
+      (<> span (str "Watchers(" (count (:watchers router-data)) ")") style-hint)
+      (list->
+       :div
+       {:style style-watchers}
+       (->> (:watchers router-data)
+            (map
+             (fn [entry]
+               (let [[sid member] entry] [sid (<> span (:nickname member) style-watcher)])))))
+      (=< 16 nil)
+      (span {:inner-text "Delete", :style style-link, :on {:click (on-delete bookmark)}})
+      (=< 8 nil)
+      (span {:inner-text "Rename", :style style-link, :on {:click (on-rename state)}})
+      (=< 8 nil)
+      (span {:inner-text "Draft-box", :style style-link, :on {:click (on-draft-box state)}}))
+     (div
+      {:style ui/row}
+      (cursor-> :theme comp-theme-menu states theme)
+      (=< 16 nil)
+      (comp-beginner-mode state (on-toggle state *cursor*))))))
 
 (defcomp
  comp-page-editor
- (states stack router-data pointer)
+ (states stack router-data pointer theme)
  (let [state (or (:data states) initial-state)
        bookmark (get stack pointer)
        expr (:expr router-data)
@@ -134,9 +140,11 @@
            false
            false
            beginner?
-           readonly?)
+           readonly?
+           theme
+           0)
           (if (not (empty? stack)) ui-missing))))
-     (render-status router-data state *cursor* bookmark)
+     (render-status router-data states *cursor* bookmark theme)
      (if (:renaming? state)
        (cursor-> :rename comp-rename states old-name close-rename! bookmark))
      (if (:draft-box? state)

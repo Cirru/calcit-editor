@@ -34,7 +34,8 @@
  (let [state (:data states)
        session (:session store)
        writer (:writer session)
-       router (:router store)]
+       router (:router store)
+       theme (get-in store [:user :theme])]
    (if (nil? store)
      (div {:style (merge ui/global ui/fullscreen ui/center)} (comp-about))
      (div
@@ -54,15 +55,16 @@
               states
               (:stack writer)
               (:data router)
-              (:pointer writer))
+              (:pointer writer)
+              theme)
            :members (comp-page-members (:data router) (:id session))
            :search (cursor-> :search comp-search states (:data router))
-           :watching (cursor-> :watching comp-watching states (:data router))
+           :watching (cursor-> :watching comp-watching states (:data router) theme)
            (div {} (<> span (str "404 page: " (pr-str router)) nil)))
          (if (= :watching (:name router))
-           (cursor-> :watching comp-watching states (:data router))
+           (cursor-> :watching comp-watching states (:data router) theme)
            (comp-login states))))
-      (comment comp-inspect "Session" store style-inspector)
+      (comp-inspect "Session" (:user store) style-inspector)
       (comment
        comp-inspect
        "Router data"

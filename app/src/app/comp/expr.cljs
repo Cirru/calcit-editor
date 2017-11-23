@@ -10,7 +10,7 @@
             [app.comp.leaf :refer [comp-leaf]]
             [app.util :refer [coord-contains? simple? leaf? expr?]]
             [app.util.shortcuts :refer [on-window-keydown]]
-            [app.theme.star-trail :refer [decide-expr-style]]))
+            [app.theme :refer [decide-expr-theme]]))
 
 (defn on-keydown [coord]
   (fn [e d! m!]
@@ -52,7 +52,7 @@
 
 (defcomp
  comp-expr
- (states expr focus coord others tail? after-expr? beginner? readonly?)
+ (states expr focus coord others tail? after-expr? beginner? readonly? theme depth)
  (let [focused? (= focus coord)
        first-id (apply min (keys (:data expr)))
        last-id (apply max (keys (:data expr)))
@@ -62,14 +62,16 @@
     :div
     {:tab-index 0,
      :class-name (str "cirru-expr" (if focused? " cirru-focused" "")),
-     :style (decide-expr-style
+     :style (decide-expr-theme
              expr
              (contains? others coord)
              focused?
              tail?
              after-expr?
              beginner?
-             (count coord)),
+             (count coord)
+             depth
+             theme),
      :on (if readonly? {} {:keydown (on-keydown coord), :click (on-focus coord)})}
     (loop [result [], children sorted-children, info default-info]
       (if (empty? children)
@@ -95,7 +97,8 @@
                 child-coord
                 (contains? partial-others child-coord)
                 (= first-id k)
-                readonly?)
+                readonly?
+                theme)
                (cursor->
                 cursor-key
                 comp-expr
@@ -107,6 +110,8 @@
                 (= last-id k)
                 (:after-expr? info)
                 beginner?
-                readonly?))])
+                readonly?
+                theme
+                (inc depth)))])
            (rest children)
            (assoc info :after-expr? (expr? child)))))))))

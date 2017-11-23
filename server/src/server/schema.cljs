@@ -7,7 +7,8 @@
 
 (def configs {:storage-key "coir.edn", :extension ".cljs", :output "src", :port 6001})
 
-(def user {:name nil, :id nil, :nickname nil, :avatar nil, :password nil})
+(def user
+  {:name nil, :id nil, :nickname nil, :avatar nil, :password nil, :theme :star-trail})
 
 (def bookmark {:kind :def, :ns nil, :extra nil, :focus []})
 
