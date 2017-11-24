@@ -26,14 +26,14 @@
 
 (def global-configs (pick-configs (:configs @*writer-db)))
 
-(defn dispatch! [op op-data sid op-id op-time]
-  (comment .log js/console "Action" (str op) (clj->js op-data) sid op-id op-time)
+(defn dispatch! [op op-data sid op-id]
+  (comment .log js/console "Action" (str op) (clj->js op-data) sid op-id)
   (comment .log js/console "Database:" (clj->js @*writer-db))
   (cond
     (= op :effect/save-files) (handle-files! @*writer-db global-configs dispatch! true)
     :else
       (try
-       (let [new-db (updater @*writer-db op op-data sid op-id op-time)]
+       (let [new-db (updater @*writer-db op op-data sid op-id (.valueOf (js/Date.)))]
          (reset! *writer-db new-db))
        (catch js/Error e (println (.red chalk e))))))
 
