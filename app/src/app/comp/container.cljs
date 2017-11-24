@@ -64,10 +64,6 @@
          (if (= :watching (:name router))
            (cursor-> :watching comp-watching states (:data router) theme)
            (comp-login states))))
-      (comp-inspect "Session" (:user store) style-inspector)
-      (comment
-       comp-inspect
-       "Router data"
-       (get-in store [:router :data])
-       (merge style-inspector {:left 100}))
+      (comment comp-inspect "Session" (:user store) style-inspector)
+      (comment comp-inspect "Router data" states (merge style-inspector {:left 100}))
       (comp-messages (get-in store [:session :notifications]))))))

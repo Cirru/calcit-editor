@@ -10,7 +10,8 @@
             ["chalk" :as chalk]
             ["path" :as path]
             ["express" :as express]
-            ["serve-index" :as serve-index])
+            ["serve-index" :as serve-index]
+            ["shortid" :as shortid])
   (:require-macros [cljs.core.async.macros :refer [go-loop go]]))
 
 (defonce *writer-db
@@ -26,14 +27,21 @@
 
 (def global-configs (pick-configs (:configs @*writer-db)))
 
-(defn dispatch! [op op-data sid op-id]
-  (comment .log js/console "Action" (str op) (clj->js op-data) sid op-id)
+(defn dispatch! [op op-data sid]
+  (comment .log js/console "Action" (str op) (clj->js op-data) sid)
   (comment .log js/console "Database:" (clj->js @*writer-db))
   (cond
-    (= op :effect/save-files) (handle-files! @*writer-db global-configs dispatch! true)
+    (= op :effect/save-files)
+      (handle-files! @*writer-db global-configs #(dispatch! %1 %2 sid) true)
     :else
       (try
-       (let [new-db (updater @*writer-db op op-data sid op-id (.valueOf (js/Date.)))]
+       (let [new-db (updater
+                     @*writer-db
+                     op
+                     op-data
+                     sid
+                     (.generate shortid)
+                     (.valueOf (js/Date.)))]
          (reset! *writer-db new-db))
        (catch js/Error e (println (.red chalk e))))))
 

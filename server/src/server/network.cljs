@@ -39,8 +39,8 @@
               wss
               "connection"
               (fn [socket]
-                (let [sid (.generate shortid), op-id (.generate shortid)]
-                  (on-action! :session/connect nil sid op-id)
+                (let [sid (.generate shortid)]
+                  (on-action! :session/connect nil sid)
                   (swap! *registry assoc sid socket)
                   (println (.gray chalk (str "client connected: " sid)))
                   (.on
@@ -48,14 +48,14 @@
                    "message"
                    (fn [rawData]
                      (let [action (reader/read-string rawData), [op op-data] action]
-                       (on-action! op op-data sid op-id))))
+                       (on-action! op op-data sid))))
                   (.on
                    socket
                    "close"
                    (fn []
                      (println (.gray chalk (str "client disconnected: " sid)))
                      (swap! *registry dissoc sid)
-                     (on-action! :session/disconnect nil sid op-id))))))
+                     (on-action! :session/disconnect nil sid))))))
              (println
               "Server started, please edit on"
               (.blue chalk (str "http://cumulo-editor.cirru.org?port=" port))))))))))
