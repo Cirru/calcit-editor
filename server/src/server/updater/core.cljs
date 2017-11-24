@@ -37,7 +37,7 @@
     :writer/move-next (writer/move-next db op-data session-id op-id op-time)
     :writer/move-previous (writer/move-previous db op-data session-id op-id op-time)
     :writer/finish (writer/finish db op-data session-id op-id op-time)
-    :writer/peek-ns (writer/peek-ns db op-data session-id op-id op-time)
+    :writer/draft-ns (writer/draft-ns db op-data session-id op-id op-time)
     :ir/add-ns (ir/add-ns db op-data session-id op-id op-time)
     :ir/add-def (ir/add-def db op-data session-id op-id op-time)
     :ir/remove-def (ir/remove-def db op-data session-id op-id op-time)

@@ -251,10 +251,10 @@
 
 (defn replace-file [db op-data sid op-id op-time]
   (let [user-id (get-in db [:sessions sid :user-id])
-        ns-text (get-in db [:sessions sid :writer :peek-ns])]
+        ns-text (get-in db [:sessions sid :writer :draft-ns])]
     (if (some? ns-text)
       (assoc-in db [:ir :files ns-text] (cirru->file op-data user-id op-time))
-      (do (println "undefined peek-ns") db))))
+      (do (println "undefined draft-ns") db))))
 
 (defn cp-ns [db op-data session-id op-id op-time]
   (update-in

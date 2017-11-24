@@ -26,7 +26,7 @@
    :router {:name :files, :data nil, :router nil},
    :notifications [],
    :writer {:selected-ns nil,
-            :peek-ns nil,
+            :draft-ns nil,
             :peek-def nil,
             :pointer 0,
             :stack [],

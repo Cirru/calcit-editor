@@ -62,7 +62,7 @@
     (span
      {:inner-text "Replacer",
       :style style/button,
-      :on {:click (fn [e d! m!] (d! :writer/peek-ns selected-ns))}}))
+      :on {:click (fn [e d! m!] (d! :writer/draft-ns selected-ns))}}))
    (div
     {}
     (input

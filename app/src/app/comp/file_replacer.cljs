@@ -17,7 +17,7 @@
  (states file)
  (let [initial-file (with-out-str (pprint file)), state (or (:data states) initial-file)]
    (comp-modal
-    (fn [mutate! dispatch!] (dispatch! :writer/peek-ns nil))
+    (fn [mutate! dispatch!] (dispatch! :writer/draft-ns nil))
     (div
      {:style ui/column}
      (textarea
@@ -33,4 +33,4 @@
         :on {:click (fn [e d! m!]
                (if (not= state initial-file) (d! :ir/replace-file (read-string state)))
                (m! nil)
-               (d! :writer/peek-ns nil))}}))))))
+               (d! :writer/draft-ns nil))}}))))))

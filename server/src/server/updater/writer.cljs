@@ -63,6 +63,9 @@
          (let [pointer (:pointer writer)]
            (assoc writer :pointer (if (pos? pointer) (dec pointer) 0)))))))
 
+(defn draft-ns [db op-data sid op-id op-time]
+  (-> db (update-in [:sessions sid :writer] (fn [writer] (assoc writer :draft-ns op-data)))))
+
 (defn paste [db op-data session-id op-id op-time]
   (let [piece (assoc (get-in db [:sessions session-id :writer :clipboard]) :id op-id)
         writer (to-writer db session-id)
@@ -105,9 +108,6 @@
                  (update :stack (fn [stack] (dissoc-idx stack pointer)))
                  (update :pointer dec))
              writer))))))
-
-(defn peek-ns [db op-data sid op-id op-time]
-  (-> db (update-in [:sessions sid :writer] (fn [writer] (assoc writer :peek-ns op-data)))))
 
 (defn go-right [db op-data session-id op-id op-time]
   (let [writer (get-in db [:sessions session-id :writer])

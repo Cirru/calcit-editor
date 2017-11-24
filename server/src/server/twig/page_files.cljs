@@ -40,10 +40,10 @@
 
 (deftwig
  twig-page-files
- (files selected-ns saved-files peek-ns)
+ (files selected-ns saved-files draft-ns)
  {:ns-set (into #{} (keys files)),
   :defs-set (if (some? selected-ns)
     (do (->> (get-in files [selected-ns :defs]) (keys) (into #{})))
     #{}),
   :changed-files (render-changed-files files saved-files),
-  :peeking-file (if (some? peek-ns) (file->cirru (get files peek-ns)) nil)})
+  :peeking-file (if (some? draft-ns) (file->cirru (get files draft-ns)) nil)})

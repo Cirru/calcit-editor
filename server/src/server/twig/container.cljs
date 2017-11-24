@@ -28,7 +28,7 @@
                     (:files ir)
                     (get-in session [:writer :selected-ns])
                     (:saved-files db)
-                    (get-in session [:writer :peek-ns]))
+                    (get-in session [:writer :draft-ns]))
                  :editor
                    (twig-page-editor
                     (:files ir)
