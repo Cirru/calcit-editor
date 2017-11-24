@@ -1,8 +1,9 @@
 
 (ns server.twig.page-editor
   (:require [recollect.macros :refer [deftwig]]
-            [server.util :refer [same-buffer?]]
-            [server.twig.user :refer [twig-user]]))
+            [server.util :refer [same-buffer? tree->cirru]]
+            [server.twig.user :refer [twig-user]]
+            [server.twig.peek-def :refer [twig-peek-def]]))
 
 (deftwig
  twig-page-editor
@@ -43,5 +44,9 @@
           :ns (get-in files [ns-text :ns])
           :proc (get-in files [ns-text :proc])
           :def (get-in files [ns-text :defs (:extra bookmark)])
-          nil)})
+          nil),
+        :peek-def (let [peek-def (:peek-def writer)]
+          (if (some? peek-def)
+            (twig-peek-def (get-in files [(:ns peek-def) :defs (:def peek-def)]))
+            nil))})
      nil)))

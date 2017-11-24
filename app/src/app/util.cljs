@@ -45,4 +45,16 @@
        (or (:port query) (:port schema/configs))))
     "ws://localhost:6001"))
 
+(defn stringify-s-expr [x]
+  (if (vector? x)
+    (str
+     "("
+     (string/join
+      " "
+      (map
+       (fn [y]
+         (if (vector? y) (stringify-s-expr y) (if (string/includes? y " ") (pr-str y) y)))
+       x))
+     ")")))
+
 (defn now! [] (.valueOf (js/Date.)))

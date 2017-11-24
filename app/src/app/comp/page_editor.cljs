@@ -16,7 +16,8 @@
             [app.comp.rename :refer [comp-rename]]
             [app.comp.draft-box :refer [comp-draft-box]]
             [app.comp.abstract :refer [comp-abstract]]
-            [app.comp.theme-menu :refer [comp-theme-menu]]))
+            [app.comp.theme-menu :refer [comp-theme-menu]]
+            [app.comp.peek-def :refer [comp-peek-def]]))
 
 (def style-status (merge ui/row {:justify-content :space-between, :padding "0 8px"}))
 
@@ -144,6 +145,7 @@
            theme
            0)
           (if (not (empty? stack)) ui-missing))))
+     (comp-peek-def (:peek-def router-data))
      (render-status router-data states *cursor* bookmark theme)
      (if (:renaming? state)
        (cursor-> :rename comp-rename states old-name close-rename! bookmark))

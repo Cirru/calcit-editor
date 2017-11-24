@@ -44,6 +44,7 @@
         (and (not selected?) (= code keycode/left))
           (if (zero? event.target.selectionStart)
             (do (d! :writer/go-left nil) (.preventDefault event)))
+        (and meta? (= code keycode/b)) (d! :analyze/peek-def (:text leaf))
         (and (not selected?) (= code keycode/right))
           (if (= text-length event.target.selectionEnd)
             (do (d! :writer/go-right nil) (.preventDefault event)))

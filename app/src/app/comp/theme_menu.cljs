@@ -17,12 +17,12 @@
  (let [state (if (some? (:data states)) (:data states) false)]
    (div
     {:style {:position :relative,
-             :width 120,
+             :width 60,
              :color (hsl 0 0 80 0.4),
              :font-family "Josefin Sans,sans-serif",
              :cursor :pointer},
      :on {:click (fn [e d! m!] (m! (not state)))}}
-    (<> theme {})
+    (<> (or theme "no theme"))
     (if state
       (list->
        :div
