@@ -2,7 +2,7 @@
 {:source-paths ["src"]
  :dependencies [[mvc-works/hsl          "0.1.2"]
                 [mvc-works/shell-page   "0.1.6"]
-                [cumulo/recollect       "0.4.1"]
+                [cumulo/recollect       "0.4.3"]
                 [respo/ui               "0.2.0"]
                 [mvc-works/polyfill     "0.1.1"]
                 [mvc-works/verbosely    "0.1.1"]
