@@ -8,15 +8,15 @@
             [respo.comp.inspect :refer [comp-inspect]]
             [respo.comp.space :refer [=<]]
             [app.style :as style]
-            [app.util :refer [stringify-s-expr]]))
+            [app.util :refer [stringify-s-expr tree->cirru]]))
 
 (defcomp
  comp-peek-def
  (simple-expr)
  (div
   {:style {:font-family "Source Code Pro, Iosevka,Consolas,monospace",
-           :white-space :nowrap,
+           :height "1.5em",
            :font-size 12,
            :color (hsl 0 0 50),
            :overflow :hidden}}
-  (<> (stringify-s-expr simple-expr))))
+  (<> (stringify-s-expr (tree->cirru simple-expr)))))

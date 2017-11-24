@@ -145,7 +145,7 @@
            theme
            0)
           (if (not (empty? stack)) ui-missing))))
-     (comp-peek-def (:peek-def router-data))
+     (let [peek-def (:peek-def router-data)] (if (some? peek-def) (comp-peek-def peek-def)))
      (render-status router-data states *cursor* bookmark theme)
      (if (:renaming? state)
        (cursor-> :rename comp-rename states old-name close-rename! bookmark))
