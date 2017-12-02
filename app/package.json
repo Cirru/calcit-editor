@@ -12,7 +12,7 @@
     "compile-ssr": "shadow-cljs compile ssr",
     "html-dev": "env=dev node target/ssr.js && cp entry/manifest.json target/",
     "html": "node target/ssr.js && cp entry/manifest.json dist/",
-    "dev": "yarn compile-ssr && yarn html-dev",
+    "index.html": "yarn compile-ssr && yarn html-dev",
     "del": "rm -rf dist/*",
     "serve": "http-server dist",
     "build": "yarn del && yarn release && yarn compile-ssr && yarn html"
@@ -25,7 +25,7 @@
   "license": "MIT",
   "devDependencies": {
     "http-server": "^0.10.0",
-    "shadow-cljs": "^2.0.95"
+    "shadow-cljs": "^2.0.114"
   },
   "dependencies": {}
 }

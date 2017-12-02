@@ -1,6 +1,6 @@
 {
   "name": "cumulo-editor",
-  "version": "0.3.10",
+  "version": "0.3.11",
   "description": "Command line for Cumulo Editor",
   "bin": {
     "cumulo-editor": "dist/main.js",
@@ -31,7 +31,7 @@
     "uws": "^9.14.0"
   },
   "devDependencies": {
-    "shadow-cljs": "^2.0.95",
+    "shadow-cljs": "^2.0.114",
     "source-map-support": "^0.5.0",
     "ws": "^3.3.2"
   }

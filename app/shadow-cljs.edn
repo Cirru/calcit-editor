@@ -6,7 +6,7 @@
                 [respo/ui               "0.2.0"]
                 [mvc-works/polyfill     "0.1.1"]
                 [mvc-works/verbosely    "0.1.1"]
-                [respo                  "0.7.1"]
+                [respo                  "0.8.0"]
                 [fipp                   "0.6.12"]
                 [respo/markdown         "0.1.7"]]
  :open-file-command ["subl" ["%s:%s:%s" :file :line :column]]

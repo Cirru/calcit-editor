@@ -50,7 +50,7 @@
 (def mount-target (.querySelector js/document ".app"))
 
 (defn render-app! [renderer]
-  (renderer mount-target (comp-container @*states @*store) dispatch!))
+  (renderer mount-target (comp-container @*states @*store) #(dispatch! %1 %2)))
 
 (defn main! []
   (if ssr? (render-app! realize-ssr!))

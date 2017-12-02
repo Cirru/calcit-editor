@@ -4,7 +4,7 @@
             [hsl.core :refer [hsl]]
             [respo-ui.style :as ui]
             [respo-ui.style.colors :as colors]
-            [respo.macros :refer [defcomp <> span div a]]
+            [respo.macros :refer [defcomp <> list-> span div a]]
             [respo.comp.space :refer [=<]]))
 
 (def style-bookmark
@@ -26,7 +26,8 @@
  (router-data session-id)
  (div
   {:style (merge ui/flex style-members)}
-  (div
+  (list->
+   :div
    {}
    (->> router-data
         (map
