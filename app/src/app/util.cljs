@@ -12,9 +12,12 @@
     (->> (:data x) (sort-by first) (map (fn [entry] (tree->cirru (val entry)))) (vec))))
 
 (defn parse-query! []
-  (->> (-> (.-search js/location) (subs 1) (string/split "&"))
-       (map (fn [chunk] (update (vec (string/split chunk "=")) 0 keyword)))
-       (into {})))
+  (let [search (.-search js/location)]
+    (if (empty? search)
+      {}
+      (->> (-> search (subs 1) (string/split "&"))
+           (map (fn [chunk] (update (vec (string/split chunk "=")) 0 keyword)))
+           (into {})))))
 
 (defn coord-contains? [xs ys]
   (if (empty? ys) true (if (= (first xs) (first ys)) (recur (rest xs) (rest ys)) false)))
