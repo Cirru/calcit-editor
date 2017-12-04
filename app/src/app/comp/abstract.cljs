@@ -20,9 +20,11 @@
 
 (defn on-keydown [state close-modal!]
   (fn [e d! m!]
-    (if (= keycode/enter (:key-code e))
-      (if (not (string/blank? state))
-        (do (d! :analyze/abstract-def state) (m! nil) (close-modal! m!))))))
+    (cond
+      (= keycode/enter (:key-code e))
+        (if (not (string/blank? state))
+          (do (d! :analyze/abstract-def state) (m! nil) (close-modal! m!)))
+      (= (:keycode e) keycode/esc) (close-modal! m!))))
 
 (defcomp
  comp-abstract
