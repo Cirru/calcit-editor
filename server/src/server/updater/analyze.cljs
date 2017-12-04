@@ -45,7 +45,7 @@
     (if (some? new-bookmark)
       (if (string/starts-with? (:ns new-bookmark) (str pkg "."))
         (if def-existed?
-          (-> db (update-in [:sessions sid :writer] (push-bookmark new-bookmark)))
+          (-> db (update-in [:sessions sid :writer] (push-bookmark new-bookmark true)))
           (if forced?
             (-> db
                 (assoc-in
