@@ -23,7 +23,7 @@
                                :http-root "target"
                                :http-port 8080}
                     :release {:output-dir "dist/"
-                              :module-hash-names true
+                              :module-hash-names 8
                               :build-options {:manifest-name "assets.edn"}}}
           :ssr {:target :node-script
                 :output-to "target/ssr.js"
