@@ -6,7 +6,8 @@
             [server.updater.ir :as ir]
             [server.updater.writer :as writer]
             [server.updater.notify :as notify]
-            [server.updater.analyze :as analyze]))
+            [server.updater.analyze :as analyze]
+            [server.updater.watcher :as watcher]))
 
 (defn updater [db op op-data session-id op-id op-time]
   (case op
@@ -67,4 +68,5 @@
     :analyze/goto-def (analyze/goto-def db op-data session-id op-id op-time)
     :analyze/abstract-def (analyze/abstract-def db op-data session-id op-id op-time)
     :analyze/peek-def (analyze/peek-def db op-data session-id op-id op-time)
+    :watcher/file-change (watcher/file-change db op-data session-id op-id op-time)
     db))

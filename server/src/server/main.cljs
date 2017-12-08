@@ -12,7 +12,8 @@
             ["express" :as express]
             ["serve-index" :as serve-index]
             ["shortid" :as shortid]
-            ["fs" :as fs]))
+            ["fs" :as fs]
+            ["md5" :as md5]))
 
 (defonce *writer-db
   (atom
@@ -44,7 +45,26 @@
          (reset! *writer-db new-db))
        (catch js/Error e (println (.red chalk e))))))
 
+(defonce *coir-md5 (atom nil))
+
 (defonce *reader-db (atom @*writer-db))
+
+(defn on-file-change! []
+  (let [coir-path (:storage-key global-configs)
+        buf (fs/readFileSync coir-path)
+        new-md5 (md5 buf)]
+    (if (not= new-md5 @*coir-md5)
+      (let [file-content (.toString buf), coir (read-string file-content)]
+        (println (.yellow chalk "coir changed, check file changes!"))
+        (reset! *coir-md5 new-md5)
+        (dispatch! :watcher/file-change coir nil)))))
+
+(defn watch-file! []
+  (let [coir-path (:storage-key global-configs)]
+    (reset! *coir-md5 (md5 (fs/readFileSync coir-path)))
+    (fs/watch
+     coir-path
+     (fn [event-type filename] (if (= "change" event-type) (on-file-change!))))))
 
 (defn render-loop! []
   (if (not= @*reader-db @*writer-db)
@@ -57,6 +77,7 @@
 (defn start-server! [configs]
   (run-server! #(dispatch! %1 %2 %3) (:port configs))
   (render-loop!)
+  (watch-file!)
   (.on
    js/process
    "SIGINT"
