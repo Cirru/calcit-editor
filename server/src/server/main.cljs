@@ -57,7 +57,7 @@
         new-md5 (md5 file-content)]
     (if (not= new-md5 @*coir-md5)
       (let [coir (read-string file-content)]
-        (println (.yellow chalk "coir changed, check file changes!"))
+        (println "coir changed")
         (reset! *coir-md5 new-md5)
         (dispatch! :watcher/file-change coir nil)))))
 
