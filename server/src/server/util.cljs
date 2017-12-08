@@ -2,7 +2,8 @@
 (ns server.util
   (:require [clojure.string :as string]
             [server.schema :as schema]
-            [bisection-key.core :as bisection]))
+            [bisection-key.core :as bisection]
+            ["shortid" :as shortid]))
 
 (defn parse-require [piece]
   (let [method (get piece 1), ns-text (get piece 0)]
@@ -45,8 +46,6 @@
   (if (= :leaf (:type x))
     (:text x)
     (->> (:data x) (sort-by first) (map (fn [entry] (tree->cirru (val entry)))) (vec))))
-
-(def shortid (js/require "shortid"))
 
 (defn cirru->tree [xs author timestamp]
   (if (vector? xs)

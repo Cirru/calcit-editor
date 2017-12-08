@@ -4,24 +4,21 @@
             [cirru-sepal.analyze :refer [write-file]]
             [server.util :refer [ns->path file->cirru]]
             [server.schema :as schema]
-            ["chalk" :as chalk]))
-
-(def path (js/require "path"))
-
-(def fs (js/require "fs"))
+            ["chalk" :as chalk]
+            ["path" :as path]
+            ["fs" :as fs]
+            ["child_process" :as cp]))
 
 (defn modify-file! [file-path file output-dir]
-  (let [project-path (path.join output-dir file-path)]
-    (fs.writeFileSync project-path (write-file (file->cirru file)))
+  (let [project-path (path/join output-dir file-path)]
+    (fs/writeFileSync project-path (write-file (file->cirru file)))
     (println (.gray chalk (str "modified " project-path)))))
-
-(def cp (js/require "child_process"))
 
 (defn now! [] (.valueOf (js/Date.)))
 
 (defn persist! [storage-path db]
   (let [start-time (now!)]
-    (fs.writeFileSync
+    (fs/writeFileSync
      storage-path
      (pr-str (-> db (assoc :sessions {}) (assoc :saved-files {}))))
     (comment
@@ -29,14 +26,14 @@
      (.gray chalk (str "took " (- (now!) start-time) "ms to wrote coir.edn")))))
 
 (defn create-file! [file-path file output-dir]
-  (let [project-path (path.join output-dir file-path)]
-    (cp.execSync (str "mkdir -p " (path.dirname project-path)))
-    (fs.writeFileSync project-path (write-file (file->cirru file)))
+  (let [project-path (path/join output-dir file-path)]
+    (cp/execSync (str "mkdir -p " (path/dirname project-path)))
+    (fs/writeFileSync project-path (write-file (file->cirru file)))
     (println (.gray chalk (str "created " project-path)))))
 
 (defn remove-file! [file-path output-dir]
-  (let [project-path (path.join output-dir file-path)]
-    (cp.execSync (str "rm -rfv " project-path))
+  (let [project-path (path/join output-dir file-path)]
+    (cp/execSync (str "rm -rfv " project-path))
     (println (.red chalk (str "removed " project-path)))))
 
 (defn handle-files! [db configs dispatch! save-ir?]
@@ -64,3 +61,5 @@
     js/Error
     e
     (do (println (.red chalk e)) (dispatch! :notify/push-error (.-message e))))))
+
+(def path (js/require "path"))

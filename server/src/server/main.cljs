@@ -11,15 +11,14 @@
             ["path" :as path]
             ["express" :as express]
             ["serve-index" :as serve-index]
-            ["shortid" :as shortid])
-  (:require-macros [cljs.core.async.macros :refer [go-loop go]]))
+            ["shortid" :as shortid]
+            ["fs" :as fs]))
 
 (defonce *writer-db
   (atom
-   (let [fs (js/require "fs")
-         filepath (:storage-key schema/configs)
-         db (if (fs.existsSync filepath)
-              (read-string (fs.readFileSync filepath "utf8"))
+   (let [filepath (:storage-key schema/configs)
+         db (if (fs/existsSync filepath)
+              (read-string (fs/readFileSync filepath "utf8"))
               (do (println (.yellow chalk "Using default schema.")) schema/database))]
      (-> db
          (assoc :saved-files (get-in db [:ir :files]))
@@ -47,8 +46,6 @@
 
 (defonce *reader-db (atom @*writer-db))
 
-(defn proxy-dispatch! [& args] (apply dispatch! args))
-
 (defn render-loop! []
   (if (not= @*reader-db @*writer-db)
     (do
@@ -58,7 +55,7 @@
   (js/setTimeout render-loop! 20))
 
 (defn start-server! [configs]
-  (run-server! proxy-dispatch! (:port configs))
+  (run-server! #(dispatch! %1 %2 %3) (:port configs))
   (render-loop!)
   (.on
    js/process
