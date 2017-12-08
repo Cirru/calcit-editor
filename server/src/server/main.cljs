@@ -7,13 +7,17 @@
             [cljs.reader :refer [read-string]]
             [server.util.compile :refer [handle-files! persist!]]
             [server.util.env :refer [pick-configs]]
+            [server.util :refer [db->string]]
             ["chalk" :as chalk]
             ["path" :as path]
             ["express" :as express]
             ["serve-index" :as serve-index]
             ["shortid" :as shortid]
             ["fs" :as fs]
-            ["md5" :as md5]))
+            ["md5" :as md5]
+            ["gaze" :as gaze]))
+
+(defonce *coir-md5 (atom nil))
 
 (defonce *writer-db
   (atom
@@ -32,7 +36,7 @@
   (comment .log js/console "Database:" (clj->js @*writer-db))
   (cond
     (= op :effect/save-files)
-      (handle-files! @*writer-db global-configs #(dispatch! %1 %2 sid) true)
+      (handle-files! @*writer-db *coir-md5 global-configs #(dispatch! %1 %2 sid) true)
     :else
       (try
        (let [new-db (updater
@@ -45,26 +49,27 @@
          (reset! *writer-db new-db))
        (catch js/Error e (println (.red chalk e))))))
 
-(defonce *coir-md5 (atom nil))
-
 (defonce *reader-db (atom @*writer-db))
 
 (defn on-file-change! []
   (let [coir-path (:storage-key global-configs)
-        buf (fs/readFileSync coir-path)
-        new-md5 (md5 buf)]
+        file-content (fs/readFileSync coir-path "utf8")
+        new-md5 (md5 file-content)]
     (if (not= new-md5 @*coir-md5)
-      (let [file-content (.toString buf), coir (read-string file-content)]
+      (let [coir (read-string file-content)]
         (println (.yellow chalk "coir changed, check file changes!"))
         (reset! *coir-md5 new-md5)
         (dispatch! :watcher/file-change coir nil)))))
 
 (defn watch-file! []
   (let [coir-path (:storage-key global-configs)]
-    (reset! *coir-md5 (md5 (fs/readFileSync coir-path)))
-    (fs/watch
+    (reset! *coir-md5 (md5 (fs/readFileSync coir-path "utf8")))
+    (gaze
      coir-path
-     (fn [event-type filename] (if (= "change" event-type) (on-file-change!))))))
+     (fn [error watcher]
+       (if (some? error)
+         (.log js/console error)
+         (.on watcher "changed" (fn [filepath] (on-file-change!))))))))
 
 (defn render-loop! []
   (if (not= @*reader-db @*writer-db)
@@ -82,7 +87,7 @@
    js/process
    "SIGINT"
    (fn [code]
-     (persist! (:storage-key configs) @*writer-db)
+     (persist! (:storage-key configs) (db->string @*writer-db))
      (println (str "\n" "Saved coir.edn") (str (if (some? code) (str "with " code))))
      (.exit js/process))))
 
@@ -96,6 +101,7 @@
 (defn compile-all-files! [configs]
   (handle-files!
    (assoc @*writer-db :saved-files {})
+   *coir-md5
    configs
    (fn [op op-data] (println "After compile:" op op-data))
    false))

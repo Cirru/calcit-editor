@@ -2,12 +2,13 @@
 (ns server.util.compile
   (:require [clojure.set :refer [difference intersection]]
             [cirru-sepal.analyze :refer [write-file]]
-            [server.util :refer [ns->path file->cirru]]
+            [server.util :refer [ns->path file->cirru db->string]]
             [server.schema :as schema]
             ["chalk" :as chalk]
             ["path" :as path]
             ["fs" :as fs]
-            ["child_process" :as cp]))
+            ["child_process" :as cp]
+            ["md5" :as md5]))
 
 (defn modify-file! [file-path file output-dir]
   (let [project-path (path/join output-dir file-path)]
@@ -16,11 +17,9 @@
 
 (defn now! [] (.valueOf (js/Date.)))
 
-(defn persist! [storage-path db]
+(defn persist! [storage-path db-str]
   (let [start-time (now!)]
-    (fs/writeFileSync
-     storage-path
-     (pr-str (-> db (assoc :sessions {}) (assoc :saved-files {}))))
+    (fs/writeFileSync storage-path db-str)
     (comment
      println
      (.gray chalk (str "took " (- (now!) start-time) "ms to wrote coir.edn")))))
@@ -36,7 +35,7 @@
     (cp/execSync (str "rm -rfv " project-path))
     (println (.red chalk (str "removed " project-path)))))
 
-(defn handle-files! [db configs dispatch! save-ir?]
+(defn handle-files! [db *coir-md5 configs dispatch! save-ir?]
   (try
    (let [new-files (get-in db [:ir :files])
          old-files (get db :saved-files)
@@ -56,7 +55,13 @@
      (doseq [ns-text changed-names]
        (modify-file! (ns->path ns-text extension) (get new-files ns-text) output-dir))
      (dispatch! :writer/save-files nil)
-     (if save-ir? (do (js/setTimeout (fn [] (persist! (:storage-key configs) db))))))
+     (if save-ir?
+       (do
+        (js/setTimeout
+         (fn []
+           (let [db-content (db->string db)]
+             (reset! *coir-md5 (md5 db-content))
+             (persist! (:storage-key configs) db-content)))))))
    (catch
     js/Error
     e

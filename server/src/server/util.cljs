@@ -38,6 +38,8 @@
 (defn push-info [op-id text]
   (fn [xs] (conj xs (merge schema/notification {:id op-id, :kind :info, :text text}))))
 
+(defn db->string [db] (pr-str (-> db (assoc :sessions {}) (assoc :saved-files {}))))
+
 (defn expr? [x] (= :expr (:type x)))
 
 (defn to-bookmark [writer] (get (:stack writer) (:pointer writer)))
