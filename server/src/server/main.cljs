@@ -63,13 +63,15 @@
 
 (defn watch-file! []
   (let [coir-path (:storage-key global-configs)]
-    (reset! *coir-md5 (md5 (fs/readFileSync coir-path "utf8")))
-    (gaze
-     coir-path
-     (fn [error watcher]
-       (if (some? error)
-         (.log js/console error)
-         (.on watcher "changed" (fn [filepath] (on-file-change!))))))))
+    (if (fs/existsSync coir-path)
+      (do
+       (reset! *coir-md5 (md5 (fs/readFileSync coir-path "utf8")))
+       (gaze
+        coir-path
+        (fn [error watcher]
+          (if (some? error)
+            (.log js/console error)
+            (.on watcher "changed" (fn [filepath] (on-file-change!))))))))))
 
 (defn render-loop! []
   (if (not= @*reader-db @*writer-db)
