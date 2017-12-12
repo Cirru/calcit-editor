@@ -1,6 +1,8 @@
 
 (ns server.updater.user
-  (:require [server.util :refer [find-first push-warning]] [clojure.string :as string]))
+  (:require [server.util :refer [find-first push-warning]]
+            [clojure.string :as string]
+            ["md5" :as md5]))
 
 (defn sign-up [db op-data session-id op-id op-time]
   (let [[username password] op-data
@@ -14,7 +16,11 @@
           (assoc-in [:sessions session-id :user-id] op-id)
           (assoc-in
            [:users op-id]
-           {:id op-id, :name username, :nickname username, :password password, :avatar nil})))))
+           {:id op-id,
+            :name username,
+            :nickname username,
+            :password (md5 password),
+            :avatar nil})))))
 
 (defn log-in [db op-data session-id op-id op-time]
   (let [[username password] op-data
@@ -26,7 +32,7 @@
      [:sessions session-id]
      (fn [session]
        (if (some? maybe-user)
-         (if (= password (:password maybe-user))
+         (if (= (md5 password) (:password maybe-user))
            (-> session (assoc :user-id (:id maybe-user)))
            (update
             session
