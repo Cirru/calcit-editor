@@ -10,7 +10,8 @@
             [app.style :as style]
             [app.comp.changed-files :refer [comp-changed-files]]
             [app.util.keycode :as keycode]
-            [app.comp.file-replacer :refer [comp-file-replacer]]))
+            [app.comp.file-replacer :refer [comp-file-replacer]]
+            [app.util.shortcuts :refer [on-window-keydown]]))
 
 (defn on-remove-ns [ns-text] (fn [e d! m!] (d! :ir/remove-ns ns-text)))
 
@@ -28,7 +29,8 @@
   (fn [e d! m!]
     (let [text (string/trim (:def-text state)), code (:key-code e)]
       (if (and (= code keycode/enter) (not (string/blank? text)))
-        (do (d! :ir/add-def text) (m! (assoc state :def-text "")))))))
+        (do (d! :ir/add-def text) (m! (assoc state :def-text "")))
+        (on-window-keydown (:event e) d!)))))
 
 (def style-def {:padding "0 8px", :position :relative})
 
@@ -122,7 +124,8 @@
             (let [[_ from to] (string/split text " ")]
               (d! :ir/cp-ns {:from from, :to to})
               (m! (assoc state :ns-text "")))
-          :else (do (d! :ir/add-ns text) (m! (assoc state :ns-text ""))))))))
+          :else (do (d! :ir/add-ns text) (m! (assoc state :ns-text ""))))
+        (on-window-keydown (:event e) d!)))))
 
 (defn render-list [state ns-set selected-ns]
   (div

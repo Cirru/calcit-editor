@@ -9,7 +9,8 @@
             [polyfill.core :refer [text-width*]]
             [app.util.keycode :as keycode]
             [app.util :as util]
-            [app.style :as style]))
+            [app.style :as style]
+            [app.util.shortcuts :refer [on-window-keydown]]))
 
 (defn on-input [state] (fn [e d! m!] (m! {:query (:value e), :selection 0})))
 
@@ -49,7 +50,7 @@
            (.preventDefault event)
            (if (< (:selection state) (dec (count candidates)))
              (m! (update state :selection inc))))
-        :else nil))))
+        :else (on-window-keydown (:event e) d!)))))
 
 (defcomp
  comp-search
