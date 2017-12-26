@@ -4,14 +4,14 @@
             [clojure.set :refer [union]]
             [server.util :refer [file->cirru]]))
 
-(defn keys-set [x] (set (keys x)))
-
 (defn compare-entry [new-x old-x]
   (cond
     (and (nil? old-x) (some? new-x)) :add
     (and (some? old-x) (nil? new-x)) :remove
     (and (some? old-x) (some? new-x) (not (identical? old-x new-x))) :changed
     :else :same))
+
+(defn keys-set [x] (set (keys x)))
 
 (defn render-changed-files [files saved-files]
   (->> (union (keys-set files) (keys-set saved-files))

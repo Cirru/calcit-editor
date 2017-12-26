@@ -10,6 +10,12 @@
             ["child_process" :as cp]
             ["md5" :as md5]))
 
+(defn create-file! [file-path file output-dir]
+  (let [project-path (path/join output-dir file-path)]
+    (cp/execSync (str "mkdir -p " (path/dirname project-path)))
+    (fs/writeFileSync project-path (write-file (file->cirru file)))
+    (println (.gray chalk (str "created " project-path)))))
+
 (defn modify-file! [file-path file output-dir]
   (let [project-path (path/join output-dir file-path)]
     (fs/writeFileSync project-path (write-file (file->cirru file)))
@@ -23,12 +29,6 @@
     (comment
      println
      (.gray chalk (str "took " (- (now!) start-time) "ms to wrote coir.edn")))))
-
-(defn create-file! [file-path file output-dir]
-  (let [project-path (path/join output-dir file-path)]
-    (cp/execSync (str "mkdir -p " (path/dirname project-path)))
-    (fs/writeFileSync project-path (write-file (file->cirru file)))
-    (println (.gray chalk (str "created " project-path)))))
 
 (defn remove-file! [file-path output-dir]
   (let [project-path (path/join output-dir file-path)]

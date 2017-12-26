@@ -12,6 +12,8 @@
 
 (defonce *registry (atom {}))
 
+(defonce client-caches (atom {}))
+
 (defn error-port-taken! [port]
   (do
    (println
@@ -59,8 +61,6 @@
              (println
               "Server started, please edit on"
               (.blue chalk (str "http://cumulo-editor.cirru.org?port=" port))))))))))
-
-(defonce client-caches (atom {}))
 
 (defn sync-clients! [db]
   (doseq [sid (keys @*registry)]

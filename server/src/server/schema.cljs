@@ -3,7 +3,7 @@
 
 (def ir-file {:package "app", :files {}})
 
-(def expr {:type :expr, :author nil, :time nil, :data {}})
+(def expr {:type :expr, :by nil, :at nil, :data {}, :id nil})
 
 (def configs {:storage-key "coir.edn", :extension ".cljs", :output "src", :port 6001})
 
@@ -12,7 +12,7 @@
 
 (def bookmark {:kind :def, :ns nil, :extra nil, :focus []})
 
-(def leaf {:type :leaf, :author nil, :time nil, :text "", :id nil})
+(def leaf {:type :leaf, :by nil, :at nil, :text "", :id nil})
 
 (def database {:sessions {}, :users {}, :ir ir-file, :saved-files {}, :configs configs})
 

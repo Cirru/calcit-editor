@@ -4,23 +4,9 @@
             [clojure.string :as string]
             ["md5" :as md5]))
 
-(defn sign-up [db op-data session-id op-id op-time]
-  (let [[username password] op-data
-        maybe-user (find-first (fn [user] (= username (:name user))) (vals (:users db)))]
-    (if (some? maybe-user)
-      (update-in
-       db
-       [:sessions session-id :notifications]
-       (push-warning op-id (str "Name is token: " username)))
-      (-> db
-          (assoc-in [:sessions session-id :user-id] op-id)
-          (assoc-in
-           [:users op-id]
-           {:id op-id,
-            :name username,
-            :nickname username,
-            :password (md5 password),
-            :avatar nil})))))
+(defn change-theme [db op-data sid op-id op-time]
+  (let [user-id (get-in db [:sessions sid :user-id])]
+    (assoc-in db [:users user-id :theme] op-data)))
 
 (defn log-in [db op-data session-id op-id op-time]
   (let [[username password] op-data
@@ -50,6 +36,20 @@
   (let [user-id (get-in db [:sessions sid :user-id])]
     (assoc-in db [:users user-id :nickname] (if (string/blank? op-data) "Someone" op-data))))
 
-(defn change-theme [db op-data sid op-id op-time]
-  (let [user-id (get-in db [:sessions sid :user-id])]
-    (assoc-in db [:users user-id :theme] op-data)))
+(defn sign-up [db op-data session-id op-id op-time]
+  (let [[username password] op-data
+        maybe-user (find-first (fn [user] (= username (:name user))) (vals (:users db)))]
+    (if (some? maybe-user)
+      (update-in
+       db
+       [:sessions session-id :notifications]
+       (push-warning op-id (str "Name is token: " username)))
+      (-> db
+          (assoc-in [:sessions session-id :user-id] op-id)
+          (assoc-in
+           [:users op-id]
+           {:id op-id,
+            :name username,
+            :nickname username,
+            :password (md5 password),
+            :avatar nil})))))

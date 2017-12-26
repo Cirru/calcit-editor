@@ -3,6 +3,7 @@
   (:require [clojure.string :as string]
             [server.schema :as schema]
             [bisection-key.core :as bisection]
+            [favored-edn.core :refer [write-edn]]
             ["shortid" :as shortid]))
 
 (defn parse-require [piece]
@@ -38,7 +39,7 @@
 (defn push-info [op-id text]
   (fn [xs] (conj xs (merge schema/notification {:id op-id, :kind :info, :text text}))))
 
-(defn db->string [db] (pr-str (-> db (assoc :sessions {}) (assoc :saved-files {}))))
+(defn db->string [db] (write-edn (-> db (assoc :sessions {}) (assoc :saved-files {}))))
 
 (defn expr? [x] (= :expr (:type x)))
 
@@ -53,8 +54,8 @@
   (if (vector? xs)
     (merge
      schema/expr
-     {:time timestamp,
-      :author author,
+     {:at timestamp,
+      :by author,
       :id (.generate shortid),
       :data (loop [result {}, ys xs, next-id bisection/mid-id]
         (if (empty? ys)
@@ -64,7 +65,7 @@
              (assoc result next-id (cirru->tree y author timestamp))
              (rest ys)
              (bisection/bisect next-id bisection/max-id)))))})
-    (merge schema/leaf {:time timestamp, :author author, :text xs, :id (.generate shortid)})))
+    (merge schema/leaf {:at timestamp, :by author, :text xs, :id (.generate shortid)})))
 
 (defn cirru->file [file author timestamp]
   (-> file
