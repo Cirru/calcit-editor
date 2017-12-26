@@ -35,9 +35,7 @@
      html-content
      (merge
       base-info
-      {:styles [font-styles],
-       :scripts (map #(-> % :output-name prefix-cdn) assets),
-       :append-html (slurp "entry/ga.html")}))))
+      {:styles [font-styles], :scripts (map #(-> % :output-name prefix-cdn) assets)}))))
 
 (defn main! []
   (if (= js/process.env.env "dev")
