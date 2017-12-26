@@ -12,14 +12,14 @@
             [app.util.shortcuts :refer [on-window-keydown]]
             [app.theme :refer [decide-leaf-theme]]))
 
+(def initial-state {:text "", :time 0})
+
+(defn on-focus [coord] (fn [e d! m!] (d! :writer/focus coord)))
+
 (defn on-input [state coord]
   (fn [e d! m!]
     (d! :ir/update-leaf (:value e))
     (m! (assoc state :text (:value e) :time (util/now!)))))
-
-(defn on-focus [coord] (fn [e d! m!] (d! :writer/focus coord)))
-
-(def initial-state {:text "", :time 0})
 
 (defn on-keydown [state leaf coord]
   (fn [e d! m!]

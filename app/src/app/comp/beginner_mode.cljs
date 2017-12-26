@@ -7,10 +7,10 @@
             [respo.comp.space :refer [=<]]
             [app.style :as style]))
 
+(def style-active {:color (hsl 0 0 100)})
+
 (def style-beginner
   {:color (hsl 0 0 100 0.5), :font-family "Josefin Sans", :font-weight 100, :cursor :pointer})
-
-(def style-active {:color (hsl 0 0 100)})
 
 (defn comp-beginner-mode [state toggler]
   (span

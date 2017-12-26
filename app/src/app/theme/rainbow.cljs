@@ -20,6 +20,6 @@
 (defn decide-leaf-style [text focused? first? by-other?]
   (merge (star-trail/decide-leaf-style text focused? first? by-other?) {:color :white}))
 
-(def style-leaf star-trail/style-leaf)
-
 (def style-expr star-trail/style-expr)
+
+(def style-leaf star-trail/style-leaf)

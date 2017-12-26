@@ -13,11 +13,6 @@
 
 (defn on-input [e d! m!] (m! (:value e)))
 
-(defn on-submit [state close-modal!]
-  (fn [e d! m!]
-    (if (not (string/blank? state))
-      (do (d! :analyze/abstract-def state) (m! nil) (close-modal! m!)))))
-
 (defn on-keydown [state close-modal!]
   (fn [e d! m!]
     (cond
@@ -25,6 +20,11 @@
         (if (not (string/blank? state))
           (do (d! :analyze/abstract-def state) (m! nil) (close-modal! m!)))
       (= (:keycode e) keycode/esc) (close-modal! m!))))
+
+(defn on-submit [state close-modal!]
+  (fn [e d! m!]
+    (if (not (string/blank? state))
+      (do (d! :analyze/abstract-def state) (m! nil) (close-modal! m!)))))
 
 (defcomp
  comp-abstract

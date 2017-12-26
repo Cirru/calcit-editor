@@ -19,9 +19,9 @@
     {:styles ["http://127.0.0.1:8100/main.css"],
      :scripts ["/browser/lib.js" "/browser/main.js"]})))
 
-(def preview? (= "preview" js/process.env.prod))
-
 (def local? (= "true" js/process.env.local))
+
+(def preview? (= "preview" js/process.env.prod))
 
 (defn prod-page []
   (let [html-content (make-string (comp-container {} nil))

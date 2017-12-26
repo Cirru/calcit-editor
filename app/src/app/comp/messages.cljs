@@ -9,6 +9,8 @@
             [app.util :as util]
             [app.style :as style]))
 
+(defn on-clear [e d! m!] (d! :notify/clear nil))
+
 (def style-message
   {:position :absolute,
    :right 8,
@@ -18,8 +20,6 @@
    :background-color (hsl 0 0 0 0.7),
    :border (str "1px solid " (hsl 0 0 100 0.2)),
    :padding "0 8px"})
-
-(defn on-clear [e d! m!] (d! :notify/clear nil))
 
 (defcomp
  comp-messages

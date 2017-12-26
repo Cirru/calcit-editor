@@ -7,19 +7,19 @@
             [respo.macros :refer [defcomp <> list-> span div a]]
             [respo.comp.space :refer [=<]]))
 
+(defn on-watch [session-id]
+  (fn [e d! m!] (d! :router/change {:name :watching, :data session-id})))
+
 (def style-bookmark
   {:font-family "Menlo,monospace", :min-width 200, :display :inline-block})
+
+(def style-members {:padding "0 16px"})
 
 (def style-name {:min-width 160, :display :inline-block})
 
 (def style-page {:min-width 160, :display :inline-block})
 
-(def style-members {:padding "0 16px"})
-
 (def style-row {:cursor :pointer})
-
-(defn on-watch [session-id]
-  (fn [e d! m!] (d! :router/change {:name :watching, :data session-id})))
 
 (defcomp
  comp-page-members

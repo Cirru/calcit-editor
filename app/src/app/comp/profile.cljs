@@ -9,21 +9,21 @@
             [respo.comp.space :refer [=<]]
             [app.style :as style]))
 
+(defn on-input [e d! m!] (m! (:value e)))
+
 (defn on-log-out [e dispatch!]
   (dispatch! :user/log-out nil)
   (.removeItem js/window.localStorage (:storage-key schema/configs)))
 
-(def style-profile {:padding "0 16px"})
-
 (defn on-rename [state]
   (fn [e d! m!] (let [name-text (string/trim state)] (d! :user/nickname name-text) (m! ""))))
-
-(defn on-input [e d! m!] (m! (:value e)))
 
 (def style-greet
   {:font-family "Josefin Sans", :font-size 40, :font-weight 100, :color (hsl 0 0 100 0.8)})
 
 (def style-id {:font-family "Josefin Sans", :font-weight 100, :color (hsl 0 0 60)})
+
+(def style-profile {:padding "0 16px"})
 
 (defcomp
  comp-profile

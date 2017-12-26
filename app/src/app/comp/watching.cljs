@@ -16,13 +16,13 @@
 
 (def style-container {:padding "0 16px"})
 
-(def style-title {:font-family "Josefin Sans"})
-
 (def style-tip
   {:font-family "Josefin Sans",
    :background-color (hsl 0 0 100 0.3),
    :border-radius "4px",
    :padding "4px 8px"})
+
+(def style-title {:font-family "Josefin Sans"})
 
 (defcomp
  comp-watching

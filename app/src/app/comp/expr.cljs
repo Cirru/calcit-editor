@@ -12,6 +12,8 @@
             [app.util.shortcuts :refer [on-window-keydown]]
             [app.theme :refer [decide-expr-theme]]))
 
+(defn on-focus [coord] (fn [e d! m!] (d! :writer/focus coord)))
+
 (defn on-keydown [coord]
   (fn [e d! m!]
     (let [event (:original-event e)
@@ -47,8 +49,6 @@
               (let [el (.querySelector js/document ".el-abstract")]
                 (if (some? el) (.focus el))))))
         :else (do (comment println "Keydown" (:key-code e)) (on-window-keydown event d!))))))
-
-(defn on-focus [coord] (fn [e d! m!] (d! :writer/focus coord)))
 
 (defcomp
  comp-expr

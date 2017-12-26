@@ -10,13 +10,13 @@
             [app.style :as style]
             [app.comp.changed-info :refer [comp-changed-info]]))
 
-(defn on-save [e d! m!] (d! :effect/save-files nil))
+(defn on-reset [e d! m!] (d! :ir/reset-files nil))
 
-(def style-nothing {:font-family "Josefin Sans", :color (hsl 0 0 100 0.5)})
+(defn on-save [e d! m!] (d! :effect/save-files nil))
 
 (def style-column {:overflow :auto, :padding-bottom 120})
 
-(defn on-reset [e d! m!] (d! :ir/reset-files nil))
+(def style-nothing {:font-family "Josefin Sans", :color (hsl 0 0 100 0.5)})
 
 (defcomp
  comp-changed-files
