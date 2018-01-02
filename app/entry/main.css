@@ -42,3 +42,7 @@ body * {
 .comp-about a {
   color: #aaf;
 }
+
+.comp-about pre {
+   user-select: text;
+}
