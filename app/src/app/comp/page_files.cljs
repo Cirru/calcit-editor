@@ -13,17 +13,19 @@
             [app.comp.file-replacer :refer [comp-file-replacer]]
             [app.util.shortcuts :refer [on-window-keydown]]))
 
-(defn on-remove-ns [ns-text] (fn [e d! m!] (d! :ir/remove-ns ns-text)))
+(def initial-state {:ns-text "", :def-text ""})
+
+(defn on-checkout [state ns-text] (fn [e d! m!] (d! :session/select-ns ns-text)))
+
+(defn on-edit-def [text] (fn [e d! m!] (d! :writer/edit {:kind :def, :extra text})))
+
+(defn on-edit-ns [e d! m!] (d! :writer/edit {:kind :ns}))
 
 (defn on-edit-proc [e d! m!] (d! :writer/edit {:kind :proc}))
 
-(def sytle-container {:padding "0 16px"})
-
 (defn on-input-def [state] (fn [e d! m!] (m! (assoc state :def-text (:value e)))))
 
-(defn on-remove-def [def-text] (fn [e d! m!] (d! :ir/remove-def def-text)))
-
-(def style-input (merge style/input {:width "100%"}))
+(defn on-input-ns [state] (fn [e d! m!] (m! (assoc state :ns-text (:value e)))))
 
 (defn on-keydown-def [state]
   (fn [e d! m!]
@@ -32,7 +34,37 @@
         (do (d! :ir/add-def text) (m! (assoc state :def-text "")))
         (on-window-keydown (:event e) d!)))))
 
+(defn on-keydown-ns [state]
+  (fn [e d! m!]
+    (let [text (string/trim (:ns-text state)), code (:key-code e)]
+      (if (and (= code keycode/enter) (not (string/blank? text)))
+        (cond
+          (string/starts-with? text "mv ")
+            (let [[_ from to] (string/split text " ")]
+              (d! :ir/mv-ns {:from from, :to to})
+              (m! (assoc state :ns-text "")))
+          (string/starts-with? text "cp ")
+            (let [[_ from to] (string/split text " ")]
+              (d! :ir/cp-ns {:from from, :to to})
+              (m! (assoc state :ns-text "")))
+          :else (do (d! :ir/add-ns text) (m! (assoc state :ns-text ""))))
+        (on-window-keydown (:event e) d!)))))
+
+(defn on-remove-def [def-text] (fn [e d! m!] (d! :ir/remove-def def-text)))
+
+(defn on-remove-ns [ns-text] (fn [e d! m!] (d! :ir/remove-ns ns-text)))
+
+(def style-empty {:width 280})
+
+(defn render-empty [] (div {:style style-empty} (<> span "Empty" nil)))
+
 (def style-def {:padding "0 8px", :position :relative})
+
+(def style-file {:width 280, :overflow :auto, :padding-bottom 120})
+
+(def style-input (merge style/input {:width "100%"}))
+
+(def style-link {:cursor :pointer})
 
 (def style-remove
   {:color (hsl 0 0 80),
@@ -41,14 +73,6 @@
    :position :absolute,
    :top 8,
    :right 8})
-
-(def style-link {:cursor :pointer})
-
-(defn on-edit-ns [e d! m!] (d! :writer/edit {:kind :ns}))
-
-(defn on-edit-def [text] (fn [e d! m!] (d! :writer/edit {:kind :def, :extra text})))
-
-(def style-file {:width 280, :overflow :auto, :padding-bottom 120})
 
 (defn render-file [state selected-ns defs-set]
   (div
@@ -94,38 +118,10 @@
                 :style style-remove,
                 :on {:click (on-remove-def def-text)}}))]))))))
 
-(def style-ns
-  {:cursor :pointer, :vertical-align :middle, :position :relative, :padding "0 8px"})
-
 (def style-list {:width 280, :overflow :auto, :padding-bottom 120})
 
-(defn on-checkout [state ns-text] (fn [e d! m!] (d! :session/select-ns ns-text)))
-
-(defn on-input-ns [state] (fn [e d! m!] (m! (assoc state :ns-text (:value e)))))
-
-(def style-empty {:width 280})
-
-(defn render-empty [] (div {:style style-empty} (<> span "Empty" nil)))
-
-(def initial-state {:ns-text "", :def-text ""})
-
-(def style-inspect {:opacity 1, :background-color (hsl 0 0 100), :color :black})
-
-(defn on-keydown-ns [state]
-  (fn [e d! m!]
-    (let [text (string/trim (:ns-text state)), code (:key-code e)]
-      (if (and (= code keycode/enter) (not (string/blank? text)))
-        (cond
-          (string/starts-with? text "mv ")
-            (let [[_ from to] (string/split text " ")]
-              (d! :ir/mv-ns {:from from, :to to})
-              (m! (assoc state :ns-text "")))
-          (string/starts-with? text "cp ")
-            (let [[_ from to] (string/split text " ")]
-              (d! :ir/cp-ns {:from from, :to to})
-              (m! (assoc state :ns-text "")))
-          :else (do (d! :ir/add-ns text) (m! (assoc state :ns-text ""))))
-        (on-window-keydown (:event e) d!)))))
+(def style-ns
+  {:cursor :pointer, :vertical-align :middle, :position :relative, :padding "0 8px"})
 
 (defn render-list [state ns-set selected-ns]
   (div
@@ -158,6 +154,10 @@
                 :title "Remove ns",
                 :style style-remove,
                 :on {:click (on-remove-ns ns-text)}}))]))))))
+
+(def style-inspect {:opacity 1, :background-color (hsl 0 0 100), :color :black})
+
+(def sytle-container {:padding "0 16px"})
 
 (defcomp
  comp-page-files

@@ -19,31 +19,9 @@
             [app.comp.theme-menu :refer [comp-theme-menu]]
             [app.comp.peek-def :refer [comp-peek-def]]))
 
-(def style-status (merge ui/row {:justify-content :space-between, :padding "0 8px"}))
-
-(def style-watchers (merge ui/row {:display :inline-block}))
-
-(def style-nothing
-  {:color (hsl 0 0 100 0.4), :padding "0 16px", :font-family "Josefin Sans"})
-
-(def style-missing
-  {:font-family "Josefin Sans", :color (hsl 10 60 50), :font-size 20, :font-weight 100})
-
-(def ui-missing (div {:style style-missing} (<> span "Expression is missing!" nil)))
-
-(def style-stack {:width 200, :overflow :auto, :padding-bottom 120})
-
-(def style-hint {:color (hsl 0 0 100 0.6), :font-family "Josefin Sans"})
-
-(def style-area {:overflow :auto, :padding-bottom 80, :padding-top 40, :flex 1})
-
-(def style-container {:position :relative})
-
-(def style-editor (merge ui/flex ui/column))
-
-(def style-watcher {:color (hsl 0 0 100 0.7), :margin-left 8})
-
 (def initial-state {:beginner? false, :renaming? false, :draft-box? false})
+
+(defn on-delete [bookmark] (fn [e d! m!] (d! :ir/delete-entry (dissoc bookmark :focus))))
 
 (defn on-draft-box [state]
   (fn [e d! m!]
@@ -57,10 +35,16 @@
     (m! (update state :renaming? not))
     (js/setTimeout (fn [] (let [el (.querySelector js/document ".el-rename")] (.focus el))))))
 
+(def style-hint {:color (hsl 0 0 100 0.6), :font-family "Josefin Sans"})
+
 (def style-link
   {:font-family "Josefin Sans", :cursor :pointer, :font-size 14, :color (hsl 200 50 80)})
 
-(defn on-delete [bookmark] (fn [e d! m!] (d! :ir/delete-entry (dissoc bookmark :focus))))
+(def style-status (merge ui/row {:justify-content :space-between, :padding "0 8px"}))
+
+(def style-watcher {:color (hsl 0 0 100 0.7), :margin-left 8})
+
+(def style-watchers (merge ui/row {:display :inline-block}))
 
 (defn render-status [router-data states *cursor* bookmark theme]
   (let [state (:data states)]
@@ -95,6 +79,22 @@
       (cursor-> :theme comp-theme-menu states theme)
       (=< 16 nil)
       (comp-beginner-mode state (on-toggle state *cursor*))))))
+
+(def style-area {:overflow :auto, :padding-bottom 80, :padding-top 40, :flex 1})
+
+(def style-container {:position :relative})
+
+(def style-editor (merge ui/flex ui/column))
+
+(def style-missing
+  {:font-family "Josefin Sans", :color (hsl 10 60 50), :font-size 20, :font-weight 100})
+
+(def style-nothing
+  {:color (hsl 0 0 100 0.4), :padding "0 16px", :font-family "Josefin Sans"})
+
+(def style-stack {:width 200, :overflow :auto, :padding-bottom 120})
+
+(def ui-missing (div {:style style-missing} (<> span "Expression is missing!" nil)))
 
 (defcomp
  comp-page-editor

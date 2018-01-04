@@ -12,25 +12,12 @@
             [app.style :as style]
             [app.util.shortcuts :refer [on-window-keydown]]))
 
-(defn on-input [state] (fn [e d! m!] (m! {:query (:value e), :selection 0})))
-
-(def style-body {:overflow :auto, :padding-bottom 80})
-
-(def style-candidate {:padding "0 8px", :color (hsl 0 0 100 0.6), :cursor :pointer})
-
-(def style-search {:padding "0 16px"})
-
-(def style-highlight {:color :white})
-
-(def style-input (merge style/input {:width 400}))
-
-(defn on-select [bookmark]
-  (fn [e d! m!] (d! :writer/select bookmark) (m! {:position :0, :query ""})))
+(defn bookmark->str [bookmark]
+  (str (:kind bookmark) " " (:ns bookmark) " " (:extra bookmark)))
 
 (def initial-state {:query "", :selection 0})
 
-(defn bookmark->str [bookmark]
-  (str (:kind bookmark) " " (:ns bookmark) " " (:extra bookmark)))
+(defn on-input [state] (fn [e d! m!] (m! {:query (:value e), :selection 0})))
 
 (defn on-keydown [state candidates]
   (fn [e d! m!]
@@ -51,6 +38,19 @@
            (if (< (:selection state) (dec (count candidates)))
              (m! (update state :selection inc))))
         :else (on-window-keydown (:event e) d!)))))
+
+(defn on-select [bookmark]
+  (fn [e d! m!] (d! :writer/select bookmark) (m! {:position :0, :query ""})))
+
+(def style-body {:overflow :auto, :padding-bottom 80})
+
+(def style-candidate {:padding "0 8px", :color (hsl 0 0 100 0.6), :cursor :pointer})
+
+(def style-highlight {:color :white})
+
+(def style-input (merge style/input {:width 400}))
+
+(def style-search {:padding "0 16px"})
 
 (defcomp
  comp-search

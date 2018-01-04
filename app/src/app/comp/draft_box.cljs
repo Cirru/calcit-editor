@@ -14,9 +14,12 @@
 
 (defn on-input [e d! m!] (m! (:value e)))
 
-(def style-original {:max-height 240, :overflow :auto})
+(defn on-submit [expr? text close-modal! close?]
+  (fn [e d! m!]
+    (if expr? (d! :ir/draft-expr (read-string text)) (d! :ir/update-leaf text))
+    (if close? (do (m! nil) (close-modal! m!)))))
 
-(def style-toolbar {:justify-content :flex-end})
+(defn on-wrong [close-modal!] (fn [e d! m!] (close-modal! m!)))
 
 (def style-area
   {:background-color (hsl 0 0 100 0.2),
@@ -26,7 +29,14 @@
    :font-family "Source Code Pro, monospace",
    :font-size 14})
 
-(defn on-wrong [close-modal!] (fn [e d! m!] (close-modal! m!)))
+(def style-mode
+  {:color (hsl 0 0 100 0.6),
+   :background-color (hsl 300 50 50 0.6),
+   :padding "0 8px",
+   :font-size 12,
+   :border-radius "4px"})
+
+(def style-original {:max-height 240, :overflow :auto})
 
 (def style-text
   {:font-family "Source Code Pro, monospace",
@@ -37,24 +47,14 @@
    :width "100%",
    :background-color (hsl 0 0 100 0.2)})
 
+(def style-toolbar {:justify-content :flex-end})
+
 (def style-wrong
   {:color :red,
    :font-size 24,
    :font-weight 100,
    :font-family "Josefin Sans",
    :cursor :pointer})
-
-(def style-mode
-  {:color (hsl 0 0 100 0.6),
-   :background-color (hsl 300 50 50 0.6),
-   :padding "0 8px",
-   :font-size 12,
-   :border-radius "4px"})
-
-(defn on-submit [expr? text close-modal! close?]
-  (fn [e d! m!]
-    (if expr? (d! :ir/draft-expr (read-string text)) (d! :ir/update-leaf text))
-    (if close? (do (m! nil) (close-modal! m!)))))
 
 (defcomp
  comp-draft-box

@@ -16,8 +16,7 @@
    ""
    (merge
     base-info
-    {:styles ["http://127.0.0.1:8100/main.css"],
-     :scripts ["/browser/lib.js" "/browser/main.js"]})))
+    {:styles ["http://127.0.0.1:8100/main.css"], :scripts ["/lib.js" "/main.js"]})))
 
 (def local? (= "true" js/process.env.local))
 
@@ -28,8 +27,8 @@
         assets (read-string (slurp "dist/assets.edn"))
         cdn (if (or local? preview?) "" "http://cdn.tiye.me/cumulo-editor/")
         font-styles (if local?
-                      "favored-fonts/main.css"
-                      "http://cdn.tiye.me/favored-fonts/main.css")
+                      "favored-fonts/main-2.css"
+                      "http://cdn.tiye.me/favored-fonts/main-2.css")
         prefix-cdn #(str cdn %)]
     (make-page
      html-content

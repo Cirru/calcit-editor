@@ -11,9 +11,9 @@
             [app.util.shortcuts :refer [on-window-keydown]]
             [app.updater :as updater]))
 
-(def ssr? (some? (.querySelector js/document "meta.respo-ssr")))
-
 (defonce *states (atom {}))
+
+(defonce *store (atom nil))
 
 (defn dispatch! [op op-data]
   (.info js/console "Dispatch" (str op) (clj->js op-data))
@@ -23,18 +23,16 @@
     :manual-state/abstract (reset! *states (updater/abstract @*states))
     (send! op op-data)))
 
-(defonce *store (atom nil))
+(defn detect-watching! []
+  (let [query (parse-query!)]
+    (if (some? (:watching query))
+      (do (dispatch! :router/change {:name :watching, :data (:watching query)})))))
 
 (defn simulate-login! []
   (let [raw (.getItem js/window.localStorage (:storage-key schema/configs))]
     (if (some? raw)
       (do (dispatch! :user/log-in (read-string raw)))
       (do (println "Found no storage.")))))
-
-(defn detect-watching! []
-  (let [query (parse-query!)]
-    (if (some? (:watching query))
-      (do (dispatch! :router/change {:name :watching, :data (:watching query)})))))
 
 (defn connect []
   (.info js/console "Connecting...")
@@ -51,6 +49,8 @@
 
 (defn render-app! [renderer]
   (renderer mount-target (comp-container @*states @*store) #(dispatch! %1 %2)))
+
+(def ssr? (some? (.querySelector js/document "meta.respo-ssr")))
 
 (defn main! []
   (if ssr? (render-app! realize-ssr!))
