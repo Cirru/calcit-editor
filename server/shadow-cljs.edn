@@ -1,11 +1,12 @@
 
 {:source-paths ["src"],
+ :http {:port 9640}
  :dependencies [[mvc-works/hsl          "0.1.2"]
                 [cumulo/recollect       "0.4.3"]
                 [mvc-works/verbosely    "0.1.2"]
                 [cirru/sepal            "0.2.2"]
                 [cirru/favored-edn      "0.1.0"]
-                [cirru/bisection-key    "0.1.2"]]
+                [cirru/bisection-key    "0.1.4"]]
  :builds {:app {:target :node-script
                 :output-to "target/main.js"
                 :main server.main/main!

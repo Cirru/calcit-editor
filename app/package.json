@@ -1,7 +1,7 @@
 {
-  "name": "cumulo-workflow",
+  "name": "cumulo-editor",
   "version": "0.1.0",
-  "description": "Stack Workflow",
+  "description": "Cirru Cumulo Editor",
   "main": "index.js",
   "scripts": {
     "cdn": "rsync -avr --progress dist/* tiye.me:cdn/cumulo-editor/",
@@ -20,13 +20,13 @@
   },
   "repository": {
     "type": "git",
-    "url": "git@github.com:mvc-works/stack-workflow.git"
+    "url": "git@github.com:Cirru/cumulo-editor.git"
   },
   "author": "jiyinyiyong",
   "license": "MIT",
   "devDependencies": {
     "http-server": "^0.10.0",
-    "shadow-cljs": "^2.0.126"
+    "shadow-cljs": "^2.0.128"
   },
   "dependencies": {}
 }
