@@ -13,7 +13,8 @@
               cirru->tree
               pick-second-key
               cirru->file]]
-            [server.util.list :refer [dissoc-idx]]))
+            [server.util.list :refer [dissoc-idx]]
+            [bisection-key.util :refer [key-before key-after key-prepend key-append]]))
 
 (defn add-def [db op-data session-id op-id op-time]
   (let [selected-ns (get-in db [:sessions session-id :writer :selected-ns])
@@ -98,14 +99,7 @@
         target-expr (assoc (get-in db (bookmark->path bookmark)) :id op-id)
         parent-path (bookmark->path (update bookmark :focus butlast))
         parent-expr (get-in db parent-path)
-        child-keys (to-keys parent-expr)
-        last-coord (last (:focus bookmark))
-        idx (.indexOf child-keys last-coord)
-        next-id (bisection/bisect
-                 last-coord
-                 (if (= idx (dec (count child-keys)))
-                   bisection/max-id
-                   (get child-keys (inc idx))))]
+        next-id (key-after (:data parent-expr) (last (:focus bookmark)))]
     (-> db
         (update-in
          parent-path
@@ -117,17 +111,10 @@
 (defn expr-after [db op-data session-id op-id op-time]
   (let [writer (to-writer db session-id)
         bookmark (to-bookmark writer)
-        current-key (last (:focus bookmark))
         parent-bookmark (update bookmark :focus butlast)
         data-path (bookmark->path parent-bookmark)
         target-expr (get-in db data-path)
-        child-keys (to-keys target-expr)
-        idx (.indexOf child-keys current-key)
-        next-id (bisection/bisect
-                 current-key
-                 (if (= idx (dec (count child-keys)))
-                   bisection/max-id
-                   (get child-keys (inc idx))))
+        next-id (key-after (:data target-expr) (last (:focus bookmark)))
         user-id (get-in db [:sessions session-id :user-id])
         new-leaf (assoc schema/leaf :at op-time :by user-id :id (str op-id "leaf"))
         new-expr (-> schema/expr
@@ -142,15 +129,10 @@
 (defn expr-before [db op-data session-id op-id op-time]
   (let [writer (to-writer db session-id)
         bookmark (to-bookmark writer)
-        current-key (last (:focus bookmark))
         parent-bookmark (update bookmark :focus butlast)
         data-path (bookmark->path parent-bookmark)
         target-expr (get-in db data-path)
-        child-keys (to-keys target-expr)
-        idx (.indexOf child-keys current-key)
-        next-id (bisection/bisect
-                 (if (zero? idx) bisection/min-id (get child-keys (dec idx)))
-                 current-key)
+        next-id (key-before (:data target-expr) (last (:focus bookmark)))
         user-id (get-in db [:sessions session-id :user-id])
         new-leaf (assoc schema/leaf :at op-time :by user-id :id (str op-id "leaf"))
         new-expr (-> schema/expr
@@ -182,17 +164,10 @@
   (let [writer (get-in db [:sessions session-id :writer])
         {stack :stack, pointer :pointer} writer
         bookmark (get stack pointer)
-        current-key (last (:focus bookmark))
         parent-bookmark (update bookmark :focus butlast)
         data-path (bookmark->path parent-bookmark)
         target-expr (get-in db data-path)
-        child-keys (vec (sort (keys (:data target-expr))))
-        idx (.indexOf child-keys current-key)
-        next-id (bisection/bisect
-                 current-key
-                 (if (= idx (dec (count child-keys)))
-                   bisection/max-id
-                   (get child-keys (inc idx))))
+        next-id (key-after (:data target-expr) (last (:focus bookmark)))
         user-id (get-in db [:sessions session-id :user-id])
         new-leaf (assoc schema/leaf :at op-time :by user-id :id op-id)]
     (-> db
@@ -204,15 +179,10 @@
 (defn leaf-before [db op-data session-id op-id op-time]
   (let [writer (to-writer db session-id)
         bookmark (to-bookmark writer)
-        current-key (last (:focus bookmark))
         parent-bookmark (update bookmark :focus butlast)
         data-path (bookmark->path parent-bookmark)
         target-expr (get-in db data-path)
-        child-keys (to-keys target-expr)
-        idx (.indexOf child-keys current-key)
-        next-id (bisection/bisect
-                 (if (zero? idx) bisection/min-id (get child-keys (dec idx)))
-                 current-key)
+        next-id (key-before (:data target-expr) (last (:focus bookmark)))
         user-id (get-in db [:sessions session-id :user-id])
         new-leaf (assoc schema/leaf :at op-time :by user-id :id op-id)]
     (-> db
@@ -237,10 +207,7 @@
         new-leaf (assoc schema/leaf :by user-id :at op-time :id op-id)
         expr-path (bookmark->path bookmark)
         target-expr (get-in db expr-path)
-        new-id (if (empty? (:data target-expr))
-                 bisection/mid-id
-                 (let [min-entry (apply min (keys (:data target-expr)))]
-                   (bisection/bisect bisection/min-id min-entry)))]
+        new-id (key-prepend (:data target-expr))]
     (-> db
         (update-in
          expr-path
