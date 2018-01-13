@@ -60,7 +60,7 @@
  comp-draft-box
  (states expr focus close-modal!)
  (comp-modal
-  (fn [m! d!] (m! *cursor* nil) (close-modal! m! d!))
+  (fn [m! d!] (m! %cursor nil) (close-modal! m! d!))
   (let [path (->> focus (mapcat (fn [x] [:data x])) (vec))
         node (get-in expr path)
         missing? (nil? node)]

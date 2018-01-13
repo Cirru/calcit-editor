@@ -18,7 +18,7 @@
     :on {:click toggler}}
    (<> span "Beginner?" nil)))
 
-(defn on-toggle [state *cursor*]
+(defn on-toggle [state %cursor]
   (fn [e d! m!]
-    (comment println "Toggleing" *cursor* state)
-    (m! *cursor* (update state :beginner? not))))
+    (comment println "Toggleing" %cursor state)
+    (m! %cursor (update state :beginner? not))))

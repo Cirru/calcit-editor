@@ -27,8 +27,8 @@
         assets (read-string (slurp "dist/assets.edn"))
         cdn (if (or local? preview?) "" "http://cdn.tiye.me/cumulo-editor/")
         font-styles (if local?
-                      "favored-fonts/main-2.css"
-                      "http://cdn.tiye.me/favored-fonts/main-2.css")
+                      "favored-fonts/main.css"
+                      "http://cdn.tiye.me/favored-fonts/main.css")
         prefix-cdn #(str cdn %)]
     (make-page
      html-content

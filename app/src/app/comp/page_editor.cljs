@@ -46,7 +46,7 @@
 
 (def style-watchers (merge ui/row {:display :inline-block}))
 
-(defn render-status [router-data states *cursor* bookmark theme]
+(defn render-status [router-data states %cursor bookmark theme]
   (let [state (:data states)]
     (div
      {:style style-status}
@@ -78,7 +78,7 @@
       {:style ui/row}
       (cursor-> :theme comp-theme-menu states theme)
       (=< 16 nil)
-      (comp-beginner-mode state (on-toggle state *cursor*))))))
+      (comp-beginner-mode state (on-toggle state %cursor))))))
 
 (def style-area {:overflow :auto, :padding-bottom 80, :padding-top 40, :flex 1})
 
@@ -107,9 +107,9 @@
        old-name (if (= :def (:kind bookmark))
                   (str (:ns bookmark) "/" (:extra bookmark))
                   (:ns bookmark))
-       close-rename! (fn [mutate!] (mutate! *cursor* (assoc state :renaming? false)))
-       close-draft-box! (fn [mutate!] (mutate! *cursor* (assoc state :draft-box? false)))
-       close-abstract! (fn [mutate!] (mutate! *cursor* (assoc state :abstract? false)))]
+       close-rename! (fn [mutate!] (mutate! %cursor (assoc state :renaming? false)))
+       close-draft-box! (fn [mutate!] (mutate! %cursor (assoc state :draft-box? false)))
+       close-abstract! (fn [mutate!] (mutate! %cursor (assoc state :abstract? false)))]
    (div
     {:style (merge ui/row ui/flex style-container)}
     (if (empty? stack)
@@ -146,7 +146,7 @@
            0)
           (if (not (empty? stack)) ui-missing))))
      (let [peek-def (:peek-def router-data)] (if (some? peek-def) (comp-peek-def peek-def)))
-     (render-status router-data states *cursor* bookmark theme)
+     (render-status router-data states %cursor bookmark theme)
      (if (:renaming? state)
        (cursor-> :rename comp-rename states old-name close-rename! bookmark))
      (if (:draft-box? state)
