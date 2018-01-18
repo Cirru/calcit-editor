@@ -3472,6 +3472,37 @@
                }
               }
              }
+             "y" {
+              :type :expr, :by "SJhrjuzlG", :at 1516290295337, :id "HJx7QWHREf"
+              :data {
+               "T" {:type :leaf, :by "SJhrjuzlG", :at 1516290298731, :text ":stats", :id "B11Z-HRNGleaf"}
+               "j" {
+                :type :expr, :by "SJhrjuzlG", :at 1516290299619, :id "B14ZZS04f"
+                :data {
+                 "T" {:type :leaf, :by "SJhrjuzlG", :at 1516290300044, :text "{}", :id "HylXZWB0NG"}
+                 "j" {
+                  :type :expr, :by "SJhrjuzlG", :at 1516290303497, :id "rkewWbSC4z"
+                  :data {
+                   "T" {:type :leaf, :by "SJhrjuzlG", :at 1516290432195, :text ":members-count", :id "SkP-br0VG"}
+                   "j" {
+                    :type :expr, :by "SJhrjuzlG", :at 1516290335011, :id "rJgPQZSR4M"
+                    :data {
+                     "T" {:type :leaf, :by "SJhrjuzlG", :at 1516290335770, :text "count", :id "Hk3WWS0EG"}
+                     "j" {
+                      :type :expr, :by "SJhrjuzlG", :at 1516290342831, :id "SyJNZBA4f"
+                      :data {
+                       "T" {:type :leaf, :by "SJhrjuzlG", :at 1516290344796, :text ":sessions", :id "SJ-_m-BAEM"}
+                       "j" {:type :leaf, :by "SJhrjuzlG", :at 1516290345433, :text "db", :id "BkG-E-rCNz"}
+                      }
+                     }
+                    }
+                   }
+                  }
+                 }
+                }
+               }
+              }
+             }
             }
            }
            "t" {
@@ -3490,6 +3521,25 @@
               :data {
                "T" {:type :leaf, :author "root", :time 1504777570689, :text ":logged-in?", :id "SJ0tx3ot43qW"}
                "j" {:type :leaf, :author "root", :time 1504777570689, :text "false", :id "HyJ5g3jtN35-"}
+              }
+             }
+             "v" {
+              :type :expr, :by "SJhrjuzlG", :at 1516290295337, :id "SkbINfrREM"
+              :data {
+               "T" {:type :leaf, :by "SJhrjuzlG", :at 1516290298731, :text ":stats", :id "B11Z-HRNGleaf"}
+               "j" {
+                :type :expr, :by "SJhrjuzlG", :at 1516290299619, :id "B14ZZS04f"
+                :data {
+                 "T" {:type :leaf, :by "SJhrjuzlG", :at 1516290300044, :text "{}", :id "HylXZWB0NG"}
+                 "j" {
+                  :type :expr, :by "SJhrjuzlG", :at 1516290303497, :id "rkewWbSC4z"
+                  :data {
+                   "T" {:type :leaf, :by "SJhrjuzlG", :at 1516290432195, :text ":members-count", :id "SkP-br0VG"}
+                   "j" {:type :leaf, :by "SJhrjuzlG", :at 1516290609070, :text "0", :id "S1lFVfBREM"}
+                  }
+                 }
+                }
+               }
               }
              }
             }

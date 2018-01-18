@@ -41,7 +41,8 @@
 
 (defcomp
  comp-header
- (router-name logged-in?)
+ (router-name logged-in? stats)
+ (println stats)
  (div
   {:style (merge ui/row-center style-header)}
   (div
@@ -49,7 +50,7 @@
    (render-entry "Files" :files router-name on-files)
    (render-entry "Editor" :editor router-name on-editor)
    (render-entry "Search" :search router-name on-search)
-   (render-entry "Members" :members router-name on-members)
+   (render-entry (str "Members:" (:members-count stats)) :members router-name on-members)
    (a
     {:inner-text "Shortcuts",
      :href "https://github.com/Cirru/cumulo-editor/wiki/Keyboard-Shortcuts",

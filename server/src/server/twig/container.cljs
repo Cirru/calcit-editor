@@ -47,5 +47,6 @@
                         (:files ir)
                         (:users db))
                        nil))
-                 nil))}
-     {:session session, :logged-in? false})))
+                 nil)),
+      :stats {:members-count (count (:sessions db))}}
+     {:session session, :logged-in? false, :stats {:members-count 0}})))

@@ -3954,6 +3954,13 @@
                  "j" {:type :leaf, :text "store", :id "H19Ob5rY439W", :by "root", :at 1504777353661}
                 }
                }
+               "v" {
+                :type :expr, :by "S1lNv50FW", :at 1516290372150, :id "SJ3r-BANz"
+                :data {
+                 "T" {:type :leaf, :by "S1lNv50FW", :at 1516290378240, :text ":stats", :id "SJ3r-BANzleaf"}
+                 "j" {:type :leaf, :by "S1lNv50FW", :at 1516290379900, :text "store", :id "S1mU-BAEf"}
+                }
+               }
               }
              }
              "v" {
@@ -7778,6 +7785,14 @@
         :data {
          "T" {:type :leaf, :text "router-name", :id "SyYwYcBtV35b", :by "root", :at 1504777353661}
          "j" {:type :leaf, :text "logged-in?", :id "Hk5wY5Bt435-", :by "root", :at 1504777353661}
+         "r" {:type :leaf, :by "S1lNv50FW", :at 1516290384449, :text "stats", :id "rJxI8-SRVf"}
+        }
+       }
+       "t" {
+        :type :expr, :by "S1lNv50FW", :at 1516290420390, :id "S1W3O-rREf"
+        :data {
+         "T" {:type :leaf, :by "S1lNv50FW", :at 1516290421448, :text "println", :id "S1W3O-rREfleaf"}
+         "j" {:type :leaf, :by "S1lNv50FW", :at 1516290422649, :text "stats", :id "B10dWBRVM"}
         }
        }
        "v" {
@@ -7855,7 +7870,20 @@
             :type :expr, :id "r1CtYqHF425Z", :by nil, :at 1504777353661
             :data {
              "T" {:type :leaf, :text "render-entry", :id "S1J5YcrFN2cW", :by "root", :at 1504777353661}
-             "j" {:type :leaf, :text "|Members", :id "B1eqY9BtN2cZ", :by "root", :at 1504777353661}
+             "j" {
+              :type :expr, :by "S1lNv50FW", :at 1516290399379, :id "HyvwZH0Nz"
+              :data {
+               "D" {:type :leaf, :by "S1lNv50FW", :at 1516290400496, :text "str", :id "B1uvbB0EM"}
+               "T" {:type :leaf, :text "|Members:", :id "B1eqY9BtN2cZ", :by "S1lNv50FW", :at 1516290454898}
+               "j" {
+                :type :expr, :by "S1lNv50FW", :at 1516290402718, :id "SyoP-S0Vz"
+                :data {
+                 "T" {:type :leaf, :by "S1lNv50FW", :at 1516290438141, :text ":members-count", :id "S1cDbr0NM"}
+                 "j" {:type :leaf, :by "S1lNv50FW", :at 1516290412018, :text "stats", :id "Hkfd-rANG"}
+                }
+               }
+              }
+             }
              "r" {:type :leaf, :text ":members", :id "HJbqt9Ht42cW", :by "root", :at 1504777353661}
              "v" {:type :leaf, :text "router-name", :id "SJz9YcBF4hcW", :by "root", :at 1504777353661}
              "x" {:type :leaf, :text "on-members", :id "HJmcF5BFE2q-", :by "root", :at 1504777353661}
