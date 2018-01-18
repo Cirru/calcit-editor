@@ -40,10 +40,18 @@
 
 (deftwig
  twig-page-files
- (files selected-ns saved-files draft-ns)
+ (files selected-ns saved-files draft-ns sessions sid)
  {:ns-set (into #{} (keys files)),
   :defs-set (if (some? selected-ns)
     (do (->> (get-in files [selected-ns :defs]) (keys) (into #{})))
     #{}),
   :changed-files (render-changed-files files saved-files),
-  :peeking-file (if (some? draft-ns) (file->cirru (get files draft-ns)) nil)})
+  :peeking-file (if (some? draft-ns) (file->cirru (get files draft-ns)) nil),
+  :highlights (->> sessions
+                   (map
+                    (fn [[k session]]
+                      [k
+                       (let [writer (:writer session)]
+                         (dissoc (get (:stack writer) (:pointer writer)) :focus))]))
+                   (filter (fn [entry] (if (= sid (key entry)) false (some? (val entry)))))
+                   (into {}))})

@@ -58,7 +58,7 @@
 
 (defn render-empty [] (div {:style style-empty} (<> span "Empty" nil)))
 
-(def style-def {:padding "0 8px", :position :relative})
+(def style-def {:padding "0 8px", :position :relative, :color (hsl 0 0 80)})
 
 (def style-file {:width 280, :overflow :auto, :padding-bottom 120})
 
@@ -74,7 +74,7 @@
    :top 8,
    :right 8})
 
-(defn render-file [state selected-ns defs-set]
+(defn render-file [state selected-ns defs-set highlights]
   (div
    {:style style-file}
    (div
@@ -108,7 +108,12 @@
             [def-text
              (div
               {:class-name "hoverable",
-               :style style-def,
+               :style (merge
+                       style-def
+                       (if (contains?
+                            highlights
+                            {:ns selected-ns, :extra def-text, :kind :def})
+                         {:color :white})),
                :on {:click (on-edit-def def-text)}}
               (<> span def-text nil)
               (=< 16 nil)
@@ -121,9 +126,13 @@
 (def style-list {:width 280, :overflow :auto, :padding-bottom 120})
 
 (def style-ns
-  {:cursor :pointer, :vertical-align :middle, :position :relative, :padding "0 8px"})
+  {:cursor :pointer,
+   :vertical-align :middle,
+   :position :relative,
+   :padding "0 8px",
+   :color (hsl 0 0 80)})
 
-(defn render-list [state ns-set selected-ns]
+(defn render-list [state ns-set selected-ns ns-highlights]
   (div
    {:style style-list}
    (div {:style style/title} (<> span "Namespaces" nil))
@@ -146,7 +155,9 @@
             [ns-text
              (div
               {:class-name (if (= selected-ns ns-text) "hoverable is-selected" "hoverable"),
-               :style (merge style-ns),
+               :style (merge
+                       style-ns
+                       (if (contains? ns-highlights ns-text) {:color :white})),
                :on {:click (on-checkout state ns-text)}}
               (span {:inner-text ns-text})
               (span
@@ -162,13 +173,16 @@
 (defcomp
  comp-page-files
  (states selected-ns router-data)
- (let [state (or (:data states) initial-state)]
+ (let [state (or (:data states) initial-state)
+       highlights (set (map last (:highlights router-data)))
+       ns-highlights (set (map :ns highlights))]
+   (println highlights ns-highlights)
    (div
     {:style (merge ui/flex ui/row sytle-container)}
-    (render-list state (:ns-set router-data) selected-ns)
+    (render-list state (:ns-set router-data) selected-ns ns-highlights)
     (=< 32 nil)
     (if (some? selected-ns)
-      (render-file state selected-ns (:defs-set router-data))
+      (render-file state selected-ns (:defs-set router-data) highlights)
       (render-empty))
     (=< 32 nil)
     (cursor-> :files comp-changed-files states (:changed-files router-data))

@@ -42,7 +42,6 @@
 (defcomp
  comp-header
  (router-name logged-in? stats)
- (println stats)
  (div
   {:style (merge ui/row-center style-header)}
   (div
