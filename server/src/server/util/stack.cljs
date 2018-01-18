@@ -24,6 +24,7 @@
                 (cond
                   (empty? stack) [bookmark]
                   (= pointer (dec (count stack))) (conj stack bookmark)
+                  (=bookmark? bookmark (get stack (inc pointer))) stack
                   :else
                     (vec
                      (concat
