@@ -12,14 +12,14 @@
             [app.util.shortcuts :refer [on-window-keydown]]
             [app.theme :refer [decide-leaf-theme]]))
 
-(def initial-state {:text "", :time 0})
+(def initial-state {:text "", :at 0})
 
 (defn on-focus [coord] (fn [e d! m!] (d! :writer/focus coord)))
 
 (defn on-input [state coord]
   (fn [e d! m!]
     (d! :ir/update-leaf (:value e))
-    (m! (assoc state :text (:value e) :time (util/now!)))))
+    (m! (assoc state :text (:value e) :at (util/now!)))))
 
 (defn on-keydown [state leaf coord]
   (fn [e d! m!]
@@ -28,7 +28,7 @@
           shift? (.-shiftKey event)
           meta? (or (.-metaKey event) (.-ctrlKey event))
           selected? (not= event.target.selectionStart event.target.selectionEnd)
-          text (if (> (:time state) (:time leaf)) (:text state) (:text leaf))
+          text (if (> (:at state) (:at leaf)) (:text state) (:text leaf))
           text-length (count text)]
       (println "selected?" selected?)
       (cond
@@ -60,7 +60,7 @@
  comp-leaf
  (states leaf focus coord by-other? first? readonly? theme)
  (let [state (or (:data states) initial-state)
-       text (or (if (> (:time state) (:time leaf)) (:text state) (:text leaf)) "")
+       text (or (if (> (:at state) (:at leaf)) (:text state) (:text leaf)) "")
        focused? (= focus coord)]
    (textarea
     {:value text,
