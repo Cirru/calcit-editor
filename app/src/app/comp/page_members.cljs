@@ -2,8 +2,8 @@
 (ns app.comp.page-members
   (:require [clojure.string :as string]
             [hsl.core :refer [hsl]]
-            [respo-ui.style :as ui]
-            [respo-ui.style.colors :as colors]
+            [respo-ui.core :as ui]
+            [respo-ui.colors :as colors]
             [respo.macros :refer [defcomp <> list-> span div a]]
             [respo.comp.space :refer [=<]]))
 

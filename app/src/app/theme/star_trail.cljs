@@ -2,7 +2,7 @@
 (ns app.theme.star-trail
   (:require [hsl.core :refer [hsl]]
             [clojure.string :as string]
-            [respo-ui.style :as ui]
+            [respo-ui.core :as ui]
             [polyfill.core :refer [text-width*]]
             [app.util :refer [simple?]]))
 
