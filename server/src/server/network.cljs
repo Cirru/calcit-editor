@@ -24,7 +24,7 @@
       port
       " is in use!\nYou can try `port="
       (inc port)
-      " cumulo-editor`.")))
+      " calcit-editor`.")))
    (.exit js/process 1)))
 
 (defn run-server! [on-action! port]
@@ -60,7 +60,7 @@
                      (on-action! :session/disconnect nil sid))))))
              (println
               "Server started, please edit on"
-              (.blue chalk (str "http://cumulo-editor.cirru.org?port=" port))))))))))
+              (.blue chalk (str "http://calcit-editor.cirru.org?port=" port))))))))))
 
 (defn sync-clients! [db]
   (doseq [sid (keys @*registry)]

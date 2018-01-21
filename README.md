@@ -1,11 +1,11 @@
 
-Cumulo Editor
+Calcit Editor
 ------
 
 > A collabrative syntax tree editor of Clojure(Script).
 
-* Editor UI http://cumulo-editor.cirru.org/
-* [Keyboard Shortcuts](https://github.com/Cirru/cumulo-editor/wiki/Keyboard-Shortcuts)
+* Editor UI http://calcit-editor.cirru.org/
+* [Keyboard Shortcuts](https://github.com/Cirru/calcit-editor/wiki/Keyboard-Shortcuts)
 * [Overview Video](https://www.youtube.com/watch?v=u5Eb_6KYGsA&t)
 
 ### Guide
@@ -13,9 +13,9 @@ Cumulo Editor
 Run editor:
 
 ```bash
-npm i -g cumulo-editor
-cumulo-editor
-# open http://cumulo-editor.cirru.org/?port=6001
+npm i -g calcit-editor
+calcit-editor
+# open http://calcit-editor.cirru.org/?port=6001
 ```
 
 ![Run in command line](https://pbs.twimg.com/media/DLSmv0cVwAEUCMi.png:large)
@@ -27,7 +27,7 @@ cumulo-editor
 To run editor with options:
 
 ```bash
-port=6001 cumulo-editor
+port=6001 calcit-editor
 ```
 
 There are several options to configure:
@@ -41,13 +41,13 @@ Those options are also stored in the snapshot file `coir.edn`.
 To compile code at once from existing `coir.edn`:
 
 ```bash
-op=compile cumulo-editor
+op=compile calcit-editor
 ```
 
 The UI part takes options too:
 
 ```
-http://cumulo-editor.cirru.org/?host=localhost&port=6001
+http://calcit-editor.cirru.org/?host=localhost&port=6001
 ```
 
 * `port`, defaults to `6001`

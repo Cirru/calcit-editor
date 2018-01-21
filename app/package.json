@@ -1,11 +1,11 @@
 {
-  "name": "cumulo-editor",
+  "name": "calcit-editor",
   "version": "0.1.0",
   "description": "Cirru Cumulo Editor",
   "main": "index.js",
   "scripts": {
-    "cdn": "rsync -avr --progress dist/* tiye.me:cdn/cumulo-editor/",
-    "tiye": "rsync -av --progress dist/{index.html,manifest.json} tiye.me:repo/Cirru/cumulo-editor",
+    "cdn": "rsync -avr --progress dist/* tiye.me:cdn/calcit-editor/",
+    "tiye": "rsync -av --progress dist/{index.html,manifest.json} tiye.me:repo/Cirru/calcit-editor",
     "upload": "yarn cdn && yarn tiye",
     "release": "shadow-cljs release browser",
     "watch": "shadow-cljs watch browser",
@@ -20,13 +20,13 @@
   },
   "repository": {
     "type": "git",
-    "url": "git@github.com:Cirru/cumulo-editor.git"
+    "url": "git@github.com:Cirru/calcit-editor.git"
   },
   "author": "jiyinyiyong",
   "license": "MIT",
   "devDependencies": {
     "http-server": "^0.11.1",
-    "shadow-cljs": "^2.0.133"
+    "shadow-cljs": "^2.0.138"
   },
   "dependencies": {}
 }

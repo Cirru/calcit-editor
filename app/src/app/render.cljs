@@ -25,7 +25,7 @@
 (defn prod-page []
   (let [html-content (make-string (comp-container {} nil))
         assets (read-string (slurp "dist/assets.edn"))
-        cdn (if (or local? preview?) "" "http://cdn.tiye.me/cumulo-editor/")
+        cdn (if (or local? preview?) "" "http://cdn.tiye.me/calcit-editor/")
         font-styles (if local?
                       "favored-fonts/main.css"
                       "http://cdn.tiye.me/favored-fonts/main.css")

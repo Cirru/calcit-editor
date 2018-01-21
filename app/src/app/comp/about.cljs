@@ -22,5 +22,5 @@
   (div
    {:class-name "comp-about"}
    (comp-md-article
-    "You are on this page because the server is not connected.\n\nYou may install editor server with:\n\n```bash\nnpm install -g cumulo-editor\ncumulo-editor\n```\n\nThis is a syntax tree editor of [Cirru Project](http://cirru.org). Read more at [Cumulo Editor](https://github.com/Cirru/cumulo-editor).\n"
+    "You are on this page because the server is not connected.\n\nYou may install editor server with:\n\n```bash\nnpm install -g calcit-editor\ncalcit-editor\n```\n\nThis is a syntax tree editor of [Cirru Project](http://cirru.org). Read more at [Cumulo Editor](https://github.com/Cirru/calcit-editor).\n"
     {}))))

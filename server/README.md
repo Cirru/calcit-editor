@@ -5,15 +5,15 @@ Command line for Cumulo Editor
 ### Usage
 
 ```bash
-npm i -g cumulo-editor
+npm i -g calcit-editor
 ```
 
 ```bash
-cumulo-editor
+calcit-editor
 # or
-port=6001 cumulo-editor
+port=6001 calcit-editor
 # then edit via a web app
-open http://cumulo-editor.cirru.org/?port=6001
+open http://calcit-editor.cirru.org/?port=6001
 ```
 
 By default, ClojureScript will be emitted in `src/`.
@@ -21,12 +21,12 @@ When server is stopped with `Ctrl c`, a `coir.edn` will be generated.
 
 ```bash
 # with an existing coir.edn
-op=compile cumulo-editor
+op=compile calcit-editor
 ```
 
 ### More
 
-https://github.com/Cirru/cumulo-editor
+https://github.com/Cirru/calcit-editor
 
 ### License
 

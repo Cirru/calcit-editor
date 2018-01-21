@@ -1570,7 +1570,7 @@
                  "j" {:type :leaf, :author "root", :time 1507174251378, :text "port", :id "HyGOPX7nb"}
                 }
                }
-               "x" {:type :leaf, :author "root", :time 1507174381612, :text "| cumulo-editor`.", :id "H1l7FDQQn-"}
+               "x" {:type :leaf, :author "root", :time 1507174381612, :text "| calcit-editor`.", :id "H1l7FDQQn-"}
               }
              }
             }
@@ -1936,7 +1936,7 @@
                         :type :expr, :author "root", :time 1505982287249, :id "BJPLPx-jb"
                         :data {
                          "D" {:type :leaf, :author "root", :time 1505982288489, :text "str", :id "BkuLPxbob"}
-                         "T" {:type :leaf, :author "root", :time 1505982284186, :text "|http://cumulo-editor.cirru.org?port=", :id "H1T7PeWsW"}
+                         "T" {:type :leaf, :author "root", :time 1505982284186, :text "|http://calcit-editor.cirru.org?port=", :id "H1T7PeWsW"}
                          "j" {:type :leaf, :author "root", :time 1507174111413, :text "port", :id "SkIJvQX2W"}
                         }
                        }
