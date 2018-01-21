@@ -1,7 +1,7 @@
 {
   "name": "calcit-editor",
   "version": "0.3.28",
-  "description": "Command line for Cumulo Editor",
+  "description": "Command line for Calcit Editor",
   "bin": {
     "calcit-editor": "dist/main.js",
     "ce": "dist/main.js"

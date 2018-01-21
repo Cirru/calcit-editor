@@ -1,5 +1,5 @@
 
-Command line for Cumulo Editor
+Command line for Calcit Editor
 ---
 
 ### Usage

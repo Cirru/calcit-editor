@@ -227,7 +227,7 @@
             :type :expr, :id "ryWm5HRoZ", :by "root", :at 1506854965871
             :data {
              "T" {:type :leaf, :text "comp-md-article", :id "rJC4_BCiWleaf", :by "root", :at 1506854967006}
-             "b" {:type :leaf, :text "|You are on this page because the server is not connected.\n\nYou may install editor server with:\n\n```bash\nnpm install -g calcit-editor\ncalcit-editor\n```\n\nThis is a syntax tree editor of [Cirru Project](http://cirru.org). Read more at [Cumulo Editor](https://github.com/Cirru/calcit-editor).\n", :id "r1bSruSRo-", :by "root", :at 1506856083917}
+             "b" {:type :leaf, :text "|You are on this page because the server is not connected.\n\nYou may install editor server with:\n\n```bash\nnpm install -g calcit-editor\ncalcit-editor\n```\n\nThis is a syntax tree editor of [Cirru Project](http://cirru.org). Read more at [Calcit Editor](https://github.com/Cirru/calcit-editor).\n", :id "r1bSruSRo-", :by "root", :at 1506856083917}
              "j" {
               :type :expr, :id "SyQHOBCsb", :by "root", :at 1506854971228
               :data {

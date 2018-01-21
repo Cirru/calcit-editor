@@ -1,7 +1,7 @@
 {
   "name": "calcit-editor",
   "version": "0.1.0",
-  "description": "Cirru Cumulo Editor",
+  "description": "Cirru Calcit Editor",
   "main": "index.js",
   "scripts": {
     "cdn": "rsync -avr --progress dist/* tiye.me:cdn/calcit-editor/",
