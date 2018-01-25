@@ -10,7 +10,8 @@
             [app.util.keycode :as keycode]
             [app.util :as util]
             [app.util.shortcuts :refer [on-window-keydown]]
-            [app.theme :refer [decide-leaf-theme]]))
+            [app.theme :refer [decide-leaf-theme]]
+            [verbosely.core :refer [log!]]))
 
 (def initial-state {:text "", :at 0})
 
@@ -29,11 +30,11 @@
           meta? (or (.-metaKey event) (.-ctrlKey event))
           selected? (not= event.target.selectionStart event.target.selectionEnd)
           text (if (> (:at state) (:at leaf)) (:text state) (:text leaf))
+          in-string? (string/starts-with? (:text state) "|")
           text-length (count text)]
-      (println "selected?" selected?)
       (cond
         (= code keycode/delete) (if (and (= "" text)) (d! :ir/delete-node nil))
-        (and (not shift?) (= code keycode/space))
+        (and (= code keycode/space) (if in-string? false (not shift?)))
           (do (d! :ir/leaf-after nil) (.preventDefault event))
         (= code keycode/enter)
           (do (d! (if shift? :ir/leaf-before :ir/leaf-after) nil) (.preventDefault event))
