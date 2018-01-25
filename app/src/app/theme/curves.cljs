@@ -7,12 +7,12 @@
    {:border-radius "16px",
     :display :inline-block,
     :border-width "0 1px",
-    :border-color (hsl 0 0 60),
+    :border-color (hsl 0 0 80 0.5),
     :padding "4px 8px"}
-   (if focused? {:border-color (hsl 0 0 100)})))
+   (if focused? {:border-color (hsl 0 0 100 0.8)})))
 
 (defn decide-leaf-style [text focused? first? by-other?]
-  (merge (star-trail/decide-leaf-style text focused? first? by-other?) {:color :white}))
+  (merge (star-trail/decide-leaf-style text focused? first? by-other?) {}))
 
 (defn ring [x] (hsl (* x 360) 70 70))
 
