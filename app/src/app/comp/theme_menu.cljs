@@ -9,7 +9,7 @@
             [respo.comp.space :refer [=<]]
             [app.style :as style]))
 
-(def theme-list [:star-trail :curves :rainbow])
+(def theme-list [:star-trail :curves])
 
 (defcomp
  comp-theme-menu

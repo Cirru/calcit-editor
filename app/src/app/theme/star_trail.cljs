@@ -35,8 +35,6 @@
     :font-family "Menlo,Iosevka,Consolas,monospace",
     :font-size 15,
     :vertical-align :baseline,
-    :transition-duration "200ms",
-    :transition-property "color",
     :text-align :left,
     :border-width "1px 1px 1px 1px",
     :resize :none,
