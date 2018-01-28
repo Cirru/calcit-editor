@@ -105,7 +105,7 @@
    "SIGINT"
    (fn [code]
      (persist! (:storage-key configs) (db->string @*writer-db))
-     (println (str "\n" "Saved coir.edn") (str (if (some? code) (str "with " code))))
+     (println (str "\n" "Saved calcit.edn") (str (if (some? code) (str "with " code))))
      (.exit js/process))))
 
 (defn main! []

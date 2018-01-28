@@ -17,10 +17,10 @@ open http://calcit-editor.cirru.org/?port=6001
 ```
 
 By default, ClojureScript will be emitted in `src/`.
-When server is stopped with `Ctrl c`, a `coir.edn` will be generated.
+When server is stopped with `Ctrl c`, a `calcit.edn` will be generated.
 
 ```bash
-# with an existing coir.edn
+# with an existing calcit.edn
 op=compile calcit-editor
 ```
 

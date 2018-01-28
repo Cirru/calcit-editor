@@ -3,7 +3,7 @@
 
 (def bookmark {:kind :def, :ns nil, :extra nil, :focus []})
 
-(def configs {:storage-key "coir.edn", :extension ".cljs", :output "src", :port 6001})
+(def configs {:storage-key "calcit.edn", :extension ".cljs", :output "src", :port 6001})
 
 (def ir-file {:package "app", :files {}})
 

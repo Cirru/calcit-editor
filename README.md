@@ -36,9 +36,9 @@ There are several options to configure:
 * `output`, defaults to `src/`
 * `extension`, defaults to `.cljs`
 
-Those options are also stored in the snapshot file `coir.edn`.
+Those options are also stored in the snapshot file `calcit.edn`.
 
-To compile code at once from existing `coir.edn`:
+To compile code at once from existing `calcit.edn`:
 
 ```bash
 op=compile calcit-editor
