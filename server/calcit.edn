@@ -23210,5 +23210,5 @@
   "root" {:id "root", :name "root", :nickname "root", :password "d41d8cd98f00b204e9800998ecf8427e", :avatar nil, :theme :star-trail}
  }
  :saved-files {}
- :configs {:storage-key "coir.edn", :extension ".cljs", :output "src", :port 6002}
+ :configs {:storage-key "calcit.edn", :extension ".cljs", :output "src", :port 6002}
 }
