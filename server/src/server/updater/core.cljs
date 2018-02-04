@@ -69,4 +69,5 @@
     :analyze/abstract-def (analyze/abstract-def db op-data session-id op-id op-time)
     :analyze/peek-def (analyze/peek-def db op-data session-id op-id op-time)
     :watcher/file-change (watcher/file-change db op-data session-id op-id op-time)
+    :ping db
     db))

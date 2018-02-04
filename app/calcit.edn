@@ -21938,6 +21938,74 @@
        }
       }
      }
+     "heartbeat!" {
+      :type :expr, :by "root", :at 1517754151946, :id "ryllNwcN8f"
+      :data {
+       "T" {:type :leaf, :by "root", :at 1517754151946, :text "defn", :id "BkZxNw9NIG"}
+       "j" {:type :leaf, :by "root", :at 1517754151946, :text "heartbeat!", :id "S1GeNv54If"}
+       "r" {
+        :type :expr, :by "root", :at 1517754151946, :id "H1QlVwc48f"
+        :data {}
+       }
+       "x" {
+        :type :expr, :by "root", :at 1517754371229, :id "Hygjbd5VIM"
+        :data {
+         "T" {:type :leaf, :by "root", :at 1517754374437, :text "js/setTimeout", :id "Hygjbd5VIMleaf"}
+         "j" {
+          :type :expr, :by "root", :at 1517754375494, :id "B1lJGdqE8M"
+          :data {
+           "T" {:type :leaf, :by "root", :at 1517754375774, :text "fn", :id "B1kGd9VUf"}
+           "j" {
+            :type :expr, :by "root", :at 1517754384082, :id "rkxdM_9ELM"
+            :data {}
+           }
+           "v" {
+            :type :expr, :by "root", :at 1517754158081, :id "Hkee7_cEUz"
+            :data {
+             "T" {:type :leaf, :by "root", :at 1517754162807, :text "if", :id "HkLVDqN8zleaf"}
+             "j" {
+              :type :expr, :by "root", :at 1517754163977, :id "ryx2ED548f"
+              :data {
+               "T" {:type :leaf, :by "root", :at 1517754166635, :text "some?", :id "SyWoEP9V8z"}
+               "j" {:type :leaf, :by "root", :at 1517754173473, :text "@*global-ws", :id "rkWBvcELM"}
+              }
+             }
+             "r" {
+              :type :expr, :by "root", :at 1517754557932, :id "rJgLTd54Lf"
+              :data {
+               "D" {:type :leaf, :by "root", :at 1517754558620, :text "do", :id "B1WLpdcE8M"}
+               "L" {
+                :type :expr, :by "root", :at 1517754184589, :id "HkZvTdcEIG"
+                :data {
+                 "T" {:type :leaf, :by "root", :at 1517754197735, :text "send!", :id "rkWUw5VUfleaf"}
+                 "j" {:type :leaf, :by "root", :at 1517754202163, :text ":ping", :id "ByJPP9ELG"}
+                 "r" {:type :leaf, :by "root", :at 1517754204316, :text "nil", :id "ByXfDvq4UG"}
+                }
+               }
+               "T" {
+                :type :expr, :by "root", :at 1517754399643, :id "Syu7ucVLM"
+                :data {
+                 "T" {:type :leaf, :by "root", :at 1517754403234, :text "heartbeat!", :id "HyGN7_548G"}
+                }
+               }
+              }
+             }
+             "v" {
+              :type :expr, :by "root", :at 1517754426492, :id "HJlfH_9N8G"
+              :data {
+               "T" {:type :leaf, :by "root", :at 1517754432215, :text "println", :id "HJlfH_9N8Gleaf"}
+               "j" {:type :leaf, :by "root", :at 1517754627756, :text "|Disabled heartbeat since connection lost.", :id "rkWOS_54If"}
+              }
+             }
+            }
+           }
+          }
+         }
+         "r" {:type :leaf, :by "root", :at 1517754714309, :text "30000", :id "rkz4_cEIf"}
+        }
+       }
+      }
+     }
      "send!" {
       :type :expr, :id "SJGJBKHFV2cb", :by nil, :at 1504777353661
       :data {
@@ -22116,6 +22184,12 @@
                "j" {:type :leaf, :text "event", :id "HkP7HYSFEh9b", :by "root", :at 1504777353661}
               }
              }
+             "v" {
+              :type :expr, :by "root", :at 1517754283187, :id "BJbXnw5NIz"
+              :data {
+               "T" {:type :leaf, :by "root", :at 1517754286056, :text "heartbeat!", :id "BJbXnw5NIzleaf"}
+              }
+             }
             }
            }
           }
@@ -22133,6 +22207,14 @@
               :type :expr, :id "BkaQrYSYV25-", :by nil, :at 1504777353661
               :data {
                "T" {:type :leaf, :text "event", :id "r1R7rtrtNn9b", :by "root", :at 1504777353661}
+              }
+             }
+             "n" {
+              :type :expr, :by "root", :at 1517754474841, :id "SJx7O_5E8z"
+              :data {
+               "T" {:type :leaf, :by "root", :at 1517754476125, :text "reset!", :id "SJx7O_5E8zleaf"}
+               "j" {:type :leaf, :by "root", :at 1517754479992, :text "*global-ws", :id "rkHduq4Iz"}
+               "r" {:type :leaf, :by "root", :at 1517754480447, :text "nil", :id "B1MOOd54IM"}
               }
              }
              "r" {
