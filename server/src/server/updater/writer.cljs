@@ -131,6 +131,9 @@
           [:stack (:pointer writer) :focus]
           (fn [focus] (if (empty? focus) focus (vec (butlast focus)))))))))
 
+(defn hide-peek [db op-data sid op-id op-time]
+  (assoc-in db [:sessions sid :writer :peek-def] nil))
+
 (defn move-next [db op-data sid op-id op-time]
   (-> db
       (update-in
