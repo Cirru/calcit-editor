@@ -2,7 +2,8 @@
 (ns server.updater.user
   (:require [server.util :refer [find-first push-warning]]
             [clojure.string :as string]
-            ["md5" :as md5]))
+            ["md5" :as md5]
+            [server.schema :as schema]))
 
 (defn change-theme [db op-data sid op-id op-time]
   (let [user-id (get-in db [:sessions sid :user-id])]
@@ -48,8 +49,6 @@
           (assoc-in [:sessions session-id :user-id] op-id)
           (assoc-in
            [:users op-id]
-           {:id op-id,
-            :name username,
-            :nickname username,
-            :password (md5 password),
-            :avatar nil})))))
+           (merge
+            schema/user
+            {:id op-id, :name username, :nickname username, :password (md5 password)}))))))

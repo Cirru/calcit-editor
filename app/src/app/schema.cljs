@@ -1,4 +1,4 @@
 
 (ns app.schema )
 
-(def configs {:storage-key "workflow-storage", :port 6001})
+(def configs {:storage-key "calcit-storage", :port 6001})

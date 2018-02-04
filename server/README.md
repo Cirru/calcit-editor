@@ -24,6 +24,13 @@ When server is stopped with `Ctrl c`, a `calcit.edn` will be generated.
 op=compile calcit-editor
 ```
 
+Set `local` to enable local version of web editor:
+
+```bash
+client=local calcit-editor
+; serving app at http://localhost:6101
+```
+
 ### More
 
 https://github.com/Cirru/calcit-editor

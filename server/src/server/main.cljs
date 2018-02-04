@@ -112,6 +112,8 @@
   (let [configs global-configs, op (get configs :op)]
     (if (= op "compile")
       (compile-all-files! configs)
-      (do (start-server! configs) (serve-app! (:port configs))))))
+      (do
+       (start-server! configs)
+       (if (= "local" js/process.env.client) (serve-app! (:port configs)))))))
 
 (defn reload! [] (println (.gray chalk "code updated.")) (sync-clients! @*reader-db))
