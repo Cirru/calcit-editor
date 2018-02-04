@@ -20,7 +20,9 @@
            {:align-items :center, :color (hsl 0 0 50), :font-size 12, :line-height "1.5em"})}
   (<>
    (stringify-s-expr (tree->cirru simple-expr))
-   {:font-family "Source Code Pro, Iosevka,Consolas,monospace", :overflow :hidden})
+   {:font-family "Source Code Pro, Iosevka,Consolas,monospace",
+    :white-space :nowrap,
+    :overflow :hidden})
   (=< 8 nil)
   (span
    {:on-click (action-> :writer/hide-peek nil), :style {:cursor :pointer}}

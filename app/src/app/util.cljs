@@ -37,7 +37,8 @@
            (into {})))))
 
 (defn simple? [expr]
-  (and (every? (fn [x] (= :leaf (:type x))) (vals (:data expr))) (<= (count (:data expr)) 6)))
+  (let [leaf? (fn [x] (= :leaf (:type x)))]
+    (and (every? leaf? (vals (:data expr))) (<= (count (:data expr)) 6))))
 
 (defn stringify-s-expr [x]
   (if (vector? x)
