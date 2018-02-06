@@ -46,3 +46,16 @@ body * {
 .comp-about pre {
    user-select: text;
 }
+
+::-webkit-scrollbar {
+  width: 1px;
+  height: 1px;
+}
+
+::-webkit-scrollbar-track {
+  background-color: hsla(0,0%,100%,0);
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: hsla(0,0%,100%,0.3);
+}
