@@ -1,6 +1,6 @@
 {
   "name": "calcit-editor",
-  "version": "0.3.32",
+  "version": "0.3.33",
   "description": "Command line for Calcit Editor",
   "bin": {
     "calcit-editor": "dist/main.js",

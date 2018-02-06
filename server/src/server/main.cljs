@@ -57,7 +57,7 @@
                      (.generate shortid)
                      (.valueOf (js/Date.)))]
          (reset! *writer-db new-db))
-       (catch js/Error e (println (.red chalk e))))))
+       (catch js/Error e (println (.red chalk e)) (.error js/console e)))))
 
 (defn on-file-change! []
   (let [coir-path (:storage-key global-configs)

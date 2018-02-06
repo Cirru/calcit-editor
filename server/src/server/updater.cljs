@@ -70,6 +70,6 @@
             :analyze/abstract-def analyze/abstract-def
             :analyze/peek-def analyze/peek-def
             :watcher/file-change watcher/file-change
-            :ping db
+            :ping identity
             (do (println "Unknown op:" op) identity))]
-    (f db op-data sid op-data op-time)))
+    (f db op-data sid op-id op-time)))
