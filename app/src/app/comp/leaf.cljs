@@ -30,11 +30,10 @@
           meta? (or (.-metaKey event) (.-ctrlKey event))
           selected? (not= event.target.selectionStart event.target.selectionEnd)
           text (if (> (:at state) (:at leaf)) (:text state) (:text leaf))
-          in-string? (string/starts-with? (:text state) "|")
           text-length (count text)]
       (cond
         (= code keycode/delete) (if (and (= "" text)) (d! :ir/delete-node nil))
-        (and (= code keycode/space) (if in-string? false (not shift?)))
+        (and (= code keycode/space) (not shift?))
           (do (d! :ir/leaf-after nil) (.preventDefault event))
         (= code keycode/enter)
           (do (d! (if shift? :ir/leaf-before :ir/leaf-after) nil) (.preventDefault event))

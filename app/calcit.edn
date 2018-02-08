@@ -9129,26 +9129,6 @@
                }
               }
              }
-             "yD" {
-              :type :expr, :by "root", :at 1516876774538, :id "S11xV4vSM"
-              :data {
-               "T" {:type :leaf, :by "root", :at 1516876776960, :text "in-string?", :id "S11xV4vSMleaf"}
-               "j" {
-                :type :expr, :by "root", :at 1516876777749, :id "rJMlEEPSM"
-                :data {
-                 "T" {:type :leaf, :by "root", :at 1516876783996, :text "string/starts-with?", :id "By-Zg4VvSG"}
-                 "j" {
-                  :type :expr, :by "root", :at 1516876785127, :id "Bketl4NvrG"
-                  :data {
-                   "T" {:type :leaf, :by "root", :at 1516876787312, :text ":text", :id "HJtgEVwrf"}
-                   "j" {:type :leaf, :by "root", :at 1516876788534, :text "state", :id "Sk4seNVvBM"}
-                  }
-                 }
-                 "r" {:type :leaf, :by "root", :at 1516876790193, :text "||", :id "rkbTxVNDHz"}
-                }
-               }
-              }
-             }
              "yT" {
               :type :expr, :id "Sk0UScHtEhq-", :by nil, :at 1504777353661
               :data {
@@ -9225,18 +9205,10 @@
                   }
                  }
                  "f" {
-                  :type :expr, :by "root", :at 1516877103730, :id "B1h4BNwBG"
+                  :type :expr, :by "root", :at 1518103799139, :id "rk-k-6kqUf"
                   :data {
-                   "D" {:type :leaf, :by "root", :at 1516877133797, :text "if", :id "rkguErVwSf"}
-                   "T" {:type :leaf, :by "root", :at 1516876983147, :text "in-string?", :id "B1za3V4DHf"}
-                   "j" {:type :leaf, :by "root", :at 1516877237007, :text "false", :id "H1et4HVwSG"}
-                   "r" {
-                    :type :expr, :by "root", :at 1516877197353, :id "Syr5rVvBz"
-                    :data {
-                     "T" {:type :leaf, :by "root", :at 1516877202444, :text "not", :id "H1SdBVvrf"}
-                     "j" {:type :leaf, :by "root", :at 1516877203985, :text "shift?", :id "SJj9SNDBf"}
-                    }
-                   }
+                   "D" {:type :leaf, :by "root", :at 1518103800732, :text "not", :id "HJxWakcUM"}
+                   "T" {:type :leaf, :by "root", :at 1516877203985, :text "shift?", :id "SJj9SNDBf"}
                   }
                  }
                 }

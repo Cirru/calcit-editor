@@ -1186,9 +1186,9 @@ shadow-cljs-jar@1.1.1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/shadow-cljs-jar/-/shadow-cljs-jar-1.1.1.tgz#5d74383f5aff8fba25a5d00ee3c3ad035a1bd7a3"
 
-shadow-cljs@^2.1.1:
-  version "2.1.1"
-  resolved "https://registry.yarnpkg.com/shadow-cljs/-/shadow-cljs-2.1.1.tgz#675db1351e8ec694ba55ac424d4d32ab38e317f1"
+shadow-cljs@^2.1.4:
+  version "2.1.4"
+  resolved "https://registry.yarnpkg.com/shadow-cljs/-/shadow-cljs-2.1.4.tgz#84fdfd4a59a0d2c0f5784d64ae216dda9bc24cab"
   dependencies:
     babel-core "^6.26.0"
     babel-preset-env "^1.6.0"
