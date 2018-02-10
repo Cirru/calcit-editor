@@ -33,7 +33,7 @@
     "uws": "^9.14.0"
   },
   "devDependencies": {
-    "shadow-cljs": "^2.1.4",
+    "shadow-cljs": "^2.1.5",
     "source-map-support": "^0.5.0",
     "ws": "^4.0.0"
   }

@@ -8,6 +8,7 @@
             [server.util.compile :refer [handle-files! persist!]]
             [server.util.env :refer [pick-configs]]
             [server.util :refer [db->string]]
+            [server.repl :as repl]
             ["chalk" :as chalk]
             ["path" :as path]
             ["express" :as express]
@@ -44,20 +45,18 @@
 (defn dispatch! [op op-data sid]
   (comment .log js/console "Action" (str op) (clj->js op-data) sid)
   (comment .log js/console "Database:" (clj->js @*writer-db))
-  (cond
-    (= op :effect/save-files)
-      (handle-files! @*writer-db *coir-md5 global-configs #(dispatch! %1 %2 sid) true)
-    :else
-      (try
-       (let [new-db (updater
-                     @*writer-db
-                     op
-                     op-data
-                     sid
-                     (.generate shortid)
-                     (.valueOf (js/Date.)))]
-         (reset! *writer-db new-db))
-       (catch js/Error e (println (.red chalk e)) (.error js/console e)))))
+  (let [d2! (fn [op2 op-data2] (dispatch! op2 op-data2 sid))]
+    (try
+     (case op
+       :effect/save-files (handle-files! @*writer-db *coir-md5 global-configs d2! true)
+       :effect/connect-repl! (repl/connect-socket-repl! d2!)
+       :effect/cljs-repl! (repl/try-cljs-repl! d2!)
+       :effect/send-code! (repl/send-raw-code! op-data d2!)
+       :effect/eval-tree! (repl/eval-tree! @*writer-db d2!)
+       (reset!
+        *writer-db
+        (updater @*writer-db op op-data sid (.generate shortid) (.valueOf (js/Date.)))))
+     (catch js/Error e (println (.red chalk e)) (.error js/console e)))))
 
 (defn on-file-change! []
   (let [coir-path (:storage-key global-configs)

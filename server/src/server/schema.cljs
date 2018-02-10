@@ -7,7 +7,13 @@
 
 (def ir-file {:package "app", :files {}})
 
-(def database {:sessions {}, :users {}, :ir ir-file, :saved-files {}, :configs configs})
+(def database
+  {:sessions {},
+   :users {},
+   :ir ir-file,
+   :saved-files {},
+   :configs configs,
+   :repl {:alive? false, :logs {}}})
 
 (def expr {:type :expr, :by nil, :at nil, :data {}, :id nil})
 
@@ -20,6 +26,8 @@
 (def page-data
   {:files {:ns-set #{}, :defs-set #{}, :changed-files {}},
    :editor {:focus [], :others #{}, :expr nil}})
+
+(def repl-log {:id nil, :type nil, :text "", :time nil})
 
 (def router {:name nil, :title nil, :data {}, :router nil})
 
