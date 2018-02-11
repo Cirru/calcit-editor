@@ -41,13 +41,9 @@
     (send-raw-code! (str code "\n") dispatch!)))
 
 (defn try-cljs-repl! [dispatch!]
-  (println "switching to cljs")
-  (let [client @*repl-instance]
+  (let [client @*repl-instance
+        private-api "(shadow.cljs.devtools.cli/from-remote \"ID-X\" \"ID-Y\" [\"cljs-repl\" \"browser\"])"]
     (if (some? client)
       (do
-       (println "try switching cljs...")
-       (.write
-        client
-        (str
-         "(shadow.cljs.devtools.cli/from-remote \"some-uuid\" \"another-uuid\" [\"cljs-repl\" \"browser\"])"
-         "\n"))))))
+       (println "Call shadow-cljs api:" private-api)
+       (.write client (str private-api "\n"))))))

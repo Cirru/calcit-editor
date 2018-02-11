@@ -20,13 +20,13 @@
     (if (:alive? data)
       (div
        {}
-       (<> "connection is alive")
        (div
         {}
         (input
          {:style (merge style/input {:width 400}),
           :value (:code state),
-          :on-input (mutation-> (assoc state :code (:value %e)))})
+          :on-input (mutation-> (assoc state :code (:value %e))),
+          :placeholder "Clojure(Script) code to run"})
         (=< 8 nil)
         (button
          {:style style/button, :on-click (action-> :effect/send-code (:code state))}
@@ -41,13 +41,18 @@
          (<> "Browser")))
        (list->
         :pre
-        {:style {:margin 0, :line-height "1.4em"}}
+        {:style {:margin 0,
+                 :line-height "1.6em",
+                 :max-width "100%",
+                 :overflow :auto,
+                 :font-size 12,
+                 :font-family ui/font-code}}
         (->> (:logs data)
-             (sort-by (fn [[k log]] (:time log)))
+             (sort-by (fn [[k log]] (- 0 (:time log))))
              (map-val (fn [log] (div {} (<> (:text log))))))))
       (div
        {}
-       (<> "no connection.")
+       (<> "No connection.")
        (=< 8 nil)
        (input
         {:style style/input,

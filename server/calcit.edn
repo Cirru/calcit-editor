@@ -2859,13 +2859,6 @@
          "T" {:type :leaf, :by "root", :at 1518284084914, :text "dispatch!", :id "Sy-5Eps38G"}
         }
        }
-       "v" {
-        :type :expr, :by "root", :at 1518284085410, :id "S1f64pj28M"
-        :data {
-         "T" {:type :leaf, :by "root", :at 1518284088257, :text "println", :id "S1f64pj28Mleaf"}
-         "j" {:type :leaf, :by "root", :at 1518284094440, :text "|switching to cljs", :id "rkLgBTjhLM"}
-        }
-       }
        "x" {
         :type :expr, :by "root", :at 1518284804735, :id "Syg6Ze33Iz"
         :data {
@@ -2878,6 +2871,13 @@
             :data {
              "T" {:type :leaf, :by "root", :at 1518284806574, :text "client", :id "r1NTWx22LM"}
              "j" {:type :leaf, :by "root", :at 1518284814157, :text "@*repl-instance", :id "Skx1fl3nIz"}
+            }
+           }
+           "j" {
+            :type :expr, :by "root", :at 1518367960682, :id "ByWkHlCUz"
+            :data {
+             "T" {:type :leaf, :by "root", :at 1518367964898, :text "private-api", :id "ByWkHlCUzleaf"}
+             "j" {:type :leaf, :by "root", :at 1518368022769, :text "|(shadow.cljs.devtools.cli/from-remote \"ID-X\" \"ID-Y\" [\"cljs-repl\" \"browser\"])", :id "rkQSJrg0Lz"}
             }
            }
           }
@@ -2901,7 +2901,8 @@
               :type :expr, :by "root", :at 1518284896130, :id "Bkfuwen3LM"
               :data {
                "T" {:type :leaf, :by "root", :at 1518284896802, :text "println", :id "HkWOwe3nUz"}
-               "j" {:type :leaf, :by "root", :at 1518284914510, :text "|try switching cljs...", :id "SJQFvl3nLf"}
+               "j" {:type :leaf, :by "root", :at 1518368051838, :text "|Call shadow-cljs api:", :id "SJQFvl3nLf"}
+               "r" {:type :leaf, :by "root", :at 1518367983268, :text "private-api", :id "HJHxSeRLM"}
               }
              }
              "T" {
@@ -2913,7 +2914,7 @@
                 :type :expr, :by "root", :at 1518284830857, :id "rkPXlhnLM"
                 :data {
                  "T" {:type :leaf, :by "root", :at 1518284831321, :text "str", :id "rkVLmx23Uz"}
-                 "j" {:type :leaf, :by "root", :at 1518284840788, :text "|(shadow.cljs.devtools.cli/from-remote \"some-uuid\" \"another-uuid\" [\"cljs-repl\" \"browser\"])", :id "ry7vXl2hIz"}
+                 "j" {:type :leaf, :by "root", :at 1518367956608, :text "private-api", :id "ry7vXl2hIz"}
                  "v" {:type :leaf, :by "root", :at 1518284889033, :text "\\newline", :id "HyWQSlh3If"}
                 }
                }
