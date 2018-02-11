@@ -2372,6 +2372,31 @@
                  }
                 }
                }
+               "r" {
+                :type :expr, :by "root", :at 1518332125480, :id "rJlSJYwT8G"
+                :data {
+                 "T" {:type :leaf, :by "root", :at 1518332126187, :text "fn", :id "rJlSJYwT8Gleaf"}
+                 "j" {
+                  :type :expr, :by "root", :at 1518332126569, :id "S1vytDaUf"
+                  :data {}
+                 }
+                 "r" {
+                  :type :expr, :by "root", :at 1518332127616, :id "HkuyKPaLf"
+                  :data {
+                   "T" {:type :leaf, :by "root", :at 1518332129425, :text "println", :id "HkuyKPaLfleaf"}
+                   "j" {:type :leaf, :by "root", :at 1518332139160, :text "|Socket REPL created!", :id "ry5yFDpUM"}
+                  }
+                 }
+                 "v" {
+                  :type :expr, :by "root", :at 1518332143208, :id "r1xwlYPp8M"
+                  :data {
+                   "T" {:type :leaf, :by "root", :at 1518332146123, :text "dispatch!", :id "r1xwlYPp8Mleaf"}
+                   "j" {:type :leaf, :by "root", :at 1518332154760, :text ":repl/start", :id "rJGclKw6Iz"}
+                   "r" {:type :leaf, :by "root", :at 1518332158097, :text "nil", :id "SJbXWFwpIG"}
+                  }
+                 }
+                }
+               }
               }
              }
             }
@@ -2425,7 +2450,7 @@
           :data {
            "T" {:type :leaf, :by "root", :at 1518284707969, :text ".on", :id "BkljsyhhLzleaf"}
            "j" {:type :leaf, :by "root", :at 1518284709209, :text "client", :id "B1psynnIG"}
-           "r" {:type :leaf, :by "root", :at 1518284716299, :text "|exit", :id "HkL6jy33LM"}
+           "r" {:type :leaf, :by "root", :at 1518332110433, :text "|end", :id "HkL6jy33LM"}
            "v" {
             :type :expr, :by "root", :at 1518284717068, :id "SkgS3Jh2Lz"
             :data {
@@ -2434,6 +2459,13 @@
               :type :expr, :by "root", :at 1518284718084, :id "B1eU3k328z"
               :data {
                "T" {:type :leaf, :by "root", :at 1518284719490, :text "event", :id "SJw213hIG"}
+              }
+             }
+             "l" {
+              :type :expr, :by "root", :at 1518332106839, :id "rkXRODpLG"
+              :data {
+               "T" {:type :leaf, :by "root", :at 1518332108856, :text "println", :id "rkXRODpLGleaf"}
+               "j" {:type :leaf, :by "root", :at 1518332141634, :text "|Socket REPL ended!", :id "Hku0_wp8z"}
               }
              }
              "n" {

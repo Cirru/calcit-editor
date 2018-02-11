@@ -3,7 +3,7 @@
   (:require [hsl.core :refer [hsl]]
             [respo-ui.core :as ui]
             [respo-ui.colors :as colors]
-            [respo.macros :refer [defcomp <> span div a]]
+            [respo.macros :refer [defcomp action-> <> span div a]]
             [respo.comp.space :refer [=<]]
             [app.util.dom :refer [focus-search!]]))
 
@@ -49,6 +49,7 @@
    (render-entry "Files" :files router-name on-files)
    (render-entry "Editor" :editor router-name on-editor)
    (render-entry "Search" :search router-name on-search)
+   (render-entry "REPL" :repl router-name (action-> :router/change {:name :repl}))
    (render-entry (str "Members:" (:members-count stats)) :members router-name on-members)
    (a
     {:inner-text "Shortcuts",
