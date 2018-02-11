@@ -7,7 +7,8 @@
             [server.updater.writer :as writer]
             [server.updater.notify :as notify]
             [server.updater.analyze :as analyze]
-            [server.updater.watcher :as watcher]))
+            [server.updater.watcher :as watcher]
+            [server.updater.repl :as repl]))
 
 (defn updater [db op op-data sid op-id op-time]
   (let [f (case op
@@ -70,6 +71,11 @@
             :analyze/abstract-def analyze/abstract-def
             :analyze/peek-def analyze/peek-def
             :watcher/file-change watcher/file-change
+            :repl/start repl/on-start
+            :repl/log repl/on-log
+            :repl/error repl/on-error
+            :repl/exit repl/on-exit
+            :repl/clear-logs repl/clear-logs
             :ping identity
             (do (println "Unknown op:" op) identity))]
     (f db op-data sid op-id op-time)))

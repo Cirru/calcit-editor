@@ -3,10 +3,11 @@
 
 (defonce *repl-instance (atom nil))
 
-(defn connect-socket-repl! [dispatch!]
+(defn connect-socket-repl! [port dispatch!]
+  (println)
   (let [client (.createConnection
                 net
-                (clj->js {:point 51053})
+                (clj->js {:port (js/parseInt port)})
                 (fn [] (println "Socket REPL created!") (dispatch! :repl/start nil)))]
     (reset! *repl-instance client)
     (.on client "data" (fn [data] (dispatch! :repl/log (.toString data))))
@@ -17,7 +18,10 @@
        (println "Socket REPL ended!")
        (reset! *repl-instance nil)
        (dispatch! :repl/exit)))
-    (.on client "error" (fn [event] (dispatch! :repl/error (pr-str event))))))
+    (.on
+     client
+     "error"
+     (fn [event] (.error js/console event) (dispatch! :repl/error (pr-str event))))))
 
 (defn eval-tree! [db dispatch!] (println "eval tree"))
 

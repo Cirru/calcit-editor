@@ -49,7 +49,12 @@
               (map (fn [entry] (let [[k xs] entry] [k (cirru->tree xs author timestamp)])))
               (into {}))))))
 
-(defn db->string [db] (write-edn (-> db (assoc :sessions {}) (assoc :saved-files {}))))
+(defn db->string [db]
+  (write-edn
+   (-> db
+       (assoc :sessions {})
+       (assoc :saved-files {})
+       (assoc :repl {:alive? false, :logs {}}))))
 
 (defn expr? [x] (= :expr (:type x)))
 

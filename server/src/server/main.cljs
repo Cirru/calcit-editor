@@ -27,6 +27,7 @@
               (read-string (fs/readFileSync filepath "utf8"))
               (do (println (.yellow chalk "Using default schema.")) schema/database))]
      (-> db
+         (assoc :repl {:alive? false, :logs {}})
          (assoc :saved-files (get-in db [:ir :files]))
          (update :configs (fn [configs] (or configs schema/configs)))))))
 
@@ -49,10 +50,10 @@
     (try
      (case op
        :effect/save-files (handle-files! @*writer-db *coir-md5 global-configs d2! true)
-       :effect/connect-repl! (repl/connect-socket-repl! d2!)
-       :effect/cljs-repl! (repl/try-cljs-repl! d2!)
-       :effect/send-code! (repl/send-raw-code! op-data d2!)
-       :effect/eval-tree! (repl/eval-tree! @*writer-db d2!)
+       :effect/connect-repl (repl/connect-socket-repl! op-data d2!)
+       :effect/cljs-repl (repl/try-cljs-repl! d2!)
+       :effect/send-code (repl/send-raw-code! op-data d2!)
+       :effect/eval-tree (repl/eval-tree! @*writer-db d2!)
        (reset!
         *writer-db
         (updater @*writer-db op op-data sid (.generate shortid) (.valueOf (js/Date.)))))

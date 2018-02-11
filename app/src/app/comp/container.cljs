@@ -61,7 +61,7 @@
            :members (comp-page-members (:data router) (:id session))
            :search (cursor-> :search comp-search states (:data router))
            :watching (cursor-> :watching comp-watching states (:data router) theme)
-           :repl (cursor-> :repl comp-repl-page states (:data router))
+           :repl (cursor-> :repl comp-repl-page states router)
            (div {} (<> span (str "404 page: " (pr-str router)) nil)))
          (if (= :watching (:name router))
            (cursor-> :watching comp-watching states (:data router) theme)
