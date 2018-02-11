@@ -53,7 +53,7 @@
        :effect/connect-repl (repl/connect-socket-repl! op-data d2!)
        :effect/cljs-repl (repl/try-cljs-repl! d2!)
        :effect/send-code (repl/send-raw-code! op-data d2!)
-       :effect/eval-tree (repl/eval-tree! @*writer-db d2!)
+       :effect/eval-tree (repl/eval-tree! @*writer-db d2! sid)
        (reset!
         *writer-db
         (updater @*writer-db op op-data sid (.generate shortid) (.valueOf (js/Date.)))))

@@ -1,5 +1,8 @@
 
-(ns server.repl (:require ["net" :as net]))
+(ns server.repl
+  (:require ["net" :as net]
+            [server.util :refer [bookmark->path tree->cirru]]
+            [cirru-sepal.core :as sepal]))
 
 (defonce *repl-instance (atom nil))
 
@@ -23,10 +26,19 @@
      "error"
      (fn [event] (.error js/console event) (dispatch! :repl/error (pr-str event))))))
 
-(defn eval-tree! [db dispatch!] (println "eval tree"))
-
 (defn send-raw-code! [code dispatch!]
   (let [client @*repl-instance] (if (some? client) (do (.write client (str code "\n"))))))
+
+(defn eval-tree! [db dispatch! sid]
+  (let [writer (get-in db [:sessions sid :writer])
+        bookmark (get (:stack writer) (:pointer writer))
+        data-path (bookmark->path bookmark)
+        cirru-piece (tree->cirru (get-in db data-path))
+        code (if (string? cirru-piece)
+               (str "(println " (pr-str (sepal/transform-x cirru-piece)) ")")
+               (sepal/make-string cirru-piece))]
+    (println "code to eval:" code)
+    (send-raw-code! (str code "\n") dispatch!)))
 
 (defn try-cljs-repl! [dispatch!]
   (println "switching to cljs")

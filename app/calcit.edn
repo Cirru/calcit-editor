@@ -27181,7 +27181,21 @@
              "j" {
               :type :expr, :id "BJIzztHFV2qZ", :by nil, :at 1504777353661
               :data {
-               "T" {:type :leaf, :text "do", :id "SkwzMtBYN2qb", :by "root", :at 1504777353661}
+               "T" {:type :leaf, :text "if", :id "SkwzMtBYN2qb", :by "root", :at 1518366250434}
+               "b" {:type :leaf, :by "root", :at 1518366251830, :text "shift?", :id "H1mEAkRUf"}
+               "f" {
+                :type :expr, :by "root", :at 1518366437756, :id "HJRJyxCIz"
+                :data {
+                 "D" {:type :leaf, :by "root", :at 1518366438602, :text "do", :id "SJeCy1lCUf"}
+                 "T" {
+                  :type :expr, :by "root", :at 1518366252655, :id "H1HERk0Uf"
+                  :data {
+                   "T" {:type :leaf, :by "root", :at 1518366254418, :text "dispatch!", :id "ryl4VCkC8z"}
+                   "j" {:type :leaf, :by "root", :at 1518366270431, :text ":effect/eval-tree", :id "HkwERkCLM"}
+                  }
+                 }
+                }
+               }
                "j" {
                 :type :expr, :id "HJOGftSKV2q-", :by nil, :at 1504777353661
                 :data {
