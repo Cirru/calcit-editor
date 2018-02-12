@@ -39,9 +39,5 @@
     (send-raw-code! (str code "\n") dispatch!)))
 
 (defn try-cljs-repl! [dispatch!]
-  (let [client @*repl-instance
-        private-api "(shadow.cljs.devtools.cli/from-remote \"ID-X\" \"ID-Y\" [\"cljs-repl\" \"browser\"])"]
-    (if (some? client)
-      (do
-       (println "Call shadow-cljs api:" private-api)
-       (.write client (str private-api "\n"))))))
+  (let [client @*repl-instance, repl-api "(shadow.cljs.devtools.api/repl :browser)"]
+    (if (some? client) (do (println repl-api) (.write client (str repl-api "\n"))))))

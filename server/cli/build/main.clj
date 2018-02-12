@@ -18,5 +18,6 @@
 
 (defn assets []
   (sh! "mv dist/app/favored-fonts tmp")
+  (sh! "rm -r dist/app")
   (sh! "cp -r ../app/dist dist/app")
   (sh! "mv tmp dist/app/favored-fonts"))

@@ -19170,7 +19170,7 @@
                     :type :expr, :by "root", :at 1518365358621, :id "S1wn51R8f"
                     :data {
                      "T" {:type :leaf, :by "root", :at 1518365359528, :text "<>", :id "S1wn51R8fleaf"}
-                     "j" {:type :leaf, :by "root", :at 1518365846226, :text "|Browser", :id "Skxu2qkCIG"}
+                     "j" {:type :leaf, :by "root", :at 1518455146247, :text "|Connect to runtime", :id "Skxu2qkCIG"}
                     }
                    }
                   }

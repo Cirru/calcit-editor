@@ -2849,8 +2849,8 @@
            "j" {
             :type :expr, :by "root", :at 1518367960682, :id "ByWkHlCUz"
             :data {
-             "T" {:type :leaf, :by "root", :at 1518367964898, :text "private-api", :id "ByWkHlCUzleaf"}
-             "j" {:type :leaf, :by "root", :at 1518368022769, :text "|(shadow.cljs.devtools.cli/from-remote \"ID-X\" \"ID-Y\" [\"cljs-repl\" \"browser\"])", :id "rkQSJrg0Lz"}
+             "T" {:type :leaf, :by "root", :at 1518455295319, :text "repl-api", :id "ByWkHlCUzleaf"}
+             "j" {:type :leaf, :by "root", :at 1518454806251, :text "|(shadow.cljs.devtools.api/repl :browser)", :id "rkQSJrg0Lz"}
             }
            }
           }
@@ -2874,8 +2874,7 @@
               :type :expr, :by "root", :at 1518284896130, :id "Bkfuwen3LM"
               :data {
                "T" {:type :leaf, :by "root", :at 1518284896802, :text "println", :id "HkWOwe3nUz"}
-               "j" {:type :leaf, :by "root", :at 1518368051838, :text "|Call shadow-cljs api:", :id "SJQFvl3nLf"}
-               "r" {:type :leaf, :by "root", :at 1518367983268, :text "private-api", :id "HJHxSeRLM"}
+               "r" {:type :leaf, :by "root", :at 1518455302555, :text "repl-api", :id "HJHxSeRLM"}
               }
              }
              "T" {
@@ -2887,7 +2886,7 @@
                 :type :expr, :by "root", :at 1518284830857, :id "rkPXlhnLM"
                 :data {
                  "T" {:type :leaf, :by "root", :at 1518284831321, :text "str", :id "rkVLmx23Uz"}
-                 "j" {:type :leaf, :by "root", :at 1518367956608, :text "private-api", :id "ry7vXl2hIz"}
+                 "j" {:type :leaf, :by "root", :at 1518455297303, :text "repl-api", :id "ry7vXl2hIz"}
                  "v" {:type :leaf, :by "root", :at 1518284889033, :text "\\newline", :id "HyWQSlh3If"}
                 }
                }

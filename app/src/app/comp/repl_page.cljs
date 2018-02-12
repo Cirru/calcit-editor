@@ -43,7 +43,7 @@
         (=< 8 nil)
         (button
          {:style style/button, :on-click (action-> :effect/cljs-repl nil)}
-         (<> "Browser")))
+         (<> "Connect to runtime")))
        (list->
         :pre
         {:style {:margin 0,
