@@ -108,11 +108,15 @@
 
 (defn pick-second-key [m] (first (rest (sort (keys m)))))
 
-(defn push-info [op-id text]
-  (fn [xs] (conj xs (merge schema/notification {:id op-id, :kind :info, :text text}))))
+(defn push-info [op-id op-time text]
+  (fn [xs]
+    (conj xs (merge schema/notification {:id op-id, :kind :info, :text text, :time op-time}))))
 
-(defn push-warning [op-id text]
-  (fn [xs] (conj xs (merge schema/notification {:id op-id, :kind :warning, :text text}))))
+(defn push-warning [op-id op-time text]
+  (fn [xs]
+    (conj
+     xs
+     (merge schema/notification {:id op-id, :kind :warning, :text text, :time op-time}))))
 
 (defn same-buffer? [x y]
   (and (= (:kind x) (:kind y)) (= (:ns x) (:ns y)) (= (:extra x) (:extra y))))

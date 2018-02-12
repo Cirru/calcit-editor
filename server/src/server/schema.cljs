@@ -21,7 +21,7 @@
 
 (def leaf {:type :leaf, :by nil, :at nil, :text "", :id nil})
 
-(def notification {:id nil, :kind nil, :text nil})
+(def notification {:id nil, :kind nil, :text nil, :time nil})
 
 (def page-data
   {:files {:ns-set #{}, :defs-set #{}, :changed-files {}},

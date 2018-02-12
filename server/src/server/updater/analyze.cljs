@@ -27,7 +27,7 @@
       (-> db
           (update-in
            [:sessions sid :notifications]
-           (push-warning op-id (str def-text " already defined!")))
+           (push-warning op-id op-time (str def-text " already defined!")))
           (update-in [:sessions sid :writer] (push-bookmark new-bookmark)))
       (let [target-path (->> (:focus bookmark) (mapcat (fn [x] [:data x])))
             target-expr (-> files
@@ -78,7 +78,8 @@
                        [:ir :files (:ns new-bookmark) :defs (:extra new-bookmark)]))
         user-id (get-in db [:sessions sid :user-id])
         warn (fn [x]
-               (-> db (update-in [:sessions sid :notifications] (push-warning op-id x))))]
+               (-> db
+                   (update-in [:sessions sid :notifications] (push-warning op-id op-time x))))]
     (comment println "deps" deps-info def-info new-bookmark def-existed?)
     (if (some? new-bookmark)
       (if (string/starts-with? (:ns new-bookmark) (str pkg "."))
@@ -118,7 +119,8 @@
                        db
                        [:ir :files (:ns new-bookmark) :defs (:extra new-bookmark)]))
         user-id (get-in db [:sessions sid :user-id])
-        warn (fn [x] (update-in db [:sessions sid :notifications] (push-warning op-id x)))]
+        warn (fn [x]
+               (update-in db [:sessions sid :notifications] (push-warning op-id op-time x)))]
     (comment println "deps" deps-info def-info new-bookmark def-existed?)
     (if (some? new-bookmark)
       (if (string/starts-with? (:ns new-bookmark) (str pkg "."))

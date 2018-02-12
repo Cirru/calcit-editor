@@ -28,5 +28,7 @@
     "http-server": "^0.11.1",
     "shadow-cljs": "^2.1.5"
   },
-  "dependencies": {}
+  "dependencies": {
+    "luxon": "^0.4.0"
+  }
 }

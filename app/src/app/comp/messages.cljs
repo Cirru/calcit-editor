@@ -7,7 +7,8 @@
             [respo.macros :refer [defcomp list-> <> span div pre input button a]]
             [respo.comp.space :refer [=<]]
             [app.util :as util]
-            [app.style :as style]))
+            [app.style :as style]
+            ["luxon" :refer [DateTime]]))
 
 (defn on-clear [e d! m!] (d! :notify/clear nil))
 
@@ -19,7 +20,8 @@
    :font-family "Hind",
    :background-color (hsl 0 0 0 0.7),
    :border (str "1px solid " (hsl 0 0 100 0.2)),
-   :padding "0 8px"})
+   :padding "0 8px",
+   :transition-duration "200ms"})
 
 (defcomp
  comp-messages
@@ -42,4 +44,9 @@
                         :info (hsl 240 80 80)
                         (hsl 120 80 80))}),
              :on {:click on-clear}}
-            (<> span (:text msg) nil))])))))
+            (.log js/console DateTime)
+            (<>
+             (-> DateTime (.fromMillis (:time msg)) (.toFormat "mm:ss"))
+             {:font-size 12, :font-family ui/font-code, :opacity 0.7})
+            (=< 8 nil)
+            (<> (:text msg) nil))])))))

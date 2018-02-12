@@ -191,7 +191,7 @@
                       (update
                        session
                        :notifications
-                       (push-info op-id (str user-name " saved files!")))])))
+                       (push-info op-id op-time (str user-name " saved files!")))])))
                 (into {})))))))
 
 (defn select [db op-data session-id op-id op-time]
