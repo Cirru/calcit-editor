@@ -34,9 +34,7 @@
         bookmark (get (:stack writer) (:pointer writer))
         data-path (bookmark->path bookmark)
         cirru-piece (tree->cirru (get-in db data-path))
-        code (if (string? cirru-piece)
-               (str "(println " (pr-str (sepal/transform-x cirru-piece)) ")")
-               (sepal/make-string cirru-piece))]
+        code (sepal/make-string ["println" cirru-piece])]
     (println "code to eval:" code)
     (send-raw-code! (str code "\n") dispatch!)))
 

@@ -9,7 +9,8 @@
             [respo.comp.space :refer [=<]]
             [app.util.dom :refer [focus-search!]]
             [app.style :as style]
-            [respo.util.list :refer [map-val]]))
+            [respo.util.list :refer [map-val]]
+            [keycode.core :as keycode]))
 
 (defcomp
  comp-repl-page
@@ -26,10 +27,14 @@
          {:style (merge style/input {:width 400}),
           :value (:code state),
           :on-input (mutation-> (assoc state :code (:value %e))),
+          :on-keydown (fn [e d! m!]
+            (if (= keycode/return (:key-code e))
+              (d! :effect/send-code (str "(println " (:code state) ")")))),
           :placeholder "Clojure(Script) code to run"})
         (=< 8 nil)
         (button
-         {:style style/button, :on-click (action-> :effect/send-code (:code state))}
+         {:style style/button,
+          :on-click (action-> :effect/send-code (str "(println " (:code state) ")"))}
          (<> "Run"))
         (=< 8 nil)
         (button

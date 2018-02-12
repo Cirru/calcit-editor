@@ -2711,42 +2711,15 @@
             :data {
              "T" {:type :leaf, :by "root", :at 1518366908967, :text "code", :id "SyWVTgxCUfleaf"}
              "j" {
-              :type :expr, :by "root", :at 1518367391738, :id "rkuszlCUG"
+              :type :expr, :by "root", :at 1518366910120, :id "S1Sf3qCLM"
               :data {
-               "D" {:type :leaf, :by "root", :at 1518367395019, :text "if", :id "B1lOjGg0IM"}
-               "L" {
-                :type :expr, :by "root", :at 1518367395906, :id "rJx3ofxRIf"
+               "T" {:type :leaf, :by "root", :at 1518367137707, :text "sepal/make-string", :id "SyEHTexRLf"}
+               "j" {
+                :type :expr, :by "root", :at 1518410755740, :id "S1nb2qALf"
                 :data {
-                 "T" {:type :leaf, :by "root", :at 1518367398812, :text "string?", :id "HynsGeALG"}
-                 "j" {:type :leaf, :by "root", :at 1518367403708, :text "cirru-piece", :id "Bye2ze0Uf"}
-                }
-               }
-               "R" {
-                :type :expr, :by "root", :at 1518367075397, :id "r1zCzxAIf"
-                :data {
-                 "D" {:type :leaf, :by "root", :at 1518367076172, :text "str", :id "BknvWeCLG"}
-                 "L" {:type :leaf, :by "root", :at 1518367293843, :text "|(println ", :id "HyxzHGlALf"}
-                 "T" {
-                  :type :expr, :by "root", :at 1518367475254, :id "H1jgXeC8f"
-                  :data {
-                   "D" {:type :leaf, :by "root", :at 1518367477235, :text "pr-str", :id "Hy2xmgCUG"}
-                   "T" {
-                    :type :expr, :by "root", :at 1518367404098, :id "S1gBCMxA8z"
-                    :data {
-                     "T" {:type :leaf, :by "root", :at 1518367407673, :text "sepal/transform-x", :id "HJfE3Ge0Izleaf"}
-                     "j" {:type :leaf, :by "root", :at 1518367410494, :text "cirru-piece", :id "Hye_hfgRLM"}
-                    }
-                   }
-                  }
-                 }
-                 "b" {:type :leaf, :by "root", :at 1518367297577, :text "|)", :id "S1dHGgA8G"}
-                }
-               }
-               "T" {
-                :type :expr, :by "root", :at 1518366910120, :id "HybWuZe0LG"
-                :data {
-                 "T" {:type :leaf, :by "root", :at 1518367137707, :text "sepal/make-string", :id "SyEHTexRLf"}
-                 "j" {:type :leaf, :by "root", :at 1518366914427, :text "cirru-piece", :id "HyFTxgALz"}
+                 "D" {:type :leaf, :by "root", :at 1518410756750, :text "[]", :id "H1lnWhc0LG"}
+                 "L" {:type :leaf, :by "root", :at 1518410760187, :text "|println", :id "H1Z6b2q0UG"}
+                 "T" {:type :leaf, :by "root", :at 1518366914427, :text "cirru-piece", :id "HyFTxgALz"}
                 }
                }
               }
@@ -23893,4 +23866,8 @@
  }
  :saved-files {}
  :configs {:storage-key "calcit.edn", :extension ".cljs", :output "src", :port 6002}
+ :repl {
+  :alive? false
+  :logs {}
+ }
 }
