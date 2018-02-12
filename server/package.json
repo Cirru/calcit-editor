@@ -7,11 +7,8 @@
     "ce": "dist/main.js"
   },
   "scripts": {
-    "tiye": "rsync -r target/main.js tiye.me:repo/Cirru/calcit-editor-server/",
-    "compile": "shadow-cljs compile app",
     "build": "shadow-cljs release app",
-    "watch": "shadow-cljs watch app",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "repl": "rlwrap shadow-cljs clj-repl"
   },
   "repository": {
     "type": "git",
