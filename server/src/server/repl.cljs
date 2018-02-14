@@ -26,6 +26,9 @@
      "error"
      (fn [event] (.error js/console event) (dispatch! :repl/error (pr-str event))))))
 
+(defn end-repl! [dispatch!]
+  (let [client @*repl-instance] (if (some? client) (do (.end client)))))
+
 (defn send-raw-code! [code dispatch!]
   (let [client @*repl-instance] (if (some? client) (do (.write client (str code "\n"))))))
 
@@ -38,6 +41,6 @@
     (println "code to eval:" code)
     (send-raw-code! (str code "\n") dispatch!)))
 
-(defn try-cljs-repl! [dispatch!]
-  (let [client @*repl-instance, repl-api "(shadow.cljs.devtools.api/repl :browser)"]
+(defn try-cljs-repl! [dispatch! build-id]
+  (let [client @*repl-instance, repl-api (str "(shadow.cljs.devtools.api/repl " build-id ")")]
     (if (some? client) (do (println repl-api) (.write client (str repl-api "\n"))))))

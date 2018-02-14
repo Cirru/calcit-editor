@@ -15,7 +15,8 @@
 (defcomp
  comp-repl-page
  (states router)
- (let [data (:data router), state (or (:data states) {:port 5900, :code ""})]
+ (let [data (:data router)
+       state (or (:data states) {:port 5900, :code "", :build-id "browser"})]
    (div
     {:style {:padding "0 16px"}}
     (if (:alive? data)
@@ -41,9 +42,19 @@
          {:style style/button, :on-click (action-> :repl/clear-logs nil)}
          (<> "Clear"))
         (=< 8 nil)
+        (input
+         {:style (merge style/input {:width 120}),
+          :value (:build-id state),
+          :on-input (mutation-> (assoc state :build-id (:value %e))),
+          :placeholder "build-id"})
         (button
-         {:style style/button, :on-click (action-> :effect/cljs-repl nil)}
-         (<> "Connect to runtime")))
+         {:style style/button,
+          :on-click (action-> :effect/cljs-repl (keyword (:build-id state)))}
+         (<> "Connect to runtime"))
+        (=< 8 nil)
+        (button
+         {:style (merge style/button), :on-click (action-> :effect/end-repl nil)}
+         (<> "Exit")))
        (list->
         :pre
         {:style {:margin 0,

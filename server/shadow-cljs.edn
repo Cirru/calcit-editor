@@ -4,7 +4,7 @@
  :dependencies [[mvc-works/hsl          "0.1.2"]
                 [mvc-works/verbosely    "0.1.2"]
                 [cirru/sepal            "0.2.2"]
-                [cirru/bisection-key    "0.1.4"]
+                [cirru/bisection-key    "0.1.5"]
                 [cirru/favored-edn      "0.1.1"]
                 [cumulo/recollect       "0.4.3"]]
  :builds {:app {:target :node-script
