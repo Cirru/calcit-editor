@@ -6,7 +6,7 @@
             [respo-ui.colors :as colors]
             [respo.macros :refer [defcomp cursor-> <> span div input pre a]]
             [respo.comp.space :refer [=<]]
-            [app.util.keycode :as keycode]
+            [keycode.core :as keycode]
             [app.util :as util]
             [app.style :as style]
             [app.comp.expr :refer [comp-expr]]

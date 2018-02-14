@@ -7,7 +7,7 @@
             [respo.macros :refer [defcomp list-> <> span div input a]]
             [respo.comp.space :refer [=<]]
             [polyfill.core :refer [text-width*]]
-            [app.util.keycode :as keycode]
+            [keycode.core :as keycode]
             [app.util :as util]
             [app.style :as style]
             [app.util.shortcuts :refer [on-window-keydown]]))
@@ -23,14 +23,14 @@
   (fn [e d! m!]
     (let [code (:key-code e), event (:original-event e)]
       (cond
-        (= keycode/enter code)
+        (= keycode/return code)
           (let [target (get (vec candidates) (:selection state))]
             (if (some? target) (do (d! :writer/select target) (m! {:query "", :position 0}))))
         (= keycode/up code)
           (do
            (.preventDefault event)
            (if (pos? (:selection state)) (m! (update state :selection dec))))
-        (= keycode/esc code)
+        (= keycode/escape code)
           (do (d! :router/change {:name :editor}) (m! {:query "", :position 0}))
         (= keycode/down code)
           (do

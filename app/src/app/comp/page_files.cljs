@@ -9,7 +9,7 @@
             [respo.comp.space :refer [=<]]
             [app.style :as style]
             [app.comp.changed-files :refer [comp-changed-files]]
-            [app.util.keycode :as keycode]
+            [keycode.core :as keycode]
             [app.comp.file-replacer :refer [comp-file-replacer]]
             [app.util.shortcuts :refer [on-window-keydown]]))
 
@@ -30,14 +30,14 @@
 (defn on-keydown-def [state]
   (fn [e d! m!]
     (let [text (string/trim (:def-text state)), code (:key-code e)]
-      (if (and (= code keycode/enter) (not (string/blank? text)))
+      (if (and (= code keycode/return) (not (string/blank? text)))
         (do (d! :ir/add-def text) (m! (assoc state :def-text "")))
         (on-window-keydown (:event e) d!)))))
 
 (defn on-keydown-ns [state]
   (fn [e d! m!]
     (let [text (string/trim (:ns-text state)), code (:key-code e)]
-      (if (and (= code keycode/enter) (not (string/blank? text)))
+      (if (and (= code keycode/return) (not (string/blank? text)))
         (cond
           (string/starts-with? text "mv ")
             (let [[_ from to] (string/split text " ")]

@@ -7,7 +7,7 @@
             [respo.macros :refer [defcomp <> span div input textarea a]]
             [respo.comp.space :refer [=<]]
             [polyfill.core :refer [text-width*]]
-            [app.util.keycode :as keycode]
+            [keycode.core :as keycode]
             [app.util :as util]
             [app.util.shortcuts :refer [on-window-keydown]]
             [app.theme :refer [decide-leaf-theme]]
@@ -32,10 +32,10 @@
           text (if (> (:at state) (:at leaf)) (:text state) (:text leaf))
           text-length (count text)]
       (cond
-        (= code keycode/delete) (if (and (= "" text)) (d! :ir/delete-node nil))
+        (= code keycode/backspace) (if (and (= "" text)) (d! :ir/delete-node nil))
         (and (= code keycode/space) (not shift?))
           (do (d! :ir/leaf-after nil) (.preventDefault event))
-        (= code keycode/enter)
+        (= code keycode/return)
           (do (d! (if shift? :ir/leaf-before :ir/leaf-after) nil) (.preventDefault event))
         (= code keycode/tab)
           (do (d! (if shift? :ir/unindent-leaf :ir/indent) nil) (.preventDefault event))
@@ -54,6 +54,8 @@
           (do
            (.preventDefault event)
            (d! :analyze/goto-def {:text (:text leaf), :forced? shift?}))
+        (and meta? (= code keycode/slash))
+          (do (.open js/window (str "https://clojuredocs.org/search?q=" (:text leaf))))
         :else (do (comment println "Keydown leaf" code) (on-window-keydown event d!))))))
 
 (defcomp

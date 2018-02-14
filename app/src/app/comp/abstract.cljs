@@ -9,17 +9,17 @@
             [respo.comp.space :refer [=<]]
             [app.style :as style]
             [app.comp.modal :refer [comp-modal]]
-            [app.util.keycode :as keycode]))
+            [keycode.core :as keycode]))
 
 (defn on-input [e d! m!] (m! (:value e)))
 
 (defn on-keydown [state close-modal!]
   (fn [e d! m!]
     (cond
-      (= keycode/enter (:key-code e))
+      (= keycode/return (:key-code e))
         (if (not (string/blank? state))
           (do (d! :analyze/abstract-def state) (m! nil) (close-modal! m!)))
-      (= (:keycode e) keycode/esc) (close-modal! m!))))
+      (= (:keycode e) keycode/escape) (close-modal! m!))))
 
 (defn on-submit [state close-modal!]
   (fn [e d! m!]

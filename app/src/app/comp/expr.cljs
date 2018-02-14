@@ -6,7 +6,7 @@
             [respo-ui.colors :as colors]
             [respo.macros :refer [defcomp list-> cursor-> <> span div a]]
             [respo.comp.space :refer [=<]]
-            [app.util.keycode :as keycode]
+            [keycode.core :as keycode]
             [app.comp.leaf :refer [comp-leaf]]
             [app.util :refer [coord-contains? simple? leaf? expr?]]
             [app.util.shortcuts :refer [on-window-keydown]]
@@ -21,12 +21,12 @@
           meta? (or (.-metaKey event) (.-ctrlKey event))
           code (:key-code e)]
       (cond
-        (and meta? (= code keycode/enter)) (d! :ir/prepend-leaf nil)
-        (= code keycode/enter)
+        (and meta? (= code keycode/return)) (d! :ir/prepend-leaf nil)
+        (= code keycode/return)
           (if (empty? coord)
             (d! :ir/prepend-leaf nil)
             (d! (if shift? :ir/expr-before :ir/expr-after) nil))
-        (= code keycode/delete) (d! :ir/delete-node nil)
+        (= code keycode/backspace) (d! :ir/delete-node nil)
         (= code keycode/space)
           (do (d! (if shift? :ir/leaf-before :ir/leaf-after) nil) (.preventDefault event))
         (= code keycode/tab)

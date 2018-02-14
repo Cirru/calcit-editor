@@ -1,6 +1,6 @@
 
 (ns app.util.shortcuts
-  (:require [app.util.keycode :as keycode] [app.util.dom :refer [focus-search!]]))
+  (:require [keycode.core :as keycode] [app.util.dom :refer [focus-search!]]))
 
 (defn on-window-keydown [event dispatch!]
   (let [meta? (or (.-metaKey event) (.-ctrlKey event))
