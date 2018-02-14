@@ -1,7 +1,7 @@
 
 (ns server.repl
   (:require ["net" :as net]
-            [server.util :refer [bookmark->path tree->cirru]]
+            [server.util :refer [bookmark->path tree->cirru push-warning]]
             [cirru-sepal.core :as sepal]))
 
 (defonce *repl-instance (atom nil))
@@ -30,7 +30,10 @@
   (let [client @*repl-instance] (if (some? client) (do (.end client)))))
 
 (defn send-raw-code! [code dispatch!]
-  (let [client @*repl-instance] (if (some? client) (do (.write client (str code "\n"))))))
+  (let [client @*repl-instance]
+    (if (some? client)
+      (do (.write client (str code "\n")))
+      (dispatch! :notify/push-message [:warning "REPL not connected"]))))
 
 (defn eval-tree! [db dispatch! sid]
   (let [writer (get-in db [:sessions sid :writer])

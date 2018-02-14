@@ -65,7 +65,7 @@
             :ir/reset-ns ir/reset-ns
             :ir/draft-expr ir/draft-expr
             :ir/replace-file ir/replace-file
-            :notify/push-error notify/push-error
+            :notify/push-message notify/push-message
             :notify/clear notify/clear
             :analyze/goto-def analyze/goto-def
             :analyze/abstract-def analyze/abstract-def

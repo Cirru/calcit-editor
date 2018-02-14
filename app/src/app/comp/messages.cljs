@@ -44,7 +44,6 @@
                         :info (hsl 240 80 80)
                         (hsl 120 80 80))}),
              :on {:click on-clear}}
-            (.log js/console DateTime)
             (<>
              (-> DateTime (.fromMillis (:time msg)) (.toFormat "mm:ss"))
              {:font-size 12, :font-family ui/font-code, :opacity 0.7})

@@ -10831,14 +10831,6 @@
                      }
                     }
                    }
-                   "n" {
-                    :type :expr, :by "root", :at 1518425129295, :id "r1xbNVRRUf"
-                    :data {
-                     "T" {:type :leaf, :by "root", :at 1518425131287, :text ".log", :id "r1xbNVRRUfleaf"}
-                     "j" {:type :leaf, :by "root", :at 1518425137836, :text "js/console", :id "r1EXEVA08G"}
-                     "r" {:type :leaf, :by "root", :at 1518425136344, :text "DateTime", :id "S1P44C0IM"}
-                    }
-                   }
                    "p" {
                     :type :expr, :by "root", :at 1518425449744, :id "rJf_BAR8G"
                     :data {

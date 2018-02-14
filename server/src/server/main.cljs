@@ -46,7 +46,9 @@
 (defn dispatch! [op op-data sid]
   (comment .log js/console "Action" (str op) (clj->js op-data) sid)
   (comment .log js/console "Database:" (clj->js @*writer-db))
-  (let [d2! (fn [op2 op-data2] (dispatch! op2 op-data2 sid))]
+  (let [d2! (fn [op2 op-data2] (dispatch! op2 op-data2 sid))
+        op-id (.generate shortid)
+        op-time (.valueOf (js/Date.))]
     (try
      (case op
        :effect/save-files (handle-files! @*writer-db *coir-md5 global-configs d2! true)
@@ -55,9 +57,7 @@
        :effect/send-code (repl/send-raw-code! op-data d2!)
        :effect/eval-tree (repl/eval-tree! @*writer-db d2! sid)
        :effect/end-repl (repl/end-repl! d2!)
-       (reset!
-        *writer-db
-        (updater @*writer-db op op-data sid (.generate shortid) (.valueOf (js/Date.)))))
+       (reset! *writer-db (updater @*writer-db op op-data sid op-id op-time)))
      (catch js/Error e (println (.red chalk e)) (.error js/console e)))))
 
 (defn on-file-change! []

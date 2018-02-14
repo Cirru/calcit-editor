@@ -4,8 +4,9 @@
 (defn clear [db op-data session-id op-id op-time]
   (assoc-in db [:sessions session-id :notifications] []))
 
-(defn push-error [db op-data session-id op-id op-time]
-  (update-in
-   db
-   [:sessions session-id :notifications]
-   (fn [notifications] (conj notifications {:id op-id, :kind :error, :text op-data}))))
+(defn push-message [db op-data sid op-id op-time]
+  (let [[kind text] op-data]
+    (update-in
+     db
+     [:sessions sid :notifications]
+     (fn [xs] (conj xs {:id op-id, :kind kind, :text text, :time op-time})))))
