@@ -1,14 +1,15 @@
 {
   "name": "calcit-editor",
-  "version": "0.3.38",
+  "version": "0.3.39",
   "description": "Command line for Calcit Editor",
   "bin": {
     "calcit-editor": "dist/main.js",
     "ce": "dist/main.js"
   },
   "scripts": {
-    "build": "shadow-cljs release app",
-    "repl": "rlwrap shadow-cljs clj-repl"
+    "watch": "shadow-cljs watch app",
+    "repl": "rlwrap shadow-cljs clj-repl",
+    "build": "shadow-cljs clj-run build.main/build"
   },
   "repository": {
     "type": "git",
@@ -30,7 +31,7 @@
     "uws": "^9.14.0"
   },
   "devDependencies": {
-    "shadow-cljs": "^2.1.10",
+    "shadow-cljs": "^2.1.16",
     "source-map-support": "^0.5.0",
     "ws": "^4.0.0"
   }

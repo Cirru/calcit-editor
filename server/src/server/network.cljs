@@ -14,53 +14,46 @@
 
 (defonce client-caches (atom {}))
 
-(defn error-port-taken! [port]
-  (do
-   (println
-    (.red
-     chalk
-     (str
-      "Failed to start server, port "
-      port
-      " is in use!\nYou can try `port="
-      (inc port)
-      " calcit-editor`.")))
-   (.exit js/process 1)))
+(defn pick-port! [port next-fn]
+  (port-taken?
+   port
+   (fn [err taken?]
+     (if (some? err)
+       (do (.error js/console err) (.exit js/process 1))
+       (if taken?
+         (do (println "port" port "is in use.") (pick-port! (inc port) next-fn))
+         (do
+          (let [link (str "http://calcit-editor.cirru.org?port=" port)]
+            (println "port" port "is ok, please edit on" (.blue chalk link)))
+          (next-fn port)))))))
 
 (defn run-server! [on-action! port]
-  (let [WebSocketServer (.-Server ws)]
-    (port-taken?
-     port
-     (fn [err taken?]
-       (if (some? err)
-         (do (.error js/console err) (.exit js/process 1))
-         (if taken?
-           (error-port-taken! port)
-           (let [wss (new WebSocketServer (js-obj "port" port))]
-             (.on
-              wss
-              "connection"
-              (fn [socket]
-                (let [sid (.generate shortid)]
-                  (on-action! :session/connect nil sid)
-                  (swap! *registry assoc sid socket)
-                  (println (.gray chalk (str "client connected: " sid)))
-                  (.on
-                   socket
-                   "message"
-                   (fn [rawData]
-                     (let [action (reader/read-string rawData), [op op-data] action]
-                       (on-action! op op-data sid))))
-                  (.on
-                   socket
-                   "close"
-                   (fn []
-                     (println (.gray chalk (str "client disconnected: " sid)))
-                     (swap! *registry dissoc sid)
-                     (on-action! :session/disconnect nil sid))))))
-             (println
-              "Server started, please edit on"
-              (.blue chalk (str "http://calcit-editor.cirru.org?port=" port))))))))))
+  (pick-port!
+   port
+   (fn [unoccupied-port]
+     (let [WebSocketServer (.-Server ws)
+           wss (new WebSocketServer (js-obj "port" unoccupied-port))]
+       (.on
+        wss
+        "connection"
+        (fn [socket]
+          (let [sid (.generate shortid)]
+            (on-action! :session/connect nil sid)
+            (swap! *registry assoc sid socket)
+            (println (.gray chalk (str "client connected: " sid)))
+            (.on
+             socket
+             "message"
+             (fn [rawData]
+               (let [action (reader/read-string rawData), [op op-data] action]
+                 (on-action! op op-data sid))))
+            (.on
+             socket
+             "close"
+             (fn []
+               (println (.gray chalk (str "client disconnected: " sid)))
+               (swap! *registry dissoc sid)
+               (on-action! :session/disconnect nil sid))))))))))
 
 (defn sync-clients! [db]
   (doseq [sid (keys @*registry)]
