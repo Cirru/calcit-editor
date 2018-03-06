@@ -65,6 +65,9 @@
    (catch
     js/Error
     e
-    (do (println (.red chalk e)) (dispatch! :notify/push-message [:error (.-message e)])))))
+    (do
+     (println (.red chalk e))
+     (.error js/console e)
+     (dispatch! :notify/push-message [:error (.-message e)])))))
 
 (def path (js/require "path"))

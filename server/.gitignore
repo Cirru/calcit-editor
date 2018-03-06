@@ -2,3 +2,5 @@
 /dist
 /target/
 /node_modules/
+.shadow-cljs/
+.cpcache/

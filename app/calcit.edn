@@ -121,13 +121,13 @@
          :type :expr, :id "S1-5rwHAoZ", :by "root", :at 1506854722212
          :data {
           "T" {:type :leaf, :text "[]", :id "S1-5rwHAoZleaf", :by "root", :at 1506854723417}
-          "j" {:type :leaf, :text "respo-markdown.comp.md-article", :id "Sk3HvBCj-", :by "root", :at 1506854735117}
+          "j" {:type :leaf, :text "respo-md.comp.md", :id "Sk3HvBCj-", :by "root", :at 1520345503680}
           "r" {:type :leaf, :text ":refer", :id "r1k8PS0sW", :by "root", :at 1506854729613}
           "v" {
            :type :expr, :id "HyZGIPBCoW", :by "root", :at 1506854729790
            :data {
             "T" {:type :leaf, :text "[]", :id "HJxf8wH0iW", :by "root", :at 1506854729962}
-            "j" {:type :leaf, :text "comp-md-article", :id "HkNGIPHCi-", :by "root", :at 1506854730665}
+            "j" {:type :leaf, :text "comp-md-block", :id "HkNGIPHCi-", :by "root", :at 1520345505617}
            }
           }
          }
@@ -226,7 +226,7 @@
            "T" {
             :type :expr, :id "ryWm5HRoZ", :by "root", :at 1506854965871
             :data {
-             "T" {:type :leaf, :text "comp-md-article", :id "rJC4_BCiWleaf", :by "root", :at 1506854967006}
+             "T" {:type :leaf, :text "comp-md-block", :id "rJC4_BCiWleaf", :by "root", :at 1520345508123}
              "b" {:type :leaf, :text "|You are on this page because the server is not connected.\n\nYou may install editor server with:\n\n```bash\nnpm install -g calcit-editor\ncalcit-editor\n```\n\nThis is a syntax tree editor of [Cirru Project](http://cirru.org). Read more at [Calcit Editor](https://github.com/Cirru/calcit-editor).\n", :id "r1bSruSRo-", :by "root", :at 1506856083917}
              "j" {
               :type :expr, :id "SyQHOBCsb", :by "root", :at 1506854971228

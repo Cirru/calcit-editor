@@ -1,23 +1,9 @@
 
 (ns build.main
-  (:require [shadow.cljs.devtools.api :as shadow]
-            [clojure.java.shell :refer [sh]]))
-
-(def configs {:orgization "Cirru"
-              :name "calcit-editor"})
-
-(defn sh! [command]
-  (println command)
-  (println (sh "bash" "-c" command)))
+  (:require [shadow.cljs.devtools.api :as shadow]))
 
 (defn watch []
   (shadow/watch :app))
 
 (defn build []
   (shadow/release :app))
-
-(defn assets []
-  (sh! "mv dist/app/favored-fonts tmp")
-  (sh! "rm -r dist/app")
-  (sh! "cp -r ../app/dist dist/app")
-  (sh! "mv tmp dist/app/favored-fonts"))

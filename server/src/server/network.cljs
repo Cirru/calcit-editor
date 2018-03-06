@@ -8,7 +8,7 @@
             ["shortid" :as shortid]
             ["chalk" :as chalk]
             [server.util.detect :refer [port-taken?]]
-            ["uws" :as ws]))
+            ["ws" :as ws]))
 
 (defonce *registry (atom {}))
 
