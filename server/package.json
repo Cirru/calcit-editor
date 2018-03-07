@@ -1,6 +1,6 @@
 {
   "name": "calcit-editor",
-  "version": "0.3.40",
+  "version": "0.3.42",
   "description": "Command line for Calcit Editor",
   "bin": {
     "calcit-editor": "dist/main.js",
@@ -27,11 +27,11 @@
     "gaze": "^1.1.2",
     "md5": "^2.2.1",
     "serve-index": "^1.9.1",
-    "shortid": "^2.2.8"
+    "shortid": "^2.2.8",
+    "ws": "^5.0.0"
   },
   "devDependencies": {
     "shadow-cljs": "^2.2.4",
-    "source-map-support": "^0.5.3",
-    "ws": "^5.0.0"
+    "source-map-support": "^0.5.3"
   }
 }
