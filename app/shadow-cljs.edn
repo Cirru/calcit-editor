@@ -5,7 +5,7 @@
                 [mvc-works/verbosely    "0.1.2"]
                 [mvc-works/keycode      "0.1.3"]
                 [mvc-works/shell-page   "0.1.7"]
-                [respo                  "0.8.15"]
+                [respo                  "0.8.16"]
                 [respo/ui               "0.3.3"]
                 [respo/markdown         "0.2.0"]
                 [cumulo/recollect       "0.4.3"]
@@ -14,10 +14,7 @@
  :builds {:browser {:output-dir "target/"
                     :asset-path "./"
                     :target :browser
-                    :modules {:main {:entries [app.main]
-                                     :depends-on #{:lib}}
-                              :lib {:entries [respo.core respo.macros
-                                              respo.comp.inspect]}}
+                    :modules {:main {:entries [app.main]}}
                     :devtools {:after-load app.main/reload!
                                :preloads [shadow.cljs.devtools.client.hud]
                                :http-root "target"

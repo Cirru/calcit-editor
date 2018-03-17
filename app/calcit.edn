@@ -23815,7 +23815,6 @@
                 :type :expr, :id "r1EcItHK42q-", :by nil, :at 1504777353661
                 :data {
                  "T" {:type :leaf, :text "[]", :id "BkB98tBYN2cb", :by "root", :at 1504777353661}
-                 "r" {:type :leaf, :text "|/lib.js", :id "SJP58KHKNn9b", :by "root", :at 1515082212150}
                  "v" {:type :leaf, :text "|/main.js", :id "Sy_q8FHKN39W", :by "root", :at 1515082213713}
                 }
                }

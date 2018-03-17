@@ -6323,7 +6323,14 @@
                  "j" {
                   :type :expr, :by "SJhrjuzlG", :at 1516291328648, :id "SygtbBrCNM"
                   :data {
-                   "T" {:type :leaf, :by "SJhrjuzlG", :at 1516291331498, :text "entry", :id "rkK-HBRVG"}
+                   "T" {
+                    :type :expr, :by "SJhrjuzlG", :at 1521255725345, :id "HJbHEBZcFf"
+                    :data {
+                     "T" {:type :leaf, :by "SJhrjuzlG", :at 1521255720244, :text "[]", :id "rkK-HBRVG"}
+                     "j" {:type :leaf, :by "SJhrjuzlG", :at 1521255726473, :text "k", :id "HyLVH-qYG"}
+                     "r" {:type :leaf, :by "SJhrjuzlG", :at 1521255727782, :text "session", :id "HJv4S-9Yf"}
+                    }
+                   }
                   }
                  }
                  "r" {
@@ -6335,13 +6342,7 @@
                     :data {
                      "T" {:type :leaf, :by "SJhrjuzlG", :at 1516292093110, :text "=", :id "SygBWdHCNz"}
                      "b" {:type :leaf, :by "SJhrjuzlG", :at 1516292104618, :text "sid", :id "rJgpZuBA4G"}
-                     "j" {
-                      :type :expr, :by "SJhrjuzlG", :at 1516292097766, :id "BygqbuHAVM"
-                      :data {
-                       "T" {:type :leaf, :by "SJhrjuzlG", :at 1516292097629, :text "key", :id "BkUZOHA4z"}
-                       "j" {:type :leaf, :by "SJhrjuzlG", :at 1516292099309, :text "entry", :id "S1-5-dBANf"}
-                      }
-                     }
+                     "n" {:type :leaf, :by "SJhrjuzlG", :at 1521255729555, :text "k", :id "ryWKEH-qtf"}
                     }
                    }
                    "P" {:type :leaf, :by "SJhrjuzlG", :at 1516292108076, :text "false", :id "rkzf_rREG"}
@@ -6349,13 +6350,7 @@
                     :type :expr, :by "SJhrjuzlG", :at 1516291332098, :id "Hyxh-HBAVM"
                     :data {
                      "T" {:type :leaf, :by "SJhrjuzlG", :at 1516291333131, :text "some?", :id "Hyxh-HBAVMleaf"}
-                     "j" {
-                      :type :expr, :by "SJhrjuzlG", :at 1516291333435, :id "B1STbrBREM"
-                      :data {
-                       "T" {:type :leaf, :by "SJhrjuzlG", :at 1516291336105, :text "val", :id "SkNp-SSCEz"}
-                       "j" {:type :leaf, :by "SJhrjuzlG", :at 1516291337262, :text "entry", :id "S1XezSHC4f"}
-                      }
-                     }
+                     "j" {:type :leaf, :by "SJhrjuzlG", :at 1521255732836, :text "session", :id "rkWiNSWqYf"}
                     }
                    }
                   }

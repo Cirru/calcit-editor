@@ -14,9 +14,7 @@
 (defn dev-page []
   (make-page
    ""
-   (merge
-    base-info
-    {:styles ["http://127.0.0.1:8100/main.css"], :scripts ["/lib.js" "/main.js"]})))
+   (merge base-info {:styles ["http://127.0.0.1:8100/main.css"], :scripts ["/main.js"]})))
 
 (def local? (= "true" js/process.env.local))
 

@@ -53,5 +53,5 @@
                       [k
                        (let [writer (:writer session)]
                          (dissoc (get (:stack writer) (:pointer writer)) :focus))]))
-                   (filter (fn [entry] (if (= sid (key entry)) false (some? (val entry)))))
+                   (filter (fn [[k session]] (if (= sid k) false (some? session))))
                    (into {}))})
