@@ -1,6 +1,6 @@
 {
   "name": "calcit-editor",
-  "version": "0.3.42",
+  "version": "0.3.43",
   "description": "Command line for Calcit Editor",
   "bin": {
     "calcit-editor": "dist/main.js",
@@ -32,6 +32,6 @@
   },
   "devDependencies": {
     "shadow-cljs": "^2.2.12",
-    "source-map-support": "^0.5.3",
+    "source-map-support": "^0.5.3"
   }
 }

@@ -65,19 +65,13 @@
 
 (def style-big {:border-right (str "16px solid " (hsl 0 0 30))})
 
-(def style-first {:color (hsl 40 85 60)})
-
 (def style-highlight {:background-color (hsl 0 0 100 0.2)})
-
-(def style-keyword {:color (hsl 240 30 64)})
 
 (def style-number {:color (hsl 0 70 40)})
 
 (def style-partial {:border-right (str "8px solid " (hsl 0 0 30)), :padding-right 0})
 
 (def style-space {:background-color (hsl 0 0 100 0.12)})
-
-(def style-string {:color (hsl 120 60 56)})
 
 (defn decide-leaf-style [text focused? first? by-other?]
   (let [has-blank? (or (= text "") (string/includes? text " "))
@@ -87,9 +81,12 @@
         max-width 240]
     (merge
      {:width (min best-width max-width)}
-     (if first? style-first)
-     (if (string/starts-with? text ":") style-keyword)
-     (if (string/starts-with? text "|") style-string)
+     (if first? {:color (hsl 40 85 60)})
+     (if (string/starts-with? text ":") {:color (hsl 240 30 64)})
+     (if (or (string/starts-with? text "|") (string/starts-with? text "\""))
+       {:color (hsl 120 60 56)})
+     (if (string/starts-with? text "#\"") {:color (hsl 300 60 56)})
+     (if (or (= text "true") (= text "false")) {:color (hsl 250 50 60)})
      (if (> best-width max-width) style-partial)
      (if (string/includes? text "\n") style-big)
      (if (re-find (re-pattern "^-?\\d") text) style-number)
