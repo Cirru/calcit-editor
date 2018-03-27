@@ -5419,14 +5419,21 @@
           :type :expr, :id "HJZYUF--jW", :by "S1lNv50FW", :at 1505986897429
           :data {
            "T" {:type :leaf, :text ":min-height", :id "HJZYUF--jWleaf", :by "S1lNv50FW", :at 1505986901011}
-           "j" {:type :leaf, :text "240", :id "rkVa8YZWj-", :by "root", :at 1513451194518}
+           "j" {:type :leaf, :text "320", :id "rkVa8YZWj-", :by "root", :at 1522170969833}
+          }
+         }
+         "t" {
+          :type :expr, :by "root", :at 1522170931946, :id "r1xhEhgOqG"
+          :data {
+           "T" {:type :leaf, :by "root", :at 1522170934418, :text ":line-height", :id "r1xhEhgOqGleaf"}
+           "j" {:type :leaf, :by "root", :at 1522170947112, :text "|1.6em", :id "HykH2x_qG"}
           }
          }
          "v" {
           :type :expr, :id "B1yvtbWjZ", :by "S1lNv50FW", :at 1505986902685
           :data {
            "T" {:type :leaf, :text ":min-width", :id "B1yvtbWjZleaf", :by "S1lNv50FW", :at 1505986904645}
-           "j" {:type :leaf, :text "600", :id "HJZ-vY--i-", :by "S1lNv50FW", :at 1505988095209}
+           "j" {:type :leaf, :text "960", :id "HJZ-vY--i-", :by "root", :at 1522170924681}
           }
          }
          "x" {
@@ -5574,14 +5581,14 @@
           :type :expr, :id "Hyt6pWbi-", :by "S1lNv50FW", :at 1505988032867
           :data {
            "T" {:type :leaf, :text ":padding", :id "Hyt6pWbi-leaf", :by "S1lNv50FW", :at 1505988034719}
-           "j" {:type :leaf, :text "|0 8px", :id "SJMipp--jZ", :by "S1lNv50FW", :at 1505988039263}
+           "j" {:type :leaf, :text "|8px 8px", :id "SJMipp--jZ", :by "root", :at 1522170845649}
           }
          }
          "v" {
           :type :expr, :id "rJs0ayQGf", :by "root", :at 1513450962957
           :data {
            "T" {:type :leaf, :text ":height", :id "rJs0ayQGfleaf", :by "root", :at 1513451444779}
-           "j" {:type :leaf, :text "80", :id "H1e1017fM", :by "root", :at 1513451183596}
+           "j" {:type :leaf, :text "60", :id "H1e1017fM", :by "root", :at 1522170836613}
           }
          }
          "yj" {

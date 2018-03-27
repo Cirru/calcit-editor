@@ -23,8 +23,9 @@
 
 (def style-area
   {:background-color (hsl 0 0 100 0.2),
-   :min-height 240,
-   :min-width 600,
+   :min-height 320,
+   :line-height "1.6em",
+   :min-width 960,
    :color :white,
    :font-family "Source Code Pro, monospace",
    :font-size 14})
@@ -41,8 +42,8 @@
 (def style-text
   {:font-family "Source Code Pro, monospace",
    :color :white,
-   :padding "0 8px",
-   :height 80,
+   :padding "8px 8px",
+   :height 60,
    :display :block,
    :width "100%",
    :background-color (hsl 0 0 100 0.2)})

@@ -23,15 +23,15 @@
   "homepage": "https://github.com/Cirru/calcit-editor#readme",
   "dependencies": {
     "chalk": "^2.3.2",
-    "express": "^4.16.2",
+    "express": "^4.16.3",
     "gaze": "^1.1.2",
     "md5": "^2.2.1",
     "serve-index": "^1.9.1",
     "shortid": "^2.2.8",
-    "ws": "^5.0.0"
+    "ws": "^5.1.0"
   },
   "devDependencies": {
-    "shadow-cljs": "^2.2.12",
-    "source-map-support": "^0.5.3"
+    "shadow-cljs": "^2.2.20",
+    "source-map-support": "^0.5.4"
   }
 }
