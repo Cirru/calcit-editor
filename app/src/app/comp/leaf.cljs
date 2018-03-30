@@ -53,7 +53,14 @@
         (and meta? (= code keycode/d))
           (do
            (.preventDefault event)
-           (d! :analyze/goto-def {:text (:text leaf), :forced? shift?}))
+           (if (contains? #{"\"" "|"} (first (:text leaf)))
+             (do
+              (d! :manual-state/draft-box nil)
+              (js/setTimeout
+               (fn []
+                 (let [el (.querySelector js/document ".el-draft-box")]
+                   (if (some? el) (.focus el))))))
+             (d! :analyze/goto-def {:text (:text leaf), :forced? shift?})))
         (and meta? (= code keycode/slash))
           (do (.open js/window (str "https://clojuredocs.org/search?q=" (:text leaf))))
         :else (do (comment println "Keydown leaf" code) (on-window-keydown event d!))))))

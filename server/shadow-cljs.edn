@@ -3,7 +3,7 @@
  :http {:port 9631}
  :dependencies [[mvc-works/hsl          "0.1.2"]
                 [mvc-works/verbosely    "0.1.2"]
-                [cirru/sepal            "0.2.4"]
+                [cirru/sepal            "0.2.5"]
                 [cirru/bisection-key    "0.1.5"]
                 [cirru/favored-edn      "0.1.1"]
                 [cumulo/recollect       "0.4.3"]]

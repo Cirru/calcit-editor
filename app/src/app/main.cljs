@@ -21,6 +21,7 @@
     :states (reset! *states ((mutate op-data) @*states))
     :states/clear (reset! *states {})
     :manual-state/abstract (reset! *states (updater/abstract @*states))
+    :manual-state/draft-box (reset! *states (updater/draft-box @*states))
     (send! op op-data)))
 
 (defn detect-watching! []
