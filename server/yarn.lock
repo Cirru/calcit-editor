@@ -1470,9 +1470,9 @@ shadow-cljs-jar@1.1.2:
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/shadow-cljs-jar/-/shadow-cljs-jar-1.1.2.tgz#88664fae5957a7c21554e1a33476f1c475162c92"
 
-shadow-cljs@^2.2.20:
-  version "2.2.20"
-  resolved "https://registry.yarnpkg.com/shadow-cljs/-/shadow-cljs-2.2.20.tgz#9ffd3ecd9a57dcd9bc43f6e9ed41d0d55cb51abf"
+shadow-cljs@^2.2.25:
+  version "2.2.25"
+  resolved "https://registry.yarnpkg.com/shadow-cljs/-/shadow-cljs-2.2.25.tgz#7573d5ef7cca5222d3b9aed2448dc10833ae787b"
   dependencies:
     babel-core "^6.26.0"
     babel-preset-env "^1.6.0"
@@ -1653,9 +1653,9 @@ ws@^3.0.0:
     safe-buffer "~5.1.0"
     ultron "~1.1.0"
 
-ws@^5.1.0:
-  version "5.1.0"
-  resolved "https://registry.yarnpkg.com/ws/-/ws-5.1.0.tgz#ad7f95a65c625d47c24f2b8e5928018cf965e2a6"
+ws@^5.1.1:
+  version "5.1.1"
+  resolved "https://registry.yarnpkg.com/ws/-/ws-5.1.1.tgz#1d43704689711ac1942fd2f283e38f825c4b8b95"
   dependencies:
     async-limiter "~1.0.0"
 

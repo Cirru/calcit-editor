@@ -28,10 +28,10 @@
     "md5": "^2.2.1",
     "serve-index": "^1.9.1",
     "shortid": "^2.2.8",
-    "ws": "^5.1.0"
+    "ws": "^5.1.1"
   },
   "devDependencies": {
-    "shadow-cljs": "^2.2.20",
+    "shadow-cljs": "^2.2.25",
     "source-map-support": "^0.5.4"
   }
 }
