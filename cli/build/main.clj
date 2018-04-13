@@ -31,4 +31,3 @@
   (shadow/compile :page)
   (sh! "env=dev node target/page.js")
   (sh! "cp entry/manifest.json target/"))
-

@@ -30,7 +30,7 @@
       (do (dispatch! :router/change {:name :watching, :data (:watching query)})))))
 
 (defn simulate-login! []
-  (let [raw (.getItem js/window.localStorage (:storage-key schema/configs))]
+  (let [raw (.getItem js/window.localStorage (:local-storage-key schema/configs))]
     (if (some? raw)
       (do (dispatch! :user/log-in (read-string raw)))
       (do (println "Found no storage.")))))

@@ -14,7 +14,10 @@
 (defn on-submit [username password signup?]
   (fn [e dispatch!]
     (dispatch! (if signup? :user/sign-up :user/log-in) [username password])
-    (.setItem js/window.localStorage (:storage-key schema/configs) [username password])))
+    (.setItem
+     js/window.localStorage
+     (:local-storage-key schema/configs)
+     [username password])))
 
 (def style-control (merge ui/flex {:text-align :right}))
 

@@ -49,6 +49,7 @@
                         (:files ir)
                         (:users db))
                        nil))
-                 :repl (:repl db))),
+                 :repl (:repl db)
+                 {})),
       :stats {:members-count (count (:sessions db))}}
      {:session session, :logged-in? false, :stats {:members-count 0}})))

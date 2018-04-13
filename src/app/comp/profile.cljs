@@ -13,7 +13,7 @@
 
 (defn on-log-out [e dispatch!]
   (dispatch! :user/log-out nil)
-  (.removeItem js/window.localStorage (:storage-key schema/configs)))
+  (.removeItem js/window.localStorage (:local-storage-key schema/configs)))
 
 (defn on-rename [state]
   (fn [e d! m!] (let [name-text (string/trim state)] (d! :user/nickname name-text) (m! ""))))
