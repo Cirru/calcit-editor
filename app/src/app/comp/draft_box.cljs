@@ -9,7 +9,7 @@
             [respo.comp.space :refer [=<]]
             [app.comp.modal :refer [comp-modal]]
             [app.style :as style]
-            [app.util :refer [tree->cirru]]
+            [app.client-util :refer [tree->cirru]]
             [fipp.edn :refer [pprint]]))
 
 (defn on-input [e d! m!] (m! (:value e)))

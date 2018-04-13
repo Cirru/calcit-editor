@@ -8,7 +8,7 @@
             [respo.comp.space :refer [=<]]
             [polyfill.core :refer [text-width*]]
             [keycode.core :as keycode]
-            [app.util :as util]
+            [app.client-util :as util]
             [app.util.shortcuts :refer [on-window-keydown]]
             [app.theme :refer [decide-leaf-theme]]
             [verbosely.core :refer [log!]]))

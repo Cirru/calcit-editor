@@ -7,7 +7,7 @@
             [respo.macros :refer [defcomp cursor-> <> span div input pre a]]
             [respo.comp.space :refer [=<]]
             [keycode.core :as keycode]
-            [app.util :as util]
+            [app.client-util :as util]
             [app.style :as style]
             [app.comp.expr :refer [comp-expr]]
             [app.theme.star-trail :refer [base-style-leaf base-style-expr]]

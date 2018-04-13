@@ -8,7 +8,7 @@
             [respo.comp.space :refer [=<]]
             [keycode.core :as keycode]
             [app.comp.leaf :refer [comp-leaf]]
-            [app.util :refer [coord-contains? simple? leaf? expr?]]
+            [app.client-util :refer [coord-contains? simple? leaf? expr?]]
             [app.util.shortcuts :refer [on-window-keydown]]
             [app.theme :refer [decide-expr-theme]]))
 

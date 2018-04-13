@@ -7,8 +7,8 @@
                 [cirru/bisection-key    "0.1.5"]
                 [cirru/favored-edn      "0.1.1"]
                 [cumulo/recollect       "0.4.3"]]
- :builds {:app {:target :node-script
-                :output-to "target/main.js"
-                :main server.main/main!
-                :devtools {:after-load server.main/reload!}
-                :release {:output-to "dist/main.js"}}}}
+ :builds {:server {:target :node-script
+                   :output-to "target/main.js"
+                   :main app.server/main!
+                   :devtools {:after-load app.server/reload!}
+                   :release {:output-to "dist/main.js"}}}}

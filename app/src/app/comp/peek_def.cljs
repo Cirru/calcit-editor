@@ -8,7 +8,7 @@
             [respo.comp.inspect :refer [comp-inspect]]
             [respo.comp.space :refer [=<]]
             [app.style :as style]
-            [app.util :refer [stringify-s-expr tree->cirru]]
+            [app.client-util :refer [stringify-s-expr tree->cirru]]
             [respo-ui.comp.icon :refer [comp-android-icon]]))
 
 (defcomp

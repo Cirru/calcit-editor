@@ -4,7 +4,7 @@
   "description": "Cirru Calcit Editor",
   "main": "index.js",
   "scripts": {
-    "watch": "shadow-cljs watch browser",
+    "watch": "shadow-cljs watch client",
     "serve": "http-server dist -s",
     "repl": "rlwrap shadow-cljs clj-repl",
     "build": "shadow-cljs clj-run build.main/build",

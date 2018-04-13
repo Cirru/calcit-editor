@@ -7,7 +7,7 @@
     "ce": "dist/main.js"
   },
   "scripts": {
-    "watch": "shadow-cljs watch app",
+    "watch": "shadow-cljs watch server",
     "repl": "rlwrap shadow-cljs clj-repl",
     "build": "shadow-cljs clj-run build.main/build"
   },

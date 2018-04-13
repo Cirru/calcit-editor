@@ -4,7 +4,7 @@
             [clojure.string :as string]
             [respo-ui.core :as ui]
             [polyfill.core :refer [text-width*]]
-            [app.util :refer [simple?]]))
+            [app.client-util :refer [simple?]]))
 
 (def style-expr
   {:border-width "0 0 0px 1px",

@@ -8,7 +8,7 @@
             [respo.comp.space :refer [=<]]
             [polyfill.core :refer [text-width*]]
             [keycode.core :as keycode]
-            [app.util :as util]
+            [app.client-util :as util]
             [app.style :as style]
             [app.util.shortcuts :refer [on-window-keydown]]))
 

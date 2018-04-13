@@ -6,7 +6,7 @@
             [respo-ui.colors :as colors]
             [respo.macros :refer [defcomp list-> <> span div pre input button a]]
             [respo.comp.space :refer [=<]]
-            [app.util :as util]
+            [app.client-util :as util]
             [app.style :as style]
             [app.comp.changed-info :refer [comp-changed-info]]))
 
