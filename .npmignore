@@ -1,0 +1,14 @@
+
+/.cpcache/
+/.shadow-cljs/
+/cli/
+/entry/
+/example
+/node_modules
+/src
+/target
+/calcit.edn
+/shadow-cljs.edn
+/yarn.lock
+/deps.edn
+*.log

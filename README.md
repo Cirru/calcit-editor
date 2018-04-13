@@ -55,6 +55,16 @@ http://calcit-editor.cirru.org/?host=localhost&port=6001
 * `port`, defaults to `6001`
 * `host`, defaults to `localhost`
 
+By default, ClojureScript will be emitted in `src/`.
+When server is stopped with `Ctrl c`, a `calcit.edn` will be generated.
+
+Set `local` to enable local version of web editor:
+
+```bash
+client=local calcit-editor
+; serving app at http://localhost:6101
+```
+
 ### Workflow
 
 Based on https://github.com/Cumulo/cumulo-workflow

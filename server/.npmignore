@@ -1,8 +1,0 @@
-
-/example
-/node_modules
-/src
-/target
-/calcit.edn
-/shadow-cljs.edn
-/yarn.lock

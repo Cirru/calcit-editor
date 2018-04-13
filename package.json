@@ -1,0 +1,37 @@
+{
+  "name": "calcit-editor",
+  "version": "0.3.45",
+  "description": "Cirru Calcit Editor",
+  "bin": {
+    "calcit-editor": "dist/server.js",
+    "ce": "dist/server.js"
+  },
+  "scripts": {
+    "watch": "shadow-cljs watch client server",
+    "serve": "http-server dist -s",
+    "repl": "rlwrap shadow-cljs clj-repl",
+    "build": "shadow-cljs clj-run build.main/build",
+    "build-local": "shadow-cljs clj-run build.main/build-local"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:Cirru/calcit-editor.git"
+  },
+  "author": "jiyinyiyong",
+  "license": "MIT",
+  "devDependencies": {
+    "http-server": "^0.11.1",
+    "luxon": "^1.0.0",
+    "shadow-cljs": "^2.2.29",
+    "source-map-support": "^0.5.4"
+  },
+  "dependencies": {
+    "chalk": "^2.3.2",
+    "express": "^4.16.3",
+    "gaze": "^1.1.2",
+    "md5": "^2.2.1",
+    "serve-index": "^1.9.1",
+    "shortid": "^2.2.8",
+    "ws": "^5.1.1"
+  }
+}
