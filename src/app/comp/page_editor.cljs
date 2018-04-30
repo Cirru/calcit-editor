@@ -80,7 +80,7 @@
       (=< 16 nil)
       (comp-beginner-mode state (on-toggle state %cursor))))))
 
-(def style-area {:overflow :auto, :padding-bottom 80, :padding-top 40, :flex 1})
+(def style-area {:overflow :auto, :padding-bottom 240, :padding-top 80, :flex 1})
 
 (def style-container {:position :relative})
 
