@@ -7,7 +7,7 @@
         shift? (.-shiftKey event)
         code (.-keyCode event)]
     (cond
-      (and meta? (= code keycode/p))
+      (and meta? (or (= code keycode/p) (= code keycode/o)))
         (do
          (dispatch! :router/change {:name :search})
          (focus-search!)
