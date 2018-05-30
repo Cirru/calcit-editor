@@ -8,7 +8,8 @@
             [respo.comp.space :refer [=<]]
             [app.client-util :as util]
             [app.style :as style]
-            ["luxon" :refer [DateTime]]))
+            ["luxon" :refer [DateTime]]
+            ["dayjs" :as Dayjs]))
 
 (defn on-clear [e d! m!] (d! :notify/clear nil))
 
@@ -45,7 +46,7 @@
                         (hsl 120 80 80))}),
              :on {:click on-clear}}
             (<>
-             (-> DateTime (.fromMillis (:time msg)) (.toFormat "mm:ss"))
+             (-> (:time msg) Dayjs (.format "mm:ss"))
              {:font-size 12, :font-family ui/font-code, :opacity 0.7})
             (=< 8 nil)
             (<> (:text msg) nil))])))))
