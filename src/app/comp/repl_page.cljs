@@ -16,7 +16,7 @@
  comp-repl-page
  (states router)
  (let [data (:data router)
-       state (or (:data states) {:port 5900, :code "", :build-id "browser"})]
+       state (or (:data states) {:port 5900, :code "", :build-id "client"})]
    (div
     {:style {:padding "0 16px"}}
     (if (:alive? data)
@@ -71,10 +71,11 @@
        (<> "No connection.")
        (=< 8 nil)
        (input
-        {:style style/input,
+        {:style (merge style/input),
          :type "number",
          :value (:port state),
-         :on-input (mutation-> (assoc state :port (:value %e)))})
+         :on-input (mutation-> (assoc state :port (:value %e))),
+         :placeholder "Socket REPL Port"})
        (=< 8 nil)
        (button
         {:style style/button, :on-click (action-> :effect/connect-repl (:port state))}
