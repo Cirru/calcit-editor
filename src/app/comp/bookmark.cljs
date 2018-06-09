@@ -19,7 +19,11 @@
         :else (d! :writer/point-to idx)))))
 
 (def style-bookmark
-  {:line-height "1.2em", :padding "4px 8px", :cursor :pointer, :position :relative})
+  {:line-height "1.2em",
+   :padding "4px 8px",
+   :cursor :pointer,
+   :position :relative,
+   :white-space :nowrap})
 
 (def style-highlight {:color (hsl 0 0 100)})
 
