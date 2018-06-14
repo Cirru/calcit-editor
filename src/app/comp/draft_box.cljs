@@ -10,9 +10,8 @@
             [app.comp.modal :refer [comp-modal]]
             [app.style :as style]
             [app.client-util :refer [tree->cirru]]
-            [fipp.edn :refer [pprint]]))
-
-(defn on-input [e d! m!] (m! (:value e)))
+            [fipp.edn :refer [pprint]]
+            [keycode.core :as keycode]))
 
 (defn on-submit [expr? text close-modal! close?]
   (fn [e d! m!]
@@ -94,15 +93,17 @@
           {:style style-area,
            :value (if expr? (with-out-str (pprint (read-string state))) state),
            :class-name "el-draft-box",
-           :on {:input on-input}})
+           :on-input (fn [e d! m!] (m! (:value e))),
+           :on-keydown (fn [e d! m!]
+             (when (= keycode/escape (:keycode e)) (close-modal! m! d!)))})
          (=< nil 8)
          (div
           {:style (merge ui/row style-toolbar)}
           (button
            {:style style/button,
             :inner-text "Apply",
-            :on {:click (on-submit expr? state close-modal! false)}})
+            :on-click (on-submit expr? state close-modal! false)})
           (button
            {:style style/button,
             :inner-text "Submit",
-            :on {:click (on-submit expr? state close-modal! true)}}))))))))
+            :on-click (on-submit expr? state close-modal! true)}))))))))
