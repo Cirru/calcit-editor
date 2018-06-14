@@ -25,10 +25,14 @@
   {:background-color (hsl 0 0 100 0.2),
    :min-height 320,
    :line-height "1.6em",
-   :min-width 960,
+   :min-width 800,
    :color :white,
-   :font-family "Source Code Pro, monospace",
-   :font-size 14})
+   :font-family style/font-code,
+   :font-size 14,
+   :outline :none,
+   :border :none,
+   :padding 8,
+   :vertical-align :top})
 
 (def style-mode
   {:color (hsl 0 0 100 0.6),
@@ -40,13 +44,18 @@
 (def style-original {:max-height 240, :overflow :auto})
 
 (def style-text
-  {:font-family "Source Code Pro, monospace",
+  {:font-family style/font-code,
    :color :white,
-   :padding "8px 8px",
+   :padding 8,
    :height 60,
    :display :block,
    :width "100%",
-   :background-color (hsl 0 0 100 0.2)})
+   :background-color (hsl 0 0 100 0.2),
+   :outline :none,
+   :border :none,
+   :font-size 14,
+   :min-width 800,
+   :vetical-align :top})
 
 (def style-toolbar {:justify-content :flex-end})
 
@@ -79,13 +88,10 @@
           {:style style-original}
           (if expr?
             (<> span "Cirru Mode" style-mode)
-            (textarea
-             {:value original-text,
-              :spellcheck false,
-              :style (merge ui/textarea style-text)})))
+            (textarea {:value original-text, :spellcheck false, :style style-text})))
          (=< nil 8)
          (textarea
-          {:style (merge ui/textarea style-area),
+          {:style style-area,
            :value (if expr? (with-out-str (pprint (read-string state))) state),
            :class-name "el-draft-box",
            :on {:input on-input}})
