@@ -4,7 +4,8 @@
             [clojure.string :as string]
             [respo-ui.core :as ui]
             [polyfill.core :refer [text-width*]]
-            [app.client-util :refer [simple?]]))
+            [app.client-util :refer [simple?]]
+            [app.style :as style]))
 
 (def style-expr
   {:border-width "0 0 0px 1px",
@@ -23,22 +24,22 @@
 (defn base-style-expr [] style-expr)
 
 (def style-leaf
-  (merge
-   ui/input
-   {:line-height "24px",
-    :height 24,
-    :margin "2px 2px",
-    :padding "0px 4px",
-    :background-color :transparent,
-    :min-width 8,
-    :color (hsl 200 14 60),
-    :font-family "Menlo,Iosevka,Consolas,monospace",
-    :font-size 15,
-    :vertical-align :baseline,
-    :text-align :left,
-    :border-width "1px 1px 1px 1px",
-    :resize :none,
-    :white-space :nowrap}))
+  {:line-height "24px",
+   :height 24,
+   :margin "2px 2px",
+   :padding "0px 4px",
+   :background-color :transparent,
+   :min-width 8,
+   :color (hsl 200 14 60),
+   :font-family style/font-code,
+   :font-size 15,
+   :vertical-align :baseline,
+   :text-align :left,
+   :border-width "1px 1px 1px 1px",
+   :resize :none,
+   :white-space :nowrap,
+   :outline :none,
+   :border :none})
 
 (defn base-style-leaf [] style-leaf)
 

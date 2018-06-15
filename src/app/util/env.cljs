@@ -1,6 +1,8 @@
 
 (ns app.util.env (:require ["chalk" :as chalk]))
 
+(defn get-env! [property] (aget (.-env js/process) property))
+
 (defn pick-configs [configs]
   (let [cli-port (if (some? (aget js/process.env "port"))
                    (js/parseInt (aget js/process.env "port")))

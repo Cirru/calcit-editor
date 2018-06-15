@@ -776,9 +776,9 @@ date-now@^0.1.4:
   version "0.1.4"
   resolved "https://registry.yarnpkg.com/date-now/-/date-now-0.1.4.tgz#eaf439fd4d4848ad74e5cc7dbef200672b9e345b"
 
-dayjs@^1.6.4:
-  version "1.6.4"
-  resolved "https://registry.yarnpkg.com/dayjs/-/dayjs-1.6.4.tgz#7e66f0a43344dfd7bada2e8f7113813dd9d0d08f"
+dayjs@^1.6.9:
+  version "1.6.9"
+  resolved "https://registry.yarnpkg.com/dayjs/-/dayjs-1.6.9.tgz#b3568220ac9d71fc295392aaaa5cf9e0e00232f2"
 
 debug@2.6.9, debug@^2.2.0, debug@^2.6.8:
   version "2.6.9"
@@ -1566,9 +1566,9 @@ shadow-cljs-jar@1.1.2:
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/shadow-cljs-jar/-/shadow-cljs-jar-1.1.2.tgz#88664fae5957a7c21554e1a33476f1c475162c92"
 
-shadow-cljs@^2.3.36:
-  version "2.3.36"
-  resolved "https://registry.yarnpkg.com/shadow-cljs/-/shadow-cljs-2.3.36.tgz#6e71f072c0a8959e1425eb9387b5972ef59aac3d"
+shadow-cljs@^2.4.4:
+  version "2.4.4"
+  resolved "https://registry.yarnpkg.com/shadow-cljs/-/shadow-cljs-2.4.4.tgz#c9f9e80f0f1786d93dddefe9394e7ab6f5032dbf"
   dependencies:
     babel-core "^6.26.0"
     babel-preset-env "^1.6.0"
