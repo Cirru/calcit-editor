@@ -66,11 +66,11 @@
        [:sessions sid :writer]
        (fn [writer]
          (let [pointer (:pointer writer)]
-           (if (pos? pointer)
-             (-> writer
-                 (update :stack (fn [stack] (dissoc-idx stack pointer)))
-                 (update :pointer dec))
-             writer))))))
+           (-> writer
+               (update
+                :stack
+                (fn [stack] (if (> (count stack) pointer) (dissoc-idx stack pointer) stack)))
+               (assoc :pointer (if (pos? pointer) (dec pointer) pointer))))))))
 
 (defn go-down [db op-data session-id op-id op-time]
   (let [writer (get-in db [:sessions session-id :writer])
