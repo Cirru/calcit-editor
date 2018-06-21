@@ -32,4 +32,5 @@
                    :output-to "target/server.js"
                    :main app.server/main!
                    :devtools {:after-load app.server/reload!}
+                   :compiler-options {:infer-externs :auto}
                    :release {:output-to "dist/server.js"}}}}
