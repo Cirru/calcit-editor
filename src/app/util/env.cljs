@@ -5,7 +5,7 @@
 
 (defn pick-configs [configs]
   (let [cli-port (if (some? (aget js/process.env "port"))
-                   (js/parseInt (aget js/process.env "port")))
+                   (js/parseInt (aget js/process.env "port") 10))
         cli-op (aget js/process.env "op")
         cli-extension (aget js/process.env "extension")
         result (-> configs

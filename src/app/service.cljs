@@ -31,9 +31,10 @@
   (pick-port!
    port
    (fn [unoccupied-port]
-     (let [WebSocketServer (.-Server ws)
+     (let [WebSocketServer (.-Server ^js ws)
            wss (new WebSocketServer (js-obj "port" unoccupied-port))]
        (.on
+        ^js
         wss
         "connection"
         (fn [socket]
@@ -42,12 +43,14 @@
             (swap! *registry assoc sid socket)
             (println (.gray chalk (str "client connected: " sid)))
             (.on
+             ^js
              socket
              "message"
              (fn [rawData]
                (let [action (reader/read-string rawData), [op op-data] action]
                  (on-action! op op-data sid))))
             (.on
+             ^js
              socket
              "close"
              (fn []

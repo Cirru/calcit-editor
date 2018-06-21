@@ -10,7 +10,7 @@
   (println)
   (let [client (.createConnection
                 net
-                (clj->js {:port (js/parseInt port)})
+                (clj->js {:port (js/parseInt port 10)})
                 (fn [] (println "Socket REPL created!") (dispatch! :repl/start nil)))]
     (reset! *repl-instance client)
     (.on client "data" (fn [data] (dispatch! :repl/log (.toString data))))
