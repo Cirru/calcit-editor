@@ -80,7 +80,7 @@
 
 (defn serve-app! [port]
   (let [app (express), dir (path/join js/__dirname ""), file-port (+ 100 port)]
-    (.use app "/" (.static express dir) (serve-index dir (clj->js {:icons true})))
+    (.use app "/" (express/static dir) (serve-index dir (clj->js {:icons true})))
     (.listen app file-port)
     (println
      (str "Serving local editor at " (.blue chalk (str "http://localhost:" file-port))))))
@@ -95,7 +95,7 @@
         (fn [error watcher]
           (if (some? error)
             (.log js/console error)
-            (.on watcher "changed" (fn [filepath] (on-file-change!))))))))))
+            (.on ^js watcher "changed" (fn [filepath] (on-file-change!))))))))))
 
 (defn start-server! [configs]
   (run-server! #(dispatch! %1 %2 %3) (:port configs))
