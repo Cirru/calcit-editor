@@ -79,8 +79,8 @@
   (js/setTimeout render-loop! 20))
 
 (defn serve-app! [port]
-  (let [app (express), dir (path/join js/__dirname "app"), file-port (+ 100 port)]
-    (.use app "/" (.static ^js express dir) (serve-index dir (clj->js {:icons true})))
+  (let [app (express), dir (path/join js/__dirname ""), file-port (+ 100 port)]
+    (.use app "/" (express/static dir) (serve-index dir (clj->js {:icons true})))
     (.listen app file-port)
     (println
      (str "Serving local editor at " (.blue chalk (str "http://localhost:" file-port))))))

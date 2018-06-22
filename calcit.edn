@@ -27982,7 +27982,7 @@
               :data {
                "D" {:type :leaf, :author "root", :time 1508169432006, :text "path/join", :id "Bkg-C8IfTW"}
                "L" {:type :leaf, :author "root", :time 1508169422054, :text "js/__dirname", :id "SymRU8G6-"}
-               "T" {:type :leaf, :author "root", :time 1508169192086, :text "|app", :id "HyNKo7UfT-"}
+               "T" {:type :leaf, :author "root", :time 1508169192086, :text "\"", :id "HyNKo7UfT-", :at 1529634470561, :by "root"}
               }
              }
             }
@@ -28012,9 +28012,7 @@
            "v" {
             :type :expr, :author "root", :time 1508168348665, :id "SyrsGUMpZ"
             :data {
-             "T" {:type :leaf, :author "root", :time 1508168350222, :text ".static", :id "By4sf8zaZ"}
-             "b" {:type :leaf, :by "root", :at 1529601640969, :text "^js", :id "BJgADC8t-X"}
-             "j" {:type :leaf, :author "root", :time 1508168355477, :text "express", :id "ByFoz8za-"}
+             "T" {:type :leaf, :author "root", :time 1508168350222, :text "express/static", :id "By4sf8zaZ", :at 1529634902511, :by "root"}
              "r" {:type :leaf, :author "root", :time 1508168632460, :text "dir", :id "HkZ13zIfa-"}
             }
            }
