@@ -4,7 +4,10 @@
 
 (defonce *global-ws (atom nil))
 
-(defn send! [op op-data] (.send @*global-ws (pr-str [op op-data])))
+(defn send! [op op-data]
+  (if (some? @*global-ws)
+    (.send @*global-ws (pr-str [op op-data]))
+    (.warn js/console "socket losted, can't send op.")))
 
 (defn heartbeat! []
   (js/setTimeout
