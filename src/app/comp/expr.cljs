@@ -48,7 +48,10 @@
             (fn []
               (let [el (.querySelector js/document ".el-abstract")]
                 (if (some? el) (.focus el))))))
-        :else (do (comment println "Keydown" (:key-code e)) (on-window-keydown event d!))))))
+        :else
+          (do
+           (comment println "Keydown" (:key-code e))
+           (on-window-keydown event d! {:name :editor}))))))
 
 (defcomp
  comp-expr

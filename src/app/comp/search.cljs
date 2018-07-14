@@ -37,7 +37,7 @@
            (.preventDefault event)
            (if (< (:selection state) (dec (count candidates)))
              (m! (update state :selection inc))))
-        :else (on-window-keydown (:event e) d!)))))
+        :else (on-window-keydown (:event e) d! {:name :search})))))
 
 (defn on-select [bookmark]
   (fn [e d! m!] (d! :writer/select bookmark) (m! {:position :0, :query ""})))
