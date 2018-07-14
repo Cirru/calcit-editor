@@ -29456,6 +29456,13 @@
            "j" {:type :leaf, :by "root", :at 1528996792418, :text ":none", :id "ryfypQ7xbX"}
           }
          }
+         "yyj" {
+          :type :expr, :by "root", :at 1531589569158, :id "Bk-tamnDmQ"
+          :data {
+           "T" {:type :leaf, :by "root", :at 1531589570674, :text ":cursor", :id "Bk-tamnDmQleaf"}
+           "j" {:type :leaf, :by "root", :at 1531589571913, :text ":pointer", :id "Hk-jTmnD7m"}
+          }
+         }
         }
        }
       }
