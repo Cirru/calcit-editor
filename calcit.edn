@@ -29467,26 +29467,6 @@
        }
       }
      }
-     "click" {
-      :type :expr, :id "ByBSDFHK43qb", :by nil, :at 1504777353661
-      :data {
-       "T" {:type :leaf, :text "def", :id "rJUHvKrYN3q-", :by "root", :at 1504777353661}
-       "j" {:type :leaf, :text "click", :id "rkPrDtHK4h5-", :by "root", :at 1504777353661}
-       "r" {
-        :type :expr, :id "H1uSPFSFNn9W", :by nil, :at 1504777353661
-        :data {
-         "T" {:type :leaf, :text "{}", :id "BkKSPtrK4nqW", :by "root", :at 1504777353661}
-         "j" {
-          :type :expr, :id "SJ5BwYHYV2qb", :by nil, :at 1504777353661
-          :data {
-           "T" {:type :leaf, :text ":text-decoration", :id "HyoSDYHKEhcb", :by "root", :at 1504777353661}
-           "j" {:type :leaf, :text ":underline", :id "rJhHDKBK4hcZ", :by "root", :at 1504777353661}
-          }
-         }
-        }
-       }
-      }
-     }
      "font-code" {
       :type :expr, :by "root", :at 1528996968823, :id "B1xWuNQxZQ"
       :data {

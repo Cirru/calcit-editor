@@ -15,8 +15,6 @@
    :outline :none,
    :cursor :pointer})
 
-(def click {:text-decoration :underline})
-
 (def font-code "Source Code Pro, monospace")
 
 (def input
