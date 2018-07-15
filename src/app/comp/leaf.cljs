@@ -63,7 +63,10 @@
              (d! :analyze/goto-def {:text (:text leaf), :forced? shift?})))
         (and meta? (= code keycode/slash))
           (do (.open js/window (str "https://clojuredocs.org/search?q=" (:text leaf))))
-        :else (do (comment println "Keydown leaf" code) (on-window-keydown event d!))))))
+        :else
+          (do
+           (comment println "Keydown leaf" code)
+           (on-window-keydown event d! {:name :editor}))))))
 
 (defcomp
  comp-leaf

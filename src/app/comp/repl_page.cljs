@@ -16,7 +16,7 @@
  comp-repl-page
  (states router)
  (let [data (:data router)
-       state (or (:data states) {:port 5900, :code "", :build-id "client"})]
+       state (or (:data states) {:port nil, :code "", :build-id "client"})]
    (div
     {:style {:padding "0 16px"}}
     (if (:alive? data)

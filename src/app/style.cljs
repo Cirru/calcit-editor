@@ -12,9 +12,8 @@
    :font-size 14,
    :text-align :center,
    :padding "0 8px",
-   :outline :none})
-
-(def click {:text-decoration :underline})
+   :outline :none,
+   :cursor :pointer})
 
 (def font-code "Source Code Pro, monospace")
 

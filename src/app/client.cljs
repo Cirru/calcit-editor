@@ -66,7 +66,10 @@
    :changes
    (fn [] (render-app! render!) (if (= :editor (get-in @*store [:router :name])) (focus!))))
   (add-watch *states :changes (fn [] (render-app! render!)))
-  (.addEventListener js/window "keydown" (fn [event] (on-window-keydown event dispatch!)))
+  (.addEventListener
+   js/window
+   "keydown"
+   (fn [event] (on-window-keydown event dispatch! (:router @*store))))
   (.addEventListener js/window "focus" (fn [event] (if (nil? @*store) (connect))))
   (println "App started!"))
 

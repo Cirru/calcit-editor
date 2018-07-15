@@ -32,7 +32,7 @@
     (let [text (string/trim (:def-text state)), code (:key-code e)]
       (if (and (= code keycode/return) (not (string/blank? text)))
         (do (d! :ir/add-def text) (m! (assoc state :def-text "")))
-        (on-window-keydown (:event e) d!)))))
+        (on-window-keydown (:event e) d! {:name :files})))))
 
 (defn on-keydown-ns [state]
   (fn [e d! m!]
@@ -48,7 +48,7 @@
               (d! :ir/cp-ns {:from from, :to to})
               (m! (assoc state :ns-text "")))
           :else (do (d! :ir/add-ns text) (m! (assoc state :ns-text ""))))
-        (on-window-keydown (:event e) d!)))))
+        (on-window-keydown (:event e) d! {:name :files})))))
 
 (defn on-remove-def [def-text] (fn [e d! m!] (d! :ir/remove-def def-text)))
 
@@ -176,7 +176,6 @@
  (let [state (or (:data states) initial-state)
        highlights (set (map last (:highlights router-data)))
        ns-highlights (set (map :ns highlights))]
-   (println highlights ns-highlights)
    (div
     {:style (merge ui/flex ui/row sytle-container)}
     (render-list state (:ns-set router-data) selected-ns ns-highlights)
