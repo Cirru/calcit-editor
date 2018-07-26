@@ -10,7 +10,7 @@
                 [respo/markdown         "0.2.1"]
                 [cumulo/recollect       "0.4.3"]
                 [fipp                   "0.6.12"]
-                [cirru/sepal            "0.2.5"]
+                [cirru/sepal            "0.2.6"]
                 [cirru/bisection-key    "0.1.5"]
                 [cirru/favored-edn      "0.1.1"]]
  :open-file-command ["subl" ["%s:%s:%s" :file :line :column]]

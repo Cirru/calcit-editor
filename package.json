@@ -1,6 +1,6 @@
 {
   "name": "calcit-editor",
-  "version": "0.3.48",
+  "version": "0.3.49",
   "description": "Cirru Calcit Editor",
   "bin": {
     "calcit-editor": "dist/server.js",
@@ -22,7 +22,7 @@
   "license": "MIT",
   "devDependencies": {
     "http-server": "^0.11.1",
-    "shadow-cljs": "^2.4.20",
+    "shadow-cljs": "^2.4.24",
     "source-map-support": "^0.5.6"
   },
   "dependencies": {
@@ -33,6 +33,6 @@
     "md5": "^2.2.1",
     "serve-index": "^1.9.1",
     "shortid": "^2.2.12",
-    "ws": "^5.2.2"
+    "ws": "^6.0.0"
   }
 }
