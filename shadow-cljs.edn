@@ -20,7 +20,8 @@
                    :modules {:client {:entries [app.client]}}
                    :devtools {:after-load app.client/reload!
                               :http-root "target"
-                              :http-port 7000}
+                              :http-port 7000
+                              :loader-mode :eval}
                    :release {:output-dir "dist/"
                              :module-hash-names 8
                              :build-options {:manifest-name "assets.edn"}}}
