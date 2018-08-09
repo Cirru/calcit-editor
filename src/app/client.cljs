@@ -22,7 +22,8 @@
     :states/clear (reset! *states {})
     :manual-state/abstract (reset! *states (updater/abstract @*states))
     :manual-state/draft-box (reset! *states (updater/draft-box @*states))
-    :effect/save-files (do (reset! *states (updater/clear-editor @*states)))
+    :effect/save-files
+      (do (reset! *states (updater/clear-editor @*states)) (send! op op-data))
     (send! op op-data)))
 
 (defn detect-watching! []
