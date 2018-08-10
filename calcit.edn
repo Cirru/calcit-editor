@@ -27269,11 +27269,11 @@
      }
     }
     :defs {
-     "*coir-md5" {
+     "*calcit-md5" {
       :type :expr, :author "SJhrjuzlG", :time 1512702341217, :id "S1bTYbKvWG"
       :data {
        "T" {:type :leaf, :author "SJhrjuzlG", :time 1512702344139, :text "defonce", :id "ByMpFZtwZz"}
-       "j" {:type :leaf, :author "SJhrjuzlG", :time 1512702341217, :text "*coir-md5", :id "H1XTK-tPZz"}
+       "j" {:type :leaf, :author "SJhrjuzlG", :time 1512702341217, :text "*calcit-md5", :id "H1XTK-tPZz"}
        "r" {
         :type :expr, :author "SJhrjuzlG", :time 1512702341217, :id "S146FbKPWz"
         :data {
@@ -27505,7 +27505,7 @@
            }
           }
          }
-         "n" {:type :leaf, :author "SJhrjuzlG", :time 1512706572878, :text "*coir-md5", :id "HyQMfqDWf"}
+         "n" {:type :leaf, :author "SJhrjuzlG", :time 1512706572878, :text "*calcit-md5", :id "HyQMfqDWf", :at 1533921010423, :by "root"}
          "r" {:type :leaf, :author "root", :time 1504777570689, :text "configs", :id "HkeU_ooKN25W"}
          "v" {
           :type :expr, :time 1504777570689, :id "B1WUOijYNhq-"
@@ -27673,7 +27673,7 @@
                 :data {
                  "T" {:type :leaf, :author "root", :time 1504777570689, :text "handle-files!", :id "Sy6RvsoYEn9-"}
                  "j" {:type :leaf, :author "root", :time 1504777570689, :text "@*writer-db", :id "HkCRPjsFNnqZ"}
-                 "n" {:type :leaf, :author "SJhrjuzlG", :time 1512706644172, :text "*coir-md5", :id "B193ZqvZf"}
+                 "n" {:type :leaf, :author "SJhrjuzlG", :time 1512706644172, :text "*calcit-md5", :id "B193ZqvZf", :at 1533921029639, :by "root"}
                  "r" {:type :leaf, :author "SJhrjuzlG", :time 1511324495576, :text "global-configs", :id "r1kkdisFN39W"}
                  "u" {:type :leaf, :by "root", :at 1518284072188, :text "d2!", :id "Byl14poh8G"}
                  "x" {:type :leaf, :author "root", :time 1504777570689, :text "true", :id "H1bkdoiKNncW"}
@@ -27951,7 +27951,7 @@
            "5" {
             :type :expr, :author "SJhrjuzlG", :time 1512702153237, :id "rJeXYGtvWf"
             :data {
-             "T" {:type :leaf, :author "SJhrjuzlG", :time 1512702165830, :text "coir-path", :id "B1b-AlYwZM"}
+             "T" {:type :leaf, :author "SJhrjuzlG", :time 1512702165830, :text "calcit-path", :id "B1b-AlYwZM", :at 1533921042470, :by "root"}
              "j" {
               :type :expr, :author "SJhrjuzlG", :time 1512702125353, :id "r12RgKD-M"
               :data {
@@ -27969,7 +27969,7 @@
               :type :expr, :author "SJhrjuzlG", :time 1512702300898, :id "HJglkMtD-G"
               :data {
                "T" {:type :leaf, :author "SJhrjuzlG", :time 1512702303865, :text "fs/readFileSync", :id "BklSwWtvZM"}
-               "j" {:type :leaf, :author "SJhrjuzlG", :time 1512702306038, :text "coir-path", :id "BJGuDbtPWG"}
+               "j" {:type :leaf, :author "SJhrjuzlG", :time 1512702306038, :text "calcit-path", :id "BJGuDbtPWG", :at 1533921044960, :by "root"}
                "r" {:type :leaf, :author "SJhrjuzlG", :time 1512705921467, :text "|utf8", :id "SJPtJqvbz"}
               }
              }
@@ -27999,7 +27999,7 @@
             :data {
              "T" {:type :leaf, :author "SJhrjuzlG", :time 1512702330929, :text "not=", :id "r1QWFbtwZM"}
              "j" {:type :leaf, :author "SJhrjuzlG", :time 1512702334483, :text "new-md5", :id "SkVtWtwWz"}
-             "r" {:type :leaf, :author "SJhrjuzlG", :time 1512702339825, :text "@*coir-md5", :id "HJvYbKv-M"}
+             "r" {:type :leaf, :author "SJhrjuzlG", :time 1512702339825, :text "@*calcit-md5", :id "HJvYbKv-M", :at 1533921046212, :by "root"}
             }
            }
            "r" {
@@ -28012,7 +28012,7 @@
                "j" {
                 :type :expr, :author "SJhrjuzlG", :time 1512702439808, :id "B1leGKvWz"
                 :data {
-                 "T" {:type :leaf, :author "SJhrjuzlG", :time 1512702442009, :text "coir", :id "B1leGKvWzleaf"}
+                 "T" {:type :leaf, :author "SJhrjuzlG", :time 1512702442009, :text "calcit", :id "B1leGKvWzleaf", :at 1533921047350, :by "root"}
                  "j" {
                   :type :expr, :author "SJhrjuzlG", :time 1512702442509, :id "SJ4GeGKDWM"
                   :data {
@@ -28028,14 +28028,21 @@
               :type :expr, :author "SJhrjuzlG", :time 1512703947620, :id "H14ADtvZM"
               :data {
                "T" {:type :leaf, :author "SJhrjuzlG", :time 1512703963190, :text "println", :id "H14ADtvZMleaf"}
-               "j" {:type :leaf, :author "SJhrjuzlG", :time 1512711471864, :text "|coir changed", :id "HkgX4BsD-M"}
+               "j" {
+                :type :expr, :by "root", :at 1533921188733, :id "sdFeoPB29"
+                :data {
+                 "D" {:type :leaf, :by "root", :at 1533921192713, :text ".blue", :id "WDQRIvEPQR"}
+                 "L" {:type :leaf, :by "root", :at 1533921194273, :text "chalk", :id "JhPm2Q8qcK"}
+                 "T" {:type :leaf, :author "SJhrjuzlG", :time 1512711471864, :text "\"calcit storage file changed!", :id "HkgX4BsD-M", :at 1533921501407, :by "root"}
+                }
+               }
               }
              }
              "h" {
               :type :expr, :author "SJhrjuzlG", :time 1512704174152, :id "H1x8hdYDWM"
               :data {
                "T" {:type :leaf, :author "SJhrjuzlG", :time 1512704175274, :text "reset!", :id "H1x8hdYDWMleaf"}
-               "j" {:type :leaf, :author "SJhrjuzlG", :time 1512704181134, :text "*coir-md5", :id "BJKhuFD-z"}
+               "j" {:type :leaf, :author "SJhrjuzlG", :time 1512704181134, :text "*calcit-md5", :id "BJKhuFD-z", :at 1533921056913, :by "root"}
                "r" {:type :leaf, :author "SJhrjuzlG", :time 1512704184764, :text "new-md5", :id "Bk1aOKPWG"}
               }
              }
@@ -28044,7 +28051,7 @@
               :data {
                "T" {:type :leaf, :author "SJhrjuzlG", :time 1512702372483, :text "dispatch!", :id "Skev5-FvWM"}
                "j" {:type :leaf, :author "SJhrjuzlG", :time 1512702388416, :text ":watcher/file-change", :id "HJLh-YvWG"}
-               "r" {:type :leaf, :author "SJhrjuzlG", :time 1512702455768, :text "coir", :id "Bkx9xfFDWG"}
+               "r" {:type :leaf, :author "SJhrjuzlG", :time 1512702455768, :text "calcit", :id "Bkx9xfFDWG", :at 1533921064334, :by "root"}
                "v" {:type :leaf, :author "SJhrjuzlG", :time 1512702483561, :text "nil", :id "S1ljffKPZG"}
               }
              }
@@ -28445,7 +28452,7 @@
            "T" {
             :type :expr, :author "SJhrjuzlG", :time 1512702153237, :id "HJm-RxKv-z"
             :data {
-             "T" {:type :leaf, :author "SJhrjuzlG", :time 1512702165830, :text "coir-path", :id "B1b-AlYwZM"}
+             "T" {:type :leaf, :author "SJhrjuzlG", :time 1512702165830, :text "calcit-path", :id "B1b-AlYwZM", :at 1533921078411, :by "root"}
              "j" {
               :type :expr, :author "SJhrjuzlG", :time 1512702125353, :id "r12RgKD-M"
               :data {
@@ -28465,7 +28472,7 @@
             :type :expr, :author "SJhrjuzlG", :time 1512717403447, :id "S1G7P2nvbM"
             :data {
              "T" {:type :leaf, :author "SJhrjuzlG", :time 1512717406337, :text "fs/existsSync", :id "rJg4vh3v-M"}
-             "j" {:type :leaf, :author "SJhrjuzlG", :time 1512717409583, :text "coir-path", :id "SkOv33w-G"}
+             "j" {:type :leaf, :author "SJhrjuzlG", :time 1512717409583, :text "calcit-path", :id "SkOv33w-G", :at 1533921081753, :by "root"}
             }
            }
            "T" {
@@ -28476,7 +28483,7 @@
               :type :expr, :author "SJhrjuzlG", :time 1512701974076, :id "B1gRGlKPbz"
               :data {
                "T" {:type :leaf, :author "SJhrjuzlG", :time 1512701977145, :text "reset!", :id "B1gRGlKPbzleaf"}
-               "j" {:type :leaf, :author "SJhrjuzlG", :time 1512701986055, :text "*coir-md5", :id "B1V7ltPbz"}
+               "j" {:type :leaf, :author "SJhrjuzlG", :time 1512701986055, :text "*calcit-md5", :id "B1V7ltPbz", :at 1533921082695, :by "root"}
                "r" {
                 :type :expr, :author "SJhrjuzlG", :time 1512702068415, :id "S1b2ugtw-G"
                 :data {
@@ -28485,7 +28492,7 @@
                   :type :expr, :author "SJhrjuzlG", :time 1512702072234, :id "S1-eteKPbz"
                   :data {
                    "T" {:type :leaf, :author "SJhrjuzlG", :time 1512702077633, :text "fs/readFileSync", :id "B1xeKeKvWf"}
-                   "j" {:type :leaf, :author "SJhrjuzlG", :time 1512702168796, :text "coir-path", :id "Sklu0eKDbM"}
+                   "j" {:type :leaf, :author "SJhrjuzlG", :time 1512702168796, :text "calcit-path", :id "Sklu0eKDbM", :at 1533921084964, :by "root"}
                    "r" {:type :leaf, :author "SJhrjuzlG", :time 1512705914168, :text "|utf8", :id "rJZty5vbM"}
                   }
                  }
@@ -28497,7 +28504,7 @@
               :type :expr, :author "SJhrjuzlG", :time 1512708358650, :id "HJNd32wZM"
               :data {
                "T" {:type :leaf, :author "SJhrjuzlG", :time 1512708359124, :text "gaze", :id "HJJzt9Dbzleaf"}
-               "j" {:type :leaf, :author "SJhrjuzlG", :time 1512708363123, :text "coir-path", :id "r1gGKqv-G"}
+               "j" {:type :leaf, :author "SJhrjuzlG", :time 1512708363123, :text "calcit-path", :id "r1gGKqv-G", :at 1533921083490, :by "root"}
                "r" {
                 :type :expr, :author "SJhrjuzlG", :time 1512708363520, :id "ByEGtqP-z"
                 :data {
@@ -49811,7 +49818,7 @@
         :type :expr, :time 1504777570689, :id "S1UbrjsFN39b"
         :data {
          "T" {:type :leaf, :author "root", :time 1504777570689, :text "db", :id "Hyw-HjstEhqZ"}
-         "b" {:type :leaf, :author "SJhrjuzlG", :time 1512706491896, :text "*coir-md5", :id "H1g1aW5wZz"}
+         "b" {:type :leaf, :author "SJhrjuzlG", :time 1512706491896, :text "*calcit-md5", :id "H1g1aW5wZz", :at 1533921095230, :by "root"}
          "j" {:type :leaf, :author "root", :time 1504777570689, :text "configs", :id "Hk_WSjjtN25-"}
          "r" {:type :leaf, :author "root", :time 1504777570689, :text "dispatch!", :id "B1FZHsiFE2qZ"}
          "v" {:type :leaf, :author "root", :time 1504777570689, :text "save-ir?", :id "rkqbSjsKE2cW"}
@@ -50187,7 +50194,7 @@
                       :type :expr, :author "SJhrjuzlG", :time 1512706504820, :id "ByW2kM5DWM"
                       :data {
                        "T" {:type :leaf, :author "SJhrjuzlG", :time 1512706506779, :text "reset!", :id "ByWRZ5wbfleaf"}
-                       "j" {:type :leaf, :author "SJhrjuzlG", :time 1512706509043, :text "*coir-md5", :id "HJlQAZqDWz"}
+                       "j" {:type :leaf, :author "SJhrjuzlG", :time 1512706509043, :text "*calcit-md5", :id "HJlQAZqDWz", :at 1533921098101, :by "root"}
                        "r" {
                         :type :expr, :author "SJhrjuzlG", :time 1512706509920, :id "HyIR-5DZM"
                         :data {

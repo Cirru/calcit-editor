@@ -35,7 +35,7 @@
     (cp/execSync (str "rm -rfv " project-path))
     (println (.red chalk (str "removed " project-path)))))
 
-(defn handle-files! [db *coir-md5 configs dispatch! save-ir?]
+(defn handle-files! [db *calcit-md5 configs dispatch! save-ir?]
   (try
    (let [new-files (get-in db [:ir :files])
          old-files (get db :saved-files)
@@ -60,7 +60,7 @@
         (js/setTimeout
          (fn []
            (let [db-content (db->string db)]
-             (reset! *coir-md5 (md5 db-content))
+             (reset! *calcit-md5 (md5 db-content))
              (persist! (:storage-key configs) db-content)))))))
    (catch
     js/Error
