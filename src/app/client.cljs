@@ -11,18 +11,21 @@
             [app.util.shortcuts :refer [on-window-keydown]]
             [app.client-updater :as updater]))
 
+(defonce *connecting? (atom false))
+
 (defonce *states (atom {}))
 
 (defonce *store (atom nil))
 
 (defn dispatch! [op op-data]
-  (.info js/console "Dispatch" (str op) (clj->js op-data))
+  (when (not= op :states) (.info js/console "Dispatch" (str op) (clj->js op-data)))
   (case op
     :states (reset! *states ((mutate op-data) @*states))
     :states/clear (reset! *states {})
     :manual-state/abstract (reset! *states (updater/abstract @*states))
     :manual-state/draft-box (reset! *states (updater/draft-box @*states))
-    :effect/save-files (do (reset! *states (updater/clear-editor @*states)))
+    :effect/save-files
+      (do (reset! *states (updater/clear-editor @*states)) (send! op op-data))
     (send! op op-data)))
 
 (defn detect-watching! []
@@ -36,13 +39,15 @@
       (do (dispatch! :user/log-in (read-string raw)))
       (do (println "Found no storage.")))))
 
-(defn connect []
+(defn connect! []
   (.info js/console "Connecting...")
+  (reset! *connecting? true)
   (setup-socket!
    *store
    {:url ws-host,
     :on-close! (fn [event]
       (reset! *store nil)
+      (reset! *connecting? false)
       (.error js/console "Lost connection!")
       (dispatch! :states/clear nil)),
     :on-open! (fn [event] (simulate-login!) (detect-watching!))}))
@@ -51,6 +56,8 @@
 
 (defn render-app! [renderer]
   (renderer mount-target (comp-container @*states @*store) #(dispatch! %1 %2)))
+
+(defn retry-connect! [] (if (and (nil? @*store) (not @*connecting?)) (connect!)))
 
 (def ssr? (some? (.querySelector js/document "meta.respo-ssr")))
 
@@ -61,7 +68,7 @@
    *changes-logger
    (fn [global-element element changes] (println "Changes:" changes)))
   (render-app! render!)
-  (connect)
+  (connect!)
   (add-watch
    *store
    :changes
@@ -71,7 +78,11 @@
    js/window
    "keydown"
    (fn [event] (on-window-keydown event dispatch! (:router @*store))))
-  (.addEventListener js/window "focus" (fn [event] (if (nil? @*store) (connect))))
+  (.addEventListener js/window "focus" (fn [event] (retry-connect!)))
+  (.addEventListener
+   js/window
+   "visibilitychange"
+   (fn [event] (when (= "visible" (.-visibilityState js/document)) (retry-connect!))))
   (println "App started!"))
 
 (defn reload! [] (clear-cache!) (render-app! render!) (println "Code updated."))

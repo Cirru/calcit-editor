@@ -18,7 +18,7 @@
             ["md5" :as md5]
             ["gaze" :as gaze]))
 
-(defonce *coir-md5 (atom nil))
+(defonce *calcit-md5 (atom nil))
 
 (defonce *writer-db
   (atom
@@ -36,7 +36,7 @@
 (defn compile-all-files! [configs]
   (handle-files!
    (assoc @*writer-db :saved-files {})
-   *coir-md5
+   *calcit-md5
    configs
    (fn [op op-data] (println "After compile:" op op-data))
    false))
@@ -51,7 +51,7 @@
         op-time (.valueOf (js/Date.))]
     (try
      (case op
-       :effect/save-files (handle-files! @*writer-db *coir-md5 global-configs d2! true)
+       :effect/save-files (handle-files! @*writer-db *calcit-md5 global-configs d2! true)
        :effect/connect-repl (repl/connect-socket-repl! op-data d2!)
        :effect/cljs-repl (repl/try-cljs-repl! d2! op-data)
        :effect/send-code (repl/send-raw-code! op-data d2!)
@@ -61,14 +61,14 @@
      (catch js/Error e (println (.red chalk e)) (.error js/console e)))))
 
 (defn on-file-change! []
-  (let [coir-path (:storage-key global-configs)
-        file-content (fs/readFileSync coir-path "utf8")
+  (let [calcit-path (:storage-key global-configs)
+        file-content (fs/readFileSync calcit-path "utf8")
         new-md5 (md5 file-content)]
-    (if (not= new-md5 @*coir-md5)
-      (let [coir (read-string file-content)]
-        (println "coir changed")
-        (reset! *coir-md5 new-md5)
-        (dispatch! :watcher/file-change coir nil)))))
+    (if (not= new-md5 @*calcit-md5)
+      (let [calcit (read-string file-content)]
+        (println (.blue chalk "calcit storage file changed!"))
+        (reset! *calcit-md5 new-md5)
+        (dispatch! :watcher/file-change calcit nil)))))
 
 (defn render-loop! []
   (if (not= @*reader-db @*writer-db)
@@ -86,12 +86,12 @@
      (str "Serving local editor at " (.blue chalk (str "http://localhost:" file-port))))))
 
 (defn watch-file! []
-  (let [coir-path (:storage-key global-configs)]
-    (if (fs/existsSync coir-path)
+  (let [calcit-path (:storage-key global-configs)]
+    (if (fs/existsSync calcit-path)
       (do
-       (reset! *coir-md5 (md5 (fs/readFileSync coir-path "utf8")))
+       (reset! *calcit-md5 (md5 (fs/readFileSync calcit-path "utf8")))
        (gaze
-        coir-path
+        calcit-path
         (fn [error watcher]
           (if (some? error)
             (.log js/console error)
