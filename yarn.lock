@@ -1566,9 +1566,9 @@ sha.js@^2.4.0, sha.js@^2.4.8:
     inherits "^2.0.1"
     safe-buffer "^5.0.1"
 
-shadow-cljs@^2.5.0:
-  version "2.5.0"
-  resolved "https://registry.yarnpkg.com/shadow-cljs/-/shadow-cljs-2.5.0.tgz#cd9e3724d8d4db949121ce47b9a4b3e662467ea7"
+shadow-cljs@^2.5.1:
+  version "2.5.1"
+  resolved "https://registry.yarnpkg.com/shadow-cljs/-/shadow-cljs-2.5.1.tgz#4c178329929403d5aa1de79637944a34054ba2f1"
   dependencies:
     babel-core "^6.26.0"
     babel-preset-env "^1.6.0"
@@ -1579,9 +1579,9 @@ shadow-cljs@^2.5.0:
     source-map-support "^0.4.15"
     ws "^3.0.0"
 
-shortid@^2.2.12:
-  version "2.2.12"
-  resolved "https://registry.yarnpkg.com/shortid/-/shortid-2.2.12.tgz#8e9a95ffbc671fff8f09e985dbc7874102b0cfd2"
+shortid@^2.2.13:
+  version "2.2.13"
+  resolved "https://registry.yarnpkg.com/shortid/-/shortid-2.2.13.tgz#b2441e71c664ace458a341d343959f677910ef5b"
   dependencies:
     nanoid "^1.0.7"
 
