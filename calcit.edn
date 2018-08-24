@@ -12138,10 +12138,23 @@
                      "D" {:type :leaf, :by "root", :at 1518623893381, :text "str", :id "BJ692R-Pz"}
                      "L" {:type :leaf, :by "root", :at 1518623909795, :text "|https://clojuredocs.org/search?q=", :id "HJlzo20bvz"}
                      "T" {
-                      :type :expr, :by "root", :at 1518623895069, :id "rk1sn0-Pz"
+                      :type :expr, :by "S1lNv50FW", :at 1535040658748, :id "_BHYmaNB9P"
                       :data {
-                       "D" {:type :leaf, :by "root", :at 1518623897329, :text ":text", :id "S1ls20-PM"}
-                       "T" {:type :leaf, :by "root", :at 1518623655607, :text "leaf", :id "BJCosRWDM"}
+                       "D" {:type :leaf, :by "S1lNv50FW", :at 1535040659960, :text "last", :id "ObW6n6BUUK"}
+                       "T" {
+                        :type :expr, :by "S1lNv50FW", :at 1535040582396, :id "mGWGMfc-eq"
+                        :data {
+                         "D" {:type :leaf, :by "S1lNv50FW", :at 1535040655658, :text "string/split", :id "f--MsvLrn"}
+                         "T" {
+                          :type :expr, :by "root", :at 1518623895069, :id "rk1sn0-Pz"
+                          :data {
+                           "D" {:type :leaf, :by "root", :at 1518623897329, :text ":text", :id "S1ls20-PM"}
+                           "T" {:type :leaf, :by "root", :at 1518623655607, :text "leaf", :id "BJCosRWDM"}
+                          }
+                         }
+                         "j" {:type :leaf, :by "S1lNv50FW", :at 1535040587960, :text "\"/", :id "ByznrY2Aj"}
+                        }
+                       }
                       }
                      }
                     }
