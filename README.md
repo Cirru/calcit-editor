@@ -4,21 +4,27 @@ Calcit Editor
 
 [![npm](https://img.shields.io/npm/v/calcit-editor.svg)](https://www.npmjs.com/package/calcit-editor)
 
-> A collabrative syntax tree editor of Clojure(Script).
+> A collabrative syntax tree editor of Clojure(Script). [Overview Video](https://www.youtube.com/watch?v=u5Eb_6KYGsA&t).
 
-* Editor UI http://calcit-editor.cirru.org/
-* [Keyboard Shortcuts](https://github.com/Cirru/calcit-editor/wiki/Keyboard-Shortcuts)
-* [Overview Video](https://www.youtube.com/watch?v=u5Eb_6KYGsA&t)
+Main ideas:
+
+* **Tree Editing**: it's a DOM-based tree editor, NOT in raw text syntax.
+* **Auto Layout**: expressions and rendered with CSS layouts.
+* **Collaborative**: changes sync to all connected clients instantly.
+* **Call Stack Navigation**: goto definition and back to preview editing location.
 
 ### Guide
 
-Run editor:
+Install editor and try:
 
 ```bash
 npm i -g calcit-editor
 calcit-editor
 # open http://calcit-editor.cirru.org/?port=6001
 ```
+
+* Editor UI http://calcit-editor.cirru.org/
+* [Keyboard Shortcuts](https://github.com/Cirru/calcit-editor/wiki/Keyboard-Shortcuts)
 
 ![Run in command line](https://pbs.twimg.com/media/DLSmv0cVwAEUCMi.png:large)
 ![Files browser](https://pbs.twimg.com/media/DLSnADUVYAAr43C.png:large)
