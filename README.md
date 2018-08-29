@@ -23,7 +23,7 @@ calcit-editor
 # open http://calcit-editor.cirru.org/?port=6001
 ```
 
-* Editor UI http://calcit-editor.cirru.org/
+* [Editor UI](http://calcit-editor.cirru.org/)
 * [Keyboard Shortcuts](https://github.com/Cirru/calcit-editor/wiki/Keyboard-Shortcuts)
 
 ![Run in command line](https://pbs.twimg.com/media/DLSmv0cVwAEUCMi.png:large)
