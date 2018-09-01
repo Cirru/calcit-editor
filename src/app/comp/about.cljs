@@ -16,7 +16,7 @@
  (div
   {:style ui/center}
   (img
-   {:src "http://cdn.tiye.me/logo/cirru.png",
+   {:src "//cdn.tiye.me/logo/cirru.png",
     :style {:width 80, :height 80, :border-radius "8px"}})
   (=< nil 16)
   (<>

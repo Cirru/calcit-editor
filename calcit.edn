@@ -2367,7 +2367,7 @@
               :type :expr, :by "S1lNv50FW", :at 1535828626479, :id "XxeJ9Ju03U"
               :data {
                "T" {:type :leaf, :by "S1lNv50FW", :at 1535828627856, :text ":src", :id "gl1uj3Eiyb"}
-               "j" {:type :leaf, :by "S1lNv50FW", :at 1535828628608, :text "\"http://cdn.tiye.me/logo/cirru.png", :id "HeqyAAwroM"}
+               "j" {:type :leaf, :by "S1lNv50FW", :at 1535831038491, :text "\"//cdn.tiye.me/logo/cirru.png", :id "HeqyAAwroM"}
               }
              }
              "r" {
@@ -25534,7 +25534,7 @@
           :type :expr, :id "SyF_IFHY42cW", :by nil, :at 1504777353661
           :data {
            "T" {:type :leaf, :text ":icon", :id "rycuUtHF4n9-", :by "root", :at 1504777353661}
-           "j" {:type :leaf, :text "|http://cdn.tiye.me/logo/cirru.png", :id "B1juUFBtVh5W", :by "root", :at 1508247386461}
+           "j" {:type :leaf, :text "|//cdn.tiye.me/logo/cirru.png", :id "B1juUFBtVh5W", :by "S1lNv50FW", :at 1535831010047}
           }
          }
          "v" {
@@ -25782,7 +25782,7 @@
                 }
                }
                "r" {:type :leaf, :text "|", :id "ryEo5L5o-", :by "S1lNv50FW", :at 1506597534321}
-               "v" {:type :leaf, :text "|http://cdn.tiye.me/calcit-editor/", :id "BkDo5U9ob", :by "root", :at 1508092895370}
+               "v" {:type :leaf, :text "\"//cdn.tiye.me/calcit-editor/", :id "BkDo5U9ob", :by "S1lNv50FW", :at 1535831024177}
               }
              }
             }
@@ -25796,8 +25796,8 @@
               :data {
                "T" {:type :leaf, :text "if", :id "SkFMFIGa-", :by "root", :at 1508170001788}
                "j" {:type :leaf, :text "local?", :id "B1zcfFUGpW", :by "root", :at 1508170002638}
-               "n" {:type :leaf, :text "|favored-fonts/main.css", :id "B1S4tLMp-", :by "S1lNv50FW", :at 1515853963858}
-               "r" {:type :leaf, :text "|http://cdn.tiye.me/favored-fonts/main.css", :id "ByxjGYLG6b", :by "S1lNv50FW", :at 1515853974289}
+               "n" {:type :leaf, :text "\"favored-fonts/main.css", :id "B1S4tLMp-", :by "S1lNv50FW", :at 1535831027065}
+               "r" {:type :leaf, :text "\"//cdn.tiye.me/favored-fonts/main.css", :id "ByxjGYLG6b", :by "S1lNv50FW", :at 1535831022762}
               }
              }
             }
