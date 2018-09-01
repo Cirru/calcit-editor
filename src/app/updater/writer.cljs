@@ -1,6 +1,6 @@
 
 (ns app.updater.writer
-  (:require [app.util :refer [bookmark->path to-writer to-bookmark push-info]]
+  (:require [app.util :refer [bookmark->path to-writer to-bookmark push-info cirru->tree]]
             [app.util.stack :refer [push-bookmark]]
             [app.util.list :refer [dissoc-idx]]
             [app.schema :as schema]))
@@ -153,12 +153,14 @@
          (let [pointer (:pointer writer)]
            (assoc writer :pointer (if (pos? pointer) (dec pointer) 0)))))))
 
-(defn paste [db op-data session-id op-id op-time]
-  (let [piece (assoc (get-in db [:sessions session-id :writer :clipboard]) :id op-id)
-        writer (to-writer db session-id)
+(defn paste [db op-data sid op-id op-time]
+  (let [writer (to-writer db sid)
         bookmark (to-bookmark writer)
-        data-path (bookmark->path bookmark)]
-    (if (some? piece) (-> db (assoc-in data-path piece)) db)))
+        data-path (bookmark->path bookmark)
+        user-id (get-in db [:sessions sid :user-id])]
+    (if (vector? op-data)
+      (-> db (assoc-in data-path (cirru->tree op-data user-id op-time)))
+      db)))
 
 (defn point-to [db op-data session-id op-id op-time]
   (assoc-in db [:sessions session-id :writer :pointer] op-data))

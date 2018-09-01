@@ -10,9 +10,26 @@
             [app.comp.leaf :refer [comp-leaf]]
             [app.client-util :refer [coord-contains? simple? leaf? expr?]]
             [app.util.shortcuts :refer [on-window-keydown]]
-            [app.theme :refer [decide-expr-theme]]))
+            [app.theme :refer [decide-expr-theme]]
+            [cljs.reader :refer [read-string]]
+            [app.util.list :refer [cirru-form?]]))
 
 (defn on-focus [coord] (fn [e d! m!] (d! :writer/focus coord)))
+
+(defn on-paste! [d!]
+  (-> js/navigator
+      .-clipboard
+      (.readText)
+      (.then
+       (fn [text]
+         (let [cirru-code (read-string text)]
+           (if (cirru-form? cirru-code)
+             (d! :writer/paste cirru-code)
+             (d! :notify/push-message [:error "Not valid code"])))))
+      (.catch
+       (fn [error]
+         (.error js/console "Not able to read from paste:" error)
+         (d! :notify/push-message [:error "Failed to paste!"])))))
 
 (defn on-keydown [coord]
   (fn [e d! m!]
@@ -36,9 +53,9 @@
         (= code keycode/down) (do (d! :writer/go-down nil) (.preventDefault event))
         (= code keycode/left) (do (d! :writer/go-left nil) (.preventDefault event))
         (= code keycode/right) (do (d! :writer/go-right nil) (.preventDefault event))
-        (and meta? (= code keycode/c)) (d! :writer/copy nil)
-        (and meta? (= code keycode/x)) (d! :writer/cut nil)
-        (and meta? (= code keycode/v)) (d! :writer/paste nil)
+        (and meta? (= code keycode/c)) (do (comment d! :writer/copy nil) (println "copy"))
+        (and meta? (= code keycode/x)) (do (d! :writer/cut nil) (println "cut"))
+        (and meta? (= code keycode/v)) (on-paste! d!)
         (and meta? (= code keycode/b)) (d! :ir/duplicate nil)
         (and meta? (= code keycode/d))
           (do
@@ -52,6 +69,9 @@
           (do
            (comment println "Keydown" (:key-code e))
            (on-window-keydown event d! {:name :editor}))))))
+
+(defn on-paste [coord]
+  (fn [e d! m!] (let [event (:event e)] (.log js/console "paste event" event))))
 
 (defcomp
  comp-expr
@@ -75,7 +95,9 @@
              (count coord)
              depth
              theme),
-     :on (if readonly? {} {:keydown (on-keydown coord), :click (on-focus coord)})}
+     :on (if readonly?
+       {}
+       {:keydown (on-keydown coord), :click (on-focus coord), :paste (on-paste coord)})}
     (loop [result [], children sorted-children, info default-info]
       (if (empty? children)
         result
