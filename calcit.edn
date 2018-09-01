@@ -27211,13 +27211,6 @@
                }
               }
              }
-             "x" {
-              :type :expr, :time 1504777570689, :id "SyahW2jK425W"
-              :data {
-               "T" {:type :leaf, :author "root", :time 1504777570689, :text ":clipboard", :id "SJC2Z2sYVh9W"}
-               "j" {:type :leaf, :author "root", :time 1504777570689, :text "nil", :id "S1JpWnstV39b"}
-              }
-             }
             }
            }
           }
