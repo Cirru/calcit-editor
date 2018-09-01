@@ -31,8 +31,6 @@
             :writer/go-left writer/go-left
             :writer/go-right writer/go-right
             :writer/remove-idx writer/remove-idx
-            :writer/copy writer/copy
-            :writer/cut writer/cut
             :writer/paste writer/paste
             :writer/save-files writer/save-files
             :writer/collapse writer/collapse

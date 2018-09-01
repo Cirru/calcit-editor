@@ -12,35 +12,6 @@
        (fn [writer]
          (-> writer (update :stack (fn [stack] (subvec stack op-data))) (assoc :pointer 0))))))
 
-(defn copy [db op-data session-id op-id op-time]
-  (let [writer (to-writer db session-id)
-        bookmark (to-bookmark writer)
-        data-path (bookmark->path bookmark)]
-    (-> db (assoc-in [:sessions session-id :writer :clipboard] (get-in db data-path)))))
-
-(defn focus [db op-data session-id op-id op-time]
-  (let [writer (get-in db [:sessions session-id :writer])]
-    (assoc-in db [:sessions session-id :writer :stack (:pointer writer) :focus] op-data)))
-
-(defn cut [db op-data session-id op-id op-time]
-  (let [writer (to-writer db session-id)
-        bookmark (to-bookmark writer)
-        data-path (bookmark->path bookmark)
-        last-coord (last (:focus bookmark))
-        parent-path (bookmark->path (update bookmark :focus butlast))]
-    (-> db
-        (update-in
-         [:sessions session-id :writer]
-         (fn [writer]
-           (-> writer
-               (assoc :clipboard (get-in db data-path))
-               (update-in
-                [:stack (:pointer writer) :focus]
-                (fn [focus] (vec (butlast focus)))))))
-        (update-in
-         parent-path
-         (fn [expr] (update expr :data (fn [data] (dissoc data last-coord))))))))
-
 (defn draft-ns [db op-data sid op-id op-time]
   (-> db (update-in [:sessions sid :writer] (fn [writer] (assoc writer :draft-ns op-data)))))
 
@@ -71,6 +42,10 @@
                 :stack
                 (fn [stack] (if (> (count stack) pointer) (dissoc-idx stack pointer) stack)))
                (assoc :pointer (if (pos? pointer) (dec pointer) pointer))))))))
+
+(defn focus [db op-data session-id op-id op-time]
+  (let [writer (get-in db [:sessions session-id :writer])]
+    (assoc-in db [:sessions session-id :writer :stack (:pointer writer) :focus] op-data)))
 
 (defn go-down [db op-data session-id op-id op-time]
   (let [writer (get-in db [:sessions session-id :writer])

@@ -9,7 +9,7 @@
             [polyfill.core :refer [text-width*]]
             [keycode.core :as keycode]
             [app.client-util :as util]
-            [app.util.shortcuts :refer [on-window-keydown]]
+            [app.util.shortcuts :refer [on-window-keydown on-paste!]]
             [app.theme :refer [decide-leaf-theme]]
             [verbosely.core :refer [log!]]))
 
@@ -48,8 +48,7 @@
         (and (not selected?) (= code keycode/right))
           (if (= text-length event.target.selectionEnd)
             (do (d! :writer/go-right nil) (.preventDefault event)))
-        (and meta? shift? (= code keycode/v))
-          (do (d! :writer/paste nil) (.preventDefault event))
+        (and meta? shift? (= code keycode/v)) (do (on-paste! d!) (.preventDefault event))
         (and meta? (= code keycode/d))
           (do
            (.preventDefault event)
