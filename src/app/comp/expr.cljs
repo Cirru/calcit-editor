@@ -11,7 +11,8 @@
             [app.client-util :refer [coord-contains? simple? leaf? expr?]]
             [app.util.shortcuts :refer [on-window-keydown on-paste!]]
             [app.theme :refer [decide-expr-theme]]
-            [app.util :refer [tree->cirru]]))
+            [app.util :refer [tree->cirru]]
+            [app.util.dom :refer [do-copy-logics!]]))
 
 (defn on-focus [coord] (fn [e d! m!] (d! :writer/focus coord)))
 
@@ -38,16 +39,11 @@
         (= code keycode/left) (do (d! :writer/go-left nil) (.preventDefault event))
         (= code keycode/right) (do (d! :writer/go-right nil) (.preventDefault event))
         (and meta? (= code keycode/c))
+          (do-copy-logics! d! (pr-str (tree->cirru expr)) "Copied!")
+        (and meta? (= code keycode/x))
           (do
-           (-> js/navigator
-               .-clipboard
-               (.writeText (pr-str (tree->cirru expr)))
-               (.then (fn [] (d! :notify/push-message [:info "Copied!"])))
-               (.catch
-                (fn [error]
-                  (.error js/console "Failed to copy:" error)
-                  (d! :notify/push-message [:error "Failed to copy!"])))))
-        (and meta? (= code keycode/x)) (do (d! :ir/delete-node nil))
+           (do-copy-logics! d! (pr-str (tree->cirru expr)) "Copied!")
+           (d! :ir/delete-node nil))
         (and meta? (= code keycode/v)) (on-paste! d!)
         (and meta? (= code keycode/b)) (d! :ir/duplicate nil)
         (and meta? (= code keycode/d))

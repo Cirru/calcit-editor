@@ -17,7 +17,9 @@
             [app.comp.draft-box :refer [comp-draft-box]]
             [app.comp.abstract :refer [comp-abstract]]
             [app.comp.theme-menu :refer [comp-theme-menu]]
-            [app.comp.peek-def :refer [comp-peek-def]]))
+            [app.comp.peek-def :refer [comp-peek-def]]
+            [app.util :refer [tree->cirru]]
+            [app.util.dom :refer [do-copy-logics!]]))
 
 (def initial-state {:beginner? false, :renaming? false, :draft-box? false})
 
@@ -29,6 +31,18 @@
     (js/setTimeout
      (fn []
        (let [el (.querySelector js/document ".el-draft-box")] (if (some? el) (.focus el)))))))
+
+(defn on-path-gen! [bookmark]
+  (fn [e d! m!]
+    (case (:kind bookmark)
+      :def
+        (let [code ["[]" (:ns bookmark) ":refer" ["[]" (:extra bookmark)]]]
+          (do-copy-logics! d! (pr-str code) (str "Copied path of " (:extra bookmark))))
+      :ns
+        (let [the-ns (:ns bookmark)
+              code ["[]" the-ns ":as" (last (string/split the-ns "."))]]
+          (do-copy-logics! d! (pr-str code) (str "Copied path of " the-ns)))
+      (d! :notify/push-message [:warn "No op."]))))
 
 (defn on-rename [state]
   (fn [e d! m!]
@@ -73,7 +87,10 @@
       (=< 8 nil)
       (span {:inner-text "Rename", :style style-link, :on {:click (on-rename state)}})
       (=< 8 nil)
-      (span {:inner-text "Draft-box", :style style-link, :on {:click (on-draft-box state)}}))
+      (span {:inner-text "Draft-box", :style style-link, :on {:click (on-draft-box state)}})
+      (=< 8 nil)
+      (span
+       {:inner-text "Exporting", :style style-link, :on {:click (on-path-gen! bookmark)}}))
      (div
       {:style ui/row}
       (cursor-> :theme comp-theme-menu states theme)
