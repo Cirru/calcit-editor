@@ -9,12 +9,14 @@
             [keycode.core :as keycode]
             [app.comp.leaf :refer [comp-leaf]]
             [app.client-util :refer [coord-contains? simple? leaf? expr?]]
-            [app.util.shortcuts :refer [on-window-keydown]]
-            [app.theme :refer [decide-expr-theme]]))
+            [app.util.shortcuts :refer [on-window-keydown on-paste!]]
+            [app.theme :refer [decide-expr-theme]]
+            [app.util :refer [tree->cirru]]
+            [app.util.dom :refer [do-copy-logics!]]))
 
 (defn on-focus [coord] (fn [e d! m!] (d! :writer/focus coord)))
 
-(defn on-keydown [coord]
+(defn on-keydown [coord expr]
   (fn [e d! m!]
     (let [event (:original-event e)
           shift? (.-shiftKey event)
@@ -36,9 +38,13 @@
         (= code keycode/down) (do (d! :writer/go-down nil) (.preventDefault event))
         (= code keycode/left) (do (d! :writer/go-left nil) (.preventDefault event))
         (= code keycode/right) (do (d! :writer/go-right nil) (.preventDefault event))
-        (and meta? (= code keycode/c)) (d! :writer/copy nil)
-        (and meta? (= code keycode/x)) (d! :writer/cut nil)
-        (and meta? (= code keycode/v)) (d! :writer/paste nil)
+        (and meta? (= code keycode/c))
+          (do-copy-logics! d! (pr-str (tree->cirru expr)) "Copied!")
+        (and meta? (= code keycode/x))
+          (do
+           (do-copy-logics! d! (pr-str (tree->cirru expr)) "Copied!")
+           (d! :ir/delete-node nil))
+        (and meta? (= code keycode/v)) (on-paste! d!)
         (and meta? (= code keycode/b)) (d! :ir/duplicate nil)
         (and meta? (= code keycode/d))
           (do
@@ -75,7 +81,7 @@
              (count coord)
              depth
              theme),
-     :on (if readonly? {} {:keydown (on-keydown coord), :click (on-focus coord)})}
+     :on (if readonly? {} {:keydown (on-keydown coord expr), :click (on-focus coord)})}
     (loop [result [], children sorted-children, info default-info]
       (if (empty? children)
         result

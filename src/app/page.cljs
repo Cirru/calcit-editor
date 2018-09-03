@@ -7,7 +7,7 @@
 
 (def base-info
   {:title "Editor",
-   :icon "http://cdn.tiye.me/logo/cirru.png",
+   :icon "//cdn.tiye.me/logo/cirru.png",
    :ssr nil,
    :inline-styles [(slurp "entry/main.css")]})
 
@@ -23,10 +23,10 @@
 (defn prod-page []
   (let [html-content (make-string (comp-container {} nil))
         assets (read-string (slurp "dist/assets.edn"))
-        cdn (if (or local? preview?) "" "http://cdn.tiye.me/calcit-editor/")
+        cdn (if (or local? preview?) "" "//cdn.tiye.me/calcit-editor/")
         font-styles (if local?
                       "favored-fonts/main.css"
-                      "http://cdn.tiye.me/favored-fonts/main.css")
+                      "//cdn.tiye.me/favored-fonts/main.css")
         prefix-cdn #(str cdn %)]
     (make-page
      html-content

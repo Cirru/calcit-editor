@@ -2,6 +2,16 @@
 (ns app.util.dom
   (:require [respo.macros :refer [style]] [respo.render.html :refer [style->string]]))
 
+(defn do-copy-logics! [d! x message]
+  (-> js/navigator
+      .-clipboard
+      (.writeText x)
+      (.then (fn [] (d! :notify/push-message [:info message])))
+      (.catch
+       (fn [error]
+         (.error js/console "Failed to copy:" error)
+         (d! :notify/push-message [:error (str "Failed to copy! " error)])))))
+
 (defn focus! []
   (js/requestAnimationFrame
    (fn [timestamp]

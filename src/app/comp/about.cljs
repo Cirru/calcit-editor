@@ -4,7 +4,7 @@
             [hsl.core :refer [hsl]]
             [respo-ui.core :as ui]
             [respo-ui.colors :as colors]
-            [respo.macros :refer [defcomp cursor-> <> span div pre input button a]]
+            [respo.macros :refer [defcomp cursor-> <> span div pre input button img a]]
             [respo.comp.inspect :refer [comp-inspect]]
             [respo.comp.space :refer [=<]]
             [app.style :as style]
@@ -14,11 +14,15 @@
  comp-about
  ()
  (div
-  {}
+  {:style ui/center}
+  (img
+   {:src "//cdn.tiye.me/logo/cirru.png",
+    :style {:width 80, :height 80, :border-radius "8px"}})
+  (=< nil 16)
   (<>
    span
-   "Editor server is not started!"
-   {:font-family "Josefin Sans", :font-weight 100, :font-size 40, :color (hsl 0 80 60)})
+   "Need connection..."
+   {:font-family "Josefin Sans", :font-weight 100, :font-size 24, :color (hsl 0 80 60)})
   (div
    {:class-name "comp-about"}
    (comp-md-block

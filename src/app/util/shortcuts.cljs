@@ -1,6 +1,25 @@
 
 (ns app.util.shortcuts
-  (:require [keycode.core :as keycode] [app.util.dom :refer [focus-search!]]))
+  (:require [keycode.core :as keycode]
+            [app.util.dom :refer [focus-search!]]
+            [cljs.reader :refer [read-string]]
+            [app.util.list :refer [cirru-form?]]))
+
+(defn on-paste! [d!]
+  (-> js/navigator
+      .-clipboard
+      (.readText)
+      (.then
+       (fn [text]
+         (println "read from text...")
+         (let [cirru-code (read-string text)]
+           (if (cirru-form? cirru-code)
+             (d! :writer/paste cirru-code)
+             (d! :notify/push-message [:error "Not valid code"])))))
+      (.catch
+       (fn [error]
+         (.error js/console "Not able to read from paste:" error)
+         (d! :notify/push-message [:error "Failed to paste!"])))))
 
 (defn on-window-keydown [event dispatch! router]
   (if (some? router)
