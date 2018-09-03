@@ -10,6 +10,7 @@
                 [respo                  "0.8.20"]
                 [respo/ui               "0.3.7"]
                 [respo/markdown         "0.2.1"]
+                [respo/alerts           "0.3.5"]
                 [cumulo/recollect       "0.4.3"]
                 [fipp                   "0.6.12"]
                 [cirru/sepal            "0.2.7"]

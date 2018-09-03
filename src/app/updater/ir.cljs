@@ -14,7 +14,9 @@
               pick-second-key
               cirru->file]]
             [app.util.list :refer [dissoc-idx]]
-            [bisection-key.util :refer [key-before key-after key-prepend key-append]]))
+            [bisection-key.util :refer [key-before key-after key-prepend key-append]]
+            [clojure.string :as string]
+            [app.util :refer [push-warning]]))
 
 (defn add-def [db op-data session-id op-id op-time]
   (let [selected-ns (get-in db [:sessions session-id :writer :selected-ns])
@@ -35,6 +37,24 @@
          [:ir :files op-data]
          (assoc schema/file :ns default-expr :proc empty-expr))
         (assoc-in [:sessions session-id :writer :selected-ns] op-data))))
+
+(defn clone-ns [db op-data sid op-id op-time]
+  (let [writer (get-in db [:sessions sid :writer])
+        selected-ns (:selected-ns writer)
+        files (get-in db [:ir :files])
+        warn (fn [x]
+               (update-in db [:sessions sid :notifications] (push-warning op-id op-time x)))
+        new-ns op-data]
+    (cond
+      (not (and (string? new-ns) (string/includes? new-ns "."))) (warn "Not a valid string!")
+      (contains? files op-data) (warn (str new-ns " already existed!"))
+      (not (contains? files selected-ns)) (warn (warn "No selected namespace!"))
+      :else
+        (-> db
+            (update-in
+             [:ir :files]
+             (fn [files] (assoc files new-ns (get files selected-ns))))
+            (assoc-in [:sessions sid :writer :selected-ns] new-ns)))))
 
 (defn cp-ns [db op-data session-id op-id op-time]
   (update-in

@@ -11,7 +11,8 @@
             [app.comp.changed-files :refer [comp-changed-files]]
             [keycode.core :as keycode]
             [app.comp.file-replacer :refer [comp-file-replacer]]
-            [app.util.shortcuts :refer [on-window-keydown]]))
+            [app.util.shortcuts :refer [on-window-keydown]]
+            [respo-alerts.comp.alerts :refer [comp-prompt]]))
 
 (def initial-state {:ns-text "", :def-text ""})
 
@@ -74,7 +75,7 @@
    :top 8,
    :right 8})
 
-(defn render-file [state selected-ns defs-set highlights]
+(defn render-file [states %cursor state selected-ns defs-set highlights]
   (div
    {:style style-file}
    (div
@@ -88,7 +89,17 @@
     (span
      {:inner-text "Replacer",
       :style style/button,
-      :on {:click (fn [e d! m!] (d! :writer/draft-ns selected-ns))}}))
+      :on {:click (fn [e d! m!] (d! :writer/draft-ns selected-ns))}})
+    (=< 16 nil)
+    (cursor->
+     :duplicate
+     comp-prompt
+     states
+     {:trigger (span {:inner-text "Duplicate", :style style/button})}
+     (fn [result d! m!]
+       (if (string/includes? result ".")
+         (d! :ir/clone-ns result)
+         (d! :notify/push-message [:warn (str "Not a good name: " result)])))))
    (div
     {}
     (input
@@ -181,7 +192,7 @@
     (render-list state (:ns-set router-data) selected-ns ns-highlights)
     (=< 32 nil)
     (if (some? selected-ns)
-      (render-file state selected-ns (:defs-set router-data) highlights)
+      (render-file states %cursor state selected-ns (:defs-set router-data) highlights)
       (render-empty))
     (=< 32 nil)
     (cursor-> :files comp-changed-files states (:changed-files router-data))

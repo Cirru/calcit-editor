@@ -63,6 +63,7 @@
             :ir/reset-ns ir/reset-ns
             :ir/draft-expr ir/draft-expr
             :ir/replace-file ir/replace-file
+            :ir/clone-ns ir/clone-ns
             :notify/push-message notify/push-message
             :notify/clear notify/clear
             :analyze/goto-def analyze/goto-def
