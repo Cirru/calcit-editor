@@ -60,7 +60,7 @@
                (=< 32 nil)
                (if (= k session-id)
                  (a
-                  {:href (str (.-href js/location) "&watching=" k),
+                  {:href (str (.-href js/location) "?watching=" k),
                    :target "_blank",
                    :style {:color (hsl 240 80 80)}}
                   (<> span "Watching url" nil))))])))))))
