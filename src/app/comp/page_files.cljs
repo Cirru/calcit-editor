@@ -70,7 +70,9 @@
       :duplicate
       comp-prompt
       states
-      {:trigger (span {:inner-text "Duplicate", :style style/button}), :initial selected-ns}
+      {:trigger (span {:inner-text "Duplicate", :style style/button}),
+       :initial selected-ns,
+       :text "A new namespace:"}
       (fn [result d! m!]
         (if (string/includes? result ".")
           (d! :ir/clone-ns result)

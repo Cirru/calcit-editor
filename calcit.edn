@@ -16999,6 +16999,13 @@
                    "j" {:type :leaf, :by "S1lNv50FW", :at 1536080301105, :text "selected-ns", :id "n0ZCTHRtQm"}
                   }
                  }
+                 "r" {
+                  :type :expr, :by "S1lNv50FW", :at 1536081112699, :id "sNdHMu6Ed"
+                  :data {
+                   "T" {:type :leaf, :by "S1lNv50FW", :at 1536081120809, :text ":text", :id "sNdHMu6Edleaf"}
+                   "j" {:type :leaf, :by "S1lNv50FW", :at 1536081132319, :text "\"A new namespace:", :id "EWiHbmGUkz"}
+                  }
+                 }
                 }
                }
                "j" {
