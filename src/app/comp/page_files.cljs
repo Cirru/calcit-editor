@@ -55,28 +55,29 @@
     {:style style-file}
     (div
      {}
-     (<> span "File" style/title)
-     (=< 16 nil)
-     (span {:inner-text selected-ns, :style style-link, :on {:click on-edit-ns}})
-     (=< 16 nil)
-     (span {:inner-text "proc", :style style-link, :on {:click on-edit-proc}})
+     (<> "File" style/title)
      (=< 16 nil)
      (span
-      {:inner-text "Replacer",
+      {:inner-text "Draft",
        :style style/button,
        :on {:click (fn [e d! m!] (d! :writer/draft-ns selected-ns))}})
-     (=< 16 nil)
      (cursor->
       :duplicate
       comp-prompt
       states
-      {:trigger (span {:inner-text "Duplicate", :style style/button}),
+      {:trigger (span {:inner-text "Clone", :style style/button}),
        :initial selected-ns,
        :text "A new namespace:"}
       (fn [result d! m!]
         (if (string/includes? result ".")
           (d! :ir/clone-ns result)
           (d! :notify/push-message [:warn (str "Not a good name: " result)])))))
+    (div
+     {}
+     (span {:inner-text selected-ns, :style style-link, :on {:click on-edit-ns}})
+     (=< 16 nil)
+     (span {:inner-text "proc", :style style-link, :on {:click on-edit-proc}})
+     (=< 16 nil))
     (div
      {}
      (input
