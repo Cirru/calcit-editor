@@ -37374,7 +37374,7 @@
                     :data {
                      "T" {:type :leaf, :author "root", :time 1504777570689, :text "push-bookmark", :id "rkJb73oKVncb"}
                      "j" {:type :leaf, :author "root", :time 1504777570689, :text "new-bookmark", :id "BJeZmhsK4nqb"}
-                     "r" {:type :leaf, :author "SJhrjuzlG", :time 1512397494924, :text "true", :id "By6hq0z-M"}
+                     "r" {:type :leaf, :author "SJhrjuzlG", :time 1512397494924, :text "true", :id "By6hq0z-M", :at 1539357857665, :by "root"}
                     }
                    }
                   }
