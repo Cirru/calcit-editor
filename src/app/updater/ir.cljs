@@ -53,7 +53,21 @@
         (-> db
             (update-in
              [:ir :files]
-             (fn [files] (assoc files new-ns (get files selected-ns))))
+             (fn [files]
+               (let [the-file (get files selected-ns)
+                     ns-expr (:ns the-file)
+                     new-file (update
+                               the-file
+                               :ns
+                               (fn [expr]
+                                 (let [name-field (pick-second-key (:data ns-expr))]
+                                   (assert
+                                    (=
+                                     selected-ns
+                                     (get-in ns-expr [:data name-field :text]))
+                                    (str "old namespace to change:" selected-ns " " ns-expr))
+                                   (assoc-in expr [:data name-field :text] new-ns))))]
+                 (assoc files new-ns new-file))))
             (assoc-in [:sessions sid :writer :selected-ns] new-ns)))))
 
 (defn cp-ns [db op-data session-id op-id op-time]
