@@ -1,7 +1,5 @@
 
 {:source-paths ["src" "cli"]
- :repositories {"central" {:url "http://maven.aliyun.com/nexus/content/groups/public/"}
-                "clojars" {:url "https://mirrors.ustc.edu.cn/clojars/"}}
  :dependencies [[mvc-works/hsl          "0.1.2"]
                 [mvc-works/polyfill     "0.1.1"]
                 [mvc-works/verbosely    "0.1.2"]
@@ -16,6 +14,8 @@
                 [cirru/sepal            "0.2.7"]
                 [cirru/bisection-key    "0.1.5"]
                 [cirru/favored-edn      "0.1.1"]]
+ :repositories {"central" {:url "https://maven.aliyun.com/nexus/content/groups/public/"}
+                "clojars" {:url "https://mirrors.ustc.edu.cn/clojars/"}}
  :open-file-command ["subl" ["%s:%s:%s" :file :line :column]]
  :builds {:client {:output-dir "target/"
                    :asset-path "./"
