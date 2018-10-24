@@ -6,7 +6,7 @@
                 [mvc-works/keycode      "0.1.3"]
                 [mvc-works/shell-page   "0.1.8"]
                 [respo                  "0.8.21"]
-                [respo/ui               "0.3.7"]
+                [respo/ui               "0.3.8"]
                 [respo/markdown         "0.2.1"]
                 [respo/alerts           "0.3.7"]
                 [cumulo/recollect       "0.4.4"]

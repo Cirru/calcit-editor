@@ -43,8 +43,6 @@
 
 (defn base-style-leaf [] style-leaf)
 
-(def style-expr-beginner {:outline (str "1px solid " (hsl 200 80 70 0.2))})
-
 (def style-expr-simple
   {:display :inline-block,
    :border-width "0 0 1px 0",
@@ -61,8 +59,7 @@
    (if has-others? {:border-color (hsl 0 0 100 0.6)})
    (if focused? {:border-color (hsl 0 0 100 0.9)})
    (if (and (simple? expr) (not tail?) (not after-expr?) (pos? length)) style-expr-simple)
-   (if tail? style-expr-tail)
-   (if beginner? style-expr-beginner)))
+   (if tail? style-expr-tail)))
 
 (def style-big {:border-right (str "16px solid " (hsl 0 0 30))})
 

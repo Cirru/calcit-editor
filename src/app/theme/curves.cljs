@@ -14,8 +14,6 @@
 (defn decide-leaf-style [text focused? first? by-other?]
   (merge (star-trail/decide-leaf-style text focused? first? by-other?) {}))
 
-(defn ring [x] (hsl (* x 360) 70 70))
-
 (def style-expr star-trail/style-expr)
 
 (def style-leaf star-trail/style-leaf)
