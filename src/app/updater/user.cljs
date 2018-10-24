@@ -7,7 +7,9 @@
 
 (defn change-theme [db op-data sid op-id op-time]
   (let [user-id (get-in db [:sessions sid :user-id])]
-    (assoc-in db [:users user-id :theme] op-data)))
+    (-> db
+        (assoc-in [:users user-id :theme] op-data)
+        (assoc-in [:sessions sid :theme] op-data))))
 
 (defn log-in [db op-data session-id op-id op-time]
   (let [[username password] op-data

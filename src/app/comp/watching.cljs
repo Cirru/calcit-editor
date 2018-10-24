@@ -10,8 +10,9 @@
             [app.client-util :as util]
             [app.style :as style]
             [app.comp.expr :refer [comp-expr]]
-            [app.theme.star-trail :refer [base-style-leaf base-style-expr]]
-            [app.util.dom :refer [inject-style]]))
+            [app.theme :refer [base-style-leaf base-style-expr]]
+            [app.util.dom :refer [inject-style]]
+            [app.comp.theme-menu :refer [comp-theme-menu]]))
 
 (def style-container {:padding "0 16px"})
 
@@ -37,22 +38,12 @@
      (if (:self? router-data)
        (div {:style style-container} (<> span "Watching at yourself :)" style-title))
        (div
-        {:style style-container}
-        (div
-         {}
-         (<> span "Watching mode" style-tip)
-         (=< 16 nil)
-         (<> span member-name nil)
-         (=< 16 nil)
-         (<> span (:kind bookmark) nil)
-         (=< 16 nil)
-         (<> span (str (:ns bookmark) "/" (:extra bookmark)) nil))
-        (=< nil 16)
-        (if (:working? router-data)
+        {:style (merge ui/column style-container)}
+        (when (:working? router-data)
           (div
-           {}
-           (inject-style ".cirru-expr" (base-style-expr))
-           (inject-style ".cirru-leaf" (base-style-leaf))
+           {:style (merge ui/flex {:overflow :auto})}
+           (inject-style ".cirru-expr" (base-style-expr (or theme :star-trail)))
+           (inject-style ".cirru-leaf" (base-style-leaf (or theme :star-trail)))
            (cursor->
             (:id expr)
             comp-expr
@@ -64,5 +55,17 @@
             false
             false
             readonly?
-            theme
-            0))))))))
+            (or theme :star-trail)
+            0)))
+        (=< nil 16)
+        (div
+         {}
+         (<> span "Watching mode" style-tip)
+         (=< 16 nil)
+         (<> span member-name nil)
+         (=< 16 nil)
+         (<> span (:kind bookmark) nil)
+         (=< 16 nil)
+         (<> span (str (:ns bookmark) "/" (:extra bookmark)) nil)
+         (=< 16 nil)
+         (cursor-> :theme comp-theme-menu states (or theme :star-trail))))))))

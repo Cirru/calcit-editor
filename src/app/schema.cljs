@@ -41,7 +41,8 @@
    :id nil,
    :router {:name :files, :data nil, :router nil},
    :notifications [],
-   :writer {:selected-ns nil, :draft-ns nil, :peek-def nil, :pointer 0, :stack []}})
+   :writer {:selected-ns nil, :draft-ns nil, :peek-def nil, :pointer 0, :stack []},
+   :theme :star-trail})
 
 (def user
   {:name nil, :id nil, :nickname nil, :avatar nil, :password nil, :theme :star-trail})

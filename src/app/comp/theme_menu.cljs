@@ -20,20 +20,26 @@
              :width 60,
              :color (hsl 0 0 80 0.4),
              :font-family "Josefin Sans,sans-serif",
-             :cursor :pointer},
+             :cursor :pointer,
+             :display :inline-block},
      :on-click (fn [e d! m!] (m! (not state)))}
     (<> (or theme "no theme"))
     (if state
       (list->
        :div
-       {:style {:position :absolute, :bottom "100%", :left 0}, :on-click #()}
+       {:style {:position :absolute,
+                :bottom "100%",
+                :right 0,
+                :background-color :black,
+                :border (str "1px solid " (hsl 0 0 100 0.2))},
+        :on-click #()}
        (->> theme-list
             (map
              (fn [theme-name]
                [theme-name
                 (div
                  {:style (merge
-                          {:color (hsl 0 0 70)}
+                          {:color (hsl 0 0 70), :padding "0 8px"}
                           (when (= theme theme-name) {:color :white})),
                   :on-click (fn [e d! m!] (d! :user/change-theme theme-name) (m! false))}
                  (<> theme-name))]))))))))

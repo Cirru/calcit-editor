@@ -31,8 +31,8 @@
 
 (defn detect-watching! []
   (let [query (parse-query!)]
-    (if (some? (:watching query))
-      (do (dispatch! :router/change {:name :watching, :data (:watching query)})))))
+    (when (some? (:watching query))
+      (dispatch! :router/change {:name :watching, :data (:watching query)}))))
 
 (defn simulate-login! []
   (let [raw (.getItem js/window.localStorage (:local-storage-key schema/configs))]
