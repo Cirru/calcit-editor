@@ -4,17 +4,9 @@
 
 (def style-expr-beginner {:outline (str "1px solid " (hsl 200 80 70 0.2))})
 
-(defn decide-expr-style [expr has-others? focused? tail? after-expr? beginner? length depth]
+(defn decide-expr-style [expr has-others? focused? tail? after-expr? length depth]
   (merge
-   (star-trail/decide-expr-style
-    expr
-    has-others?
-    focused?
-    tail?
-    after-expr?
-    beginner?
-    length
-    depth)
+   (star-trail/decide-expr-style expr has-others? focused? tail? after-expr? length depth)
    style-expr-beginner))
 
 (defn decide-leaf-style [text focused? first? by-other?]

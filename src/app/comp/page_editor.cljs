@@ -8,7 +8,6 @@
             [respo.comp.space :refer [=<]]
             [respo.comp.inspect :refer [comp-inspect]]
             [app.comp.bookmark :refer [comp-bookmark]]
-            [app.comp.beginner-mode :refer [comp-beginner-mode on-toggle]]
             [app.comp.expr :refer [comp-expr]]
             [app.theme :refer [base-style-leaf base-style-expr]]
             [app.style :as style]
@@ -21,7 +20,7 @@
             [app.util :refer [tree->cirru]]
             [app.util.dom :refer [do-copy-logics!]]))
 
-(def initial-state {:beginner? false, :renaming? false, :draft-box? false})
+(def initial-state {:renaming? false, :draft-box? false})
 
 (defn on-delete [bookmark] (fn [e d! m!] (d! :ir/delete-entry (dissoc bookmark :focus))))
 
@@ -91,11 +90,7 @@
       (=< 8 nil)
       (span
        {:inner-text "Exporting", :style style-link, :on {:click (on-path-gen! bookmark)}}))
-     (div
-      {:style ui/row}
-      (cursor-> :theme comp-theme-menu states theme)
-      (=< 16 nil)
-      (comp-beginner-mode state (on-toggle state %cursor))))))
+     (div {:style ui/row} (cursor-> :theme comp-theme-menu states theme)))))
 
 (def style-area {:overflow :auto, :padding-bottom 240, :padding-top 80, :flex 1})
 
@@ -140,8 +135,7 @@
     (=< 8 nil)
     (div
      {:style style-editor}
-     (let [others (->> (:others router-data) (vals) (map :focus) (into #{}))
-           beginner? (:beginner? state)]
+     (let [others (->> (:others router-data) (vals) (map :focus) (into #{}))]
        (div
         {:style style-area}
         (inject-style ".cirru-expr" (base-style-expr theme))
@@ -157,7 +151,6 @@
            others
            false
            false
-           beginner?
            readonly?
            theme
            0)

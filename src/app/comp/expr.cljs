@@ -61,7 +61,7 @@
 
 (defcomp
  comp-expr
- (states expr focus coord others tail? after-expr? beginner? readonly? theme depth)
+ (states expr focus coord others tail? after-expr? readonly? theme depth)
  (let [focused? (= focus coord)
        first-id (apply min (keys (:data expr)))
        last-id (apply max (keys (:data expr)))
@@ -77,7 +77,6 @@
              focused?
              tail?
              after-expr?
-             beginner?
              (count coord)
              depth
              theme),
@@ -118,7 +117,6 @@
                 partial-others
                 (= last-id k)
                 (:after-expr? info)
-                beginner?
                 readonly?
                 theme
                 (inc depth)))])
