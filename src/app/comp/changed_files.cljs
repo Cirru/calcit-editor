@@ -4,7 +4,7 @@
             [hsl.core :refer [hsl]]
             [respo-ui.core :as ui]
             [respo-ui.colors :as colors]
-            [respo.macros :refer [defcomp list-> <> span div pre input button a]]
+            [respo.core :refer [defcomp list-> <> span div pre input button a]]
             [respo.comp.space :refer [=<]]
             [app.client-util :as util]
             [app.style :as style]

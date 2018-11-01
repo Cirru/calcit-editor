@@ -4,7 +4,7 @@
             [clojure.string :as string]
             [respo-ui.core :as ui]
             [respo-ui.colors :as colors]
-            [respo.macros :refer [defcomp list-> cursor-> <> span div a pre]]
+            [respo.core :refer [defcomp list-> cursor-> <> span div a pre]]
             [respo.comp.space :refer [=<]]
             [respo.comp.inspect :refer [comp-inspect]]
             [app.comp.bookmark :refer [comp-bookmark]]

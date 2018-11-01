@@ -3,7 +3,7 @@
   (:require [hsl.core :refer [hsl]]
             [respo-ui.core :as ui]
             [respo-ui.colors :as colors]
-            [respo.macros :refer [defcomp cursor-> <> div span]]
+            [respo.core :refer [defcomp cursor-> <> div span]]
             [respo.comp.inspect :refer [comp-inspect]]
             [app.comp.header :refer [comp-header]]
             [app.comp.profile :refer [comp-profile]]

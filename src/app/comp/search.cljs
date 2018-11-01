@@ -4,7 +4,7 @@
             [hsl.core :refer [hsl]]
             [respo-ui.core :as ui]
             [respo-ui.colors :as colors]
-            [respo.macros :refer [defcomp list-> <> span div input a]]
+            [respo.core :refer [defcomp list-> <> span div input a]]
             [respo.comp.space :refer [=<]]
             [polyfill.core :refer [text-width*]]
             [keycode.core :as keycode]

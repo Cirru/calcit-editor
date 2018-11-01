@@ -1,6 +1,6 @@
 
 (ns app.util.dom
-  (:require [respo.macros :refer [style]] [respo.render.html :refer [style->string]]))
+  (:require [respo.core :refer [style]] [respo.render.html :refer [style->string]]))
 
 (defn do-copy-logics! [d! x message]
   (-> js/navigator

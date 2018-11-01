@@ -4,7 +4,7 @@
             [hsl.core :refer [hsl]]
             [respo-ui.core :as ui]
             [respo-ui.colors :as colors]
-            [respo.macros :refer [defcomp list-> cursor-> <> span div a]]
+            [respo.core :refer [defcomp list-> cursor-> <> span div a]]
             [respo.comp.space :refer [=<]]
             [keycode.core :as keycode]
             [app.comp.leaf :refer [comp-leaf]]

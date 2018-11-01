@@ -4,14 +4,13 @@
             [hsl.core :refer [hsl]]
             [respo-ui.core :as ui]
             [respo-ui.colors :as colors]
-            [respo.macros :refer [defcomp <> span div input textarea a]]
+            [respo.core :refer [defcomp <> span div input textarea a]]
             [respo.comp.space :refer [=<]]
             [polyfill.core :refer [text-width*]]
             [keycode.core :as keycode]
             [app.client-util :as util]
             [app.util.shortcuts :refer [on-window-keydown on-paste!]]
-            [app.theme :refer [decide-leaf-theme]]
-            [verbosely.core :refer [log!]]))
+            [app.theme :refer [decide-leaf-theme]]))
 
 (def initial-state {:text "", :at 0})
 
