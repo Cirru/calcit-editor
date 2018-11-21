@@ -1,5 +1,5 @@
 
-(ns app.twig.search (:require [recollect.macros :refer [deftwig]]))
+(ns app.twig.search (:require [recollect.twig :refer [deftwig]]))
 
 (deftwig
  twig-search

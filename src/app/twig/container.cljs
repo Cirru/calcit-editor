@@ -1,6 +1,6 @@
 
 (ns app.twig.container
-  (:require [recollect.macros :refer [deftwig]]
+  (:require [recollect.twig :refer [deftwig]]
             [app.twig.user :refer [twig-user]]
             [app.twig.page-files :refer [twig-page-files]]
             [app.twig.page-editor :refer [twig-page-editor]]

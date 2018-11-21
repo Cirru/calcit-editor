@@ -275,20 +275,28 @@
         (let [{old-ns :from, new-ns :to} ns-info
               {old-def :from, new-def :to} extra-info
               expr (get-in db [:ir :files old-ns :defs old-def])
-              next-id (pick-second-key (:data expr))]
-          (-> db
-              (update-in
-               [:ir :files]
-               (fn [files]
-                 (-> files
-                     (update-in [old-ns :defs] (fn [file] (dissoc file old-def)))
-                     (assoc-in [new-ns :defs new-def] (get-in files [old-ns :defs old-def])))))
-              (update-in
-               [:sessions session-id :writer :stack idx]
-               (fn [bookmark] (-> bookmark (assoc :ns new-ns) (assoc :extra new-def))))
-              (update-in
-               [:ir :files new-ns :defs new-def :data next-id :text]
-               (fn [x] new-def))))
+              next-id (pick-second-key (:data expr))
+              files (get-in db [:ir :files])]
+          (if (contains? files new-ns)
+            (-> db
+                (update-in
+                 [:ir :files]
+                 (fn [files]
+                   (-> files
+                       (update-in [old-ns :defs] (fn [file] (dissoc file old-def)))
+                       (assoc-in
+                        [new-ns :defs new-def]
+                        (get-in files [old-ns :defs old-def])))))
+                (update-in
+                 [:sessions session-id :writer :stack idx]
+                 (fn [bookmark] (-> bookmark (assoc :ns new-ns) (assoc :extra new-def))))
+                (update-in
+                 [:ir :files new-ns :defs new-def :data next-id :text]
+                 (fn [x] new-def)))
+            (-> db
+                (update-in
+                 [:sessions session-id :notifications]
+                 (push-warning op-id op-time (str "no namespace: " new-ns))))))
       :else (do (println "Unexpected kind:" kind) db))))
 
 (defn replace-file [db op-data sid op-id op-time]

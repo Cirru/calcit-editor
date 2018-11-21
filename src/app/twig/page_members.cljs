@@ -1,6 +1,6 @@
 
 (ns app.twig.page-members
-  (:require [recollect.macros :refer [deftwig]] [app.twig.member :refer [twig-member]]))
+  (:require [recollect.twig :refer [deftwig]] [app.twig.member :refer [twig-member]]))
 
 (deftwig
  twig-page-members

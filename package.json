@@ -23,7 +23,7 @@
   "license": "MIT",
   "devDependencies": {
     "http-server": "^0.11.1",
-    "shadow-cljs": "^2.7.3",
+    "shadow-cljs": "^2.7.4",
     "source-map-support": "^0.5.9"
   },
   "dependencies": {
@@ -34,6 +34,6 @@
     "md5": "^2.2.1",
     "serve-index": "^1.9.1",
     "shortid": "^2.2.14",
-    "ws": "^6.1.1"
+    "ws": "^6.1.2"
   }
 }

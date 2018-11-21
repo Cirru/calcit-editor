@@ -1,6 +1,6 @@
 
 (ns app.twig.page-files
-  (:require [recollect.macros :refer [deftwig]]
+  (:require [recollect.twig :refer [deftwig]]
             [clojure.set :refer [union]]
             [app.util :refer [file->cirru]]))
 

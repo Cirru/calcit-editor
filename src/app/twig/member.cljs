@@ -1,5 +1,5 @@
 
-(ns app.twig.member (:require [recollect.macros :refer [deftwig]]))
+(ns app.twig.member (:require [recollect.twig :refer [deftwig]]))
 
 (deftwig
  twig-member

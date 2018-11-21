@@ -1,6 +1,6 @@
 
 (ns app.twig.page-editor
-  (:require [recollect.macros :refer [deftwig]]
+  (:require [recollect.twig :refer [deftwig]]
             [app.util :refer [same-buffer? tree->cirru]]
             [app.twig.user :refer [twig-user]]))
 
