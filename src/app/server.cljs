@@ -16,7 +16,9 @@
             ["shortid" :as shortid]
             ["fs" :as fs]
             ["md5" :as md5]
-            ["gaze" :as gaze]))
+            ["gaze" :as gaze]
+            ["latest-version" :as latest-version])
+  (:require-macros [clojure.core.strint :refer [<<]]))
 
 (defonce *calcit-md5 (atom nil))
 
@@ -32,6 +34,19 @@
          (update :configs (fn [configs] (or configs schema/configs)))))))
 
 (defonce *reader-db (atom @*writer-db))
+
+(defn check-version! []
+  (let [pkg (js/JSON.parse (fs/readFileSync (path/join js/__dirname "../package.json")))
+        version (.-version pkg)
+        pkg-name (.-name pkg)]
+    (.then
+     (latest-version pkg-name)
+     (fn [npm-version]
+       (println
+        (if (= version npm-version)
+          (<< "Running latest version ~{version}")
+          (chalk/yellow
+           (<< "Update is available tagged ~{npm-version}, current one is ~{version}"))))))))
 
 (defn compile-all-files! [configs]
   (handle-files!
@@ -115,6 +130,7 @@
       (compile-all-files! configs)
       (do
        (start-server! configs)
-       (if (= "local" js/process.env.client) (serve-app! (:port configs)))))))
+       (when (= "local" js/process.env.client) (serve-app! (:port configs)))
+       (check-version!)))))
 
 (defn reload! [] (println (.gray chalk "code updated.")) (sync-clients! @*reader-db))

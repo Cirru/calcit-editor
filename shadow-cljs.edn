@@ -12,7 +12,8 @@
                 [fipp                   "0.6.12"]
                 [cirru/sepal            "0.2.7"]
                 [cirru/bisection-key    "0.1.5"]
-                [cirru/favored-edn      "0.1.1"]]
+                [cirru/favored-edn      "0.1.1"]
+                [org.clojure/core.incubator "0.1.4"]]
  :repositories {"central" {:url "https://maven.aliyun.com/nexus/content/groups/public/"}
                 "clojars" {:url "https://mirrors.ustc.edu.cn/clojars/"}}
  :open-file-command ["subl" ["%s:%s:%s" :file :line :column]]
