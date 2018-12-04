@@ -10020,6 +10020,46 @@
              "x" {:type :leaf, :text "on-search", :id "rkpKKcSKN35W", :by "root", :at 1504777353661}
             }
            }
+           "xD" {
+            :type :expr, :by "root", :at 1543895841037, :id "zfTmlYTlD0"
+            :data {
+             "T" {:type :leaf, :by "root", :at 1543895841037, :text "a", :id "fQsW3UvFIz"}
+             "j" {
+              :type :expr, :by "root", :at 1543895841037, :id "klReOJkZof"
+              :data {
+               "T" {:type :leaf, :by "root", :at 1543895841037, :text "{}", :id "YSjgFKLyKM"}
+               "j" {
+                :type :expr, :by "root", :at 1543895841037, :id "-lya3xzTkY"
+                :data {
+                 "T" {:type :leaf, :by "root", :at 1543895841037, :text ":inner-text", :id "g0aU2_sjjW"}
+                 "j" {:type :leaf, :by "root", :at 1543895845356, :text "\"Snippets", :id "t_hUaX0Jsa"}
+                }
+               }
+               "r" {
+                :type :expr, :by "root", :at 1543895841037, :id "aXXXZlCzOt"
+                :data {
+                 "T" {:type :leaf, :by "root", :at 1543895841037, :text ":href", :id "RGfeT0I38T"}
+                 "j" {:type :leaf, :by "root", :at 1543895881084, :text "\"http://snippets.cirru.org", :id "RBjImBbpHx"}
+                }
+               }
+               "v" {
+                :type :expr, :by "root", :at 1543895841037, :id "NHTZUANGzX"
+                :data {
+                 "T" {:type :leaf, :by "root", :at 1543895841037, :text ":target", :id "xqEbejCt_w"}
+                 "j" {:type :leaf, :by "root", :at 1543895883023, :text "\"_blank", :id "j-bA0ZveYc"}
+                }
+               }
+               "x" {
+                :type :expr, :by "root", :at 1543895841037, :id "gXfHe9GtLh"
+                :data {
+                 "T" {:type :leaf, :by "root", :at 1543895841037, :text ":style", :id "kwDWMJhV-ik"}
+                 "j" {:type :leaf, :by "root", :at 1543895841037, :text "style-entry", :id "631YaU-YuQR"}
+                }
+               }
+              }
+             }
+            }
+           }
            "xT" {
             :type :expr, :by "root", :at 1518323073051, :id "HkltFSBT8z"
             :data {

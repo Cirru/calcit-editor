@@ -49,6 +49,11 @@
    (render-entry "Files" :files router-name on-files)
    (render-entry "Editor" :editor router-name on-editor)
    (render-entry "Search" :search router-name on-search)
+   (a
+    {:inner-text "Snippets",
+     :href "http://snippets.cirru.org",
+     :target "_blank",
+     :style style-entry})
    (render-entry "REPL" :repl router-name (action-> :router/change {:name :repl}))
    (render-entry (str "Members:" (:members-count stats)) :members router-name on-members)
    (a
