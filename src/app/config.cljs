@@ -1,11 +1,33 @@
 
 (ns app.config (:require [app.util.env :refer [get-env!]] [app.schema :as schema]))
 
-(def bundle-builds #{"release" "local-bundle"})
+(def cdn?
+  (cond
+    (exists? js/window) false
+    (exists? js/process) (= "true" js/process.env.cdn)
+    :else false))
 
 (def dev?
-  (if (exists? js/window)
-    (do ^boolean js/goog.DEBUG)
-    (not (contains? bundle-builds (get-env! "mode")))))
+  (let [debug? (do ^boolean js/goog.DEBUG)]
+    (if debug?
+      (cond
+        (exists? js/window) true
+        (exists? js/process) (not= "true" js/process.env.release)
+        :else true)
+      false)))
 
-(def site schema/configs)
+(def site
+  {:port 6001,
+   :title "Calcit Editor",
+   :icon "http://cdn.tiye.me/logo/cirru.png",
+   :dev-ui "http://localhost:8100/main.css",
+   :release-ui "http://cdn.tiye.me/favored-fonts/main.css",
+   :cdn-url "http://cdn.tiye.me/calcit-editor/",
+   :cdn-folder "tiye.me:cdn/calcit-editor",
+   :upload-folder "tiye.me:repo/Cirru/calcit-editor/",
+   :server-folder "tiye.me:servers/calcit-editor",
+   :theme "#eeeeff",
+   :storage-key "calcit-storage",
+   :storage-file "calcit.edn",
+   :extension ".cljs",
+   :output "src"})

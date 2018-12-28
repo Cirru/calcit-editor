@@ -3,13 +3,6 @@
 
 (def bookmark {:kind :def, :ns nil, :extra nil, :focus []})
 
-(def configs
-  {:storage-key "calcit.edn",
-   :local-storage-key "calcit-storage",
-   :extension ".cljs",
-   :output "src",
-   :port 6001})
-
 (def ir-file {:package "app", :files {}})
 
 (def database

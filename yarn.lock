@@ -352,10 +352,10 @@ date-now@^0.1.4:
   resolved "https://registry.yarnpkg.com/date-now/-/date-now-0.1.4.tgz#eaf439fd4d4848ad74e5cc7dbef200672b9e345b"
   integrity sha1-6vQ5/U1ISK105cx9vvIAZyueNFs=
 
-dayjs@^1.7.7:
-  version "1.7.7"
-  resolved "https://registry.yarnpkg.com/dayjs/-/dayjs-1.7.7.tgz#8df20f78ac2476e3f5348ef49f8f22ebc3016370"
-  integrity sha512-Qlkiu0NNDpYwhk0syK4ImvAl/5YnsEMkvC2O123INviGeOA3Q8s5VyVkZzmN5SC7Wv9bb1+rfwO+uSqtHB4UWw==
+dayjs@^1.7.8:
+  version "1.7.8"
+  resolved "https://registry.yarnpkg.com/dayjs/-/dayjs-1.7.8.tgz#05d288f8d4b2140110cc1519cfe317d6f1f11a3c"
+  integrity sha512-Gp4Y5KWeSri0QOWGzHQz7VrKDkfEpS92dCLK7P8hYowRFbaym1vj3d6CoHio3apSS4KSi/qb5Edemv26IN5Hfg==
 
 debug@2.6.9, debug@^2.2.0:
   version "2.6.9"
@@ -1386,10 +1386,10 @@ shadow-cljs-jar@1.3.0:
   resolved "https://registry.yarnpkg.com/shadow-cljs-jar/-/shadow-cljs-jar-1.3.0.tgz#e25c4fa57c0b405096250884b164c112654a06a3"
   integrity sha512-KReNVgFVM2ZPPGCP8rsCPqtlee/+SwXyoeEqbAXBO7jlpoNnNee2x4fiRg/Pr/vXGEkV/Ez5l4qdNSU1Na+1Jg==
 
-shadow-cljs@^2.7.6:
-  version "2.7.6"
-  resolved "https://registry.yarnpkg.com/shadow-cljs/-/shadow-cljs-2.7.6.tgz#ac5cd9898e14c2b9fd7f4e8abf81bc3abd8372e3"
-  integrity sha512-hk9dtt3mLkLQzu2YJG+T2/8YyevRNYtGZTGjTrGCUzjLaqKHJInJELY16vU2W17Kq/u9tCsPV0Y+bbnHRv52uw==
+shadow-cljs@^2.7.9:
+  version "2.7.9"
+  resolved "https://registry.yarnpkg.com/shadow-cljs/-/shadow-cljs-2.7.9.tgz#389e712b2a4c66cb5fbefb7c655614bef0877d14"
+  integrity sha512-3g3dijT5ztwukidXDyhda6AaPrFge5j9b69SUOzXXqgVr6JDslcCOY/l0midF1c15uT9GDx/JoprRlkRhPWgaA==
   dependencies:
     mkdirp "^0.5.1"
     node-libs-browser "^2.0.0"
