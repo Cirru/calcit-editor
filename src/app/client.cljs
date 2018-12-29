@@ -4,12 +4,12 @@
             [respo.cursor :refer [mutate]]
             [app.comp.container :refer [comp-container]]
             [cljs.reader :refer [read-string]]
-            [app.connection :refer [send! setup-socket!]]
             [app.schema :as schema]
             [app.client-util :refer [ws-host parse-query!]]
             [app.util.dom :refer [focus!]]
             [app.util.shortcuts :refer [on-window-keydown]]
-            [app.client-updater :as updater]))
+            [app.client-updater :as updater]
+            [ws-edn.client :refer [ws-connect! ws-send! ws-connected?]]))
 
 (defonce *connecting? (atom false))
 
@@ -34,6 +34,14 @@
     (when (some? (:watching query))
       (dispatch! :router/change {:name :watching, :data (:watching query)}))))
 
+(defn heartbeat! []
+  (js/setTimeout
+   (fn []
+     (if (ws-connected?)
+       (do (send! :ping nil) (heartbeat!))
+       (println "Disabled heartbeat since connection lost.")))
+   30000))
+
 (defn simulate-login! []
   (let [raw (.getItem js/window.localStorage (:local-storage-key schema/configs))]
     (if (some? raw)
@@ -43,15 +51,21 @@
 (defn connect! []
   (.info js/console "Connecting...")
   (reset! *connecting? true)
-  (setup-socket!
-   *store
-   {:url ws-host,
-    :on-close! (fn [event]
+  (ws-connect!
+   ws-host
+   {:on-open (fn [] (simulate-login!) (detect-watching!) (heartbeat!)),
+    :on-close (fn [event]
       (reset! *store nil)
       (reset! *connecting? false)
-      (.error js/console "Lost connection!")
+      (js/console.error "Lost connection!")
       (dispatch! :states/clear nil)),
-    :on-open! (fn [event] (simulate-login!) (detect-watching!))}))
+    :on-data (fn [data]
+      (case (:kind data)
+        :patch
+          (let [changes (:data data)]
+            (js/console.log "Changes" (clj->js changes))
+            (reset! *store (patch-twig @*store changes)))
+        (println "unknown kind:" data)))}))
 
 (def mount-target (.querySelector js/document ".app"))
 

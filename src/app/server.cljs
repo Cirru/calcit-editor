@@ -17,10 +17,17 @@
             ["fs" :as fs]
             ["md5" :as md5]
             ["gaze" :as gaze]
-            ["latest-version" :as latest-version])
+            [ws-edn.server :refer [wss-serve! wss-send! wss-each!]]
+            ["shortid" :as shortid]
+            [recollect.twig :refer [render-twig]]
+            [recollect.diff :refer [diff-twig]]
+            [app.twig.container :refer [twig-container]]
+            [app.util.env :refer [check-version!]])
   (:require-macros [clojure.core.strint :refer [<<]]))
 
 (defonce *calcit-md5 (atom nil))
+
+(defonce *client-caches (atom {}))
 
 (defonce *writer-db
   (atom
@@ -34,19 +41,6 @@
          (update :configs (fn [configs] (or configs schema/configs)))))))
 
 (defonce *reader-db (atom @*writer-db))
-
-(defn check-version! []
-  (let [pkg (js/JSON.parse (fs/readFileSync (path/join js/__dirname "../package.json")))
-        version (.-version pkg)
-        pkg-name (.-name pkg)]
-    (.then
-     (latest-version pkg-name)
-     (fn [npm-version]
-       (println
-        (if (= version npm-version)
-          (<< "Running latest version ~{version}")
-          (chalk/yellow
-           (<< "Update is available tagged ~{npm-version}, current one is ~{version}"))))))))
 
 (defn compile-all-files! [configs]
   (handle-files!
@@ -85,6 +79,19 @@
         (reset! *calcit-md5 new-md5)
         (dispatch! :watcher/file-change calcit nil)))))
 
+(defn sync-clients! [db]
+  (wss-each!
+   (fn [sid socket]
+     (let [session (get-in db [:sessions sid])
+           old-store (or (get @*client-caches sid) nil)
+           new-store (render-twig (twig-container db session) old-store)
+           changes (diff-twig old-store new-store {:key :id})]
+       (println "Changes for" sid ":" changes)
+       (if (not= changes [])
+         (do
+          (wss-send! sid {:kind :patch, :data changes})
+          (swap! *client-caches assoc sid new-store)))))))
+
 (defn render-loop! []
   (if (not= @*reader-db @*writer-db)
     (do
@@ -92,6 +99,24 @@
      (comment println "render loop")
      (sync-clients! @*reader-db)))
   (js/setTimeout render-loop! 20))
+
+(defn run-server! [dispatch! port]
+  (pick-port!
+   port
+   (fn [unoccupied-port]
+     (wss-serve!
+      unoccupied-port
+      {:on-open (fn [sid socket]
+         (dispatch! :session/connect nil sid)
+         (println (.gray chalk (str "client connected: " sid)))),
+       :on-data (fn [sid action]
+         (case (:kind action)
+           :op (dispatch! (:op action) (:data action) sid)
+           (println "unknown data" action))),
+       :on-close (fn [sid event]
+         (println (.gray chalk (str "client disconnected: " sid)))
+         (dispatch! :session/disconnect nil sid)),
+       :on-error (fn [error] (.error js/console error))}))))
 
 (defn serve-app! [port]
   (let [app (express), dir (path/join js/__dirname ""), file-port (+ 100 port)]
