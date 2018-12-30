@@ -20,6 +20,8 @@
 
 (defonce *store (atom nil))
 
+(defn send-op! [op op-data] (ws-send! {:kind :op, :op op, :data op-data}))
+
 (defn dispatch! [op op-data]
   (when (and config/dev? (not= op :states))
     (.info js/console "Dispatch" (str op) (clj->js op-data)))
@@ -29,10 +31,10 @@
     :manual-state/abstract (reset! *states (updater/abstract @*states))
     :manual-state/draft-box (reset! *states (updater/draft-box @*states))
     :effect/save-files
-      (do (reset! *states (updater/clear-editor @*states)) {:kind :op, :op op, :data op-data})
+      (do (reset! *states (updater/clear-editor @*states)) (send-op! op op-data))
     :ir/reset-files
-      (do (reset! *states (updater/clear-editor @*states)) {:kind :op, :op op, :data op-data})
-    (ws-send! {:kind :op, :op op, :data op-data})))
+      (do (reset! *states (updater/clear-editor @*states)) (send-op! op op-data))
+    (send-op! op op-data)))
 
 (defn detect-watching! []
   (let [query (parse-query!)]

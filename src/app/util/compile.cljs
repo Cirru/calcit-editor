@@ -8,7 +8,8 @@
             ["path" :as path]
             ["fs" :as fs]
             ["child_process" :as cp]
-            ["md5" :as md5]))
+            ["md5" :as md5]
+            [cumulo-util.core :refer [unix-time!]]))
 
 (defn create-file! [file-path file output-dir]
   (let [project-path (path/join output-dir file-path)]
@@ -21,10 +22,8 @@
     (fs/writeFileSync project-path (write-file (file->cirru file)))
     (println (.gray chalk (str "modified " project-path)))))
 
-(defn now! [] (.valueOf (js/Date.)))
-
 (defn persist! [storage-path db-str]
-  (let [start-time (now!)]
+  (let [start-time (unix-time!)]
     (fs/writeFileSync storage-path db-str)
     (comment
      println

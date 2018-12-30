@@ -24,6 +24,7 @@
             [app.util.env :refer [check-version!]]
             [app.config :as config]
             [cumulo-util.file :refer [write-mildly! merge-local-edn!]]
+            [cumulo-util.core :refer [unix-time! id!]]
             [app.util.env :refer [get-cli-configs!]])
   (:require-macros [clojure.core.strint :refer [<<]]))
 
@@ -59,11 +60,11 @@
    false))
 
 (defn dispatch! [op op-data sid]
-  (comment .log js/console "Action" (str op) (clj->js op-data) sid)
+  (when config/dev? (.log js/console "Action" (str op) (clj->js op-data) sid))
   (comment .log js/console "Database:" (clj->js @*writer-db))
   (let [d2! (fn [op2 op-data2] (dispatch! op2 op-data2 sid))
-        op-id (.generate shortid)
-        op-time (.valueOf (js/Date.))]
+        op-id (id!)
+        op-time (unix-time!)]
     (try
      (case op
        :effect/save-files
@@ -91,7 +92,7 @@
            old-store (or (get @*client-caches sid) nil)
            new-store (render-twig (twig-container db session) old-store)
            changes (diff-twig old-store new-store {:key :id})]
-       (println "Changes for" sid ":" changes)
+       (when config/dev? (println "Changes for" sid ":" (count changes)))
        (if (not= changes [])
          (do
           (wss-send! sid {:kind :patch, :data changes})
@@ -117,6 +118,7 @@
        :on-data (fn [sid action]
          (case (:kind action)
            :op (dispatch! (:op action) (:data action) sid)
+           :ping (do)
            (println "unknown data" action))),
        :on-close (fn [sid event]
          (println (.gray chalk (str "client disconnected: " sid)))
@@ -149,12 +151,12 @@
    js/process
    "SIGINT"
    (fn [code]
-     (persist! (:storage-key configs) (db->string @*writer-db))
+     (persist! storage-file (db->string @*writer-db))
      (println (str "\n" "Saved calcit.edn") (str (if (some? code) (str "with " code))))
      (.exit js/process))))
 
 (defn main! []
-  (let [configs (:config initial-db), cli-configs (get-cli-configs!)]
+  (let [configs (:configs initial-db), cli-configs (get-cli-configs!)]
     (if (:compile? cli-configs)
       (compile-all-files! configs)
       (do
