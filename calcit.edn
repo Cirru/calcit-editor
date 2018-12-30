@@ -1,4 +1,8 @@
 {
+ :users {
+  "S1lNv50FW" {:id "S1lNv50FW", :name "chen", :nickname "chen", :password "d41d8cd98f00b204e9800998ecf8427e", :avatar nil, :theme :star-trail}
+  "root" {:id "root", :name "root", :nickname "root", :password "d41d8cd98f00b204e9800998ecf8427e", :avatar nil, :theme :star-trail}
+ }
  :ir {
   :package "app"
   :root {:ns "main", :def "main!"}
@@ -408,15 +412,22 @@
                       }
                      }
                      "r" {
-                      :type :expr, :by "root", :at 1546106377422, :id "U-gwuwndnJG"
+                      :type :expr, :by "S1lNv50FW", :at 1546182074310, :id "u--o95DGmi"
                       :data {
-                       "T" {:type :leaf, :by "root", :at 1546106377422, :text "js/console.log", :id "J4fS4vAxJ5B"}
-                       "j" {:type :leaf, :by "root", :at 1546106377422, :text "\"Changes", :id "hJ5Ms03k1ZV"}
-                       "r" {
-                        :type :expr, :by "root", :at 1546106377422, :id "0AL9KoqYblo"
+                       "D" {:type :leaf, :by "S1lNv50FW", :at 1546182075200, :text "when", :id "7JoTkEgzA"}
+                       "L" {:type :leaf, :by "S1lNv50FW", :at 1546182080911, :text "config/dev?", :id "VqZm36iKD"}
+                       "T" {
+                        :type :expr, :by "root", :at 1546106377422, :id "U-gwuwndnJG"
                         :data {
-                         "T" {:type :leaf, :by "root", :at 1546106377422, :text "clj->js", :id "bX9k98EOagt"}
-                         "j" {:type :leaf, :by "root", :at 1546106377422, :text "changes", :id "ZiJDKWE3DK3"}
+                         "T" {:type :leaf, :by "root", :at 1546106377422, :text "js/console.log", :id "J4fS4vAxJ5B"}
+                         "j" {:type :leaf, :by "root", :at 1546106377422, :text "\"Changes", :id "hJ5Ms03k1ZV"}
+                         "r" {
+                          :type :expr, :by "root", :at 1546106377422, :id "0AL9KoqYblo"
+                          :data {
+                           "T" {:type :leaf, :by "root", :at 1546106377422, :text "clj->js", :id "bX9k98EOagt"}
+                           "j" {:type :leaf, :by "root", :at 1546106377422, :text "changes", :id "ZiJDKWE3DK3"}
+                          }
+                         }
                         }
                        }
                       }
@@ -25556,7 +25567,7 @@
           :type :expr, :by "root", :at 1546018393081, :id "NAJwraNfE8"
           :data {
            "T" {:type :leaf, :by "root", :at 1546018393081, :text ":icon", :id "jIGq3m4NM1"}
-           "j" {:type :leaf, :by "root", :at 1546018458782, :text "\"http://cdn.tiye.me/logo/cirru.png", :id "NnRK04C2Ez"}
+           "j" {:type :leaf, :by "S1lNv50FW", :at 1546182028358, :text "\"https://cdn.tiye.me/logo/cirru.png", :id "NnRK04C2Ez"}
           }
          }
          "x" {
@@ -25570,14 +25581,14 @@
           :type :expr, :by "root", :at 1546018393081, :id "ofdAXn3fLyb"
           :data {
            "T" {:type :leaf, :by "root", :at 1546018393081, :text ":release-ui", :id "HRy91yM1HEP"}
-           "j" {:type :leaf, :by "root", :at 1546179404138, :text "\"://cdn.tiye.me/favored-fonts/main.css", :id "XeSgs_pGLYl"}
+           "j" {:type :leaf, :by "S1lNv50FW", :at 1546181962452, :text "\"//cdn.tiye.me/favored-fonts/main.css", :id "XeSgs_pGLYl"}
           }
          }
          "yT" {
           :type :expr, :by "root", :at 1546018393081, :id "bDpRvdgAOiG"
           :data {
            "T" {:type :leaf, :by "root", :at 1546018393081, :text ":cdn-url", :id "9fD_S2Vz8RH"}
-           "j" {:type :leaf, :by "root", :at 1546018475046, :text "\"http://cdn.tiye.me/calcit-editor/", :id "eoZnOYMDkrt"}
+           "j" {:type :leaf, :by "S1lNv50FW", :at 1546181989879, :text "\"https://cdn.tiye.me/calcit-editor/", :id "eoZnOYMDkrt"}
           }
          }
          "yj" {
@@ -53727,15 +53738,5 @@
    }
   }
  }
- :sessions {}
- :users {
-  "S1lNv50FW" {:id "S1lNv50FW", :name "chen", :nickname "chen", :password "d41d8cd98f00b204e9800998ecf8427e", :avatar nil, :theme :star-trail}
-  "root" {:id "root", :name "root", :nickname "root", :password "d41d8cd98f00b204e9800998ecf8427e", :avatar nil, :theme :star-trail}
- }
- :saved-files {}
  :configs {:storage-key "calcit.edn", :extension ".cljs", :output "src", :port 6001}
- :repl {
-  :alive? false
-  :logs {}
- }
 }

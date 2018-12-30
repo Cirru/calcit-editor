@@ -15,6 +15,8 @@ Main ideas:
 
 ### Guide
 
+![npm version of calcit-editor](https://img.shields.io/npm/v/calcit-editor.svg)
+
 Install editor and try:
 
 ```bash
