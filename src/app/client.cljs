@@ -9,7 +9,10 @@
             [app.util.dom :refer [focus!]]
             [app.util.shortcuts :refer [on-window-keydown]]
             [app.client-updater :as updater]
-            [ws-edn.client :refer [ws-connect! ws-send! ws-connected?]]))
+            [ws-edn.client :refer [ws-connect! ws-send! ws-connected?]]
+            [recollect.patch :refer [patch-twig]]
+            [cumulo-util.core :refer [delay!]]
+            [app.config :as config]))
 
 (defonce *connecting? (atom false))
 
@@ -18,16 +21,18 @@
 (defonce *store (atom nil))
 
 (defn dispatch! [op op-data]
-  (when (not= op :states) (.info js/console "Dispatch" (str op) (clj->js op-data)))
+  (when (and config/dev? (not= op :states))
+    (.info js/console "Dispatch" (str op) (clj->js op-data)))
   (case op
     :states (reset! *states ((mutate op-data) @*states))
     :states/clear (reset! *states {})
     :manual-state/abstract (reset! *states (updater/abstract @*states))
     :manual-state/draft-box (reset! *states (updater/draft-box @*states))
     :effect/save-files
-      (do (reset! *states (updater/clear-editor @*states)) (send! op op-data))
-    :ir/reset-files (do (reset! *states (updater/clear-editor @*states)) (send! op op-data))
-    (send! op op-data)))
+      (do (reset! *states (updater/clear-editor @*states)) {:kind :op, :op op, :data op-data})
+    :ir/reset-files
+      (do (reset! *states (updater/clear-editor @*states)) {:kind :op, :op op, :data op-data})
+    (ws-send! {:kind :op, :op op, :data op-data})))
 
 (defn detect-watching! []
   (let [query (parse-query!)]
@@ -35,12 +40,12 @@
       (dispatch! :router/change {:name :watching, :data (:watching query)}))))
 
 (defn heartbeat! []
-  (js/setTimeout
+  (delay!
+   30
    (fn []
      (if (ws-connected?)
-       (do (send! :ping nil) (heartbeat!))
-       (println "Disabled heartbeat since connection lost.")))
-   30000))
+       (do (ws-send! {:kind :ping}) (heartbeat!))
+       (println "Disabled heartbeat since connection lost.")))))
 
 (defn simulate-login! []
   (let [raw (.getItem js/window.localStorage (:local-storage-key schema/configs))]
@@ -77,6 +82,7 @@
 (def ssr? (some? (.querySelector js/document "meta.respo-ssr")))
 
 (defn main! []
+  (println "Running mode:" (if config/dev? "dev" "release"))
   (if ssr? (render-app! realize-ssr!))
   (comment
    reset!

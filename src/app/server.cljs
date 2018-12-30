@@ -1,12 +1,11 @@
 
 (ns app.server
   (:require [app.schema :as schema]
-            [app.service :refer [run-server! sync-clients!]]
             [app.updater :refer [updater]]
             [cljs.core.async :refer [<! >!]]
             [cljs.reader :refer [read-string]]
             [app.util.compile :refer [handle-files! persist!]]
-            [app.util.env :refer [pick-configs]]
+            [app.util.env :refer [pick-port!]]
             [app.util :refer [db->string]]
             [app.repl :as repl]
             ["chalk" :as chalk]
@@ -22,23 +21,32 @@
             [recollect.twig :refer [render-twig]]
             [recollect.diff :refer [diff-twig]]
             [app.twig.container :refer [twig-container]]
-            [app.util.env :refer [check-version!]])
+            [app.util.env :refer [check-version!]]
+            [app.config :as config]
+            [cumulo-util.file :refer [write-mildly! merge-local-edn!]]
+            [app.util.env :refer [get-cli-configs!]])
   (:require-macros [clojure.core.strint :refer [<<]]))
 
 (defonce *calcit-md5 (atom nil))
 
 (defonce *client-caches (atom {}))
 
+(def storage-file (path/join (.. js/process -env -PWD) (:storage-file config/site)))
+
+(defonce initial-db
+  (merge-local-edn!
+   schema/database
+   storage-file
+   (fn [found?]
+     (if found?
+       (println "Loading calcit.edn")
+       (println (.yellow chalk "Using default schema."))))))
+
 (defonce *writer-db
   (atom
-   (let [filepath (:storage-key schema/configs)
-         db (if (fs/existsSync filepath)
-              (read-string (fs/readFileSync filepath "utf8"))
-              (do (println (.yellow chalk "Using default schema.")) schema/database))]
-     (-> db
-         (assoc :repl {:alive? false, :logs {}})
-         (assoc :saved-files (get-in db [:ir :files]))
-         (update :configs (fn [configs] (or configs schema/configs)))))))
+   (-> initial-db
+       (assoc :repl {:alive? false, :logs {}})
+       (assoc :saved-files (get-in initial-db [:ir :files])))))
 
 (defonce *reader-db (atom @*writer-db))
 
@@ -50,8 +58,6 @@
    (fn [op op-data] (println "After compile:" op op-data))
    false))
 
-(def global-configs (pick-configs (:configs @*writer-db)))
-
 (defn dispatch! [op op-data sid]
   (comment .log js/console "Action" (str op) (clj->js op-data) sid)
   (comment .log js/console "Database:" (clj->js @*writer-db))
@@ -60,7 +66,8 @@
         op-time (.valueOf (js/Date.))]
     (try
      (case op
-       :effect/save-files (handle-files! @*writer-db *calcit-md5 global-configs d2! true)
+       :effect/save-files
+         (handle-files! @*writer-db *calcit-md5 (:configs initial-db) d2! true)
        :effect/connect-repl (repl/connect-socket-repl! op-data d2!)
        :effect/cljs-repl (repl/try-cljs-repl! d2! op-data)
        :effect/send-code (repl/send-raw-code! op-data d2!)
@@ -70,9 +77,7 @@
      (catch js/Error e (println (.red chalk e)) (.error js/console e)))))
 
 (defn on-file-change! []
-  (let [calcit-path (:storage-key global-configs)
-        file-content (fs/readFileSync calcit-path "utf8")
-        new-md5 (md5 file-content)]
+  (let [file-content (fs/readFileSync storage-file "utf8"), new-md5 (md5 file-content)]
     (if (not= new-md5 @*calcit-md5)
       (let [calcit (read-string file-content)]
         (println (.blue chalk "calcit storage file changed!"))
@@ -126,19 +131,18 @@
      (str "Serving local editor at " (.blue chalk (str "http://localhost:" file-port))))))
 
 (defn watch-file! []
-  (let [calcit-path (:storage-key global-configs)]
-    (if (fs/existsSync calcit-path)
-      (do
-       (reset! *calcit-md5 (md5 (fs/readFileSync calcit-path "utf8")))
-       (gaze
-        calcit-path
-        (fn [error watcher]
-          (if (some? error)
-            (.log js/console error)
-            (.on ^js watcher "changed" (fn [filepath] (on-file-change!))))))))))
+  (if (fs/existsSync storage-file)
+    (do
+     (reset! *calcit-md5 (md5 (fs/readFileSync storage-file "utf8")))
+     (gaze
+      storage-file
+      (fn [error watcher]
+        (if (some? error)
+          (.log js/console error)
+          (.on ^js watcher "changed" (fn [filepath] (on-file-change!)))))))))
 
 (defn start-server! [configs]
-  (run-server! #(dispatch! %1 %2 %3) (:port configs))
+  (run-server! #(dispatch! %1 %2 %3) (:port config/site))
   (render-loop!)
   (watch-file!)
   (.on
@@ -150,12 +154,12 @@
      (.exit js/process))))
 
 (defn main! []
-  (let [configs global-configs, op (get configs :op)]
-    (if (= op "compile")
+  (let [configs (:config initial-db), cli-configs (get-cli-configs!)]
+    (if (:compile? cli-configs)
       (compile-all-files! configs)
       (do
        (start-server! configs)
-       (when (= "local" js/process.env.client) (serve-app! (:port configs)))
+       (when (:local-ui? cli-configs) (serve-app! (:port configs)))
        (check-version!)))))
 
 (defn reload! [] (println (.gray chalk "code updated.")) (sync-clients! @*reader-db))

@@ -1,5 +1,6 @@
 
-(ns app.client-util (:require [clojure.string :as string] [app.schema :as schema]))
+(ns app.client-util
+  (:require [clojure.string :as string] [app.schema :as schema] [app.config :as config]))
 
 (defn coord-contains? [xs ys]
   (if (empty? ys) true (if (= (first xs) (first ys)) (recur (rest xs) (rest ys)) false)))
@@ -60,5 +61,5 @@
        "ws://"
        (or (:host query) "localhost")
        ":"
-       (or (:port query) (:port schema/configs))))
+       (or (:port query) (:port config/site))))
     "ws://localhost:6001"))

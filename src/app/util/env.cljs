@@ -2,7 +2,10 @@
 (ns app.util.env
   (:require ["chalk" :as chalk]
             [app.util.detect :refer [port-taken?]]
-            ["latest-version" :as latest-version]))
+            ["latest-version" :as latest-version]
+            ["path" :as path]
+            ["fs" :as fs])
+  (:require-macros [clojure.core.strint :refer [<<]]))
 
 (defn check-version! []
   (let [pkg (js/JSON.parse (fs/readFileSync (path/join js/__dirname "../package.json")))
@@ -17,19 +20,9 @@
           (chalk/yellow
            (<< "Update is available tagged ~{npm-version}, current one is ~{version}"))))))))
 
-(defn get-env! [property] (aget (.-env js/process) property))
-
-(defn pick-configs [configs]
-  (let [cli-port (if (some? (aget js/process.env "port"))
-                   (js/parseInt (aget js/process.env "port") 10))
-        cli-op (aget js/process.env "op")
-        cli-extension (aget js/process.env "extension")
-        result (-> configs
-                   (update :port (fn [port] (or cli-port port)))
-                   (update :op (fn [op] (or cli-op op)))
-                   (update :extension (fn [extension] (or cli-extension extension))))]
-    (comment println (.gray chalk result))
-    result))
+(defn get-cli-configs! []
+  (let [env (.-env js/process)]
+    {:compile? (= "compile" (.-op env)), :local-ui? (= "true" (.-local env))}))
 
 (defn pick-port! [port next-fn]
   (port-taken?

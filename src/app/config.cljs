@@ -1,5 +1,5 @@
 
-(ns app.config (:require [app.util.env :refer [get-env!]] [app.schema :as schema]))
+(ns app.config (:require [app.schema :as schema]))
 
 (def cdn?
   (cond
@@ -28,6 +28,4 @@
    :server-folder "tiye.me:servers/calcit-editor",
    :theme "#eeeeff",
    :storage-key "calcit-storage",
-   :storage-file "calcit.edn",
-   :extension ".cljs",
-   :output "src"})
+   :storage-file "calcit.edn"})
