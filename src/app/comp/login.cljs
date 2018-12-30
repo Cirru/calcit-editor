@@ -4,8 +4,8 @@
             [respo.comp.space :refer [=<]]
             [respo.comp.inspect :refer [comp-inspect]]
             [respo-ui.core :as ui]
-            [app.schema :as schema]
-            [app.style :as style]))
+            [app.style :as style]
+            [app.config :as config]))
 
 (def initial-state {:username "", :password ""})
 
@@ -14,10 +14,7 @@
 (defn on-submit [username password signup?]
   (fn [e dispatch!]
     (dispatch! (if signup? :user/sign-up :user/log-in) [username password])
-    (.setItem
-     js/window.localStorage
-     (:local-storage-key schema/configs)
-     [username password])))
+    (.setItem js/window.localStorage (:storage-key config/site) [username password])))
 
 (def style-control (merge ui/flex {:text-align :right}))
 

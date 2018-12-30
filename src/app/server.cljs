@@ -40,14 +40,15 @@
    storage-file
    (fn [found?]
      (if found?
-       (println "Loading calcit.edn")
+       (println (.gray chalk "Loading calcit.edn"))
        (println (.yellow chalk "Using default schema."))))))
 
 (defonce *writer-db
   (atom
    (-> initial-db
        (assoc :repl {:alive? false, :logs {}})
-       (assoc :saved-files (get-in initial-db [:ir :files])))))
+       (assoc :saved-files (get-in initial-db [:ir :files]))
+       (assoc :sessions {}))))
 
 (defonce *reader-db (atom @*writer-db))
 
@@ -107,23 +108,20 @@
   (js/setTimeout render-loop! 20))
 
 (defn run-server! [dispatch! port]
-  (pick-port!
+  (wss-serve!
    port
-   (fn [unoccupied-port]
-     (wss-serve!
-      unoccupied-port
-      {:on-open (fn [sid socket]
-         (dispatch! :session/connect nil sid)
-         (println (.gray chalk (str "client connected: " sid)))),
-       :on-data (fn [sid action]
-         (case (:kind action)
-           :op (dispatch! (:op action) (:data action) sid)
-           :ping (do)
-           (println "unknown data" action))),
-       :on-close (fn [sid event]
-         (println (.gray chalk (str "client disconnected: " sid)))
-         (dispatch! :session/disconnect nil sid)),
-       :on-error (fn [error] (.error js/console error))}))))
+   {:on-open (fn [sid socket]
+      (dispatch! :session/connect nil sid)
+      (println (.gray chalk (str "client connected: " sid)))),
+    :on-data (fn [sid action]
+      (case (:kind action)
+        :op (dispatch! (:op action) (:data action) sid)
+        :ping (do)
+        (println "unknown data" action))),
+    :on-close (fn [sid event]
+      (println (.gray chalk (str "client disconnected: " sid)))
+      (dispatch! :session/disconnect nil sid)),
+    :on-error (fn [error] (.error js/console error))}))
 
 (defn serve-app! [port]
   (let [app (express), dir (path/join js/__dirname ""), file-port (+ 100 port)]
@@ -144,7 +142,9 @@
           (.on ^js watcher "changed" (fn [filepath] (on-file-change!)))))))))
 
 (defn start-server! [configs]
-  (run-server! #(dispatch! %1 %2 %3) (:port config/site))
+  (pick-port!
+   (:port configs)
+   (fn [unoccupied-port] (run-server! #(dispatch! %1 %2 %3) unoccupied-port)))
   (render-loop!)
   (watch-file!)
   (.on

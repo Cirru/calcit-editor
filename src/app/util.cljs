@@ -50,11 +50,7 @@
               (into {}))))))
 
 (defn db->string [db]
-  (write-edn
-   (-> db
-       (assoc :sessions {})
-       (assoc :saved-files {})
-       (assoc :repl {:alive? false, :logs {}}))))
+  (write-edn (-> db (dissoc :sessions {}) (dissoc :saved-files {}) (dissoc :repl))))
 
 (defn expr? [x] (= :expr (:type x)))
 

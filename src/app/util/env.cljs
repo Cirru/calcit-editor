@@ -22,7 +22,7 @@
 
 (defn get-cli-configs! []
   (let [env (.-env js/process)]
-    {:compile? (= "compile" (.-op env)), :local-ui? (= "true" (.-local env))}))
+    {:compile? (= "compile" (.-op env)), :local-ui? (= "local" (.-ui env))}))
 
 (defn pick-port! [port next-fn]
   (port-taken?
@@ -33,6 +33,6 @@
        (if taken?
          (do (println "port" port "is in use.") (pick-port! (inc port) next-fn))
          (do
-          (let [link (str "http://calcit-editor.cirru.org?port=" port)]
-            (println "port" port "is ok, please edit on" (.blue chalk link)))
+          (let [link (.blue chalk (<< "http://calcit-editor.cirru.org?port=~{port}"))]
+            (println (<< "port ~{port} is ok, please edit on ~{link}")))
           (next-fn port)))))))

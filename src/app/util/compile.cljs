@@ -3,7 +3,6 @@
   (:require [clojure.set :refer [difference intersection]]
             [cirru-sepal.analyze :refer [write-file]]
             [app.util :refer [ns->path file->cirru db->string]]
-            [app.schema :as schema]
             ["chalk" :as chalk]
             ["path" :as path]
             ["fs" :as fs]

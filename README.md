@@ -32,21 +32,13 @@ calcit-editor
 
 ### Options
 
-To run editor with options:
-
-```bash
-port=6001 calcit-editor
-```
-
-There are several options to configure:
+There are several options to configure in `:configs` field in `calcit.edn`:
 
 * `port`, defaults to `6001`
 * `output`, defaults to `src/`
 * `extension`, defaults to `.cljs`
 
-Those options are also stored in the snapshot file `calcit.edn`.
-
-To compile code at once from existing `calcit.edn`:
+Command options may help to compile code at once from existing `calcit.edn`:
 
 ```bash
 op=compile calcit-editor

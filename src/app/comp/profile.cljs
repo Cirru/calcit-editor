@@ -7,13 +7,14 @@
             [respo-ui.colors :as colors]
             [respo.core :refer [defcomp <> span div button input a]]
             [respo.comp.space :refer [=<]]
-            [app.style :as style]))
+            [app.style :as style]
+            [app.config :as config]))
 
 (defn on-input [e d! m!] (m! (:value e)))
 
 (defn on-log-out [e dispatch!]
   (dispatch! :user/log-out nil)
-  (.removeItem js/window.localStorage (:local-storage-key schema/configs)))
+  (.removeItem js/window.localStorage (:storage-key config/site)))
 
 (defn on-rename [state]
   (fn [e d! m!] (let [name-text (string/trim state)] (d! :user/nickname name-text) (m! ""))))

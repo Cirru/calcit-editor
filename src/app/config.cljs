@@ -17,11 +17,11 @@
       false)))
 
 (def site
-  {:port 6001,
+  {:port nil,
    :title "Calcit Editor",
    :icon "http://cdn.tiye.me/logo/cirru.png",
    :dev-ui "http://localhost:8100/main.css",
-   :release-ui "http://cdn.tiye.me/favored-fonts/main.css",
+   :release-ui "://cdn.tiye.me/favored-fonts/main.css",
    :cdn-url "http://cdn.tiye.me/calcit-editor/",
    :cdn-folder "tiye.me:cdn/calcit-editor",
    :upload-folder "tiye.me:repo/Cirru/calcit-editor/",

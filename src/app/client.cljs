@@ -4,7 +4,6 @@
             [respo.cursor :refer [mutate]]
             [app.comp.container :refer [comp-container]]
             [cljs.reader :refer [read-string]]
-            [app.schema :as schema]
             [app.client-util :refer [ws-host parse-query!]]
             [app.util.dom :refer [focus!]]
             [app.util.shortcuts :refer [on-window-keydown]]
@@ -50,7 +49,7 @@
        (println "Disabled heartbeat since connection lost.")))))
 
 (defn simulate-login! []
-  (let [raw (.getItem js/window.localStorage (:local-storage-key schema/configs))]
+  (let [raw (.getItem js/window.localStorage (:storage-key config/site))]
     (if (some? raw)
       (do (dispatch! :user/log-in (read-string raw)))
       (do (println "Found no storage.")))))

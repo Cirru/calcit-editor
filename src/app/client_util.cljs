@@ -1,6 +1,5 @@
 
-(ns app.client-util
-  (:require [clojure.string :as string] [app.schema :as schema] [app.config :as config]))
+(ns app.client-util (:require [clojure.string :as string] [app.config :as config]))
 
 (defn coord-contains? [xs ys]
   (if (empty? ys) true (if (= (first xs) (first ys)) (recur (rest xs) (rest ys)) false)))
