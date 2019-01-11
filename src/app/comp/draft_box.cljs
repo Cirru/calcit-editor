@@ -95,7 +95,16 @@
            :class-name "el-draft-box",
            :on-input (fn [e d! m!] (m! (:value e))),
            :on-keydown (fn [e d! m!]
-             (when (= keycode/escape (:keycode e)) (close-modal! m! d!)))})
+             (cond
+               (= keycode/escape (:keycode e)) (close-modal! m! d!)
+               (and (= keycode/s (:keycode e)) (.-metaKey (:event e)))
+                 (do
+                  (.preventDefault (:event e))
+                  (if expr?
+                    (d! :ir/draft-expr (read-string state))
+                    (d! :ir/update-leaf state))
+                  (m! nil)
+                  (close-modal! m!))))})
          (=< nil 8)
          (div
           {:style (merge ui/row style-toolbar)}
