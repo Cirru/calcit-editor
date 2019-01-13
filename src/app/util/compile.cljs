@@ -8,6 +8,7 @@
             ["fs" :as fs]
             ["child_process" :as cp]
             ["md5" :as md5]
+            [app.config :as config]
             [cumulo-util.core :refer [unix-time!]]))
 
 (defn create-file! [file-path file output-dir]
@@ -59,7 +60,7 @@
          (fn []
            (let [db-content (db->string db)]
              (reset! *calcit-md5 (md5 db-content))
-             (persist! (:storage-key configs) db-content)))))))
+             (persist! (:storage-file config/site) db-content)))))))
    (catch
     js/Error
     e
