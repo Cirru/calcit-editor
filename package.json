@@ -1,6 +1,6 @@
 {
   "name": "calcit-editor",
-  "version": "0.4.1",
+  "version": "0.4.2",
   "description": "Cirru Calcit Editor",
   "bin": {
     "calcit-editor": "dist/server.js",
@@ -15,7 +15,6 @@
     "upload": "node target/upload.js",
     "up": "yarn build-cdn && yarn upload",
     "build": "shadow-cljs clj-run build.main/build",
-    "pkg": "rm -rf dist/* && shadow-cljs release server",
     "ln": "cd target && rm -f entry && ln -s ../entry"
   },
   "repository": {
