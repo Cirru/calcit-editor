@@ -5,7 +5,8 @@
             [respo-ui.core :as ui]
             [respo-ui.colors :as colors]
             [respo.core :refer [defcomp <> list-> span div a]]
-            [respo.comp.space :refer [=<]]))
+            [respo.comp.space :refer [=<]]
+            ["url-parse" :as url-parse]))
 
 (defn on-watch [session-id]
   (fn [e d! m!] (d! :router/change {:name :watching, :data session-id})))
@@ -60,7 +61,9 @@
                (=< 32 nil)
                (if (= k session-id)
                  (a
-                  {:href (str (.-href js/location) "?watching=" k),
+                  {:href (let [url-obj (url-parse js/location.href true)]
+                     (aset (.-query url-obj) "watching" k)
+                     (.toString url-obj)),
                    :target "_blank",
                    :style {:color (hsl 240 80 80)}}
                   (<> span "Watching url" nil))))])))))))
