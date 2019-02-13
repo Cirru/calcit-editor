@@ -3,9 +3,11 @@
   (:require [hsl.core :refer [hsl]]
             [respo-ui.core :as ui]
             [respo-ui.colors :as colors]
-            [respo.core :refer [defcomp action-> <> span div a]]
+            [respo.core :refer [defcomp action-> cursor-> <> span div a]]
             [respo.comp.space :refer [=<]]
-            [app.util.dom :refer [focus-search!]]))
+            [app.util.dom :refer [focus-search!]]
+            [feather.core :refer [comp-i]]
+            [respo-alerts.comp.alerts :refer [comp-prompt]]))
 
 (defn on-editor [e d! m!] (d! :router/change {:name :editor}))
 
@@ -41,7 +43,7 @@
 
 (defcomp
  comp-header
- (router-name logged-in? stats)
+ (states router-name logged-in? stats)
  (div
   {:style (merge ui/row-center style-header)}
   (div
@@ -61,4 +63,13 @@
      :href "https://github.com/Cirru/calcit-editor/wiki/Keyboard-Shortcuts",
      :target "_blank",
      :style style-entry}))
-  (div {} (render-entry (if logged-in? "Profile" "Guest") :profile router-name on-profile))))
+  (div
+   {:style ui/row-middle}
+   (cursor->
+    :broadcast
+    comp-prompt
+    states
+    {:trigger (comp-i :radio 18 (hsl 200 80 70 0.6)), :text "Message to broadcast"}
+    (fn [result d! m!] (if (some? result) (d! :notify/broadcast result))))
+   (=< 12 nil)
+   (render-entry (if logged-in? "Profile" "Guest") :profile router-name on-profile))))

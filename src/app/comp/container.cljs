@@ -41,7 +41,13 @@
      (div {:style (merge ui/global ui/fullscreen ui/center)} (comp-about))
      (div
       {:style (merge ui/global ui/fullscreen ui/column style-container)}
-      (comp-header (:name router) (:logged-in? store) (:stats store))
+      (cursor->
+       :header
+       comp-header
+       states
+       (:name router)
+       (:logged-in? store)
+       (:stats store))
       (div
        {:style (merge ui/row ui/flex style-body)}
        (if (:logged-in? store)

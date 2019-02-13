@@ -66,6 +66,7 @@
             :ir/clone-ns ir/clone-ns
             :notify/push-message notify/push-message
             :notify/clear notify/clear
+            :notify/broadcast notify/broadcast
             :analyze/goto-def analyze/goto-def
             :analyze/abstract-def analyze/abstract-def
             :analyze/peek-def analyze/peek-def

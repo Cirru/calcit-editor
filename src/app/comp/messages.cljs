@@ -30,7 +30,7 @@
   :div
   {}
   (->> messages
-       (take-last 2)
+       (take-last 8)
        (map-indexed
         (fn [idx msg]
           [(:id msg)
