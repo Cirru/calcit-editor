@@ -85,6 +85,7 @@
        {:color (hsl 120 60 56)})
      (if (string/starts-with? text "#\"") {:color (hsl 300 60 56)})
      (if (or (= text "true") (= text "false")) {:color (hsl 250 50 60)})
+     (if (= text "nil") {:color (hsl 310 60 40)})
      (if (> best-width max-width) style-partial)
      (if (string/includes? text "\n") style-big)
      (if (re-find (re-pattern "^-?\\d") text) style-number)

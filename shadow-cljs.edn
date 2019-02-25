@@ -21,13 +21,12 @@
                 "clojars" {:url "https://mirrors.ustc.edu.cn/clojars/"}}
  :open-file-command ["subl" ["%s:%s:%s" :file :line :column]]
  :nrepl false
+ :dev-http {7000 "target/"}
  :builds {:client {:output-dir "target/"
                    :asset-path "./"
                    :target :browser
                    :modules {:client {:init-fn app.client/main!}}
-                   :devtools {:after-load app.client/reload!
-                              :http-root "target"
-                              :http-port 7000}
+                   :devtools {:after-load app.client/reload!}
                    :release {:output-dir "dist/"
                              :module-hash-names 8
                              :build-options {:manifest-name "assets.edn"}}}
