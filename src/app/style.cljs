@@ -27,5 +27,7 @@
 
 (def inspector {:opacity 0.9, :background-color (hsl 0 0 90), :color :black})
 
+(def link ui/link)
+
 (def title
   {:font-family ui/font-fancy, :font-size 20, :font-weight 100, :color (hsl 0 0 80)})
