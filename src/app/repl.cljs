@@ -1,38 +1,74 @@
 
 (ns app.repl
-  (:require ["net" :as net]
-            [app.util :refer [bookmark->path tree->cirru push-warning]]
-            [cirru-sepal.core :as sepal]))
+  (:require [app.util :refer [bookmark->path tree->cirru push-warning]]
+            [cirru-sepal.core :as sepal]
+            ["nrepl-client" :as nrepl-client]))
 
 (defonce *repl-instance (atom nil))
 
-(defn connect-socket-repl! [port dispatch!]
+(defonce *repl-session (atom nil))
+
+(defn connect-nrepl! [port dispatch!]
   (println)
-  (let [client (.createConnection
-                net
-                (clj->js {:port (js/parseInt port 10)})
-                (fn [] (println "Socket REPL created!") (dispatch! :repl/start nil)))]
+  (let [client (.connect nrepl-client (clj->js {:port (js/parseInt port 10)}))
+        create-session! (fn []
+                          (.clone
+                           client
+                           (fn [err result]
+                             (let [data (js->clj result :keywordize-keys true)
+                                   new-session (-> data first :new-session)]
+                               (println "New session:" new-session)
+                               (dispatch! :repl/log (str "New sessions: " new-session))
+                               (reset! *repl-session new-session)))))
+        on-end (fn []
+                 (println "nREPL ended!")
+                 (reset! *repl-instance nil)
+                 (reset! *repl-session nil)
+                 (dispatch! :repl/log "nREPL closed")
+                 (dispatch! :repl/exit))
+        on-error (fn [event]
+                   (.error js/console event)
+                   (dispatch! :repl/error (pr-str event)))
+        on-connect (fn [error]
+                     (if (some? error)
+                       (do (js/console.log "error" error))
+                       (do
+                        (println "nREPL created!")
+                        (dispatch! :repl/start nil)
+                        (dispatch! :repl/log "nREPL started")
+                        (create-session!))))]
     (reset! *repl-instance client)
-    (.on client "data" (fn [data] (dispatch! :repl/log (.toString data))))
-    (.on
-     client
-     "end"
-     (fn [event]
-       (println "Socket REPL ended!")
-       (reset! *repl-instance nil)
-       (dispatch! :repl/exit)))
-    (.on
-     client
-     "error"
-     (fn [event] (.error js/console event) (dispatch! :repl/error (pr-str event))))))
+    (.once client "connect" on-connect)
+    (.on client "end" on-end)
+    (.on client "error" on-error)))
 
 (defn end-repl! [dispatch!]
-  (let [client @*repl-instance] (if (some? client) (do (.end client)))))
+  (let [client @*repl-instance]
+    (if (some? client)
+      (do
+       (.close
+        client
+        (fn [err] (if (some? err) (js/console.log "Failed to close," err) (.end client))))))))
+
+(defn on-eval-result [dispatch!]
+  (fn [error result]
+    (let [result (js->clj result :keywordize-keys true)
+          log! (fn [x] (dispatch! :repl/log x))
+          handle-data! (fn [data]
+                         (cond
+                           (some? (:err data))
+                             (dispatch! :repl/error (str "Error " (:err data)))
+                           (some? (:out data)) (dispatch! :repl/log (:out data))
+                           (some? (:value data)) (dispatch! :repl/log (:value data))
+                           :else (println "Unknown message:" (pr-str data))))]
+      (if (= "done" (first (:status (last result))))
+        (doseq [x (butlast result)] (handle-data! x))
+        (println "Unknown state:" (pr-str (last result)))))))
 
 (defn send-raw-code! [code dispatch!]
   (let [client @*repl-instance]
     (if (some? client)
-      (do (.write client (str code "\n")))
+      (do (.eval client code "app.main" @*repl-session (on-eval-result dispatch!)))
       (dispatch! :notify/push-message [:warning "REPL not connected"]))))
 
 (defn eval-tree! [db dispatch! sid]
@@ -40,10 +76,14 @@
         bookmark (get (:stack writer) (:pointer writer))
         data-path (bookmark->path bookmark)
         cirru-piece (tree->cirru (get-in db data-path))
-        code (sepal/make-string ["println" cirru-piece])]
+        code (sepal/make-string cirru-piece)]
     (println "code to eval:" code)
+    (dispatch! :repl/log (str "eval code: " code))
     (send-raw-code! (str code "\n") dispatch!)))
 
 (defn try-cljs-repl! [dispatch! build-id]
   (let [client @*repl-instance, repl-api (str "(shadow.cljs.devtools.api/repl " build-id ")")]
-    (if (some? client) (do (println repl-api) (.write client (str repl-api "\n"))))))
+    (if (some? client)
+      (do
+       (println repl-api)
+       (.eval client repl-api "cljs.user" @*repl-session (on-eval-result dispatch!))))))

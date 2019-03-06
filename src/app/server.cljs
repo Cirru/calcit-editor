@@ -70,7 +70,7 @@
      (case op
        :effect/save-files
          (handle-files! @*writer-db *calcit-md5 (:configs initial-db) d2! true)
-       :effect/connect-repl (repl/connect-socket-repl! op-data d2!)
+       :effect/connect-repl (repl/connect-nrepl! op-data d2!)
        :effect/cljs-repl (repl/try-cljs-repl! d2! op-data)
        :effect/send-code (repl/send-raw-code! op-data d2!)
        :effect/eval-tree (repl/eval-tree! @*writer-db d2! sid)

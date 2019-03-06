@@ -17,7 +17,7 @@
             [app.comp.about :refer [comp-about]]
             [app.comp.repl-page :refer [comp-repl-page]]))
 
-(def style-body {:padding-top 16, :overflow :hidden})
+(def style-body {:padding-top 16, :overflow :auto})
 
 (def style-container {:background-color :black, :color :white})
 
