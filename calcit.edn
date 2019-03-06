@@ -22836,6 +22836,13 @@
                            "j" {:type :leaf, :by "S1lNv50FW", :at 1551809143371, :text "\"16px 0", :id "OR3qlcV2L"}
                           }
                          }
+                         "yx" {
+                          :type :expr, :by "S1lNv50FW", :at 1551893886718, :id "sik7W98ng"
+                          :data {
+                           "T" {:type :leaf, :by "S1lNv50FW", :at 1551893890572, :text ":user-select", :id "sik7W98ngleaf"}
+                           "j" {:type :leaf, :by "S1lNv50FW", :at 1551893892590, :text ":text", :id "1D8nUibA8R"}
+                          }
+                         }
                         }
                        }
                       }

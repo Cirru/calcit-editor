@@ -72,7 +72,8 @@
                   :font-size 12,
                   :font-family ui/font-code,
                   :white-space :pre-line,
-                  :padding "16px 0"})}
+                  :padding "16px 0",
+                  :user-select :text})}
         (->> (:logs data)
              (sort-by (fn [[k log]] (- 0 (:time log))))
              (map-val (fn [log] (div {} (<> (:text log))))))))
