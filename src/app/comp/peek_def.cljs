@@ -22,8 +22,9 @@
    (stringify-s-expr (tree->cirru simple-expr))
    {:font-family "Source Code Pro, Iosevka,Consolas,monospace",
     :white-space :nowrap,
-    :overflow :hidden})
-  (=< 8 nil)
+    :overflow :hidden,
+    :text-overflow :ellipsis,
+    :max-width 480})
   (span
-   {:on-click (action-> :writer/hide-peek nil), :style {:cursor :pointer}}
+   {:on-click (action-> :writer/hide-peek nil), :style {:cursor :pointer, :margin-left 8}}
    (comp-android-icon :close))))
