@@ -16,7 +16,7 @@
  comp-repl-page
  (states router)
  (let [data (:data router)
-       state (or (:data states) {:port nil, :code "", :build-id "client"})]
+       state (or (:data states) {:port nil, :code "", :build-id "client", :ns "cljs.user"})]
    (div
     {:style (merge ui/column {:padding "0 16px"})}
     (if (:alive? data)
@@ -25,20 +25,29 @@
        (div
         {}
         (input
-         {:style (merge style/input {:width 400}),
+         {:style (merge style/input {:width 160}),
+          :value (:ns state),
+          :on-input (mutation-> (assoc state :ns (:value %e))),
+          :placeholder "ns"})
+        (=< 8 nil)
+        (input
+         {:style (merge style/input {:width 320}),
           :value (:code state),
           :on-input (mutation-> (assoc state :code (:value %e))),
           :on-keydown (fn [e d! m!]
-            (if (= keycode/return (:key-code e)) (d! :effect/send-code (:code state)))),
+            (if (= keycode/return (:key-code e))
+              (d! :effect/send-code {:code (:code state), :ns (:ns state)}))),
           :placeholder "Clojure(Script) code to run"})
         (=< 8 nil)
         (a
          {:style style/link,
-          :on-click (action-> :effect/send-code (str "(println " (:code state) ")"))}
+          :on-click (action->
+                     :effect/send-code
+                     {:code (str "(println " (:code state) ")"), :ns (:ns state)})}
          (<> "Run"))
         (=< 8 nil)
         (a {:style style/link, :on-click (action-> :repl/clear-logs nil)} (<> "Clear"))
-        (=< 8 nil)
+        (=< 48 nil)
         (input
          {:style (merge style/input {:width 120}),
           :value (:build-id state),
@@ -48,7 +57,7 @@
         (a
          {:style style/link,
           :on-click (action-> :effect/cljs-repl (keyword (:build-id state)))}
-         (<> "Connect to runtime"))
+         (<> "Connect runtime"))
         (=< 8 nil)
         (a
          {:style (merge style/link), :on-click (action-> :effect/end-repl nil)}

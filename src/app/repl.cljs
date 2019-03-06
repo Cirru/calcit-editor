@@ -65,10 +65,10 @@
         (doseq [x (butlast result)] (handle-data! x))
         (println "Unknown state:" (pr-str (last result)))))))
 
-(defn send-raw-code! [code dispatch!]
-  (let [client @*repl-instance]
+(defn send-raw-code! [op-data dispatch!]
+  (let [code (:code op-data), eval-ns (:ns op-data), client @*repl-instance]
     (if (some? client)
-      (do (.eval client code "app.main" @*repl-session (on-eval-result dispatch!)))
+      (do (.eval client code eval-ns @*repl-session (on-eval-result dispatch!)))
       (dispatch! :notify/push-message [:warning "REPL not connected"]))))
 
 (defn eval-tree! [db dispatch! sid]
@@ -79,7 +79,7 @@
         code (sepal/make-string cirru-piece)]
     (println "code to eval:" code)
     (dispatch! :repl/log (str "eval code: " code))
-    (send-raw-code! (str code "\n") dispatch!)))
+    (send-raw-code! {:code (str code "\n"), :ns (:ns bookmark)} dispatch!)))
 
 (defn try-cljs-repl! [dispatch! build-id]
   (let [client @*repl-instance, repl-api (str "(shadow.cljs.devtools.api/repl " build-id ")")]
