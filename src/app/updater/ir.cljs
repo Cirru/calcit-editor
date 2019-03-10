@@ -99,7 +99,7 @@
              (-> writer
                  (update :stack (fn [stack] (dissoc-idx stack (:pointer writer))))
                  (update :pointer dec)))))
-    (:else db)))
+    (do (println "[warning] no entry to delete") db)))
 
 (defn delete-node [db op-data session-id op-id op-time]
   (let [writer (get-in db [:sessions session-id :writer])
