@@ -22,7 +22,11 @@
 
 (def initial-state {:renaming? false, :draft-box? false})
 
-(defn on-delete [bookmark] (fn [e d! m!] (d! :ir/delete-entry (dissoc bookmark :focus))))
+(defn on-delete [bookmark]
+  (fn [e d! m!]
+    (if (some? bookmark)
+      (d! :ir/delete-entry (dissoc bookmark :focus))
+      (js/console.warn "No entry to delete"))))
 
 (defn on-draft-box [state]
   (fn [e d! m!]
@@ -125,7 +129,7 @@
    (div
     {:style (merge ui/row ui/flex style-container)}
     (if (empty? stack)
-      (div {:style style-stack} (<> span "Nothing selected" style-nothing))
+      (div {:style style-stack} (<> "Empty" style-nothing))
       (list->
        :div
        {:style style-stack}
@@ -133,33 +137,36 @@
             (map-indexed
              (fn [idx bookmark] [idx (comp-bookmark bookmark idx (= idx pointer))])))))
     (=< 8 nil)
-    (div
-     {:style style-editor}
-     (let [others (->> (:others router-data) (vals) (map :focus) (into #{}))]
-       (div
-        {:style style-area}
-        (inject-style ".cirru-expr" (base-style-expr theme))
-        (inject-style ".cirru-leaf" (base-style-leaf theme))
-        (if (some? expr)
-          (cursor->
-           (:id expr)
-           comp-expr
-           states
-           expr
-           focus
-           []
-           others
-           false
-           false
-           readonly?
-           theme
-           0)
-          (if (not (empty? stack)) ui-missing))))
-     (let [peek-def (:peek-def router-data)] (if (some? peek-def) (comp-peek-def peek-def)))
-     (render-status router-data states %cursor bookmark theme)
-     (if (:renaming? state)
-       (cursor-> :rename comp-rename states old-name close-rename! bookmark))
-     (if (:draft-box? state)
-       (cursor-> :draft-box comp-draft-box states expr focus close-draft-box!))
-     (if (:abstract? state) (cursor-> :abstract comp-abstract states close-abstract!))
-     (comment comp-inspect "Expr" router-data style/inspector)))))
+    (if (empty? stack)
+      (div {} (<> "Nothing to edit" style-nothing))
+      (div
+       {:style style-editor}
+       (let [others (->> (:others router-data) (vals) (map :focus) (into #{}))]
+         (div
+          {:style style-area}
+          (inject-style ".cirru-expr" (base-style-expr theme))
+          (inject-style ".cirru-leaf" (base-style-leaf theme))
+          (if (some? expr)
+            (cursor->
+             (:id expr)
+             comp-expr
+             states
+             expr
+             focus
+             []
+             others
+             false
+             false
+             readonly?
+             theme
+             0)
+            ui-missing)))
+       (let [peek-def (:peek-def router-data)]
+         (if (some? peek-def) (comp-peek-def peek-def)))
+       (render-status router-data states %cursor bookmark theme)
+       (if (:renaming? state)
+         (cursor-> :rename comp-rename states old-name close-rename! bookmark))
+       (if (:draft-box? state)
+         (cursor-> :draft-box comp-draft-box states expr focus close-draft-box!))
+       (if (:abstract? state) (cursor-> :abstract comp-abstract states close-abstract!))
+       (comment comp-inspect "Expr" router-data style/inspector))))))
