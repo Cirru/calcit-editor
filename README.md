@@ -2,8 +2,6 @@
 Calcit Editor
 ------
 
-[![npm](https://img.shields.io/npm/v/calcit-editor.svg)](https://www.npmjs.com/package/calcit-editor)
-
 > A collabrative syntax tree editor of Clojure(Script). [Overview Video](https://www.youtube.com/watch?v=u5Eb_6KYGsA&t).
 
 Main ideas:
