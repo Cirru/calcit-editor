@@ -12,7 +12,8 @@
             [keycode.core :as keycode]
             [app.comp.file-replacer :refer [comp-file-replacer]]
             [app.util.shortcuts :refer [on-window-keydown]]
-            [respo-alerts.comp.alerts :refer [comp-prompt]]))
+            [respo-alerts.comp.alerts :refer [comp-prompt]]
+            [feather.core :refer [comp-icon]]))
 
 (defn on-edit-def [text] (fn [e d! m!] (d! :writer/edit {:kind :def, :extra text})))
 
@@ -40,7 +41,8 @@
 (def style-link {:cursor :pointer})
 
 (def style-remove
-  {:color (hsl 0 0 80),
+  {:color (hsl 0 0 80 0.5),
+   :font-size 12,
    :cursor :pointer,
    :vertical-align :middle,
    :position :absolute,
@@ -107,10 +109,8 @@
                (<> span def-text nil)
                (=< 16 nil)
                (span
-                {:class-name "ion-trash-b is-minor",
-                 :title "Remove def",
-                 :style style-remove,
-                 :on {:click (on-remove-def def-text)}}))])))))))
+                {:class-name "is-minor"}
+                (comp-icon :x style-remove (on-remove-def def-text))))])))))))
 
 (defn on-checkout [state ns-text] (fn [e d! m!] (d! :session/select-ns ns-text)))
 
@@ -176,10 +176,8 @@
                :on {:click (on-checkout state ns-text)}}
               (span {:inner-text ns-text})
               (span
-               {:class-name "ion-trash-b is-minor",
-                :title "Remove ns",
-                :style style-remove,
-                :on {:click (on-remove-ns ns-text)}}))]))))))
+               {:class-name "is-minor"}
+               (comp-icon :x style-remove (on-remove-ns ns-text))))]))))))
 
 (def style-inspect {:opacity 1, :background-color (hsl 0 0 100), :color :black})
 

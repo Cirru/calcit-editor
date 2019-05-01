@@ -9,7 +9,7 @@
             [respo.comp.space :refer [=<]]
             [app.style :as style]
             [app.client-util :refer [stringify-s-expr tree->cirru]]
-            [respo-ui.comp.icon :refer [comp-android-icon]]))
+            [feather.core :refer [comp-icon]]))
 
 (defcomp
  comp-peek-def
@@ -25,6 +25,7 @@
     :overflow :hidden,
     :text-overflow :ellipsis,
     :max-width 480})
-  (span
-   {:on-click (action-> :writer/hide-peek nil), :style {:cursor :pointer, :margin-left 8}}
-   (comp-android-icon :close))))
+  (comp-icon
+   :delete
+   {:font-size 12, :color (hsl 0 0 50), :cursor :pointer, :margin-left 8}
+   (action-> :writer/hide-peek nil))))

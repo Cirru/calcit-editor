@@ -6,7 +6,7 @@
                 [mvc-works/shell-page   "0.1.10"]
                 [mvc-works/ws-edn       "0.1.3"]
                 [respo                  "0.10.11"]
-                [respo/ui               "0.3.10"]
+                [respo/ui               "0.3.11"]
                 [respo/markdown         "0.2.4"]
                 [respo/alerts           "0.3.11"]
                 [respo/feather          "0.1.1"]

@@ -6,7 +6,8 @@
             [respo-ui.colors :as colors]
             [respo.core :refer [defcomp list-> cursor-> <> span div pre input button a]]
             [respo.comp.space :refer [=<]]
-            [app.style :as style]))
+            [app.style :as style]
+            [feather.core :refer [comp-icon]]))
 
 (defn on-preview [ns-text kind status]
   (fn [e d! m!]
@@ -30,7 +31,7 @@
 (defn on-reset-ns [ns-text] (fn [e d! m!] (d! :ir/reset-ns ns-text)))
 
 (def style-reset
-  {:text-decoration :underline, :font-size 12, :color (hsl 220 60 60 0.6), :cursor :pointer})
+  {:text-decoration :underline, :font-size 12, :color (hsl 220 60 80 0.6), :cursor :pointer})
 
 (def style-status {:font-size 12, :font-family "Josefin Sans", :color (hsl 160 70 40)})
 
@@ -46,10 +47,8 @@
    (<> span (name status) style-status)
    (=< 4 nil)
    (span
-    {:class-name "ion-arrow-return-left",
-     :title "Reset this",
-     :style style-reset,
-     :on {:click (on-reset-def ns-text kind)}})))
+    {:class-name "is-minor"}
+    (comp-icon :corner-up-left style-reset (on-reset-def ns-text kind)))))
 
 (def style-defs {:padding-left 16})
 
@@ -63,12 +62,10 @@
   (div
    {}
    (<> span ns-text nil)
-   (=< 4 nil)
+   (=< 8 nil)
    (span
-    {:class-name "ion-arrow-return-left",
-     :title "Reset this",
-     :style style-reset,
-     :on {:click (on-reset-ns ns-text)}})
+    {:class-name "is-minor"}
+    (comp-icon :corner-up-left style-reset (on-reset-ns ns-text)))
    (=< 24 nil)
    (if (not= :same (:ns info)) (render-status ns-text :ns (:ns info)))
    (=< 8 nil)

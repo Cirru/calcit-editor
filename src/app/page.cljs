@@ -19,7 +19,7 @@
    ""
    (merge
     base-info
-    {:styles [(<< "http://~(get-ip!):8100/main.css") "/entry/main.css"],
+    {:styles [(<< "http://~(get-ip!):8100/main-fonts.css") "/entry/main.css"],
      :scripts ["/client.js"],
      :inline-styles []})))
 
@@ -27,7 +27,9 @@
   (let [html-content (make-string (comp-container {} nil))
         assets (read-string (slurp "dist/assets.edn"))
         cdn (if config/cdn? (:cdn-url config/site) "")
-        font-styles (if config/cdn? (:release-ui config/site) "favored-fonts/main.css")
+        font-styles (if config/cdn?
+                      (:release-ui config/site)
+                      "favored-fonts/main-fonts.css")
         prefix-cdn #(str cdn %)]
     (make-page
      html-content
