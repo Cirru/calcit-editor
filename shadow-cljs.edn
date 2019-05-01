@@ -11,7 +11,7 @@
                 [respo/alerts           "0.3.11"]
                 [respo/feather          "0.1.1"]
                 [cumulo/recollect       "0.5.0"]
-                [cumulo/util            "0.1.7"]
+                [cumulo/util            "0.1.8"]
                 [fipp                   "0.6.18"]
                 [cirru/sepal            "0.2.7"]
                 [cirru/bisection-key    "0.1.5"]

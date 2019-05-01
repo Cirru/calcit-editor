@@ -3,6 +3,7 @@ body {
   margin: 0;
   background-color: black;
   user-select: none;
+  overscroll-behavior-y: none;
 }
 
 body * {
