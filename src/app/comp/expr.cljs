@@ -3,7 +3,6 @@
   (:require [clojure.string :as string]
             [hsl.core :refer [hsl]]
             [respo-ui.core :as ui]
-            [respo-ui.colors :as colors]
             [respo.core :refer [defcomp list-> cursor-> <> span div a]]
             [respo.comp.space :refer [=<]]
             [keycode.core :as keycode]

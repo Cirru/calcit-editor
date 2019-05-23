@@ -4,7 +4,6 @@
             [cljs.reader :refer [read-string]]
             [hsl.core :refer [hsl]]
             [respo-ui.core :as ui]
-            [respo-ui.colors :as colors]
             [respo.core :refer [defcomp <> span div textarea pre button a]]
             [respo.comp.space :refer [=<]]
             [app.comp.modal :refer [comp-modal]]

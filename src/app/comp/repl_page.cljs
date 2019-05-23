@@ -2,7 +2,6 @@
 (ns app.comp.repl-page
   (:require [hsl.core :refer [hsl]]
             [respo-ui.core :as ui]
-            [respo-ui.colors :as colors]
             [respo.core
              :refer
              [defcomp action-> mutation-> list-> input <> span div a button]]
