@@ -2,7 +2,6 @@
 (ns app.comp.container
   (:require [hsl.core :refer [hsl]]
             [respo-ui.core :as ui]
-            [respo-ui.colors :as colors]
             [respo.core :refer [defcomp cursor-> <> div span]]
             [respo.comp.inspect :refer [comp-inspect]]
             [app.comp.header :refer [comp-header]]

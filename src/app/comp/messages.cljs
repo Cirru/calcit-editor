@@ -3,7 +3,6 @@
   (:require [clojure.string :as string]
             [hsl.core :refer [hsl]]
             [respo-ui.core :as ui]
-            [respo-ui.colors :as colors]
             [respo.core :refer [defcomp list-> <> span div pre input button a]]
             [respo.comp.space :refer [=<]]
             [app.client-util :as util]
