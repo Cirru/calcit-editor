@@ -25,9 +25,10 @@
      (case kind
        :ns {:ns ns-text, :kind :ns}
        :proc {:ns ns-text, :kind :proc}
-       {:ns ns-text, :kind :def, :extra kind}))))
+       {:ns ns-text, :kind :def, :extra kind}))
+    (d! :states/clear nil)))
 
-(defn on-reset-ns [ns-text] (fn [e d! m!] (d! :ir/reset-ns ns-text)))
+(defn on-reset-ns [ns-text] (fn [e d! m!] (d! :ir/reset-ns ns-text) (d! :states/clear nil)))
 
 (def style-reset
   {:text-decoration :underline, :font-size 12, :color (hsl 220 60 80 0.6), :cursor :pointer})

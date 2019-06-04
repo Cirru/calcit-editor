@@ -9,7 +9,7 @@
             [app.style :as style]
             [app.comp.changed-info :refer [comp-changed-info]]))
 
-(defn on-reset [e d! m!] (d! :ir/reset-files nil))
+(defn on-reset [e d! m!] (d! :ir/reset-files nil) (d! :states/clear nil))
 
 (defn on-save [e d! m!] (d! :effect/save-files nil))
 
