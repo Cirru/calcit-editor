@@ -314,10 +314,10 @@ cookie@0.4.0:
   resolved "https://registry.yarnpkg.com/cookie/-/cookie-0.4.0.tgz#beb437e7022b3b6d49019d088665303ebe9c14ba"
   integrity sha512-+Hp8fLp57wnUSt0tY0tHEXh4voZRDnoIrZPqlo3DPiI4y9lwg/jqx+1Om94/W6ZaPDOUbnjOt/99w66zk+l1Xg==
 
-core-js@^2.5.3:
-  version "2.6.4"
-  resolved "https://registry.yarnpkg.com/core-js/-/core-js-2.6.4.tgz#b8897c062c4d769dd30a0ac5c73976c47f92ea0d"
-  integrity sha512-05qQ5hXShcqGkPZpXEFLIpxayZscVD2kuMBZewxiIPPEagukO4mqgPA9CWhUvFBJfy3ODdK2p9xyHh7FTU9/7A==
+core-js@^3.1.3:
+  version "3.1.3"
+  resolved "https://registry.yarnpkg.com/core-js/-/core-js-3.1.3.tgz#95700bca5f248f5f78c0ec63e784eca663ec4138"
+  integrity sha512-PWZ+ZfuaKf178BIAg+CRsljwjIMRV8MY00CbZczkR6Zk5LfkSkjGoaab3+bqRQWVITNZxQB7TFYz+CFcyuamvA==
 
 core-util-is@~1.0.0:
   version "1.0.2"
@@ -561,13 +561,13 @@ express@^4.17.1:
     utils-merge "1.0.1"
     vary "~1.1.2"
 
-feather-icons@^4.21.0:
-  version "4.21.0"
-  resolved "https://registry.yarnpkg.com/feather-icons/-/feather-icons-4.21.0.tgz#fd545bc735960dd6c6afed7c35d8d9a4bb513983"
-  integrity sha512-5RgyUH0J9NCRG5Z+aL8kJduMM4J6IAKlGqSrnkWW6rpY5jC9MyE0NkvgsKOmnedAZN2ORmdXTndPIHFWaMCf6w==
+feather-icons@^4.22.1:
+  version "4.22.1"
+  resolved "https://registry.yarnpkg.com/feather-icons/-/feather-icons-4.22.1.tgz#d747879ecb83e4d37d95bc9483b909aebebb2dcb"
+  integrity sha512-kup3Nxe9rHLTISgwlkXSIodKNY8FQp/8mo0wHshLNBpblli8KZHyAoxbqspJQT1IbuUfidzxEMRA6z1n4XKMPA==
   dependencies:
     classnames "^2.2.5"
-    core-js "^2.5.3"
+    core-js "^3.1.3"
 
 finalhandler@~1.1.2:
   version "1.1.2"
@@ -1381,10 +1381,10 @@ shadow-cljs-jar@1.3.1:
   resolved "https://registry.yarnpkg.com/shadow-cljs-jar/-/shadow-cljs-jar-1.3.1.tgz#a5f8ab7664b40e11345837e4c6bce8e0ac9b2cc3"
   integrity sha512-IJSm4Gfu/wWDsOQ0wNrSxuaGdjzsd78us+3bop3cpWsoO2Igdu6VIBItYrZHRRBKl5LIZKXfnSh/2eWG3C1EFw==
 
-shadow-cljs@^2.8.37:
-  version "2.8.37"
-  resolved "https://registry.yarnpkg.com/shadow-cljs/-/shadow-cljs-2.8.37.tgz#1d41718f45db82a22b1483ecc74c43ee34e77c51"
-  integrity sha512-lIoPWzat7vtHYhtTFIjGcysmd/bYjZ5s/3D9ucZGKL2B6wVs8KAIBOw7JiiLKbOUC+rFG/SMpOiBEXWWucioKg==
+shadow-cljs@^2.8.39:
+  version "2.8.39"
+  resolved "https://registry.yarnpkg.com/shadow-cljs/-/shadow-cljs-2.8.39.tgz#5285a57b975b773d7a1e6bedc11fa3665d4afcb2"
+  integrity sha512-FBSa5bWYl5LATt02KN7Cl+n/CRY4unCgU+hlA25wKOxKbOvcO0AQhQZwivdpF75YCJvQGwQ0iy/KF2nS8au1+w==
   dependencies:
     mkdirp "^0.5.1"
     node-libs-browser "^2.0.0"
