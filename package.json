@@ -12,8 +12,7 @@
     "repl": "rlwrap shadow-cljs clj-repl",
     "build-cdn": "shadow-cljs clj-run build.main/build-cdn",
     "page": "shadow-cljs clj-run build.main/page",
-    "upload": "node target/upload.js",
-    "up": "yarn build-cdn && yarn upload",
+    "up": "yarn build-cdn && tiye-up",
     "build": "shadow-cljs clj-run build.main/build",
     "prepare": "yarn build",
     "ln": "cd target && rm -f entry && ln -s ../entry"
@@ -41,6 +40,6 @@
     "nrepl-client": "^0.3.0",
     "serve-index": "^1.9.1",
     "shortid": "^2.2.14",
-    "ws": "^7.0.0"
+    "ws": "^7.0.1"
   }
 }
