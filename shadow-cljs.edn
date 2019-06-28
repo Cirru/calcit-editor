@@ -40,8 +40,4 @@
           :page {:target :node-script
                  :output-to "target/page.js"
                  :main app.page/main!
-                 :devtools {:after-load app.page/main!}}
-          :upload {:target :node-script
-                   :output-to "target/upload.js"
-                   :main app.upload/main!
-                   :devtools {:after-load app.upload/main!}}}}
+                 :devtools {:after-load app.page/main!}}}}

@@ -23,9 +23,6 @@
    :dev-ui "http://localhost:8100/main.css",
    :release-ui "//cdn.tiye.me/favored-fonts/main.css",
    :cdn-url "https://cdn.tiye.me/calcit-editor/",
-   :cdn-folder "tiye.me:cdn/calcit-editor",
-   :upload-folder "tiye.me:repo/Cirru/calcit-editor/",
-   :server-folder "tiye.me:servers/calcit-editor",
    :theme "#eeeeff",
    :storage-key "calcit-storage",
    :storage-file "calcit.edn"})

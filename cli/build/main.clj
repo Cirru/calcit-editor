@@ -11,7 +11,6 @@
   (sh! "rm -rf dist/*")
   (shadow/release :client)
   (shadow/compile :page)
-  (shadow/compile :upload)
   (sh! "release=true cdn=true node target/page.js")
   (sh! "cp entry/manifest.json dist/"))
 
