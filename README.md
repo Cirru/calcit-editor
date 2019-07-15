@@ -60,7 +60,7 @@ Set `local` to enable local version of web editor:
 
 ```bash
 ui=local calcit-editor
-; serving app at http://localhost:6101
+# serving app at http://localhost:6101
 ```
 
 ### Workflow
