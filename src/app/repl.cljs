@@ -2,7 +2,9 @@
 (ns app.repl
   (:require [app.util :refer [bookmark->path tree->cirru push-warning]]
             [cirru-sepal.core :as sepal]
-            ["nrepl-client" :as nrepl-client]))
+            ["nrepl-client" :as nrepl-client]
+            ["fs" :as fs]
+            ["chalk" :as chalk]))
 
 (defonce *repl-instance (atom nil))
 
@@ -10,7 +12,7 @@
 
 (defn connect-nrepl! [port dispatch!]
   (println)
-  (let [client (.connect nrepl-client (clj->js {:port (js/parseInt port 10)}))
+  (let [client (.connect nrepl-client (clj->js {:port port}))
         create-session! (fn []
                           (.clone
                            client
@@ -80,6 +82,15 @@
     (println "code to eval:" code)
     (dispatch! :repl/log (str "eval code: " code))
     (send-raw-code! {:code (str code "\n"), :ns (:ns bookmark)} dispatch!)))
+
+(defn load-nrepl! [d2!]
+  (let [config-path ".nrepl-port"]
+    (if (fs/existsSync config-path)
+      (let [port-text (fs/readFileSync ".nrepl-port" "utf8"), port (js/parseInt port-text 10)]
+        (connect-nrepl! port d2!))
+      (let [warning ".nrepl-port not found!"]
+        (d2! :notify/push-message [:warn warning])
+        (println (chalk/red warning))))))
 
 (defn try-cljs-repl! [dispatch! build-id]
   (let [client @*repl-instance, repl-api (str "(shadow.cljs.devtools.api/repl " build-id ")")]
