@@ -2,6 +2,13 @@
 (ns app.util.dom
   (:require [respo.core :refer [style]] [respo.render.html :refer [style->string]]))
 
+(defn copy-silently! [x]
+  (-> js/navigator
+      .-clipboard
+      (.writeText x)
+      (.then (fn [] (println "Copied.")))
+      (.catch (fn [error] (.error js/console "Failed to copy:" error)))))
+
 (defn do-copy-logics! [d! x message]
   (-> js/navigator
       .-clipboard

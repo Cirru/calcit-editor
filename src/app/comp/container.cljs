@@ -37,7 +37,7 @@
        router (:router store)
        theme (get-in store [:user :theme])]
    (if (nil? store)
-     (div {:style (merge ui/global ui/fullscreen ui/center)} (comp-about))
+     (comp-about)
      (div
       {:style (merge ui/global ui/fullscreen ui/column style-container)}
       (cursor->

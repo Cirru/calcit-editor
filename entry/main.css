@@ -60,3 +60,7 @@ body * {
 ::-webkit-scrollbar-thumb {
   background-color: hsla(0,0%,100%,0.3);
 }
+
+.copy-commands:active {
+  background-color: hsla(0,0%,100%,0.3)
+}
