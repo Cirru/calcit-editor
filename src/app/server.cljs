@@ -24,7 +24,7 @@
             [app.util.env :refer [check-version!]]
             [app.config :as config]
             [cumulo-util.file :refer [write-mildly! merge-local-edn!]]
-            [cumulo-util.core :refer [unix-time! id!]]
+            [cumulo-util.core :refer [unix-time! id! delay!]]
             [app.util.env :refer [get-cli-configs!]])
   (:require-macros [clojure.core.strint :refer [<<]]))
 
@@ -139,7 +139,7 @@
       (fn [error watcher]
         (if (some? error)
           (.log js/console error)
-          (.on ^js watcher "changed" (fn [filepath] (on-file-change!)))))))))
+          (.on ^js watcher "changed" (fn [filepath] (delay! 20 on-file-change!)))))))))
 
 (defn start-server! [configs]
   (pick-port!
