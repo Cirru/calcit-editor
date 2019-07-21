@@ -63,6 +63,7 @@
         forced? (:forced? op-data)
         new-bookmark (merge
                       schema/bookmark
+                      {:focus ["r"]}
                       (if (and (contains? deps-info (:key def-info))
                                (=
                                 (:method def-info)
@@ -71,7 +72,7 @@
                           (if (= :refer (:method def-info))
                             {:kind :def, :ns (:ns rule), :extra (:key def-info)}
                             {:kind :def, :ns (:ns rule), :extra (:def def-info)}))
-                        {:kind :def, :ns (:ns bookmark), :extra (:def def-info), :focus []}))
+                        {:kind :def, :ns (:ns bookmark), :extra (:def def-info)}))
         def-existed? (some?
                       (get-in
                        db
