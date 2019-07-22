@@ -47,12 +47,21 @@
         (and meta? (= code keycode/b)) (d! :ir/duplicate nil)
         (and meta? (= code keycode/d))
           (do
-           (d! :manual-state/abstract nil)
-           (.preventDefault event)
-           (js/setTimeout
-            (fn []
-              (let [el (.querySelector js/document ".el-abstract")]
-                (if (some? el) (.focus el))))))
+           (if shift?
+             (let [tree (tree->cirru expr)]
+               (do
+                (if (and (>= (count tree) 1) (string? (first tree)))
+                  (d!
+                   :analyze/goto-def
+                   {:text (first tree), :forced? true, :args (subvec tree 1)})
+                  (d! :notify/push-message [:warn "Can not create a function!"]))))
+             (do
+              (d! :manual-state/abstract nil)
+              (js/setTimeout
+               (fn []
+                 (let [el (.querySelector js/document ".el-abstract")]
+                   (if (some? el) (.focus el)))))))
+           (.preventDefault event))
         :else
           (do
            (comment println "Keydown" (:key-code e))

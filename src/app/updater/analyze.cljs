@@ -63,6 +63,7 @@
         forced? (:forced? op-data)
         new-bookmark (merge
                       schema/bookmark
+                      {:focus ["r"]}
                       (if (and (contains? deps-info (:key def-info))
                                (=
                                 (:method def-info)
@@ -71,7 +72,7 @@
                           (if (= :refer (:method def-info))
                             {:kind :def, :ns (:ns rule), :extra (:key def-info)}
                             {:kind :def, :ns (:ns rule), :extra (:def def-info)}))
-                        {:kind :def, :ns (:ns bookmark), :extra (:def def-info), :focus []}))
+                        {:kind :def, :ns (:ns bookmark), :extra (:def def-info)}))
         def-existed? (some?
                       (get-in
                        db
@@ -86,11 +87,14 @@
         (if def-existed?
           (-> db (update-in [:sessions sid :writer] (push-bookmark new-bookmark true)))
           (if forced?
-            (-> db
-                (assoc-in
-                 [:ir :files (:ns new-bookmark) :defs (:extra new-bookmark)]
-                 (cirru->tree ["defn" (:extra new-bookmark) []] user-id op-time))
-                (update-in [:sessions sid :writer] (push-bookmark new-bookmark)))
+            (let [new-expr (if (vector? (:args op-data))
+                             ["defn" (:extra new-bookmark) (vec (:args op-data))]
+                             ["def" (:extra new-bookmark) []])]
+              (-> db
+                  (assoc-in
+                   [:ir :files (:ns new-bookmark) :defs (:extra new-bookmark)]
+                   (cirru->tree new-expr user-id op-time))
+                  (update-in [:sessions sid :writer] (push-bookmark new-bookmark))))
             (warn (str "Does not exist: " (:ns new-bookmark) " " (:extra new-bookmark)))))
         (warn (str "External dep:" (:ns new-bookmark))))
       (warn (str "Cannot locate:" def-info)))))
