@@ -139,7 +139,7 @@
       (fn [error watcher]
         (if (some? error)
           (.log js/console error)
-          (.on ^js watcher "changed" (fn [filepath] (delay! 20 on-file-change!)))))))))
+          (.on ^js watcher "changed" (fn [filepath] (delay! 0.02 on-file-change!)))))))))
 
 (defn start-server! [configs]
   (pick-port!
