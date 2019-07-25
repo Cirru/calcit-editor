@@ -4,7 +4,8 @@
             [cirru-sepal.core :as sepal]
             ["nrepl-client" :as nrepl-client]
             ["fs" :as fs]
-            ["chalk" :as chalk]))
+            ["chalk" :as chalk])
+  (:require-macros [clojure.core.strint :refer [<<]]))
 
 (defonce *repl-instance (atom nil))
 
@@ -84,11 +85,11 @@
     (send-raw-code! {:code (str code "\n"), :ns (:ns bookmark)} dispatch!)))
 
 (defn load-nrepl! [d2!]
-  (let [config-path ".nrepl-port"]
+  (let [nrepl-file ".shadow-cljs/nrepl.port", config-path nrepl-file]
     (if (fs/existsSync config-path)
-      (let [port-text (fs/readFileSync ".nrepl-port" "utf8"), port (js/parseInt port-text 10)]
+      (let [port-text (fs/readFileSync nrepl-file "utf8"), port (js/parseInt port-text 10)]
         (connect-nrepl! port d2!))
-      (let [warning ".nrepl-port not found!"]
+      (let [warning (<< "~{nrepl-file} not found!")]
         (d2! :notify/push-message [:warn warning])
         (println (chalk/red warning))))))
 
