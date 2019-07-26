@@ -26622,6 +26622,27 @@
         }
        }
       }
+      "v" {
+       :type :expr, :by "S1lNv50FW", :at 1564076195459, :id "-BqFdZX9XJ"
+       :data {
+        "T" {:type :leaf, :by "S1lNv50FW", :at 1564076195459, :text ":require-macros", :id "6iZkBA6CJK"}
+        "j" {
+         :type :expr, :by "S1lNv50FW", :at 1564076195459, :id "URvVxdiCLI"
+         :data {
+          "T" {:type :leaf, :by "S1lNv50FW", :at 1564076195459, :text "[]", :id "5TFJIeqihh"}
+          "j" {:type :leaf, :by "S1lNv50FW", :at 1564076195459, :text "clojure.core.strint", :id "UUDn25PS_9"}
+          "r" {:type :leaf, :by "S1lNv50FW", :at 1564076195459, :text ":refer", :id "vBUn2rjk7C"}
+          "v" {
+           :type :expr, :by "S1lNv50FW", :at 1564076195459, :id "anA8o41ezQ"
+           :data {
+            "T" {:type :leaf, :by "S1lNv50FW", :at 1564076195459, :text "[]", :id "O_uGB0E7Rg"}
+            "j" {:type :leaf, :by "S1lNv50FW", :at 1564076195459, :text "<<", :id "q_pryP37US"}
+           }
+          }
+         }
+        }
+       }
+      }
      }
     }
     :defs {
@@ -27331,11 +27352,18 @@
          "L" {
           :type :expr, :by "root", :at 1563470583369, :id "shNw4n8-Iq"
           :data {
+           "D" {
+            :type :expr, :by "S1lNv50FW", :at 1564076144344, :id "Oz7kmC-_6V"
+            :data {
+             "T" {:type :leaf, :by "S1lNv50FW", :at 1564076152090, :text "nrepl-file", :id "Oz7kmC-_6Vleaf"}
+             "j" {:type :leaf, :by "S1lNv50FW", :at 1564076155311, :text "\".shadow-cljs/nrepl.port", :id "TNfBiSau7Z"}
+            }
+           }
            "T" {
             :type :expr, :by "root", :at 1563470583517, :id "nC9eGP2FEY"
             :data {
              "T" {:type :leaf, :by "root", :at 1563470587670, :text "config-path", :id "b4rY4NaxDB"}
-             "j" {:type :leaf, :by "root", :at 1563470592520, :text "\".nrepl-port", :id "IpAx1ov5j"}
+             "j" {:type :leaf, :by "S1lNv50FW", :at 1564076160453, :text "nrepl-file", :id "IpAx1ov5j"}
             }
            }
           }
@@ -27366,7 +27394,7 @@
                   :type :expr, :by "root", :at 1563470483257, :id "M_gM1eDW6i"
                   :data {
                    "T" {:type :leaf, :by "root", :at 1563470483257, :text "fs/readFileSync", :id "ETTd5vCfiH"}
-                   "j" {:type :leaf, :by "root", :at 1563470483257, :text "\".nrepl-port", :id "Wg_f2teRzW"}
+                   "j" {:type :leaf, :by "S1lNv50FW", :at 1564076161550, :text "nrepl-file", :id "Wg_f2teRzW"}
                    "r" {:type :leaf, :by "root", :at 1563470483257, :text "\"utf8", :id "LhUXRgr8PG"}
                   }
                  }
@@ -27409,7 +27437,13 @@
                 :type :expr, :by "root", :at 1563470747051, :id "OVMlAk5wme"
                 :data {
                  "T" {:type :leaf, :by "root", :at 1563470748800, :text "warning", :id "uw85fX4N0w"}
-                 "j" {:type :leaf, :by "root", :at 1563470751992, :text "\".nrepl-port not found!", :id "GGFmVxFgU"}
+                 "j" {
+                  :type :expr, :by "S1lNv50FW", :at 1564076166037, :id "deYGB8E3ce"
+                  :data {
+                   "D" {:type :leaf, :by "S1lNv50FW", :at 1564076166894, :text "<<", :id "3hbrusyUcL"}
+                   "T" {:type :leaf, :by "S1lNv50FW", :at 1564076187186, :text "\"~{nrepl-file} not found!", :id "GGFmVxFgU"}
+                  }
+                 }
                 }
                }
               }
