@@ -9,7 +9,8 @@
             ["child_process" :as cp]
             ["md5" :as md5]
             [app.config :as config]
-            [cumulo-util.core :refer [unix-time!]]))
+            [cumulo-util.core :refer [unix-time!]]
+            [applied-science.js-interop :as j]))
 
 (defn create-file! [file-path file output-dir]
   (let [project-path (path/join output-dir file-path)]
@@ -55,18 +56,17 @@
        (modify-file! (ns->path ns-text extension) (get new-files ns-text) output-dir))
      (dispatch! :writer/save-files nil)
      (if save-ir?
-       (do
-        (js/setTimeout
-         (fn []
-           (let [db-content (db->string db)]
-             (reset! *calcit-md5 (md5 db-content))
-             (persist! (:storage-file config/site) db-content)))))))
+       (js/setTimeout
+        (fn []
+          (let [db-content (db->string db)]
+            (reset! *calcit-md5 (md5 db-content))
+            (persist! (:storage-file config/site) db-content))))))
    (catch
     js/Error
     e
     (do
-     (println (.red chalk e))
-     (.error js/console e)
-     (dispatch! :notify/push-message [:error (.-message e)])))))
+     (println (chalk/red e))
+     (js/console.error e)
+     (dispatch! :notify/push-message [:error (j/get e :message)])))))
 
 (def path (js/require "path"))

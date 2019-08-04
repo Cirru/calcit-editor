@@ -104,7 +104,7 @@
   (.addEventListener
    js/window
    "visibilitychange"
-   (fn [event] (when (= "visible" (.-visibilityState js/document)) (retry-connect!))))
+   (fn [event] (when (= "visible" js/document.visibilityState) (retry-connect!))))
   (println "App started!"))
 
 (defn reload! [] (clear-cache!) (render-app! render!) (println "Code updated."))

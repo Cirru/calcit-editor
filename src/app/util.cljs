@@ -85,12 +85,15 @@
 
 (defn parse-require [piece]
   (let [method (get piece 1), ns-text (get piece 0)]
-    (if (= method ":as")
-      {(get piece 2) {:method :as, :ns ns-text}}
-      (->> (get piece 2)
-           (rest)
-           (map (fn [def-text] [def-text {:method :refer, :ns ns-text, :def def-text}]))
-           (into {})))))
+    (case method
+      ":as" {(get piece 2) {:method :as, :ns ns-text}}
+      ":refer"
+        (->> (get piece 2)
+             (rest)
+             (map (fn [def-text] [def-text {:method :refer, :ns ns-text, :def def-text}]))
+             (into {}))
+      ":default" {(get piece 2) {:method :refer, :ns ns-text, :def (get piece 2)}}
+      (do (println "Unknown referring:" piece) nil))))
 
 (defn parse-deps [require-exprs]
   (let [require-rules (->> require-exprs (filter (fn [xs] (= ":require" (first xs)))) (first))]
@@ -100,7 +103,9 @@
         (if (empty? xs)
           result
           (let [rule (first xs)]
-            (recur (merge result (parse-require (subvec rule 1))) (rest xs))))))))
+            (recur
+             (merge result (parse-require (if (= (first rule) "[]") (subvec rule 1) rule)))
+             (rest xs))))))))
 
 (defn pick-second-key [m] (first (rest (sort (keys m)))))
 
