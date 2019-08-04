@@ -94,7 +94,7 @@
         (println (chalk/red warning))))))
 
 (defn try-cljs-repl! [dispatch! build-id]
-  (let [client @*repl-instance, repl-api (str "(shadow.cljs.devtools.api/repl " build-id ")")]
+  (let [client @*repl-instance, repl-api (<< "(shadow.cljs.devtools.api/repl ~{build-id})")]
     (if (some? client)
       (do
        (println repl-api)

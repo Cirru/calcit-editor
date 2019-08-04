@@ -61,8 +61,8 @@
    false))
 
 (defn dispatch! [op op-data sid]
-  (when config/dev? (.log js/console "Action" (str op) (clj->js op-data) sid))
-  (comment .log js/console "Database:" (clj->js @*writer-db))
+  (when config/dev? (js/console.log "Action" (str op) (clj->js op-data) sid))
+  (comment js/console.log "Database:" (clj->js @*writer-db))
   (let [d2! (fn [op2 op-data2] (dispatch! op2 op-data2 sid))
         op-id (id!)
         op-time (unix-time!)]
@@ -112,23 +112,23 @@
    port
    {:on-open (fn [sid socket]
       (dispatch! :session/connect nil sid)
-      (println (.gray chalk (str "client connected: " sid)))),
+      (println (chalk/gray (<< "client connected: ~{sid}")))),
     :on-data (fn [sid action]
       (case (:kind action)
         :op (dispatch! (:op action) (:data action) sid)
         :ping (do)
         (println "unknown data" action))),
     :on-close (fn [sid event]
-      (println (.gray chalk (str "client disconnected: " sid)))
+      (println (chalk/gray (<< "client disconnected: ~{sid}")))
       (dispatch! :session/disconnect nil sid)),
-    :on-error (fn [error] (.error js/console error))}))
+    :on-error (fn [error] (js/console.error error))}))
 
 (defn serve-app! [port]
   (let [app (express), dir (path/join js/__dirname ""), file-port (+ 100 port)]
     (.use app "/" (express/static dir) (serve-index dir (clj->js {:icons true})))
     (.listen app file-port)
     (println
-     (str "Serving local editor at " (.blue chalk (str "http://localhost:" file-port))))))
+     (str "Serving local editor at " (chalk/blue (str "http://localhost:" file-port))))))
 
 (defn watch-file! []
   (if (fs/existsSync storage-file)
