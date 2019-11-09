@@ -6,7 +6,7 @@
             [respo.comp.space :refer [=<]]
             [app.util.dom :refer [focus-search!]]
             [feather.core :refer [comp-i]]
-            [respo-alerts.comp.alerts :refer [comp-prompt]]))
+            [respo-alerts.core :refer [comp-prompt]]))
 
 (defn on-editor [e d! m!] (d! :router/change {:name :editor}))
 

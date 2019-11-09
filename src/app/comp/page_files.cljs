@@ -11,7 +11,7 @@
             [keycode.core :as keycode]
             [app.comp.file-replacer :refer [comp-file-replacer]]
             [app.util.shortcuts :refer [on-window-keydown]]
-            [respo-alerts.comp.alerts :refer [comp-prompt]]
+            [respo-alerts.core :refer [comp-prompt]]
             [feather.core :refer [comp-icon]]))
 
 (defn on-edit-def [text] (fn [e d! m!] (d! :writer/edit {:kind :def, :extra text})))
