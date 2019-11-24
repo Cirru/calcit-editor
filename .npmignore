@@ -7,7 +7,7 @@
 /node_modules
 /src
 /target
-/calcit.edn
+/calcit.cirru
 /shadow-cljs.edn
 /yarn.lock
 /deps.edn

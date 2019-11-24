@@ -3,7 +3,7 @@
   (:require [clojure.string :as string]
             [app.schema :as schema]
             [bisection-key.core :as bisection]
-            [favored-edn.core :refer [write-edn]]
+            [cirru-edn.core :as cirru-edn]
             ["shortid" :as shortid]))
 
 (def kinds #{:ns :def :proc})
@@ -50,7 +50,7 @@
               (into {}))))))
 
 (defn db->string [db]
-  (write-edn (-> db (dissoc :sessions {}) (dissoc :saved-files {}) (dissoc :repl))))
+  (cirru-edn/write (-> db (dissoc :sessions {}) (dissoc :saved-files {}) (dissoc :repl))))
 
 (defn expr? [x] (= :expr (:type x)))
 

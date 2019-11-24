@@ -32,13 +32,13 @@ calcit-editor
 
 ### Options
 
-There are several options to configure in `:configs` field in `calcit.edn`:
+There are several options to configure in `:configs` field in `calcit.cirru`:
 
 * `port`, defaults to `6001`
 * `output`, defaults to `src/`
 * `extension`, defaults to `.cljs`
 
-Command options may help to compile code at once from existing `calcit.edn`:
+Command options may help to compile code at once from existing `calcit.cirru`:
 
 ```bash
 op=compile calcit-editor
@@ -54,7 +54,7 @@ http://calcit-editor.cirru.org/?host=localhost&port=6001
 * `host`, defaults to `localhost`
 
 By default, ClojureScript will be emitted in `src/`.
-When server is stopped with `Ctrl c`, a `calcit.edn` will be generated.
+When server is stopped with `Ctrl c`, a `calcit.cirru` will be generated.
 
 Set `local` to enable local version of web editor:
 

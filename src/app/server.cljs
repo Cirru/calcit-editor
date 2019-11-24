@@ -23,9 +23,10 @@
             [app.twig.container :refer [twig-container]]
             [app.util.env :refer [check-version!]]
             [app.config :as config]
-            [cumulo-util.file :refer [write-mildly! merge-local-edn!]]
+            [cumulo-util.file :refer [write-mildly!]]
             [cumulo-util.core :refer [unix-time! id! delay!]]
-            [app.util.env :refer [get-cli-configs!]])
+            [app.util.env :refer [get-cli-configs!]]
+            [cirru-edn.core :as cirru-edn])
   (:require-macros [clojure.core.strint :refer [<<]]))
 
 (defonce *calcit-md5 (atom nil))
@@ -35,13 +36,13 @@
 (def storage-file (path/join (.. js/process -env -PWD) (:storage-file config/site)))
 
 (defonce initial-db
-  (merge-local-edn!
+  (merge
    schema/database
-   storage-file
-   (fn [found?]
+   (let [found? (fs/existsSync storage-file)]
      (if found?
-       (println (.gray chalk "Loading calcit.edn"))
-       (println (.yellow chalk "Using default schema."))))))
+       (println (.gray chalk "Loading calcit.cirru"))
+       (println (.yellow chalk "Using default schema.")))
+     (if found? (cirru-edn/parse (fs/readFileSync storage-file "utf8")) nil))))
 
 (defonce *writer-db
   (atom
@@ -81,7 +82,7 @@
 (defn on-file-change! []
   (let [file-content (fs/readFileSync storage-file "utf8"), new-md5 (md5 file-content)]
     (if (not= new-md5 @*calcit-md5)
-      (let [calcit (read-string file-content)]
+      (let [calcit (cirru-edn/parse file-content)]
         (println (.blue chalk "calcit storage file changed!"))
         (reset! *calcit-md5 new-md5)
         (dispatch! :watcher/file-change calcit nil)))))
@@ -151,8 +152,9 @@
    js/process
    "SIGINT"
    (fn [code]
-     (persist! storage-file (db->string @*writer-db))
-     (println (str "\n" "Saved calcit.edn") (str (if (some? code) (str "with " code))))
+     (let [started-time (unix-time!)]
+       (persist! storage-file (db->string @*writer-db) started-time))
+     (println (str "\n" "Saved calcit.cirru") (str (if (some? code) (str "with " code))))
      (.exit js/process))))
 
 (defn main! []

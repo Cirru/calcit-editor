@@ -10,7 +10,8 @@
             ["md5" :as md5]
             [app.config :as config]
             [cumulo-util.core :refer [unix-time!]]
-            [applied-science.js-interop :as j]))
+            [applied-science.js-interop :as j]
+            [app.client-util :refer [now!]]))
 
 (defn create-file! [file-path file output-dir]
   (let [project-path (path/join output-dir file-path)]
@@ -23,12 +24,10 @@
     (fs/writeFileSync project-path (write-file (file->cirru file)))
     (println (.gray chalk (str "modified " project-path)))))
 
-(defn persist! [storage-path db-str]
-  (let [start-time (unix-time!)]
-    (fs/writeFileSync storage-path db-str)
-    (comment
-     println
-     (.gray chalk (str "took " (- (now!) start-time) "ms to wrote calcit.edn")))))
+(defn persist! [storage-path db-str started-time]
+  (fs/writeFileSync storage-path db-str)
+  (println
+   (.gray chalk (str "took " (- (unix-time!) started-time) "ms to wrote calcit.cirru"))))
 
 (defn remove-file! [file-path output-dir]
   (let [project-path (path/join output-dir file-path)]
@@ -58,9 +57,9 @@
      (if save-ir?
        (js/setTimeout
         (fn []
-          (let [db-content (db->string db)]
+          (let [db-content (db->string db), started-time (unix-time!)]
             (reset! *calcit-md5 (md5 db-content))
-            (persist! (:storage-file config/site) db-content))))))
+            (persist! (:storage-file config/site) db-content started-time))))))
    (catch
     js/Error
     e
