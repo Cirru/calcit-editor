@@ -25,4 +25,4 @@
    :cdn-url "https://cdn.tiye.me/calcit-editor/",
    :theme "#eeeeff",
    :storage-key "calcit-storage",
-   :storage-file "calcit.edn"})
+   :storage-file "calcit.cirru"})

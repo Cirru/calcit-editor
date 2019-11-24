@@ -28,7 +28,7 @@
     (fs/writeFileSync storage-path db-str)
     (comment
      println
-     (.gray chalk (str "took " (- (now!) start-time) "ms to wrote calcit.edn")))))
+     (.gray chalk (str "took " (- (now!) start-time) "ms to wrote calcit.cirru")))))
 
 (defn remove-file! [file-path output-dir]
   (let [project-path (path/join output-dir file-path)]

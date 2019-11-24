@@ -6,3 +6,4 @@
 .cpcache/
 .nrepl-port
 *.log
+example/
