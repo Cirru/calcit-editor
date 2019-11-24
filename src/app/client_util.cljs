@@ -30,7 +30,7 @@
 
 (defn leaf? [x] (= :leaf (:type x)))
 
-(defn now! [] (.valueOf (js/Date.)))
+(defn now! [] (.now js/Date))
 
 (defn parse-query! []
   (let [url-obj (url-parse js/location.href true)]
