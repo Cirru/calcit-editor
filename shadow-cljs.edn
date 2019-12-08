@@ -17,7 +17,7 @@
     [fipp "0.6.22"]
     [cirru/sepal "0.2.7"]
     [cirru/bisection-key "0.1.5"]
-    [cirru/edn "0.0.2-a2"]
+    [cirru/edn "0.0.2-a4"]
     [medley "1.2.0"]
     [appliedscience/js-interop "0.1.21"]
     [org.clojure/core.incubator "0.1.4"]
