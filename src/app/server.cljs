@@ -42,7 +42,13 @@
      (if found?
        (println (.gray chalk "Loading calcit.cirru"))
        (println (.yellow chalk "Using default schema.")))
-     (if found? (cirru-edn/parse (fs/readFileSync storage-file "utf8")) nil))))
+     (if found?
+       (let [started-at (unix-time!)
+             data (cirru-edn/parse (fs/readFileSync storage-file "utf8"))
+             cost (- (unix-time!) started-at)]
+         (println (chalk/gray (str "Took " cost "ms to load.")))
+         data)
+       nil))))
 
 (defonce *writer-db
   (atom
