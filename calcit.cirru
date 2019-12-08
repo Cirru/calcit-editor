@@ -30860,14 +30860,64 @@
                         :data $ {}
                           |T $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1574589582757) (:text |if) (:id |4jU1-mboxleaf)
                           |j $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1574589595734) (:text |found?) (:id |LhqeopzjD)
-                          |r $ {} (:type :expr) (:by |S1lNv50FW) (:at 1574589599351) (:id |A3vXdP3gsb)
+                          |r $ {} (:type :expr) (:by |S1lNv50FW) (:at 1575786505121)
                             :data $ {}
-                              |T $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1574589606779) (:text |cirru-edn/parse) (:id |cwqkl5Z7l)
-                              |j $ {} (:type :expr) (:by |S1lNv50FW) (:at 1574589608987) (:id |4yaVjl_2w5)
+                              |D $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1575786508589) (:text |let) (:id |sSxHtljV2)
+                              |L $ {} (:type :expr) (:by |S1lNv50FW) (:at 1575786513213)
                                 :data $ {}
-                                  |T $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1574589611841) (:text |fs/readFileSync) (:id |6F8_YKvCJ)
-                                  |j $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1574589675371) (:text |storage-file) (:id |NkryWI7Iom)
-                                  |r $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1574589620639) (:text "|\"utf8") (:id |MTdtwxgNt)
+                                  |T $ {} (:type :expr) (:by |S1lNv50FW) (:at 1575786513587)
+                                    :data $ {}
+                                      |T $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1575786516387) (:text |started-at) (:id |UEOxRhclA)
+                                      |j $ {} (:type :expr) (:by |S1lNv50FW) (:at 1575786524575)
+                                        :data $ {}
+                                          |T $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1575786524835) (:text |unix-time!) (:id |GdIUq_TSA)
+                                        :id |tnigZvG6
+                                    :id |ZjTtkhkPQ
+                                  |j $ {} (:type :expr) (:by |S1lNv50FW) (:at 1575786541027)
+                                    :data $ {}
+                                      |T $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1575786542919) (:text |data) (:id |1Jl-B5Lq1leaf)
+                                      |j $ {} (:type :expr) (:by |S1lNv50FW) (:at 1575786544979)
+                                        :data $ {}
+                                          |T $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1575786544979) (:text |cirru-edn/parse) (:id |FEs-jPcLS)
+                                          |j $ {} (:type :expr) (:by |S1lNv50FW) (:at 1575786544979)
+                                            :data $ {}
+                                              |T $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1575786544979) (:text |fs/readFileSync) (:id |YkUjkDN7o)
+                                              |j $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1575786544979) (:text |storage-file) (:id |VHIPsRN2w)
+                                              |r $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1575786544979) (:text "|\"utf8") (:id |lMqZDa8kJ)
+                                            :id |M3x3A5Zko
+                                        :id |bk84s8bEz
+                                    :id |1Jl-B5Lq1
+                                  |r $ {} (:type :expr) (:by |S1lNv50FW) (:at 1575786546780)
+                                    :data $ {}
+                                      |T $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1575786547411) (:text |cost) (:id |A0JGPJpKRleaf)
+                                      |j $ {} (:type :expr) (:by |S1lNv50FW) (:at 1575786549968)
+                                        :data $ {}
+                                          |T $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1575786550693) (:text |-) (:id |fAgbvCZ5)
+                                          |j $ {} (:type :expr) (:by |S1lNv50FW) (:at 1575786550949)
+                                            :data $ {}
+                                              |T $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1575786556452) (:text |unix-time!) (:id |FfifYmiQG)
+                                            :id |rRbe9AQ1-
+                                          |r $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1575786695402) (:text |started-at) (:id |Gz72umEQM)
+                                        :id |hcQMMIAsc
+                                    :id |A0JGPJpKR
+                                :id |_xut43nN
+                              |j $ {} (:type :expr) (:by |S1lNv50FW) (:at 1575786530761)
+                                :data $ {}
+                                  |T $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1575786562485) (:text |println) (:id |dSvoO5rBleaf)
+                                  |j $ {} (:type :expr) (:by |S1lNv50FW) (:at 1575786565418)
+                                    :data $ {}
+                                      |T $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1575786567606) (:text |chalk/gray) (:id |QfQN8N0u)
+                                      |j $ {} (:type :expr) (:by |S1lNv50FW) (:at 1575786568417)
+                                        :data $ {}
+                                          |T $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1575786569090) (:text |str) (:id |EOOGQqwj)
+                                          |j $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1575786573058) (:text "|\"Took ") (:id |Y6-g5bDMA)
+                                          |r $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1575786573708) (:text |cost) (:id |ZbDU31-A)
+                                          |v $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1575786585471) (:text "|\"ms to load.") (:id |Ywb7y0xl)
+                                        :id |UE80S4uR4
+                                    :id |Xn9EseFSG
+                                :id |dSvoO5rB
+                              |r $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1575786590234) (:text |data) (:id |QkbxywkO)
+                            :id |RBvOsSrH
                           |v $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1574589630218) (:text |nil) (:id |Gnte-9BQO)
           |serve-app! $ {} (:type :expr) (:author |root) (:time 1508168225892) (:id |BJlc7MUGT-)
             :data $ {}
