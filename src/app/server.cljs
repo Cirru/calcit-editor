@@ -158,9 +158,12 @@
    js/process
    "SIGINT"
    (fn [code]
-     (let [started-time (unix-time!)]
-       (persist! storage-file (db->string @*writer-db) started-time))
-     (println (str "\n" "Saved calcit.cirru") (str (if (some? code) (str "with " code))))
+     (if (empty? (get-in @*writer-db [:ir :files]))
+       (println "Not writing empty project.")
+       (do
+        (let [started-time (unix-time!)]
+          (persist! storage-file (db->string @*writer-db) started-time))
+        (println (str "\n" "Saved calcit.cirru") (str (if (some? code) (str "with " code))))))
      (.exit js/process))))
 
 (defn main! []
