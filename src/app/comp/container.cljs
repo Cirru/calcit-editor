@@ -14,7 +14,8 @@
             [app.comp.messages :refer [comp-messages]]
             [app.comp.watching :refer [comp-watching]]
             [app.comp.about :refer [comp-about]]
-            [app.comp.repl-page :refer [comp-repl-page]]))
+            [app.comp.repl-page :refer [comp-repl-page]]
+            [app.config :refer [dev?]]))
 
 (def style-body {:padding-top 16, :overflow :auto})
 
@@ -72,6 +73,9 @@
          (if (= :watching (:name router))
            (cursor-> :watching comp-watching states (:data router) (:theme session))
            (comp-login states))))
-      (comment comp-inspect "Session" (:user store) style-inspector)
-      (comment comp-inspect "Router data" states (merge style-inspector {:left 100}))
+      (when dev? (comp-inspect "Session" (:user store) style-inspector))
+      (comment
+       when
+       dev?
+       (comp-inspect "Router data" states (merge style-inspector {:left 100})))
       (comp-messages (get-in store [:session :notifications]))))))

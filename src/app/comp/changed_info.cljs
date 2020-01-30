@@ -10,7 +10,7 @@
 
 (defn on-preview [ns-text kind status]
   (fn [e d! m!]
-    (println "peek" ns-text kind status)
+    (comment println "peek" ns-text kind status)
     (d!
      :writer/select
      (case kind
