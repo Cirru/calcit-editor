@@ -11,21 +11,15 @@
             [app.theme :refer [base-style-leaf base-style-expr]]
             [app.style :as style]
             [app.util.dom :refer [inject-style]]
-            [app.comp.rename :refer [comp-rename]]
             [app.comp.draft-box :refer [comp-draft-box]]
             [app.comp.abstract :refer [comp-abstract]]
             [app.comp.theme-menu :refer [comp-theme-menu]]
             [app.comp.peek-def :refer [comp-peek-def]]
             [app.util :refer [tree->cirru]]
-            [app.util.dom :refer [do-copy-logics!]]))
+            [app.util.dom :refer [do-copy-logics!]]
+            [respo-alerts.core :refer [comp-prompt comp-confirm]]))
 
-(def initial-state {:renaming? false, :draft-box? false})
-
-(defn on-delete [bookmark]
-  (fn [e d! m!]
-    (if (some? bookmark)
-      (d! :ir/delete-entry (dissoc bookmark :focus))
-      (js/console.warn "No entry to delete"))))
+(def initial-state {:draft-box? false})
 
 (defn on-draft-box [state]
   (fn [e d! m!]
@@ -46,10 +40,14 @@
           (do-copy-logics! d! (pr-str code) (str "Copied path of " the-ns)))
       (d! :notify/push-message [:warn "No op."]))))
 
-(defn on-rename [state]
-  (fn [e d! m!]
-    (m! (update state :renaming? not))
-    (js/setTimeout (fn [] (let [el (.querySelector js/document ".el-rename")] (.focus el))))))
+(defn on-rename-def [new-name bookmark d!]
+  (when (not (string/blank? new-name))
+    (let [[ns-text def-text] (string/split new-name "/")]
+      (d!
+       :ir/rename
+       {:kind (:kind bookmark),
+        :ns {:from (:ns bookmark), :to ns-text},
+        :extra {:from (:extra bookmark), :to def-text}}))))
 
 (def style-hint {:color (hsl 0 0 100 0.6), :font-family "Josefin Sans"})
 
@@ -63,7 +61,10 @@
 (def style-watchers (merge ui/row {:display :inline-block}))
 
 (defn render-status [router-data states %cursor bookmark theme]
-  (let [state (:data states)]
+  (let [state (:data states)
+        old-name (if (= :def (:kind bookmark))
+                   (str (:ns bookmark) "/" (:extra bookmark))
+                   (:ns bookmark))]
     (div
      {:style style-status}
      (div
@@ -85,9 +86,29 @@
              (fn [entry]
                (let [[sid member] entry] [sid (<> span (:nickname member) style-watcher)])))))
       (=< 16 nil)
-      (span {:inner-text "Delete", :style style-link, :on {:click (on-delete bookmark)}})
+      (cursor->
+       :delete
+       comp-confirm
+       states
+       {:trigger (span {:inner-text "Delete", :style style-link}),
+        :text (str
+               "Confirm deleting current path: "
+               (:ns bookmark)
+               "/"
+               (or (:extra bookmark) (:kind bookmark)))}
+       (fn [e d! m!]
+         (if (some? bookmark)
+           (d! :ir/delete-entry (dissoc bookmark :focus))
+           (js/console.warn "No entry to delete"))))
       (=< 8 nil)
-      (span {:inner-text "Rename", :style style-link, :on {:click (on-rename state)}})
+      (cursor->
+       :rename
+       comp-prompt
+       states
+       {:trigger (span {:inner-text "Rename", :style style-link}),
+        :text (str "Renaming: " old-name),
+        :initial old-name}
+       (fn [result d! m!] (on-rename-def result bookmark d!)))
       (=< 8 nil)
       (span {:inner-text "Draft-box", :style style-link, :on {:click (on-draft-box state)}})
       (=< 8 nil)
@@ -119,10 +140,6 @@
        expr (:expr router-data)
        focus (:focus router-data)
        readonly? false
-       old-name (if (= :def (:kind bookmark))
-                  (str (:ns bookmark) "/" (:extra bookmark))
-                  (:ns bookmark))
-       close-rename! (fn [mutate!] (mutate! %cursor (assoc state :renaming? false)))
        close-draft-box! (fn [mutate!] (mutate! %cursor (assoc state :draft-box? false)))
        close-abstract! (fn [mutate!] (mutate! %cursor (assoc state :abstract? false)))]
    (div
@@ -163,8 +180,6 @@
        (let [peek-def (:peek-def router-data)]
          (if (some? peek-def) (comp-peek-def peek-def)))
        (render-status router-data states %cursor bookmark theme)
-       (if (:renaming? state)
-         (cursor-> :rename comp-rename states old-name close-rename! bookmark))
        (if (:draft-box? state)
          (cursor-> :draft-box comp-draft-box states expr focus close-draft-box!))
        (if (:abstract? state) (cursor-> :abstract comp-abstract states close-abstract!))

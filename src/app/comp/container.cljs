@@ -73,7 +73,7 @@
          (if (= :watching (:name router))
            (cursor-> :watching comp-watching states (:data router) (:theme session))
            (comp-login states))))
-      (when dev? (comp-inspect "Session" (:user store) style-inspector))
+      (when dev? (comp-inspect "Session" store style-inspector))
       (comment
        when
        dev?
