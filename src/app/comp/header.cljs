@@ -20,7 +20,11 @@
 (defn on-search [e d! m!] (d! :router/change {:name :search}) (focus-search!))
 
 (def style-entry
-  {:cursor :pointer, :padding-right 32, :color (hsl 0 0 100 0.6), :text-decoration :none})
+  {:cursor :pointer,
+   :padding-right 32,
+   :color (hsl 0 0 100 0.6),
+   :text-decoration :none,
+   :vertical-align :middle})
 
 (def style-highlight {:color (hsl 0 0 100)})
 
@@ -40,6 +44,8 @@
    :font-family "Josefin Sans",
    :font-weight 100})
 
+(def style-link {:font-size 14, :font-weight 100})
+
 (defcomp
  comp-header
  (states router-name logged-in? stats)
@@ -50,18 +56,18 @@
    (render-entry "Files" :files router-name on-files)
    (render-entry "Editor" :editor router-name on-editor)
    (render-entry "Search" :search router-name on-search)
-   (a
-    {:inner-text "Snippets",
-     :href "http://snippets.cirru.org",
-     :target "_blank",
-     :style style-entry})
    (render-entry "REPL" :repl router-name (action-> :router/change {:name :repl}))
    (render-entry (str "Members:" (:members-count stats)) :members router-name on-members)
    (a
-    {:inner-text "Shortcuts",
-     :href "https://github.com/Cirru/calcit-editor/wiki/Keyboard-Shortcuts",
+    {:href "http://snippets.cirru.org", :target "_blank", :style style-entry}
+    (<> "Snippets" style-link)
+    (<> "↗" {:font-family ui/font-code}))
+   (a
+    {:href "https://github.com/Cirru/calcit-editor/wiki/Keyboard-Shortcuts",
      :target "_blank",
-     :style style-entry}))
+     :style style-entry}
+    (<> "Shortcuts" style-link)
+    (<> "↗" {:font-family ui/font-code})))
   (div
    {:style ui/row-middle}
    (cursor->

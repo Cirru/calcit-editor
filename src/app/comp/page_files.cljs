@@ -11,8 +11,9 @@
             [keycode.core :as keycode]
             [app.comp.file-replacer :refer [comp-file-replacer]]
             [app.util.shortcuts :refer [on-window-keydown]]
-            [respo-alerts.core :refer [comp-prompt]]
-            [feather.core :refer [comp-icon]]))
+            [respo-alerts.core :refer [comp-prompt comp-confirm]]
+            [feather.core :refer [comp-icon comp-i]])
+  (:require-macros [clojure.core.strint :refer [<<]]))
 
 (defn on-edit-def [text] (fn [e d! m!] (d! :writer/edit {:kind :def, :extra text})))
 
@@ -21,15 +22,6 @@
 (defn on-edit-proc [e d! m!] (d! :writer/edit {:kind :proc}))
 
 (defn on-input-def [state] (fn [e d! m!] (m! (assoc state :def-text (:value e)))))
-
-(defn on-keydown-def [state]
-  (fn [e d! m!]
-    (let [text (string/trim (:def-text state)), code (:key-code e)]
-      (if (and (= code keycode/return) (not (string/blank? text)))
-        (do (d! :ir/add-def text) (m! (assoc state :def-text "")))
-        (on-window-keydown (:event e) d! {:name :files})))))
-
-(defn on-remove-def [def-text] (fn [e d! m!] (d! :ir/remove-def def-text)))
 
 (def style-def {:padding "0 8px", :position :relative, :color (hsl 0 0 80)})
 
@@ -78,14 +70,22 @@
      (span {:inner-text selected-ns, :style style-link, :on {:click on-edit-ns}})
      (=< 16 nil)
      (span {:inner-text "proc", :style style-link, :on {:click on-edit-proc}})
-     (=< 16 nil))
+     (=< 16 nil)
+     (cursor->
+      :add
+      comp-prompt
+      states
+      {:trigger (comp-i :plus 14 (hsl 0 0 70)), :text "New definition:"}
+      (fn [result d! m!]
+        (let [text (string/trim result)]
+          (when-not (string/blank? text) (d! :ir/add-def text))))))
     (div
      {}
      (input
       {:value (:def-text state),
        :placeholder "a def",
        :style style-input,
-       :on {:input (on-input-def state), :keydown (on-keydown-def state)}}))
+       :on-input (on-input-def state)}))
     (=< nil 8)
     (list->
      :div
@@ -107,31 +107,19 @@
                 :on {:click (on-edit-def def-text)}}
                (<> span def-text nil)
                (=< 16 nil)
-               (span
-                {:class-name "is-minor"}
-                (comp-icon :x style-remove (on-remove-def def-text))))])))))))
+               (cursor->
+                (str :rm def-text)
+                comp-confirm
+                states
+                {:trigger (span
+                           {:class-name "is-minor", :style style-remove}
+                           (comp-i :x 12 (hsl 0 0 80 0.5))),
+                 :text (<< "Sure to remove def: ~{def-text} ?")}
+                (fn [e d! m!] (d! :ir/remove-def def-text))))])))))))
 
 (defn on-checkout [state ns-text] (fn [e d! m!] (d! :session/select-ns ns-text)))
 
 (defn on-input-ns [state] (fn [e d! m!] (m! (assoc state :ns-text (:value e)))))
-
-(defn on-keydown-ns [state]
-  (fn [e d! m!]
-    (let [text (string/trim (:ns-text state)), code (:key-code e)]
-      (if (and (= code keycode/return) (not (string/blank? text)))
-        (cond
-          (string/starts-with? text "mv ")
-            (let [[_ from to] (string/split text " ")]
-              (d! :ir/mv-ns {:from from, :to to})
-              (m! (assoc state :ns-text "")))
-          (string/starts-with? text "cp ")
-            (let [[_ from to] (string/split text " ")]
-              (d! :ir/cp-ns {:from from, :to to})
-              (m! (assoc state :ns-text "")))
-          :else (do (d! :ir/add-ns text) (m! (assoc state :ns-text ""))))
-        (on-window-keydown (:event e) d! {:name :files})))))
-
-(defn on-remove-ns [ns-text] (fn [e d! m!] (d! :ir/remove-ns ns-text)))
 
 (def style-empty {:width 280})
 
@@ -146,17 +134,27 @@
    :padding "0 8px",
    :color (hsl 0 0 80)})
 
-(defn render-list [state ns-set selected-ns ns-highlights]
+(defn render-list [states %cursor state ns-set selected-ns ns-highlights]
   (div
    {:style style-list}
-   (div {:style style/title} (<> span "Namespaces" nil))
+   (div
+    {:style style/title}
+    (<> span "Namespaces" nil)
+    (=< 8 nil)
+    (cursor->
+     :add
+     comp-prompt
+     states
+     {:trigger (comp-i :plus 14 (hsl 0 0 70)), :text "New namespace:"}
+     (fn [result d! m!]
+       (let [text (string/trim result)] (when-not (string/blank? text) (d! :ir/add-ns text))))))
    (div
     {}
     (input
      {:value (:ns-text state),
       :placeholder "a namespace",
       :style style-input,
-      :on {:input (on-input-ns state), :keydown (on-keydown-ns state)}}))
+      :on-input (on-input-ns state)}))
    (=< nil 8)
    (list->
     :div
@@ -174,9 +172,15 @@
                        (if (contains? ns-highlights ns-text) {:color :white})),
                :on {:click (on-checkout state ns-text)}}
               (span {:inner-text ns-text})
-              (span
-               {:class-name "is-minor"}
-               (comp-icon :x style-remove (on-remove-ns ns-text))))]))))))
+              (cursor->
+               (str :rm ns-text)
+               comp-confirm
+               states
+               {:trigger (span
+                          {:class-name "is-minor", :style style-remove}
+                          (comp-i :x 12 (hsl 0 0 80 0.6))),
+                :text (<< "Sure to remove namespace: ~{ns-text} ?")}
+               (fn [e d! m!] (d! :ir/remove-ns ns-text))))]))))))
 
 (def style-inspect {:opacity 1, :background-color (hsl 0 0 100), :color :black})
 
@@ -190,7 +194,7 @@
        ns-highlights (set (map :ns highlights))]
    (div
     {:style (merge ui/flex ui/row sytle-container)}
-    (render-list state (:ns-set router-data) selected-ns ns-highlights)
+    (render-list states %cursor state (:ns-set router-data) selected-ns ns-highlights)
     (=< 32 nil)
     (if (some? selected-ns)
       (cursor-> selected-ns comp-file states selected-ns (:defs-set router-data) highlights)
