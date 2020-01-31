@@ -36,6 +36,7 @@
             :writer/collapse writer/collapse
             :writer/move-next writer/move-next
             :writer/move-previous writer/move-previous
+            :writer/move-order writer/move-order
             :writer/finish writer/finish
             :writer/draft-ns writer/draft-ns
             :writer/hide-peek writer/hide-peek
