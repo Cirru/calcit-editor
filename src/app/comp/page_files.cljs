@@ -117,16 +117,6 @@
                  :text (<< "Sure to remove def: ~{def-text} ?")}
                 (fn [e d! m!] (d! :ir/remove-def def-text))))])))))))
 
-(defn on-checkout [state ns-text] (fn [e d! m!] (d! :session/select-ns ns-text)))
-
-(defn on-input-ns [state] (fn [e d! m!] (m! (assoc state :ns-text (:value e)))))
-
-(def style-empty {:width 280})
-
-(defn render-empty [] (div {:style style-empty} (<> span "Empty" nil)))
-
-(def style-list {:width 280, :overflow :auto, :padding-bottom 120})
-
 (def style-ns
   {:cursor :pointer,
    :vertical-align :middle,
@@ -134,53 +124,73 @@
    :padding "0 8px",
    :color (hsl 0 0 80)})
 
-(defn render-list [states %cursor state ns-set selected-ns ns-highlights]
-  (div
-   {:style style-list}
+(defcomp
+ comp-ns-entry
+ (states ns-text selected? ns-highlights)
+ (div
+  {:class-name (if selected? "hoverable is-selected" "hoverable"),
+   :style (merge style-ns (if (contains? ns-highlights ns-text) {:color :white})),
+   :on-click (fn [e d! m!] (d! :session/select-ns ns-text))}
+  (span {:inner-text ns-text})
+  (cursor->
+   (str :rm ns-text)
+   comp-confirm
+   states
+   {:trigger (span
+              {:class-name "is-minor", :style style-remove}
+              (comp-i :x 12 (hsl 0 0 80 0.6))),
+    :text (<< "Sure to remove namespace: ~{ns-text} ?")}
+   (fn [e d! m!] (d! :ir/remove-ns ns-text)))))
+
+(defn on-input-ns [state] (fn [e d! m!] (m! (assoc state :ns-text (:value e)))))
+
+(def style-list {:width 280, :overflow :auto, :padding-bottom 120})
+
+(defcomp
+ comp-namespace-list
+ (states ns-set selected-ns ns-highlights)
+ (let [state (or (:data states) {:ns-text ""})]
    (div
-    {:style style/title}
-    (<> span "Namespaces" nil)
-    (=< 8 nil)
-    (cursor->
-     :add
-     comp-prompt
-     states
-     {:trigger (comp-i :plus 14 (hsl 0 0 70)), :text "New namespace:"}
-     (fn [result d! m!]
-       (let [text (string/trim result)] (when-not (string/blank? text) (d! :ir/add-ns text))))))
-   (div
-    {}
-    (input
-     {:value (:ns-text state),
-      :placeholder "a namespace",
-      :style style-input,
-      :on-input (on-input-ns state)}))
-   (=< nil 8)
-   (list->
-    :div
-    {}
-    (->> ns-set
-         (filter (fn [ns-text] (string/includes? ns-text (:ns-text state))))
-         (sort)
-         (map
-          (fn [ns-text]
-            [ns-text
-             (div
-              {:class-name (if (= selected-ns ns-text) "hoverable is-selected" "hoverable"),
-               :style (merge
-                       style-ns
-                       (if (contains? ns-highlights ns-text) {:color :white})),
-               :on {:click (on-checkout state ns-text)}}
-              (span {:inner-text ns-text})
+    {:style style-list}
+    (div
+     {:style style/title}
+     (<> span "Namespaces" nil)
+     (=< 8 nil)
+     (cursor->
+      :add
+      comp-prompt
+      states
+      {:trigger (comp-i :plus 14 (hsl 0 0 70)), :text "New namespace:"}
+      (fn [result d! m!]
+        (let [text (string/trim result)] (when-not (string/blank? text) (d! :ir/add-ns text))))))
+    (div
+     {}
+     (input
+      {:value (:ns-text state),
+       :placeholder "a namespace",
+       :style style-input,
+       :on-input (on-input-ns state)}))
+    (=< nil 8)
+    (list->
+     :div
+     {}
+     (->> ns-set
+          (filter (fn [ns-text] (string/includes? ns-text (:ns-text state))))
+          (sort)
+          (map
+           (fn [ns-text]
+             [ns-text
               (cursor->
-               (str :rm ns-text)
-               comp-confirm
+               ns-text
+               comp-ns-entry
                states
-               {:trigger (span
-                          {:class-name "is-minor", :style style-remove}
-                          (comp-i :x 12 (hsl 0 0 80 0.6))),
-                :text (<< "Sure to remove namespace: ~{ns-text} ?")}
-               (fn [e d! m!] (d! :ir/remove-ns ns-text))))]))))))
+               ns-text
+               (= selected-ns ns-text)
+               ns-highlights)])))))))
+
+(def style-empty {:width 280})
+
+(defn render-empty [] (div {:style style-empty} (<> span "Empty" nil)))
 
 (def style-inspect {:opacity 1, :background-color (hsl 0 0 100), :color :black})
 
@@ -189,12 +199,17 @@
 (defcomp
  comp-page-files
  (states selected-ns router-data)
- (let [state (or (:data states) {:ns-text ""})
-       highlights (set (map last (:highlights router-data)))
+ (let [highlights (set (map last (:highlights router-data)))
        ns-highlights (set (map :ns highlights))]
    (div
     {:style (merge ui/flex ui/row sytle-container)}
-    (render-list states %cursor state (:ns-set router-data) selected-ns ns-highlights)
+    (cursor->
+     :ns
+     comp-namespace-list
+     states
+     (:ns-set router-data)
+     selected-ns
+     ns-highlights)
     (=< 32 nil)
     (if (some? selected-ns)
       (cursor-> selected-ns comp-file states selected-ns (:defs-set router-data) highlights)

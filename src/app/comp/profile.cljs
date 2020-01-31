@@ -4,19 +4,16 @@
             [hsl.core :refer [hsl]]
             [app.schema :as schema]
             [respo-ui.core :as ui]
-            [respo.core :refer [defcomp <> span div button input a]]
+            [respo.core :refer [defcomp cursor-> <> span div button input a]]
             [respo.comp.space :refer [=<]]
             [app.style :as style]
-            [app.config :as config]))
-
-(defn on-input [e d! m!] (m! (:value e)))
+            [app.config :as config]
+            [feather.core :refer [comp-i comp-icon]]
+            [respo-alerts.core :refer [comp-prompt]]))
 
 (defn on-log-out [e dispatch!]
   (dispatch! :user/log-out nil)
   (.removeItem js/window.localStorage (:storage-key config/site)))
-
-(defn on-rename [state]
-  (fn [e d! m!] (let [name-text (string/trim state)] (d! :user/nickname name-text) (m! ""))))
 
 (def style-greet
   {:font-family "Josefin Sans", :font-size 40, :font-weight 100, :color (hsl 0 0 100 0.8)})
@@ -28,19 +25,21 @@
 (defcomp
  comp-profile
  (states user)
- (let [state (or (:data states) "")]
-   (div
-    {:style (merge ui/flex style-profile)}
-    (div
-     {}
-     (<> span (str "Hello! " (:nickname user)) style-greet)
-     (=< 8 nil)
-     (<> span (str "id: " (:name user)) style-id))
-    (div
-     {}
-     (input
-      {:placeholder "A nickname", :value state, :style style/input, :on {:input on-input}})
-     (=< 8 nil)
-     (button {:inner-text "Change", :style style/button, :on {:click (on-rename state)}}))
-    (=< nil 100)
-    (div {} (button {:inner-text "Log out", :style style/button, :on {:click on-log-out}})))))
+ (div
+  {:style (merge ui/flex style-profile)}
+  (div
+   {}
+   (<> span (str "Hello! " (:nickname user)) style-greet)
+   (=< 4 nil)
+   (cursor->
+    :rename
+    comp-prompt
+    states
+    {:trigger (comp-i :edit-2 14 (hsl 0 0 40)),
+     :initial (:nickname user),
+     :text "Pick a nickname:"}
+    (fn [result d! m!] (d! :user/nickname (string/trim result))))
+   (=< 8 nil)
+   (<> span (str "id: " (:name user)) style-id))
+  (=< nil 80)
+  (div {} (button {:inner-text "Log out", :style style/button, :on {:click on-log-out}}))))
