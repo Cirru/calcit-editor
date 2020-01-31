@@ -120,6 +120,39 @@
             :pointer
             (if (>= pointer (dec (count (:stack writer)))) pointer (inc pointer))))))))
 
+(defn move-order [db op-data sid op-id op-time]
+  (-> db
+      (update-in
+       [:sessions sid :writer]
+       (fn [writer]
+         (let [from-idx (:from op-data), to-idx (:to op-data)]
+           (-> writer
+               (update
+                :pointer
+                (fn [pointer]
+                  (cond
+                    (= pointer from-idx) to-idx
+                    (or (< pointer (min from-idx to-idx)) (> pointer (max from-idx to-idx)))
+                      pointer
+                    :else (if (> from-idx to-idx) (inc pointer) (dec pointer)))))
+               (update
+                :stack
+                (fn [stack]
+                  (vec
+                   (if (< from-idx to-idx)
+                     (concat
+                      (subvec stack 0 from-idx)
+                      (subvec stack (inc from-idx) (inc to-idx))
+                      (list (get stack from-idx))
+                      (subvec stack (inc to-idx)))
+                     (concat
+                      (subvec stack 0 to-idx)
+                      (list (get stack from-idx))
+                      (subvec stack to-idx from-idx)
+                      (if (>= (inc from-idx) (count stack))
+                        (list)
+                        (subvec stack (inc from-idx))))))))))))))
+
 (defn move-previous [db op-data sid op-id op-time]
   (-> db
       (update-in

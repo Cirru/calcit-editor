@@ -45,7 +45,13 @@
      (div
       {:class-name "stack-bookmark",
        :style (merge style-bookmark),
-       :on {:click (on-pick bookmark idx)}}
+       :draggable true,
+       :on-click (on-pick bookmark idx),
+       :on-dragstart (fn [e d! m!] (-> e :event .-dataTransfer (.setData "id" idx))),
+       :on-drop (fn [e d! m!]
+         (let [target-idx (js/parseInt (-> e :event .-dataTransfer (.getData "id")))]
+           (when (not= target-idx idx) (d! :writer/move-order {:from target-idx, :to idx})))),
+       :on-dragover (fn [e d! m!] (-> e :event .preventDefault))}
       (div
        {}
        (span
