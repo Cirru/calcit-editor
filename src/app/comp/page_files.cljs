@@ -60,7 +60,7 @@
       states
       {:trigger (span {:inner-text "Clone", :style style/button}),
        :initial selected-ns,
-       :text "A new namespace:"}
+       :text "a namespace:"}
       (fn [result d! m!]
         (if (string/includes? result ".")
           (d! :ir/clone-ns result)
@@ -83,7 +83,7 @@
      {}
      (input
       {:value (:def-text state),
-       :placeholder "a def",
+       :placeholder "filter...",
        :style style-input,
        :on-input (on-input-def state)}))
     (=< nil 8)
@@ -131,7 +131,11 @@
   {:class-name (if selected? "hoverable is-selected" "hoverable"),
    :style (merge style-ns (if (contains? ns-highlights ns-text) {:color :white})),
    :on-click (fn [e d! m!] (d! :session/select-ns ns-text))}
-  (span {:inner-text ns-text})
+  (let [pieces (string/split ns-text ".")]
+    (span
+     {}
+     (<> (str (string/join "." (butlast pieces)) ".") {:color (hsl 0 0 50)})
+     (<> (last pieces))))
   (cursor->
    (str :rm ns-text)
    comp-confirm
@@ -167,7 +171,7 @@
      {}
      (input
       {:value (:ns-text state),
-       :placeholder "a namespace",
+       :placeholder "filter...",
        :style style-input,
        :on-input (on-input-ns state)}))
     (=< nil 8)
@@ -175,7 +179,9 @@
      :div
      {}
      (->> ns-set
-          (filter (fn [ns-text] (string/includes? ns-text (:ns-text state))))
+          (filter
+           (fn [ns-text]
+             (string/includes? (last (string/split ns-text ".")) (:ns-text state))))
           (sort)
           (map
            (fn [ns-text]

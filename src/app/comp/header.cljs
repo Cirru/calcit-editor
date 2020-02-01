@@ -21,7 +21,7 @@
 
 (def style-entry
   {:cursor :pointer,
-   :padding-right 32,
+   :padding "0 12px",
    :color (hsl 0 0 100 0.6),
    :text-decoration :none,
    :vertical-align :middle})
@@ -32,7 +32,7 @@
   (div
    {:on {:click on-click},
     :style (merge style-entry (if (= this-page router-name) style-highlight))}
-   (<> span page-name nil)))
+   (<> page-name nil)))
 
 (def style-header
   {:height 40,

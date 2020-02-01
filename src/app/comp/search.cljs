@@ -12,7 +12,20 @@
             [app.util.shortcuts :refer [on-window-keydown]]))
 
 (defn bookmark->str [bookmark]
-  (str (:kind bookmark) " " (:ns bookmark) " " (:extra bookmark)))
+  (case (:kind bookmark)
+    :def (str (:ns bookmark) " " (:extra bookmark))
+    :ns (str (:kind bookmark) " " (:ns bookmark) " " (:extra bookmark))
+    :proc (str (:kind bookmark) " " (:ns bookmark) " " (:extra bookmark))
+    (str "Unknown" (pr-str bookmark))))
+
+(defcomp
+ comp-no-results
+ ()
+ (div
+  {:style (merge
+           ui/center
+           {:padding 20, :font-family ui/font-fancy, :color (hsl 0 0 60), :font-weight 300})}
+  (<> "No results")))
 
 (def initial-state {:query "", :selection 0})
 
@@ -47,45 +60,86 @@
 
 (def style-highlight {:color :white})
 
-(def style-input (merge style/input {:width 400}))
-
-(def style-search {:padding "0 16px"})
-
 (defcomp
  comp-search
  (states router-data)
  (let [state (or (:data states) initial-state)
        queries (->> (string/split (:query state) " ") (map string/trim))
-       candidates (->> router-data
-                       (filter
-                        (fn [bookmark]
-                          (every?
-                           (fn [y] (string/includes? (bookmark->str bookmark) y))
-                           queries)))
-                       (sort-by bookmark->str))]
+       def-candidates (->> router-data
+                           (filter
+                            (fn [bookmark]
+                              (and (= :def (:kind bookmark))
+                                   (every?
+                                    (fn [y] (string/includes? (:extra bookmark) y))
+                                    queries))))
+                           (sort-by bookmark->str))
+       ns-candidates (->> router-data
+                          (filter
+                           (fn [bookmark]
+                             (and (= :ns (:kind bookmark))
+                                  (every?
+                                   (fn [y] (string/includes? (:ns bookmark) y))
+                                   queries))))
+                          (sort-by bookmark->str))]
    (div
-    {:style (merge ui/column style-search)}
+    {:style (merge ui/expand ui/row-middle {:height "100%", :padding "0 16px"})}
     (div
-     {}
-     (input
-      {:placeholder "Type to search...",
-       :value (:query state),
-       :class-name "search-input",
-       :style style-input,
-       :on {:input (on-input state), :keydown (on-keydown state candidates)}}))
-    (list->
-     :div
-     {:style (merge ui/flex style-body)}
-     (->> candidates
-          (take 20)
-          (map-indexed
-           (fn [idx bookmark]
-             (let [text (bookmark->str bookmark)]
-               [text
-                (div
-                 {:class-name "hoverable",
-                  :style (merge
-                          style-candidate
-                          (if (= idx (:selection state)) style-highlight)),
-                  :on {:click (on-select bookmark)}}
-                 (<> span text nil))]))))))))
+     {:style (merge ui/column {:width 480, :height "100%"})}
+     (div
+      {}
+      (input
+       {:placeholder "Type to search...",
+        :value (:query state),
+        :class-name "search-input",
+        :style (merge style/input {:width "100%"}),
+        :on {:input (on-input state), :keydown (on-keydown state def-candidates)}}))
+     (if (empty? def-candidates) (comp-no-results))
+     (list->
+      :div
+      {:style (merge ui/expand style-body)}
+      (->> def-candidates
+           (take 20)
+           (map-indexed
+            (fn [idx bookmark]
+              (let [text (bookmark->str bookmark), selected? (= idx (:selection state))]
+                [text
+                 (div
+                  {:class-name "hoverable",
+                   :style (merge style-candidate (if selected? style-highlight)),
+                   :on {:click (on-select bookmark)}}
+                  (<> (:extra bookmark) nil)
+                  (=< 8 nil)
+                  (<>
+                   (:ns bookmark)
+                   (merge
+                    {:font-size 12, :color (hsl 0 0 40)}
+                    (if selected? style-highlight))))]))))))
+    (div
+     {:style (merge ui/column {:width 320, :height "100%"})}
+     (=< nil 32)
+     (if (empty? ns-candidates) (comp-no-results))
+     (list->
+      :div
+      {:style (merge ui/expand style-body)}
+      (->> ns-candidates
+           (take 20)
+           (map-indexed
+            (fn [idx bookmark]
+              [(:ns bookmark)
+               (let [pieces (string/split (:ns bookmark) ".")]
+                 (div
+                  {:class-name "hoverable",
+                   :style (merge ui/row-middle style-candidate),
+                   :on-click (on-select bookmark)}
+                  (span
+                   {}
+                   (<> (str (string/join "." (butlast pieces)) ".") {:color (hsl 0 0 50)})
+                   (<> (last pieces) {:color (hsl 0 0 80)}))
+                  (=< 12 nil)
+                  (span
+                   {:inner-text "proc",
+                    :style {:padding "0 8px",
+                            :background-color (hsl 0 0 20),
+                            :font-size 12,
+                            :line-height "18px"},
+                    :on-click (on-select (assoc bookmark :kind :proc))})))]))))))))

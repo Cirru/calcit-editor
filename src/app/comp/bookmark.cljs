@@ -27,43 +27,42 @@
 (def style-highlight {:color (hsl 0 0 100)})
 
 (def style-kind
-  {:color (hsl 0 0 50),
-   :font-family "Josefin Sans",
-   :font-size 14,
-   :margin-left 8,
+  {:color (hsl 340 80 60),
+   :font-family ui/font-normal,
+   :font-size 12,
+   :margin-right 4,
    :vertical-align :middle})
 
-(def style-main {:vertical-align :middle, :color (hsl 0 0 70)})
+(def style-main {:vertical-align :middle, :color (hsl 0 0 70), :font-family ui/font-normal})
 
-(def style-minor {:color (hsl 0 0 50), :font-size 12})
+(def style-minor {:color (hsl 0 0 40), :font-size 12})
 
 (defcomp
  comp-bookmark
  (bookmark idx selected?)
- (case (:kind bookmark)
-   :def
-     (div
-      {:class-name "stack-bookmark",
-       :style (merge style-bookmark),
-       :draggable true,
-       :on-click (on-pick bookmark idx),
-       :on-dragstart (fn [e d! m!] (-> e :event .-dataTransfer (.setData "id" idx))),
-       :on-drop (fn [e d! m!]
-         (let [target-idx (js/parseInt (-> e :event .-dataTransfer (.getData "id")))]
-           (when (not= target-idx idx) (d! :writer/move-order {:from target-idx, :to idx})))),
-       :on-dragover (fn [e d! m!] (-> e :event .preventDefault))}
+ (div
+  {:class-name "stack-bookmark",
+   :draggable true,
+   :on-click (on-pick bookmark idx),
+   :on-dragstart (fn [e d! m!] (-> e :event .-dataTransfer (.setData "id" idx))),
+   :on-drop (fn [e d! m!]
+     (let [target-idx (js/parseInt (-> e :event .-dataTransfer (.getData "id")))]
+       (when (not= target-idx idx) (d! :writer/move-order {:from target-idx, :to idx})))),
+   :on-dragover (fn [e d! m!] (-> e :event .preventDefault))}
+  (case (:kind bookmark)
+    :def
       (div
-       {}
-       (span
-        {:inner-text (:extra bookmark),
-         :style (merge style-main (if selected? style-highlight))}))
-      (div {} (<> span "def" style-kind) (=< 8 nil) (<> span (:ns bookmark) style-minor)))
-   (div
-    {:class-name "stack-bookmark",
-     :style (merge style-bookmark),
-     :on {:click (on-pick bookmark idx)}}
-    (div {} (<> span (:ns bookmark) (merge style-main (if selected? style-highlight))))
-    (div {} (<> span (name (:kind bookmark)) style-kind)))))
+       {:style (merge style-bookmark)}
+       (div
+        {}
+        (span
+         {:inner-text (:extra bookmark),
+          :style (merge style-main (if selected? style-highlight))}))
+       (div {:style ui/row-middle} (=< 8 nil) (<> (:ns bookmark) style-minor)))
+    (div
+     {:style (merge style-bookmark {:padding "8px"})}
+     (<> span (str (:kind bookmark)) style-kind)
+     (<> (:ns bookmark) (merge style-main (if selected? style-highlight)))))))
 
 (defn on-remove [idx] (fn [e d! m!] (d! :writer/remove-idx idx)))
 
