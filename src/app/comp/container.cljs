@@ -17,7 +17,7 @@
             [app.comp.repl-page :refer [comp-repl-page]]
             [app.config :refer [dev?]]))
 
-(def style-body {:padding-top 16, :overflow :auto})
+(def style-body {:padding-top 16})
 
 (def style-container {:background-color :black, :color :white})
 
@@ -49,7 +49,7 @@
        (:logged-in? store)
        (:stats store))
       (div
-       {:style (merge ui/row ui/flex style-body)}
+       {:style (merge ui/row ui/expand style-body)}
        (if (:logged-in? store)
          (case (:name router)
            :profile (cursor-> :profile comp-profile states (:user store))
