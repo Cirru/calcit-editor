@@ -19,8 +19,6 @@
             [app.util.dom :refer [do-copy-logics!]]
             [respo-alerts.core :refer [comp-prompt comp-confirm]]))
 
-(def initial-state {:draft-box? false})
-
 (defn on-draft-box [state]
   (fn [e d! m!]
     (m! (update state :draft-box? not))
@@ -49,6 +47,18 @@
         :ns {:from (:ns bookmark), :to ns-text},
         :extra {:from (:extra bookmark), :to def-text}}))))
 
+(defn on-reset-expr [bookmark]
+  (fn [e d! m!]
+    (let [kind (:kind bookmark), ns-text (:ns bookmark)]
+      (d!
+       :ir/reset-at
+       (case kind
+         :ns {:ns ns-text, :kind :ns}
+         :proc {:ns ns-text, :kind :proc}
+         :def {:ns ns-text, :kind :def, :extra (:extra bookmark)}
+         (do (println "Unknown" bookmark))))
+      (d! :states/clear nil))))
+
 (def style-hint {:color (hsl 0 0 100 0.6), :font-family "Josefin Sans"})
 
 (def style-link
@@ -60,61 +70,74 @@
 
 (def style-watchers (merge ui/row {:display :inline-block}))
 
-(defn render-status [router-data states %cursor bookmark theme]
-  (let [state (:data states)
-        old-name (if (= :def (:kind bookmark))
-                   (str (:ns bookmark) "/" (:extra bookmark))
-                   (:ns bookmark))]
+(defcomp
+ comp-status-bar
+ (states router-data bookmark theme)
+ (let [state (:data states)
+       old-name (if (= :def (:kind bookmark))
+                  (str (:ns bookmark) "/" (:extra bookmark))
+                  (:ns bookmark))]
+   (div
+    {:style style-status}
     (div
-     {:style style-status}
-     (div
-      {}
-      (<> span (str "Writers(" (count (:others router-data)) ")") style-hint)
-      (list->
-       :div
-       {:style style-watchers}
-       (->> (:others router-data)
-            (vals)
-            (map (fn [info] [(:session-id info) (<> span (:nickname info) style-watcher)]))))
-      (=< 16 nil)
-      (<> span (str "Watchers(" (count (:watchers router-data)) ")") style-hint)
-      (list->
-       :div
-       {:style style-watchers}
-       (->> (:watchers router-data)
-            (map
-             (fn [entry]
-               (let [[sid member] entry] [sid (<> span (:nickname member) style-watcher)])))))
-      (=< 16 nil)
-      (cursor->
-       :delete
-       comp-confirm
-       states
-       {:trigger (span {:inner-text "Delete", :style style-link}),
-        :text (str
-               "Confirm deleting current path: "
-               (:ns bookmark)
-               "/"
-               (or (:extra bookmark) (:kind bookmark)))}
-       (fn [e d! m!]
-         (if (some? bookmark)
-           (d! :ir/delete-entry (dissoc bookmark :focus))
-           (js/console.warn "No entry to delete"))))
-      (=< 8 nil)
-      (cursor->
-       :rename
-       comp-prompt
-       states
-       {:trigger (span {:inner-text "Rename", :style style-link}),
-        :text (str "Renaming: " old-name),
-        :initial old-name}
-       (fn [result d! m!] (on-rename-def result bookmark d!)))
-      (=< 8 nil)
-      (span {:inner-text "Draft-box", :style style-link, :on {:click (on-draft-box state)}})
-      (=< 8 nil)
-      (span
-       {:inner-text "Exporting", :style style-link, :on {:click (on-path-gen! bookmark)}}))
-     (div {:style ui/row} (cursor-> :theme comp-theme-menu states theme)))))
+     {}
+     (<> span (str "Writers(" (count (:others router-data)) ")") style-hint)
+     (list->
+      :div
+      {:style style-watchers}
+      (->> (:others router-data)
+           (vals)
+           (map (fn [info] [(:session-id info) (<> span (:nickname info) style-watcher)]))))
+     (=< 16 nil)
+     (<> span (str "Watchers(" (count (:watchers router-data)) ")") style-hint)
+     (list->
+      :div
+      {:style style-watchers}
+      (->> (:watchers router-data)
+           (map
+            (fn [entry]
+              (let [[sid member] entry] [sid (<> span (:nickname member) style-watcher)])))))
+     (=< 16 nil)
+     (if (= :same (:changed router-data))
+       (<> (str (:changed router-data)) {:font-family ui/font-fancy, :color (hsl 260 80 70)})
+       (cursor->
+        :reset
+        comp-confirm
+        states
+        {:trigger (<> "Reset" style-link), :text "Confirm reset changes to this expr?"}
+        (on-reset-expr bookmark)))
+     (=< 8 nil)
+     (cursor->
+      :delete
+      comp-confirm
+      states
+      {:trigger (span {:inner-text "Delete", :style style-link}),
+       :text (str
+              "Confirm deleting current path: "
+              (:ns bookmark)
+              "/"
+              (or (:extra bookmark) (:kind bookmark)))}
+      (fn [e d! m!]
+        (if (some? bookmark)
+          (d! :ir/delete-entry (dissoc bookmark :focus))
+          (js/console.warn "No entry to delete"))))
+     (=< 8 nil)
+     (cursor->
+      :rename
+      comp-prompt
+      states
+      {:trigger (span {:inner-text "Rename", :style style-link}),
+       :text (str "Renaming: " old-name),
+       :initial old-name}
+      (fn [result d! m!] (on-rename-def result bookmark d!)))
+     (=< 8 nil)
+     (span {:inner-text "Draft-box", :style style-link, :on {:click (on-draft-box state)}})
+     (=< 8 nil)
+     (span
+      {:inner-text "Exporting", :style style-link, :on {:click (on-path-gen! bookmark)}}))
+    (div {:style ui/row} (cursor-> :theme comp-theme-menu states theme)))))
+
+(def initial-state {:draft-box? false})
 
 (def style-area {:overflow :auto, :padding-bottom 240, :padding-top 80, :flex 1})
 
@@ -179,7 +202,7 @@
             ui-missing)))
        (let [peek-def (:peek-def router-data)]
          (if (some? peek-def) (comp-peek-def peek-def)))
-       (render-status router-data states %cursor bookmark theme)
+       (cursor-> :status comp-status-bar states router-data bookmark theme)
        (if (:draft-box? state)
          (cursor-> :draft-box comp-draft-box states expr focus close-draft-box!))
        (if (:abstract? state) (cursor-> :abstract comp-abstract states close-abstract!))

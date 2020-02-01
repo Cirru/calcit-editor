@@ -34,6 +34,7 @@
                  :editor
                    (twig-page-editor
                     (:files ir)
+                    (:saved-files db)
                     (:sessions db)
                     (:users db)
                     writer

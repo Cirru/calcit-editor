@@ -2,11 +2,12 @@
 (ns app.twig.page-editor
   (:require [recollect.twig :refer [deftwig]]
             [app.util :refer [same-buffer? tree->cirru]]
-            [app.twig.user :refer [twig-user]]))
+            [app.twig.user :refer [twig-user]]
+            [app.util.list :refer [compare-entry]]))
 
 (deftwig
  twig-page-editor
- (files sessions users writer session-id)
+ (files old-files sessions users writer session-id)
  (let [pointer (:pointer writer), stack (:stack writer), bookmark (get stack pointer)]
    (if (some? bookmark)
      (let [ns-text (:ns bookmark)]
@@ -44,5 +45,14 @@
           :proc (get-in files [ns-text :proc])
           :def (get-in files [ns-text :defs (:extra bookmark)])),
         :peek-def (let [peek-def (:peek-def writer)]
-          (if (some? peek-def) (get-in files [(:ns peek-def) :defs (:def peek-def)]) nil))})
+          (if (some? peek-def) (get-in files [(:ns peek-def) :defs (:def peek-def)]) nil)),
+        :changed (let [file (get files ns-text), old-file (get old-files ns-text)]
+          (case (:kind bookmark)
+            :ns (compare-entry (:ns file) (:ns old-file))
+            :proc (compare-entry (:proc file) (:proc old-file))
+            :def
+              (compare-entry
+               (get (:defs file) (:extra bookmark))
+               (get (:defs old-file) (:extra bookmark)))
+            (do :unknown)))})
      nil)))
