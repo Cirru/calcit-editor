@@ -23,8 +23,8 @@
  ()
  (div
   {:style (merge
-           ui/center
-           {:padding 20, :font-family ui/font-fancy, :color (hsl 0 0 60), :font-weight 300})}
+           ui/row-middle
+           {:padding 8, :font-family ui/font-fancy, :color (hsl 0 0 60), :font-weight 300})}
   (<> "No results")))
 
 (def initial-state {:query "", :selection 0})
@@ -84,7 +84,7 @@
    (div
     {:style (merge ui/expand ui/row-middle {:height "100%", :padding "0 16px"})}
     (div
-     {:style (merge ui/column {:width 480, :height "100%"})}
+     {:style (merge ui/column {:width 320, :height "100%"})}
      (div
       {}
       (input
