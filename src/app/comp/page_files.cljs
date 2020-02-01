@@ -181,7 +181,9 @@
      (->> ns-set
           (filter
            (fn [ns-text]
-             (string/includes? (last (string/split ns-text ".")) (:ns-text state))))
+             (string/includes?
+              (string/join "." (rest (string/split ns-text ".")))
+              (:ns-text state))))
           (sort)
           (map
            (fn [ns-text]
