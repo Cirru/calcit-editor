@@ -133,6 +133,20 @@
      (=< 8 nil)
      (span {:inner-text "Draft-box", :style style-link, :on {:click (on-draft-box state)}})
      (=< 8 nil)
+     (cursor->
+      :replace
+      comp-prompt
+      states
+      {:trigger (span {:inner-text "Replace", :style style-link}),
+       :text "Replace in current branch:",
+       :initial "from=>to",
+       :validator (fn [x]
+         (if (= 2 (count (string/split x "=>"))) nil "Expected {from}=>{to}")),
+       :input-style {:font-family ui/font-code}}
+      (fn [result d! m!]
+        (let [[from to] (string/split result "=>")]
+          (d! :ir/expr-replace {:bookmark bookmark, :from from, :to to}))))
+     (=< 8 nil)
      (span
       {:inner-text "Exporting", :style style-link, :on {:click (on-path-gen! bookmark)}}))
     (div {:style ui/row} (cursor-> :theme comp-theme-menu states theme)))))
