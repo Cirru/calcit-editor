@@ -38,6 +38,16 @@
          (assoc schema/file :ns default-expr :proc empty-expr))
         (assoc-in [:sessions session-id :writer :selected-ns] op-data))))
 
+(defn call-replace-expr [expr from to]
+  (case (:type expr)
+    :expr
+      (update
+       expr
+       :data
+       (fn [data] (->> data (map (fn [[k v]] [k (call-replace-expr v from to)])) (into {}))))
+    :leaf (if (= (:text expr) from) (assoc expr :text to) expr)
+    (do (println "Unknown expr" expr))))
+
 (defn clone-ns [db op-data sid op-id op-time]
   (let [writer (get-in db [:sessions sid :writer])
         selected-ns (:selected-ns writer)
@@ -177,6 +187,13 @@
         (update-in
          [:sessions session-id :writer :stack (:pointer writer) :focus]
          (fn [focus] (conj (vec (butlast focus)) next-id bisection/mid-id))))))
+
+(defn expr-replace [db op-data session-id op-id op-time]
+  (let [from (:from op-data)
+        to (:to op-data)
+        bookmark (:bookmark op-data)
+        data-path (bookmark->path bookmark)]
+    (update-in db data-path (fn [expr] (call-replace-expr expr from to)))))
 
 (defn indent [db op-data session-id op-id op-time]
   (let [writer (get-in db [:sessions session-id :writer])

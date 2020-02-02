@@ -50,6 +50,7 @@
             :ir/leaf-before ir/leaf-before
             :ir/expr-before ir/expr-before
             :ir/expr-after ir/expr-after
+            :ir/expr-replace ir/expr-replace
             :ir/indent ir/indent
             :ir/unindent ir/unindent
             :ir/unindent-leaf ir/unindent-leaf
