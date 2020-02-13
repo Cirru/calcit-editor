@@ -79,7 +79,8 @@
       (fn [result d! m!]
         (let [text (string/trim result)]
           (when-not (string/blank? text) (d! :ir/add-def text))))))
-    (div
+    (comment
+     div
      {}
      (input
       {:value (:def-text state),
@@ -167,7 +168,8 @@
       {:trigger (comp-i :plus 14 (hsl 0 0 70)), :text "New namespace:"}
       (fn [result d! m!]
         (let [text (string/trim result)] (when-not (string/blank? text) (d! :ir/add-ns text))))))
-    (div
+    (comment
+     div
      {}
      (input
       {:value (:ns-text state),

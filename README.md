@@ -2,14 +2,14 @@
 Calcit Editor
 ------
 
-> A collabrative syntax tree editor of Clojure(Script). [Overview Video](https://www.youtube.com/watch?v=u5Eb_6KYGsA&t).
+> A collabrative syntax tree editor for Clojure(Script). [Introduction videos](https://www.youtube.com/watch?v=u5Eb_6KYGsA&t).
 
 Main ideas:
 
-* **Tree Editing**: it's a DOM-based tree editor, NOT in raw text syntax.
-* **Auto Layout**: expressions and rendered with CSS layouts.
-* **Collaborative**: changes sync to all connected clients instantly.
-* **Call Stack Navigation**: goto definition and back to preview editing location.
+* **Auto Layout**: expressions are layouted with CSS.
+* **Tree Editing**: DOM-based tree editor, intuitive operations with shortcuts.
+* **Call Stack Navigation**: fine-grained tabs by functions/definitions.
+* **Collaborative**: changes synced to all connected clients in real time.
 
 ### Guide
 
@@ -44,7 +44,7 @@ Command options may help to compile code at once from existing `calcit.cirru`:
 op=compile calcit-editor
 ```
 
-The UI part takes options too:
+The UI part takes several query options:
 
 ```
 http://calcit-editor.cirru.org/?host=localhost&port=6001
@@ -53,7 +53,7 @@ http://calcit-editor.cirru.org/?host=localhost&port=6001
 * `port`, defaults to `6001`
 * `host`, defaults to `localhost`
 
-By default, ClojureScript will be emitted in `src/`.
+By default, Clojure(Script) code will be emitted in `src/`.
 When server is stopped with `Ctrl c`, a `calcit.cirru` will be generated.
 
 Set `local` to enable local version of web editor:
