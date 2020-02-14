@@ -33,7 +33,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-clojars
 
-      - run: yarn && yarn build
+      - run: yarn && yarn build-cdn
         name: Build web assets
 
       - name: Deploy to server

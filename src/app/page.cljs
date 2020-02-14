@@ -30,7 +30,7 @@
         font-styles (if config/cdn?
                       (:release-ui config/site)
                       "favored-fonts/main-fonts.css")
-        prefix-cdn #(str cdn %)]
+        prefix-cdn (fn [x] x)]
     (make-page
      html-content
      (merge
