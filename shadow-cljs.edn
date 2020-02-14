@@ -22,10 +22,10 @@
     [appliedscience/js-interop "0.1.21"]
     [org.clojure/core.incubator "0.1.4"]
   ]
-  :repositories {
-    "central" {:url "https://maven.aliyun.com/nexus/content/groups/public/"}
-    "clojars" {:url "https://mirrors.ustc.edu.cn/clojars/"}
-  }
+  ; :repositories {
+  ;   "central" {:url "https://maven.aliyun.com/nexus/content/groups/public/"}
+  ;   "clojars" {:url "https://mirrors.ustc.edu.cn/clojars/"}
+  ; }
   :open-file-command [
     "subl"
     ["%s:%s:%s" :file :line :column]
