@@ -72,6 +72,8 @@
 
 (defn leaf? [x] (= :leaf (:type x)))
 
+(defn now! [] (.now js/Date))
+
 (defn ns->path [ns-text extension]
   (assert (string? extension) (str "extension should be string but got: " extension))
   (-> ns-text (string/replace "." "/") (string/replace "-" "_") (str extension)))

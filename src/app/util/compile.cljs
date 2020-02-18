@@ -2,7 +2,7 @@
 (ns app.util.compile
   (:require [clojure.set :refer [difference intersection]]
             [cirru-sepal.analyze :refer [write-file]]
-            [app.util :refer [ns->path file->cirru db->string]]
+            [app.util :refer [ns->path file->cirru db->string now!]]
             ["chalk" :as chalk]
             ["path" :as path]
             ["fs" :as fs]
@@ -10,8 +10,7 @@
             ["md5" :as md5]
             [app.config :as config]
             [cumulo-util.core :refer [unix-time!]]
-            [applied-science.js-interop :as j]
-            [app.client-util :refer [now!]]))
+            [applied-science.js-interop :as j]))
 
 (defn create-file! [file-path file output-dir]
   (let [project-path (path/join output-dir file-path)]
