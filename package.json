@@ -26,8 +26,7 @@
     "feather-icons": "^4.25.0",
     "http-server": "^0.12.1",
     "shadow-cljs": "^2.8.83",
-    "source-map-support": "^0.5.16",
-    "url-parse": "^1.4.7"
+    "source-map-support": "^0.5.16"
   },
   "dependencies": {
     "chalk": "^3.0.0",
@@ -39,6 +38,7 @@
     "nrepl-client": "^0.3.0",
     "serve-index": "^1.9.1",
     "shortid": "^2.2.15",
+    "url-parse": "^1.4.7",
     "ws": "^7.2.1"
   }
 }
