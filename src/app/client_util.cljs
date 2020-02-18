@@ -30,8 +30,6 @@
 
 (defn leaf? [x] (= :leaf (:type x)))
 
-(defn now! [] (.now js/Date))
-
 (defn parse-query! []
   (let [url-obj (url-parse js/location.href true)]
     (js->clj (.-query url-obj) :keywordize-keys true)))

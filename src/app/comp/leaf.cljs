@@ -7,7 +7,7 @@
             [respo.comp.space :refer [=<]]
             [polyfill.core :refer [text-width*]]
             [keycode.core :as keycode]
-            [app.client-util :as util]
+            [app.util :as util]
             [app.util.shortcuts :refer [on-window-keydown on-paste!]]
             [app.theme :refer [decide-leaf-theme]]))
 
