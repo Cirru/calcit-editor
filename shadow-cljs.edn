@@ -19,7 +19,7 @@
     [cirru/bisection-key "0.1.5"]
     [cirru/edn "0.0.7"]
     [medley "1.2.0"]
-    [appliedscience/js-interop "0.1.21"]
+    [appliedscience/js-interop "0.1.22"]
     [org.clojure/core.incubator "0.1.4"]
   ]
   ; :repositories {
