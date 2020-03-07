@@ -701,9 +701,9 @@ hmac-drbg@^1.0.0:
     minimalistic-crypto-utils "^1.0.1"
 
 http-cache-semantics@^4.0.0:
-  version "4.0.4"
-  resolved "https://registry.yarnpkg.com/http-cache-semantics/-/http-cache-semantics-4.0.4.tgz#13eeb612424bb113d52172c28a13109c46fa85d7"
-  integrity sha512-Z2EICWNJou7Tr9Bd2M2UqDJq3A9F2ePG9w3lIpjoyuSyXFP9QbniJVu3XQYytuw5ebmG7dXSXO9PgAjJG8DDKA==
+  version "4.1.0"
+  resolved "https://registry.yarnpkg.com/http-cache-semantics/-/http-cache-semantics-4.1.0.tgz#49e91c5cbf36c9b94bcfcd71c23d5249ec74e390"
+  integrity sha512-carPklcUh7ROWRK7Cv27RPtdhYhUsela/ue5/jKzjegVvXDqM2ILE9Q2BGn9JZJh1g87cp56su/FgQSzcWS8cQ==
 
 http-errors@1.7.2:
   version "1.7.2"
@@ -1404,10 +1404,10 @@ shadow-cljs-jar@1.3.2:
   resolved "https://registry.yarnpkg.com/shadow-cljs-jar/-/shadow-cljs-jar-1.3.2.tgz#97273afe1747b6a2311917c1c88d9e243c81957b"
   integrity sha512-XmeffAZHv8z7451kzeq9oKh8fh278Ak+UIOGGrapyqrFBB773xN8vMQ3O7J7TYLnb9BUwcqadKkmgaq7q6fhZg==
 
-shadow-cljs@^2.8.87:
-  version "2.8.87"
-  resolved "https://registry.yarnpkg.com/shadow-cljs/-/shadow-cljs-2.8.87.tgz#8f258ec2c580e74580166afa5f90770de59da525"
-  integrity sha512-89QfI5nL5/rQK9jhJYcjaHIF7LFQC9LQn9RaK1aPBh9S5DBoCN71rdO99PDt95Cf3cCR9qxLG5CpdCdigMFbkw==
+shadow-cljs@^2.8.91:
+  version "2.8.91"
+  resolved "https://registry.yarnpkg.com/shadow-cljs/-/shadow-cljs-2.8.91.tgz#8c0ad7e22aa19a6caa90b9774a74ca5fb8ff9a20"
+  integrity sha512-mf2dAzsxeL275WG9PaktDfmRy0trdT2LsNviMwfEE8/wwG35Dfi03GgR9u6m17S19DbpUdC6it4hzwS1YsXpLQ==
   dependencies:
     mkdirp "^0.5.1"
     node-libs-browser "^2.0.0"
