@@ -2,65 +2,84 @@
 Calcit Editor
 ------
 
-> A collabrative syntax tree editor for Clojure(Script). [Introduction videos](https://www.youtube.com/watch?v=u5Eb_6KYGsA&t).
+> Intuitive S-expressions editing for Clojure(Script).
 
-Main ideas:
+* **Auto Layout**: expressions in blocks and inline-blocks, styled with CSS
+* **Tree Editing**: intuitive way of structural editing as nested expressions
+* **Call Stack Navigation**: more fine-grained functions navigation
+* **Collaboration**: changes real-time synced among multiple clients via WebSockets
 
-* **Auto Layout**: expressions are layouted with CSS.
-* **Tree Editing**: DOM-based tree editor, intuitive operations with shortcuts.
-* **Call Stack Navigation**: fine-grained tabs by functions/definitions.
-* **Collaborative**: changes synced to all connected clients in real time.
+One function/definition in a screen, `Command d` to open called function at next tab, `Command j` `Command k` `Command i` to switch:
 
-### Guide
+![Expression editor](https://pbs.twimg.com/media/ES6_JjPU4AEJ7zt?format=png&name=large)
 
-![npm version of calcit-editor](https://img.shields.io/npm/v/calcit-editor.svg)
+Based on DOM/CSS, easy for another theme:
 
-Install editor and try:
+![Styling](https://pbs.twimg.com/media/ES6_PiQU4AM0ceN?format=png&name=large)
+
+`Command p` to search and jump inspired by Sublime Text :
+
+![Search panel](https://pbs.twimg.com/media/ES68XGoUwAAzudc?format=png&name=large)
+
+Browse namespaces and functions/variables:
+
+![Definitions browser](https://pbs.twimg.com/media/ES68ScLUEAAiW3Z?format=png&name=large)
+
+### Usages
+
+![npm CLI of calcit-editor](https://img.shields.io/npm/v/calcit-editor.svg)
+
+Install CLI and start a local WebSocket server, it uses `calcit.cirru` as a snapshot file:
 
 ```bash
 npm i -g calcit-editor
 calcit-editor
-# open http://calcit-editor.cirru.org/?port=6001
 ```
 
-* [Editor UI](http://calcit-editor.cirru.org/)
-* [Keyboard Shortcuts](https://github.com/Cirru/calcit-editor/wiki/Keyboard-Shortcuts)
+UI of the editor is a webapp on http://calcit-editor.cirru.org/?port=6001
 
-![Run in command line](https://pbs.twimg.com/media/DLSmv0cVwAEUCMi.png:large)
-![Files browser](https://pbs.twimg.com/media/DLSnADUVYAAr43C.png:large)
-![Expression editor](https://pbs.twimg.com/media/DLSnJ0FVAAA0Ehd.png:large)
+You may try with my project templates:
+
+* simple virtual DOM playground [calcit-workflow](https://github.com/mvc-works/calcit-workflow)
+* a toy Node.js script [calcit-nodejs-workflow](https://github.com/mvc-works/calcit-nodejs-workflow)
+
+or even clone current repo for trying out.
+
+Don't forget to check out [keyboard shortcuts](https://github.com/Cirru/calcit-editor/wiki/Keyboard-Shortcuts). My old [introduction videos](https://www.youtube.com/watch?v=u5Eb_6KYGsA&t) can be found on YouTube.
 
 ### Options
 
-There are several options to configure in `:configs` field in `calcit.cirru`:
-
-* `port`, defaults to `6001`
-* `output`, defaults to `src/`
-* `extension`, defaults to `.cljs`
-
-Command options may help to compile code at once from existing `calcit.cirru`:
+CLI variables for compiling code directly from `calcit.cirru`:
 
 ```bash
 op=compile calcit-editor
 ```
 
-The UI part takes several query options:
+The web UI takes several query options:
 
 ```
 http://calcit-editor.cirru.org/?host=localhost&port=6001
 ```
 
 * `port`, defaults to `6001`
-* `host`, defaults to `localhost`
+* `host`, defaults to `localhost`, connects via WebSocket
 
-By default, Clojure(Script) code will be emitted in `src/`.
-When server is stopped with `Ctrl c`, a `calcit.cirru` will be generated.
+By default, ClojureScript code is emitted in `src/` by pressing `Command s`.
+When server is stopped with `Control c`, `calcit.cirru` is also updated.
 
-Set `local` to enable local version of web editor:
+There are also several options in `:configs` field in `calcit.cirru`:
+
+* `port`, defaults to `6001`
+* `output`, defaults to `src/`
+* `extension`, defaults to `.cljs`
+
+Editor UI is decoupled with WebSocket server, so it's okay to connect remote server from multiple pages with all expressions synced in real-time.
+
+Also there's a local version of web editor to enable:
 
 ```bash
 ui=local calcit-editor
-# serving app at http://localhost:6101
+# serving UI at http://localhost:6101
 ```
 
 ### Workflow
