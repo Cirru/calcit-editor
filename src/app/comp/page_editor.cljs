@@ -131,6 +131,19 @@
        :initial old-name}
       (fn [result d! m!] (on-rename-def result bookmark d!)))
      (=< 8 nil)
+     (cursor->
+      :add
+      comp-prompt
+      states
+      {:trigger (span {:inner-text "Add", :style style-link}),
+       :text (str "Add function name:"),
+       :initial ""}
+      (fn [result d! m!]
+        (let [text (string/trim result)]
+          (when-not (string/blank? text)
+            (d! :ir/add-def text)
+            (d! :writer/edit {:kind :def, :extra text})))))
+     (=< 8 nil)
      (span {:inner-text "Draft-box", :style style-link, :on {:click (on-draft-box state)}})
      (=< 8 nil)
      (cursor->
