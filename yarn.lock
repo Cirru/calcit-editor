@@ -386,10 +386,10 @@ crypto-browserify@^3.11.0:
     randombytes "^2.0.0"
     randomfill "^1.0.3"
 
-dayjs@^1.8.21:
-  version "1.8.21"
-  resolved "https://registry.yarnpkg.com/dayjs/-/dayjs-1.8.21.tgz#98299185b72b9b679f31c7ed987b63923c961552"
-  integrity sha512-1kbWK0hziklUHkGgiKr7xm59KwAg/K3Tp7H/8X+f58DnNCwY3pKYjOCJpIlVs125FRBukGVZdKZojC073D0IeQ==
+dayjs@^1.8.23:
+  version "1.8.23"
+  resolved "https://registry.yarnpkg.com/dayjs/-/dayjs-1.8.23.tgz#07b5a8e759c4d75ae07bdd0ad6977f851c01e510"
+  integrity sha512-NmYHMFONftoZbeOhVz6jfiXI4zSiPN6NoVWJgC0aZQfYVwzy/ZpESPHuCcI0B8BUMpSJQ08zenHDbofOLKq8hQ==
 
 debug@2.6.9:
   version "2.6.9"
@@ -947,9 +947,9 @@ minimist@0.0.8:
   integrity sha1-hX/Kv8M5fSYluCKCYuhqp6ARsF0=
 
 minimist@^1.1.0, minimist@^1.2.0:
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/minimist/-/minimist-1.2.0.tgz#a35008b20f41383eec1fb914f4cd5df79a264284"
-  integrity sha1-o1AIsg9BOD7sH7kU9M1d95omQoQ=
+  version "1.2.5"
+  resolved "https://registry.yarnpkg.com/minimist/-/minimist-1.2.5.tgz#67d66014b66a6a8aaa0c083c5fd58df4e4e97602"
+  integrity sha512-FM9nNUYrRBAELZQT3xeZQ7fmMOBg6nWNmJKTcgsJeaLstP/UODVpGsr5OhXhhXg6f+qtJ8uiZ+PUxkDWcgIXLw==
 
 minimist@~0.0.1:
   version "0.0.10"
@@ -1404,10 +1404,10 @@ shadow-cljs-jar@1.3.2:
   resolved "https://registry.yarnpkg.com/shadow-cljs-jar/-/shadow-cljs-jar-1.3.2.tgz#97273afe1747b6a2311917c1c88d9e243c81957b"
   integrity sha512-XmeffAZHv8z7451kzeq9oKh8fh278Ak+UIOGGrapyqrFBB773xN8vMQ3O7J7TYLnb9BUwcqadKkmgaq7q6fhZg==
 
-shadow-cljs@^2.8.91:
-  version "2.8.91"
-  resolved "https://registry.yarnpkg.com/shadow-cljs/-/shadow-cljs-2.8.91.tgz#8c0ad7e22aa19a6caa90b9774a74ca5fb8ff9a20"
-  integrity sha512-mf2dAzsxeL275WG9PaktDfmRy0trdT2LsNviMwfEE8/wwG35Dfi03GgR9u6m17S19DbpUdC6it4hzwS1YsXpLQ==
+shadow-cljs@^2.8.93:
+  version "2.8.93"
+  resolved "https://registry.yarnpkg.com/shadow-cljs/-/shadow-cljs-2.8.93.tgz#60d475658819246892f74159ce5a6026b275892e"
+  integrity sha512-JWxdfLZextA55oo/ZkTt+D5aszaNs0UR/V7j/jKI7aSbc46uJrycSalkQEvTzFkr+E7BiLdBsI6zBqezRgEgDw==
   dependencies:
     mkdirp "^0.5.1"
     node-libs-browser "^2.0.0"
@@ -1644,10 +1644,10 @@ ws@^3.0.0:
     safe-buffer "~5.1.0"
     ultron "~1.1.0"
 
-ws@^7.2.1:
-  version "7.2.1"
-  resolved "https://registry.yarnpkg.com/ws/-/ws-7.2.1.tgz#03ed52423cd744084b2cf42ed197c8b65a936b8e"
-  integrity sha512-sucePNSafamSKoOqoNfBd8V0StlkzJKL2ZAhGQinCfNQ+oacw+Pk7lcdAElecBF2VkLNZRiIb5Oi1Q5lVUVt2A==
+ws@^7.2.3:
+  version "7.2.3"
+  resolved "https://registry.yarnpkg.com/ws/-/ws-7.2.3.tgz#a5411e1fb04d5ed0efee76d26d5c46d830c39b46"
+  integrity sha512-HTDl9G9hbkNDk98naoR/cHDws7+EyYMOdL1BmjsZXRUjf7d+MficC4B7HLUPlSiho0vg+CWKrGIt/VJBd1xunQ==
 
 xtend@^4.0.0:
   version "4.0.2"
