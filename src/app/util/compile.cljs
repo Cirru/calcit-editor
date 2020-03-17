@@ -33,7 +33,7 @@
     (cp/execSync (str "rm -rfv " project-path))
     (println (.red chalk (str "removed " project-path)))))
 
-(defn handle-files! [db *calcit-md5 configs dispatch! save-ir?]
+(defn handle-files! [db *calcit-md5 configs dispatch! save-ir? filter-ns]
   (try
    (let [new-files (get-in db [:ir :files])
          old-files (get db :saved-files)
@@ -44,15 +44,22 @@
          changed-names (->> (intersection new-names old-names)
                             (filter
                              (fn [ns-text]
-                               (not= (get new-files ns-text) (get old-files ns-text)))))
+                               (not= (get new-files ns-text) (get old-files ns-text))))
+                            (set))
          extension (:extension configs)
-         output-dir (:output configs)]
-     (doseq [ns-text added-names]
+         output-dir (:output configs)
+         filter-by-ns (fn [xs]
+                        (println "filtering" xs filter-ns)
+                        (if (some? filter-ns)
+                          (if (contains? xs filter-ns) (list filter-ns) nil)
+                          xs))]
+     (doseq [ns-text (filter-by-ns added-names)]
        (create-file! (ns->path ns-text extension) (get new-files ns-text) output-dir))
-     (doseq [ns-text removed-names] (remove-file! (ns->path ns-text extension) output-dir))
-     (doseq [ns-text changed-names]
+     (doseq [ns-text (filter-by-ns removed-names)]
+       (remove-file! (ns->path ns-text extension) output-dir))
+     (doseq [ns-text (filter-by-ns changed-names)]
        (modify-file! (ns->path ns-text extension) (get new-files ns-text) output-dir))
-     (dispatch! :writer/save-files nil)
+     (dispatch! :writer/save-files filter-ns)
      (if save-ir?
        (js/setTimeout
         (fn []

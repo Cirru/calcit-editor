@@ -189,7 +189,15 @@
   (let [user-id (get-in db [:sessions sid :user-id])
         user-name (get-in db [:users user-id :name])]
     (-> db
-        (assoc :saved-files (get-in db [:ir :files]))
+        (update
+         :saved-files
+         (fn [saved-files]
+           (if (some? op-data)
+             (let [target (get-in db [:ir :files op-data])]
+               (if (some? target)
+                 (assoc saved-files op-data target)
+                 (dissoc saved-files op-data)))
+             (get-in db [:ir :files]))))
         (update
          :sessions
          (fn [sessions]
@@ -200,7 +208,14 @@
                     (update
                      session
                      :notifications
-                     (push-info op-id op-time (str user-name " saved files!")))]))
+                     (push-info
+                      op-id
+                      op-time
+                      (str
+                       user-name
+                       (if (some? op-data)
+                         (str " modified ns " op-data "!")
+                         " saved files!"))))]))
                 (into {})))))))
 
 (defn select [db op-data session-id op-id op-time]
