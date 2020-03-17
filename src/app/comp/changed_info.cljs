@@ -41,7 +41,7 @@
   (span
    {:style style-status-card,
     :title (str "Browse " kind),
-    :on {:click (on-preview ns-text kind status)}}
+    :on-click (on-preview ns-text kind status)}
    (<> span kind nil)
    (=< 8 nil)
    (<> span (name status) style-status)
@@ -70,11 +70,14 @@
    (if (not= :same (:ns info)) (render-status ns-text :ns (:ns info)))
    (=< 8 nil)
    (if (not= :same (:proc info)) (render-status ns-text :proc (:proc info))))
-  (list->
-   :div
-   {:style style-defs}
-   (->> (:defs info)
-        (map
-         (fn [entry]
-           (let [[def-text status] entry]
-             [def-text (div {} (render-status ns-text def-text status))])))))))
+  (div
+   {:style (merge ui/row-parted {:align-items :flex-end})}
+   (list->
+    :div
+    {:style style-defs}
+    (->> (:defs info)
+         (map
+          (fn [entry]
+            (let [[def-text status] entry]
+              [def-text (div {} (render-status ns-text def-text status))])))))
+   (div {} (comp-icon :save style-reset (fn [e d! m!] (d! :effect/save-ns ns-text)))))))

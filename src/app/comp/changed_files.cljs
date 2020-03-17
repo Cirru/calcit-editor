@@ -32,5 +32,5 @@
     (div {:style style-nothing} (<> span "No changes" nil))
     (div
      {}
-     (button {:inner-text "Save", :style style/button, :on {:click on-save}})
-     (button {:inner-text "Reset", :style style/button, :on {:click on-reset}})))))
+     (a {:inner-text "Save", :style style/button, :on {:click on-save}})
+     (a {:inner-text "Reset", :style style/button, :on {:click on-reset}})))))

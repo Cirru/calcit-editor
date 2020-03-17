@@ -65,7 +65,8 @@
    *calcit-md5
    configs
    (fn [op op-data] (println "After compile:" op op-data))
-   false))
+   false
+   nil))
 
 (defn dispatch! [op op-data sid]
   (when config/dev? (js/console.log "Action" (str op) (clj->js op-data) sid))
@@ -76,7 +77,9 @@
     (try
      (case op
        :effect/save-files
-         (handle-files! @*writer-db *calcit-md5 (:configs initial-db) d2! true)
+         (handle-files! @*writer-db *calcit-md5 (:configs initial-db) d2! true nil)
+       :effect/save-ns
+         (handle-files! @*writer-db *calcit-md5 (:configs initial-db) d2! true op-data)
        :effect/connect-repl (repl/load-nrepl! d2!)
        :effect/cljs-repl (repl/try-cljs-repl! d2! op-data)
        :effect/send-code (repl/send-raw-code! op-data d2!)
