@@ -19573,13 +19573,6 @@
                                         :id |T633VNN2
                                       |v $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1584465211939) (:text |xs) (:id |BmHsJyTQ)
                                     :id |rlsMWtj0
-                                  |n $ {} (:type :expr) (:by |S1lNv50FW) (:at 1584465686382)
-                                    :data $ {}
-                                      |T $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1584465687287) (:text |println) (:id |Dm7YdaXeleaf)
-                                      |j $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1584465693342) (:text "|\"filtering") (:id |qrcI5Yswp)
-                                      |r $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1584465694165) (:text |xs) (:id |k2HxaneFD)
-                                      |v $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1584465697753) (:text |filter-ns) (:id |8Ct0VrCBP)
-                                    :id |Dm7YdaXe
                                 :id |lMUDSa78
                             :id |MGMFUIzF
                       |r $ {} (:type :expr) (:time 1504777570689) (:id |S1ZLBiotNhqW)
