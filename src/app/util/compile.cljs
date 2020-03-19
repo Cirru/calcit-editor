@@ -49,7 +49,6 @@
          extension (:extension configs)
          output-dir (:output configs)
          filter-by-ns (fn [xs]
-                        (println "filtering" xs filter-ns)
                         (if (some? filter-ns)
                           (if (contains? xs filter-ns) (list filter-ns) nil)
                           xs))]
