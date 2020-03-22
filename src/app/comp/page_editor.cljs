@@ -3,7 +3,7 @@
   (:require [hsl.core :refer [hsl]]
             [clojure.string :as string]
             [respo-ui.core :as ui]
-            [respo.core :refer [defcomp list-> cursor-> <> span div a pre]]
+            [respo.core :refer [defcomp list-> >> <> span div a pre]]
             [respo.comp.space :refer [=<]]
             [respo.comp.inspect :refer [comp-inspect]]
             [app.comp.bookmark :refer [comp-bookmark]]
@@ -19,9 +19,9 @@
             [app.util.dom :refer [do-copy-logics!]]
             [respo-alerts.core :refer [comp-prompt comp-confirm]]))
 
-(defn on-draft-box [state]
-  (fn [e d! m!]
-    (m! (update state :draft-box? not))
+(defn on-draft-box [state cursor]
+  (fn [e d!]
+    (d! cursor (update state :draft-box? not))
     (js/setTimeout
      (fn []
        (let [el (.querySelector js/document ".el-draft-box")] (if (some? el) (.focus el)))))))
@@ -73,7 +73,8 @@
 (defcomp
  comp-status-bar
  (states router-data bookmark theme)
- (let [state (:data states)
+ (let [cursor (:cursor states)
+       state (:data states)
        old-name (if (= :def (:kind bookmark))
                   (str (:ns bookmark) "/" (:extra bookmark))
                   (:ns bookmark))]
@@ -100,17 +101,13 @@
      (=< 16 nil)
      (if (= :same (:changed router-data))
        (<> (str (:changed router-data)) {:font-family ui/font-fancy, :color (hsl 260 80 70)})
-       (cursor->
-        :reset
-        comp-confirm
-        states
+       (comp-confirm
+        (>> states :reset)
         {:trigger (<> "Reset" style-link), :text "Confirm reset changes to this expr?"}
         (on-reset-expr bookmark)))
      (=< 8 nil)
-     (cursor->
-      :delete
-      comp-confirm
-      states
+     (comp-confirm
+      (>> states :delete)
       {:trigger (span {:inner-text "Delete", :style style-link}),
        :text (str
               "Confirm deleting current path: "
@@ -122,19 +119,15 @@
           (d! :ir/delete-entry (dissoc bookmark :focus))
           (js/console.warn "No entry to delete"))))
      (=< 8 nil)
-     (cursor->
-      :rename
-      comp-prompt
-      states
+     (comp-prompt
+      (>> states :rename)
       {:trigger (span {:inner-text "Rename", :style style-link}),
        :text (str "Renaming: " old-name),
        :initial old-name}
       (fn [result d! m!] (on-rename-def result bookmark d!)))
      (=< 8 nil)
-     (cursor->
-      :add
-      comp-prompt
-      states
+     (comp-prompt
+      (>> states :add)
       {:trigger (span {:inner-text "Add", :style style-link}),
        :text (str "Add function name:"),
        :initial ""}
@@ -144,12 +137,11 @@
             (d! :ir/add-def text)
             (d! :writer/edit {:kind :def, :extra text})))))
      (=< 8 nil)
-     (span {:inner-text "Draft-box", :style style-link, :on {:click (on-draft-box state)}})
+     (span
+      {:inner-text "Draft-box", :style style-link, :on-click (on-draft-box state cursor)})
      (=< 8 nil)
-     (cursor->
-      :replace
-      comp-prompt
-      states
+     (comp-prompt
+      (>> states :replace)
       {:trigger (span {:inner-text "Replace", :style style-link}),
        :text "Replace in current branch:",
        :initial "from=>to",
@@ -160,9 +152,8 @@
         (let [[from to] (string/split result "=>")]
           (d! :ir/expr-replace {:bookmark bookmark, :from from, :to to}))))
      (=< 8 nil)
-     (span
-      {:inner-text "Exporting", :style style-link, :on {:click (on-path-gen! bookmark)}}))
-    (div {:style ui/row} (cursor-> :theme comp-theme-menu states theme)))))
+     (span {:inner-text "Exporting", :style style-link, :on-click (on-path-gen! bookmark)}))
+    (div {:style ui/row} (comp-theme-menu (>> states :theme) theme)))))
 
 (def initial-state {:draft-box? false})
 
@@ -185,13 +176,14 @@
 (defcomp
  comp-page-editor
  (states stack router-data pointer theme)
- (let [state (or (:data states) initial-state)
+ (let [cursor (:cursor states)
+       state (or (:data states) initial-state)
        bookmark (get stack pointer)
        expr (:expr router-data)
        focus (:focus router-data)
        readonly? false
-       close-draft-box! (fn [mutate!] (mutate! %cursor (assoc state :draft-box? false)))
-       close-abstract! (fn [mutate!] (mutate! %cursor (assoc state :abstract? false)))]
+       close-draft-box! (fn [d!] (d! cursor (assoc state :draft-box? false)))
+       close-abstract! (fn [d!] (d! cursor (assoc state :abstract? false)))]
    (div
     {:style (merge ui/row ui/flex style-container)}
     (if (empty? stack)
@@ -213,10 +205,8 @@
           (inject-style ".cirru-expr" (base-style-expr theme))
           (inject-style ".cirru-leaf" (base-style-leaf theme))
           (if (some? expr)
-            (cursor->
-             (:id expr)
-             comp-expr
-             states
+            (comp-expr
+             (>> states (:id expr))
              expr
              focus
              []
@@ -229,8 +219,8 @@
             ui-missing)))
        (let [peek-def (:peek-def router-data)]
          (if (some? peek-def) (comp-peek-def peek-def)))
-       (cursor-> :status comp-status-bar states router-data bookmark theme)
+       (comp-status-bar (>> states :status) router-data bookmark theme)
        (if (:draft-box? state)
-         (cursor-> :draft-box comp-draft-box states expr focus close-draft-box!))
-       (if (:abstract? state) (cursor-> :abstract comp-abstract states close-abstract!))
+         (comp-draft-box (>> states :draft-box) expr focus close-draft-box!))
+       (if (:abstract? state) (comp-abstract (>> states :abstract) close-abstract!))
        (comment comp-inspect "Expr" router-data style/inspector))))))

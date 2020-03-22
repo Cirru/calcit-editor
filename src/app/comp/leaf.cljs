@@ -13,15 +13,15 @@
 
 (def initial-state {:text "", :at 0})
 
-(defn on-focus [coord] (fn [e d! m!] (d! :writer/focus coord)))
+(defn on-focus [coord] (fn [e d!] (d! :writer/focus coord)))
 
-(defn on-input [state coord]
-  (fn [e d! m!]
+(defn on-input [state coord cursor]
+  (fn [e d!]
     (d! :ir/update-leaf (:value e))
-    (m! (assoc state :text (:value e) :at (util/now!)))))
+    (d! cursor (assoc state :text (:value e) :at (util/now!)))))
 
 (defn on-keydown [state leaf coord]
-  (fn [e d! m!]
+  (fn [e d!]
     (let [event (:original-event e)
           code (:key-code e)
           shift? (.-shiftKey event)
@@ -71,7 +71,8 @@
 (defcomp
  comp-leaf
  (states leaf focus coord by-other? first? readonly? theme)
- (let [state (or (:data states) initial-state)
+ (let [cursor (:cursor states)
+       state (or (:data states) initial-state)
        text (or (if (> (:at state) (:at leaf)) (:text state) (:text leaf)) "")
        focused? (= focus coord)]
    (textarea
@@ -84,4 +85,4 @@
        {}
        {:click (on-focus coord),
         :keydown (on-keydown state leaf coord),
-        :input (on-input state coord)})})))
+        :input (on-input state coord cursor)})})))

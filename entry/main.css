@@ -4,6 +4,7 @@ body {
   background-color: black;
   user-select: none;
   overscroll-behavior-y: none;
+  overscroll-behavior-x: none;
 }
 
 body * {

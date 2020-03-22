@@ -3,7 +3,7 @@
   (:require [clojure.string :as string]
             [hsl.core :refer [hsl]]
             [respo-ui.core :as ui]
-            [respo.core :refer [defcomp list-> cursor-> <> span div pre input button a]]
+            [respo.core :refer [defcomp list-> >> <> span div pre input button a]]
             [respo.comp.space :refer [=<]]
             [app.style :as style]
             [feather.core :refer [comp-icon]]))
@@ -19,7 +19,7 @@
        {:kind :def, :ns ns-text, :extra kind}))))
 
 (defn on-reset-def [ns-text kind]
-  (fn [e d! m!]
+  (fn [e d!]
     (d!
      :ir/reset-at
      (case kind
@@ -28,7 +28,7 @@
        {:ns ns-text, :kind :def, :extra kind}))
     (d! :states/clear nil)))
 
-(defn on-reset-ns [ns-text] (fn [e d! m!] (d! :ir/reset-ns ns-text) (d! :states/clear nil)))
+(defn on-reset-ns [ns-text] (fn [e d!] (d! :ir/reset-ns ns-text) (d! :states/clear nil)))
 
 (def style-reset
   {:text-decoration :underline, :font-size 12, :color (hsl 220 60 80 0.6), :cursor :pointer})
@@ -80,4 +80,4 @@
           (fn [entry]
             (let [[def-text status] entry]
               [def-text (div {} (render-status ns-text def-text status))])))))
-   (div {} (comp-icon :save style-reset (fn [e d! m!] (d! :effect/save-ns ns-text)))))))
+   (div {} (comp-icon :save style-reset (fn [e d!] (d! :effect/save-ns ns-text)))))))

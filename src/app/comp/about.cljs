@@ -3,7 +3,7 @@
   (:require [clojure.string :as string]
             [hsl.core :refer [hsl]]
             [respo-ui.core :as ui]
-            [respo.core :refer [defcomp cursor-> <> span div pre input button img a br]]
+            [respo.core :refer [defcomp <> span div pre input button img a br]]
             [respo.comp.inspect :refer [comp-inspect]]
             [respo.comp.space :refer [=<]]
             [app.style :as style]
@@ -35,7 +35,7 @@
       :class-name "copy-commands",
       :style {:cursor :pointer, :padding "0 8px"},
       :title "Click to copy.",
-      :on-click (fn [e d! m!] (copy-silently! install-commands))})))
+      :on-click (fn [e d!] (copy-silently! install-commands))})))
   (div
    {:class-name "comp-about",
     :style (merge ui/center {:padding "8px 8px", :color (hsl 0 0 50)})}

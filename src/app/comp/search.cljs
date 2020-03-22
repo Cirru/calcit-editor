@@ -29,30 +29,31 @@
 
 (def initial-state {:query "", :selection 0})
 
-(defn on-input [state] (fn [e d! m!] (m! {:query (:value e), :selection 0})))
+(defn on-input [state cursor] (fn [e d!] (d! cursor {:query (:value e), :selection 0})))
 
-(defn on-keydown [state candidates]
-  (fn [e d! m!]
+(defn on-keydown [state candidates cursor]
+  (fn [e d!]
     (let [code (:key-code e), event (:original-event e)]
       (cond
         (= keycode/return code)
           (let [target (get (vec candidates) (:selection state))]
-            (if (some? target) (do (d! :writer/select target) (m! {:query "", :position 0}))))
+            (if (some? target)
+              (do (d! :writer/select target) (d! cursor {:query "", :position 0}))))
         (= keycode/up code)
           (do
            (.preventDefault event)
-           (if (pos? (:selection state)) (m! (update state :selection dec))))
+           (if (pos? (:selection state)) (d! cursor (update state :selection dec))))
         (= keycode/escape code)
-          (do (d! :router/change {:name :editor}) (m! {:query "", :position 0}))
+          (do (d! :router/change {:name :editor}) (d! cursor {:query "", :position 0}))
         (= keycode/down code)
           (do
            (.preventDefault event)
            (if (< (:selection state) (dec (count candidates)))
-             (m! (update state :selection inc))))
+             (d! cursor (update state :selection inc))))
         :else (on-window-keydown (:event e) d! {:name :search})))))
 
-(defn on-select [bookmark]
-  (fn [e d! m!] (d! :writer/select bookmark) (m! {:position :0, :query ""})))
+(defn on-select [bookmark cursor]
+  (fn [e d!] (d! :writer/select bookmark) (d! cursor {:position :0, :query ""})))
 
 (def style-body {:overflow :auto, :padding-bottom 80})
 
@@ -63,7 +64,8 @@
 (defcomp
  comp-search
  (states router-data)
- (let [state (or (:data states) initial-state)
+ (let [cursor (:cursor states)
+       state (or (:data states) initial-state)
        queries (->> (string/split (:query state) " ") (map string/trim))
        def-candidates (->> router-data
                            (filter
@@ -92,7 +94,8 @@
         :value (:query state),
         :class-name "search-input",
         :style (merge style/input {:width "100%"}),
-        :on {:input (on-input state), :keydown (on-keydown state def-candidates)}}))
+        :on-input (on-input state cursor),
+        :on-keydown (on-keydown state def-candidates cursor)}))
      (if (empty? def-candidates) (comp-no-results))
      (list->
       :div
@@ -106,7 +109,7 @@
                  (div
                   {:class-name "hoverable",
                    :style (merge style-candidate (if selected? style-highlight)),
-                   :on {:click (on-select bookmark)}}
+                   :on-click (on-select bookmark cursor)}
                   (<> (:extra bookmark) nil)
                   (=< 8 nil)
                   (<>
@@ -130,7 +133,7 @@
                  (div
                   {:class-name "hoverable",
                    :style (merge ui/row-middle style-candidate),
-                   :on-click (on-select bookmark)}
+                   :on-click (on-select bookmark cursor)}
                   (span
                    {}
                    (<> (str (string/join "." (butlast pieces)) ".") {:color (hsl 0 0 50)})
@@ -142,4 +145,4 @@
                             :background-color (hsl 0 0 20),
                             :font-size 12,
                             :line-height "18px"},
-                    :on-click (on-select (assoc bookmark :kind :proc))})))]))))))))
+                    :on-click (on-select (assoc bookmark :kind :proc) cursor)})))]))))))))

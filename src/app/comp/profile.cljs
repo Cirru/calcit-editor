@@ -4,7 +4,7 @@
             [hsl.core :refer [hsl]]
             [app.schema :as schema]
             [respo-ui.core :as ui]
-            [respo.core :refer [defcomp cursor-> <> span div button input a]]
+            [respo.core :refer [defcomp >> <> span div button input a]]
             [respo.comp.space :refer [=<]]
             [app.style :as style]
             [app.config :as config]
@@ -31,10 +31,8 @@
    {}
    (<> span (str "Hello! " (:nickname user)) style-greet)
    (=< 4 nil)
-   (cursor->
-    :rename
-    comp-prompt
-    states
+   (comp-prompt
+    (>> states :rename)
     {:trigger (comp-i :edit-2 14 (hsl 0 0 40)),
      :initial (:nickname user),
      :text "Pick a nickname:"}

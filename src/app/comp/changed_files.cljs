@@ -9,9 +9,9 @@
             [app.style :as style]
             [app.comp.changed-info :refer [comp-changed-info]]))
 
-(defn on-reset [e d! m!] (d! :ir/reset-files nil) (d! :states/clear nil))
+(defn on-reset [e d!] (d! :ir/reset-files nil) (d! :states/clear nil))
 
-(defn on-save [e d! m!] (d! :effect/save-files nil))
+(defn on-save [e d!] (d! :effect/save-files nil))
 
 (def style-column {:overflow :auto, :padding-bottom 120})
 

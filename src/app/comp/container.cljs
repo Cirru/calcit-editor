@@ -2,7 +2,7 @@
 (ns app.comp.container
   (:require [hsl.core :refer [hsl]]
             [respo-ui.core :as ui]
-            [respo.core :refer [defcomp cursor-> <> div span]]
+            [respo.core :refer [defcomp >> <> div span]]
             [respo.comp.inspect :refer [comp-inspect]]
             [app.comp.header :refer [comp-header]]
             [app.comp.profile :refer [comp-profile]]
@@ -41,37 +41,27 @@
      (comp-about)
      (div
       {:style (merge ui/global ui/fullscreen ui/column style-container)}
-      (cursor->
-       :header
-       comp-header
-       states
-       (:name router)
-       (:logged-in? store)
-       (:stats store))
+      (comp-header (>> states :header) (:name router) (:logged-in? store) (:stats store))
       (div
        {:style (merge ui/row ui/expand style-body)}
        (if (:logged-in? store)
          (case (:name router)
-           :profile (cursor-> :profile comp-profile states (:user store))
-           :files
-             (cursor-> :files comp-page-files states (:selected-ns writer) (:data router))
+           :profile (comp-profile (>> states :profile) (:user store))
+           :files (comp-page-files (>> states :files) (:selected-ns writer) (:data router))
            :editor
-             (cursor->
-              :editor
-              comp-page-editor
-              states
+             (comp-page-editor
+              (>> states :editor)
               (:stack writer)
               (:data router)
               (:pointer writer)
               theme)
            :members (comp-page-members (:data router) (:id session))
-           :search (cursor-> :search comp-search states (:data router))
-           :watching
-             (cursor-> :watching comp-watching states (:data router) (:theme session))
-           :repl (cursor-> :repl comp-repl-page states router)
+           :search (comp-search (>> states :search) (:data router))
+           :watching (comp-watching (>> states :watching) (:data router) (:theme session))
+           :repl (comp-repl-page (>> states :repl) router)
            (div {} (<> span (str "404 page: " (pr-str router)) nil)))
          (if (= :watching (:name router))
-           (cursor-> :watching comp-watching states (:data router) (:theme session))
+           (comp-watching (>> states :watching) (:data router) (:theme session))
            (comp-login states))))
       (when dev? (comp-inspect "Session" store style-inspector))
       (comment
