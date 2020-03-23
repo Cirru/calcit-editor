@@ -9,7 +9,7 @@
             [feather.core :refer [comp-icon]]))
 
 (defn on-preview [ns-text kind status]
-  (fn [e d! m!]
+  (fn [e d!]
     (comment println "peek" ns-text kind status)
     (d!
      :writer/select

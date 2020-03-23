@@ -73,6 +73,6 @@
    (comp-prompt
     (>> states :broadcast)
     {:trigger (comp-i :radio 18 (hsl 200 80 70 0.6)), :text "Message to broadcast"}
-    (fn [result d! m!] (if (some? result) (d! :notify/broadcast result))))
+    (fn [result d!] (if (some? result) (d! :notify/broadcast result))))
    (=< 12 nil)
    (render-entry (if logged-in? "Profile" "Guest") :profile router-name on-profile))))

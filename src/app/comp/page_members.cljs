@@ -8,7 +8,7 @@
             ["url-parse" :as url-parse]))
 
 (defn on-watch [session-id]
-  (fn [e d! m!] (d! :router/change {:name :watching, :data session-id})))
+  (fn [e d!] (d! :router/change {:name :watching, :data session-id})))
 
 (def style-bookmark
   {:font-family "Menlo,monospace", :min-width 200, :display :inline-block})

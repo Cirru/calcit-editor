@@ -36,7 +36,7 @@
     {:trigger (comp-i :edit-2 14 (hsl 0 0 40)),
      :initial (:nickname user),
      :text "Pick a nickname:"}
-    (fn [result d! m!] (d! :user/nickname (string/trim result))))
+    (fn [result d!] (d! :user/nickname (string/trim result))))
    (=< 8 nil)
    (<> span (str "id: " (:name user)) style-id))
   (=< nil 80)
