@@ -140,14 +140,12 @@
     :text (<< "Sure to remove namespace: ~{ns-text} ?")}
    (fn [e d!] (d! :ir/remove-ns ns-text)))))
 
-(defn on-input-ns [state] (fn [e d! m!] (m! (assoc state :ns-text (:value e)))))
-
 (def style-list {:width 280, :overflow :auto, :padding-bottom 120})
 
 (defcomp
  comp-namespace-list
  (states ns-set selected-ns ns-highlights)
- (let [state (or (:data states) {:ns-text ""})]
+ (let [cursor (:cursor states), state (or (:data states) {:ns-text ""})]
    (div
     {:style style-list}
     (div
@@ -157,7 +155,7 @@
      (comp-prompt
       (>> states :add)
       {:trigger (comp-i :plus 14 (hsl 0 0 70)), :text "New namespace:"}
-      (fn [result d! m!]
+      (fn [result d!]
         (let [text (string/trim result)] (when-not (string/blank? text) (d! :ir/add-ns text))))))
     (comment
      div
@@ -166,7 +164,7 @@
       {:value (:ns-text state),
        :placeholder "filter...",
        :style style-input,
-       :on-input (on-input-ns state)}))
+       :on-input (fn [e d!] (d! cursor (assoc state :ns-text (:value e))))}))
     (=< nil 8)
     (list->
      :div

@@ -9,8 +9,6 @@
             [app.style :as style]
             ["dayjs" :as Dayjs]))
 
-(defn on-clear [e d! m!] (d! :notify/clear nil))
-
 (def style-message
   {:position :absolute,
    :right 8,
@@ -42,7 +40,7 @@
                         :warning (hsl 60 80 80)
                         :info (hsl 240 80 80)
                         (hsl 120 80 80))}),
-             :on {:click on-clear}}
+             :on-click (fn [e d!] (d! :notify/clear nil))}
             (<>
              (-> (:time msg) Dayjs (.format "mm:ss"))
              {:font-size 12, :font-family ui/font-code, :opacity 0.7})

@@ -31,7 +31,7 @@
       (button
        {:inner-text "Submit",
         :style style/button,
-        :on-click (fn [e d! m!]
+        :on-click (fn [e d!]
           (if (not= state initial-file) (d! :ir/replace-file (read-string state)))
           (d! cursor nil)
           (d! :writer/draft-ns nil))}))))))

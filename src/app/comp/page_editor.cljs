@@ -27,7 +27,7 @@
        (let [el (.querySelector js/document ".el-draft-box")] (if (some? el) (.focus el)))))))
 
 (defn on-path-gen! [bookmark]
-  (fn [e d! m!]
+  (fn [e d!]
     (case (:kind bookmark)
       :def
         (let [code ["[]" (:ns bookmark) ":refer" ["[]" (:extra bookmark)]]]
@@ -48,7 +48,7 @@
         :extra {:from (:extra bookmark), :to def-text}}))))
 
 (defn on-reset-expr [bookmark]
-  (fn [e d! m!]
+  (fn [e d!]
     (let [kind (:kind bookmark), ns-text (:ns bookmark)]
       (d!
        :ir/reset-at
@@ -114,7 +114,7 @@
               (:ns bookmark)
               "/"
               (or (:extra bookmark) (:kind bookmark)))}
-      (fn [e d! m!]
+      (fn [e d!]
         (if (some? bookmark)
           (d! :ir/delete-entry (dissoc bookmark :focus))
           (js/console.warn "No entry to delete"))))
@@ -124,14 +124,14 @@
       {:trigger (span {:inner-text "Rename", :style style-link}),
        :text (str "Renaming: " old-name),
        :initial old-name}
-      (fn [result d! m!] (on-rename-def result bookmark d!)))
+      (fn [result d!] (on-rename-def result bookmark d!)))
      (=< 8 nil)
      (comp-prompt
       (>> states :add)
       {:trigger (span {:inner-text "Add", :style style-link}),
        :text (str "Add function name:"),
        :initial ""}
-      (fn [result d! m!]
+      (fn [result d!]
         (let [text (string/trim result)]
           (when-not (string/blank? text)
             (d! :ir/add-def text)
@@ -148,7 +148,7 @@
        :validator (fn [x]
          (if (= 2 (count (string/split x "=>"))) nil "Expected {from}=>{to}")),
        :input-style {:font-family ui/font-code}}
-      (fn [result d! m!]
+      (fn [result d!]
         (let [[from to] (string/split result "=>")]
           (d! :ir/expr-replace {:bookmark bookmark, :from from, :to to}))))
      (=< 8 nil)
@@ -219,7 +219,7 @@
             ui-missing)))
        (let [peek-def (:peek-def router-data)]
          (if (some? peek-def) (comp-peek-def peek-def)))
-       (comp-status-bar (>> states :status) router-data bookmark theme)
+       (comp-status-bar states router-data bookmark theme)
        (if (:draft-box? state)
          (comp-draft-box (>> states :draft-box) expr focus close-draft-box!))
        (if (:abstract? state) (comp-abstract (>> states :abstract) close-abstract!))

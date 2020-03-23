@@ -13,10 +13,8 @@
             [app.util :refer [tree->cirru]]
             [app.util.dom :refer [do-copy-logics!]]))
 
-(defn on-focus [coord] (fn [e d! m!] (d! :writer/focus coord)))
-
 (defn on-keydown [coord expr]
-  (fn [e d! m!]
+  (fn [e d!]
     (let [event (:original-event e)
           shift? (.-shiftKey event)
           meta? (or (.-metaKey event) (.-ctrlKey event))
@@ -88,7 +86,9 @@
              (count coord)
              depth
              theme),
-     :on (if readonly? {} {:keydown (on-keydown coord expr), :click (on-focus coord)})}
+     :on (if readonly?
+       {}
+       {:keydown (on-keydown coord expr), :click (fn [e d!] (d! :writer/focus coord))})}
     (loop [result [], children sorted-children, info default-info]
       (if (empty? children)
         result

@@ -12,12 +12,10 @@
             [fipp.edn :refer [pprint]]
             [keycode.core :as keycode]))
 
-(defn on-submit [expr? text close-modal! close?]
-  (fn [e d! m!]
+(defn on-submit [expr? text cursor close-modal! close?]
+  (fn [e d!]
     (if expr? (d! :ir/draft-expr (read-string text)) (d! :ir/update-leaf text))
-    (if close? (do (m! nil) (close-modal! m!)))))
-
-(defn on-wrong [close-modal!] (fn [e d! m!] (close-modal! m!)))
+    (if close? (do (d! cursor nil) (close-modal! d!)))))
 
 (def style-area
   {:background-color (hsl 0 0 100 0.2),
@@ -77,7 +75,7 @@
         (span
          {:style style-wrong,
           :inner-text "Does not edit expression!",
-          :on {:click (on-wrong close-modal!)}})
+          :on-click (fn [e d!] (close-modal! d!))})
         (let [expr? (= :expr (:type node))
               original-text (if expr? (pr-str (tree->cirru node)) (:text node))
               state (or (:data states) original-text)]
@@ -111,8 +109,8 @@
             (button
              {:style style/button,
               :inner-text "Apply",
-              :on-click (on-submit expr? state close-modal! false)})
+              :on-click (on-submit expr? state cursor close-modal! false)})
             (button
              {:style style/button,
               :inner-text "Submit",
-              :on-click (on-submit expr? state close-modal! true)})))))))))
+              :on-click (on-submit expr? state cursor close-modal! true)})))))))))
