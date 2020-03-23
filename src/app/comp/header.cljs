@@ -2,22 +2,22 @@
 (ns app.comp.header
   (:require [hsl.core :refer [hsl]]
             [respo-ui.core :as ui]
-            [respo.core :refer [defcomp action-> cursor-> <> span div a]]
+            [respo.core :refer [defcomp >> <> span div a]]
             [respo.comp.space :refer [=<]]
             [app.util.dom :refer [focus-search!]]
             [feather.core :refer [comp-i]]
             [respo-alerts.core :refer [comp-prompt]]))
 
-(defn on-editor [e d! m!] (d! :router/change {:name :editor}))
+(defn on-editor [e d!] (d! :router/change {:name :editor}))
 
-(defn on-files [e dispatch! m!] (dispatch! :router/change {:name :files}))
+(defn on-files [e dispatch!] (dispatch! :router/change {:name :files}))
 
-(defn on-members [e d! m!] (d! :router/change {:name :members}))
+(defn on-members [e d!] (d! :router/change {:name :members}))
 
 (defn on-profile [e dispatch!]
   (dispatch! :router/change {:name :profile, :data nil, :router nil}))
 
-(defn on-search [e d! m!] (d! :router/change {:name :search}) (focus-search!))
+(defn on-search [e d!] (d! :router/change {:name :search}) (focus-search!))
 
 (def style-entry
   {:cursor :pointer,
@@ -56,7 +56,7 @@
    (render-entry "Files" :files router-name on-files)
    (render-entry "Editor" :editor router-name on-editor)
    (render-entry "Search" :search router-name on-search)
-   (render-entry "REPL" :repl router-name (action-> :router/change {:name :repl}))
+   (render-entry "REPL" :repl router-name (fn [e d!] (d! :router/change {:name :repl})))
    (render-entry (str "Members:" (:members-count stats)) :members router-name on-members)
    (a
     {:href "http://snippets.cirru.org", :target "_blank", :style style-entry}
@@ -70,10 +70,8 @@
     (<> "↗" {:font-family ui/font-code})))
   (div
    {:style ui/row-middle}
-   (cursor->
-    :broadcast
-    comp-prompt
-    states
+   (comp-prompt
+    (>> states :broadcast)
     {:trigger (comp-i :radio 18 (hsl 200 80 70 0.6)), :text "Message to broadcast"}
     (fn [result d! m!] (if (some? result) (d! :notify/broadcast result))))
    (=< 12 nil)

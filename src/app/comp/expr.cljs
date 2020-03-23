@@ -3,7 +3,7 @@
   (:require [clojure.string :as string]
             [hsl.core :refer [hsl]]
             [respo-ui.core :as ui]
-            [respo.core :refer [defcomp list-> cursor-> <> span div a]]
+            [respo.core :refer [defcomp list-> >> <> span div a]]
             [respo.comp.space :refer [=<]]
             [keycode.core :as keycode]
             [app.comp.leaf :refer [comp-leaf]]
@@ -104,10 +104,8 @@
             result
             [k
              (if (= :leaf (:type child))
-               (cursor->
-                cursor-key
-                comp-leaf
-                states
+               (comp-leaf
+                (>> states cursor-key)
                 child
                 focus
                 child-coord
@@ -115,10 +113,8 @@
                 (= first-id k)
                 readonly?
                 theme)
-               (cursor->
-                cursor-key
-                comp-expr
-                states
+               (comp-expr
+                (>> states cursor-key)
                 child
                 focus
                 child-coord

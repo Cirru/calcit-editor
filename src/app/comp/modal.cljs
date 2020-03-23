@@ -3,7 +3,7 @@
   (:require [clojure.string :as string]
             [hsl.core :refer [hsl]]
             [respo-ui.core :as ui]
-            [respo.core :refer [defcomp cursor-> <> span div pre input button a]]
+            [respo.core :refer [defcomp >> <> span div pre input button a]]
             [respo.comp.inspect :refer [comp-inspect]]
             [respo.comp.space :refer [=<]]))
 
@@ -21,5 +21,5 @@
  comp-modal
  (close-modal! inner-tree)
  (div
-  {:style style-backdrop, :on {:click (fn [e d! m!] (close-modal! m! d!))}}
-  (div {:on {:click (fn [e d! m!] (println "nothing!"))}} inner-tree)))
+  {:style style-backdrop, :on-click (fn [e d!] (close-modal! d!))}
+  (div {:on-click (fn [e d!] (println "nothing!"))} inner-tree)))

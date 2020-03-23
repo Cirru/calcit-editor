@@ -3,7 +3,7 @@
   (:require [clojure.string :as string]
             [hsl.core :refer [hsl]]
             [respo-ui.core :as ui]
-            [respo.core :refer [defcomp cursor-> <> span div input pre a]]
+            [respo.core :refer [defcomp >> <> span div input pre a]]
             [respo.comp.space :refer [=<]]
             [keycode.core :as keycode]
             [app.client-util :as util]
@@ -43,10 +43,8 @@
            {:style (merge ui/flex {:overflow :auto})}
            (inject-style ".cirru-expr" (base-style-expr (or theme :star-trail)))
            (inject-style ".cirru-leaf" (base-style-leaf (or theme :star-trail)))
-           (cursor->
-            (:id expr)
-            comp-expr
-            states
+           (comp-expr
+            (>> states (:id expr))
             expr
             focus
             []
@@ -67,4 +65,4 @@
          (=< 16 nil)
          (<> span (str (:ns bookmark) "/" (:extra bookmark)) nil)
          (=< 16 nil)
-         (cursor-> :theme comp-theme-menu states (or theme :star-trail))))))))
+         (comp-theme-menu (>> states :theme) (or theme :star-trail))))))))

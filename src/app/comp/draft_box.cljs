@@ -67,51 +67,52 @@
 (defcomp
  comp-draft-box
  (states expr focus close-modal!)
- (comp-modal
-  (fn [m! d!] (m! %cursor nil) (close-modal! m! d!))
-  (let [path (->> focus (mapcat (fn [x] [:data x])) (vec))
-        node (get-in expr path)
-        missing? (nil? node)]
-    (if missing?
-      (span
-       {:style style-wrong,
-        :inner-text "Does not edit expression!",
-        :on {:click (on-wrong close-modal!)}})
-      (let [expr? (= :expr (:type node))
-            original-text (if expr? (pr-str (tree->cirru node)) (:text node))
-            state (or (:data states) original-text)]
-        (div
-         {:style ui/column}
-         (div
-          {:style style-original}
-          (if expr?
-            (<> span "Cirru Mode" style-mode)
-            (textarea {:value original-text, :spellcheck false, :style style-text})))
-         (=< nil 8)
-         (textarea
-          {:style style-area,
-           :value (if expr? (with-out-str (pprint (read-string state))) state),
-           :class-name "el-draft-box",
-           :on-input (fn [e d! m!] (m! (:value e))),
-           :on-keydown (fn [e d! m!]
-             (cond
-               (= keycode/escape (:keycode e)) (close-modal! m! d!)
-               (and (= keycode/s (:keycode e)) (.-metaKey (:event e)))
-                 (do
-                  (.preventDefault (:event e))
-                  (if expr?
-                    (d! :ir/draft-expr (read-string state))
-                    (d! :ir/update-leaf state))
-                  (m! nil)
-                  (close-modal! m!))))})
-         (=< nil 8)
-         (div
-          {:style (merge ui/row style-toolbar)}
-          (button
-           {:style style/button,
-            :inner-text "Apply",
-            :on-click (on-submit expr? state close-modal! false)})
-          (button
-           {:style style/button,
-            :inner-text "Submit",
-            :on-click (on-submit expr? state close-modal! true)}))))))))
+ (let [cursor (:cursor states)]
+   (comp-modal
+    (fn [d!] (d! cursor nil) (close-modal! d!))
+    (let [path (->> focus (mapcat (fn [x] [:data x])) (vec))
+          node (get-in expr path)
+          missing? (nil? node)]
+      (if missing?
+        (span
+         {:style style-wrong,
+          :inner-text "Does not edit expression!",
+          :on {:click (on-wrong close-modal!)}})
+        (let [expr? (= :expr (:type node))
+              original-text (if expr? (pr-str (tree->cirru node)) (:text node))
+              state (or (:data states) original-text)]
+          (div
+           {:style ui/column}
+           (div
+            {:style style-original}
+            (if expr?
+              (<> span "Cirru Mode" style-mode)
+              (textarea {:value original-text, :spellcheck false, :style style-text})))
+           (=< nil 8)
+           (textarea
+            {:style style-area,
+             :value (if expr? (with-out-str (pprint (read-string state))) state),
+             :class-name "el-draft-box",
+             :on-input (fn [e d!] (d! cursor (:value e))),
+             :on-keydown (fn [e d!]
+               (cond
+                 (= keycode/escape (:keycode e)) (close-modal! d!)
+                 (and (= keycode/s (:keycode e)) (.-metaKey (:event e)))
+                   (do
+                    (.preventDefault (:event e))
+                    (if expr?
+                      (d! :ir/draft-expr (read-string state))
+                      (d! :ir/update-leaf state))
+                    (d! cursor nil)
+                    (close-modal! d!))))})
+           (=< nil 8)
+           (div
+            {:style (merge ui/row style-toolbar)}
+            (button
+             {:style style/button,
+              :inner-text "Apply",
+              :on-click (on-submit expr? state close-modal! false)})
+            (button
+             {:style style/button,
+              :inner-text "Submit",
+              :on-click (on-submit expr? state close-modal! true)})))))))))

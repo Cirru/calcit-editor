@@ -3,7 +3,7 @@
   (:require [clojure.string :as string]
             [hsl.core :refer [hsl]]
             [respo-ui.core :as ui]
-            [respo.core :refer [defcomp cursor-> action-> <> span div pre input button a]]
+            [respo.core :refer [defcomp >> <> span div pre input button a]]
             [respo.comp.inspect :refer [comp-inspect]]
             [respo.comp.space :refer [=<]]
             [app.style :as style]
@@ -27,4 +27,4 @@
   (comp-icon
    :delete
    {:font-size 12, :color (hsl 0 0 50), :cursor :pointer, :margin-left 8}
-   (action-> :writer/hide-peek nil))))
+   (fn [e d!] (d! :writer/hide-peek nil)))))

@@ -1,7 +1,7 @@
 
 (ns app.client
   (:require [respo.core :refer [render! clear-cache! realize-ssr! *changes-logger]]
-            [respo.cursor :refer [mutate]]
+            [respo.cursor :refer [update-states]]
             [app.comp.container :refer [comp-container]]
             [cljs.reader :refer [read-string]]
             [app.client-util :refer [ws-host parse-query!]]
@@ -15,7 +15,7 @@
 
 (defonce *connecting? (atom false))
 
-(defonce *states (atom {}))
+(defonce *states (atom {:states {:cursor []}}))
 
 (defonce *store (atom nil))
 
@@ -25,8 +25,8 @@
   (when (and config/dev? (not= op :states))
     (.info js/console "Dispatch" (str op) (clj->js op-data)))
   (case op
-    :states (reset! *states ((mutate op-data) @*states))
-    :states/clear (reset! *states {})
+    :states (reset! *states (update-states @*states op-data))
+    :states/clear (reset! *states {:states {:cursor []}})
     :manual-state/abstract (reset! *states (updater/abstract @*states))
     :manual-state/draft-box (reset! *states (updater/draft-box @*states))
     :effect/save-files
@@ -76,7 +76,7 @@
 (def mount-target (.querySelector js/document ".app"))
 
 (defn render-app! [renderer]
-  (renderer mount-target (comp-container @*states @*store) #(dispatch! %1 %2)))
+  (renderer mount-target (comp-container (:states @*states) @*store) #(dispatch! %1 %2)))
 
 (defn retry-connect! [] (if (and (nil? @*store) (not @*connecting?)) (connect!)))
 
