@@ -24,7 +24,6 @@
      :style {:width 64, :height 64, :border-radius "8px"}})
    (=< nil 16)
    (<>
-    span
     "No connection to server..."
     {:font-family "Josefin Sans", :font-weight 300, :font-size 24, :color (hsl 0 80 60)})
    (div

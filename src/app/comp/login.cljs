@@ -42,16 +42,16 @@
        {:placeholder "Password",
         :value (:password state),
         :style style/input,
-        :on {:input (on-input state :password)}})))
+        :on-input (on-input state :password)})))
     (=< nil 8)
     (div
      {:style style-control}
      (button
       {:inner-text "Sign up",
        :style style/button,
-       :on {:click (on-submit (:username state) (:password state) true)}})
+       :on-click (on-submit (:username state) (:password state) true)})
      (=< 8 nil)
      (button
       {:inner-text "Log in",
        :style style/button,
-       :on {:click (on-submit (:username state) (:password state) false)}})))))
+       :on-click (on-submit (:username state) (:password state) false)})))))

@@ -29,8 +29,8 @@
    (->> changed-files
         (map (fn [entry] (let [[k info] entry] [k (comp-changed-info info k)])))))
   (if (empty? changed-files)
-    (div {:style style-nothing} (<> span "No changes" nil))
+    (div {:style style-nothing} (<> "No changes" nil))
     (div
      {}
-     (a {:inner-text "Save", :style style/button, :on {:click on-save}})
-     (a {:inner-text "Reset", :style style/button, :on {:click on-reset}})))))
+     (a {:inner-text "Save", :style style/button, :on-click on-save})
+     (a {:inner-text "Reset", :style style/button, :on-click on-reset})))))

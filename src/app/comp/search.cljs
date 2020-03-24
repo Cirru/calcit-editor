@@ -122,7 +122,6 @@
      (=< nil 32)
      (if (empty? ns-candidates) (comp-no-results))
      (list->
-      :div
       {:style (merge ui/expand style-body)}
       (->> ns-candidates
            (take 20)

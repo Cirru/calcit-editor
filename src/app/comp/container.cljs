@@ -59,7 +59,7 @@
            :search (comp-search (>> states :search) (:data router))
            :watching (comp-watching (>> states :watching) (:data router) (:theme session))
            :repl (comp-repl-page (>> states :repl) router)
-           (div {} (<> span (str "404 page: " (pr-str router)) nil)))
+           (div {} (<> (str "404 page: " (pr-str router)))))
          (if (= :watching (:name router))
            (comp-watching (>> states :watching) (:data router) (:theme session))
            (comp-login states))))

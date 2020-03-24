@@ -29,7 +29,7 @@
   {:style (merge ui/flex style-profile)}
   (div
    {}
-   (<> span (str "Hello! " (:nickname user)) style-greet)
+   (<> (str "Hello! " (:nickname user)) style-greet)
    (=< 4 nil)
    (comp-prompt
     (>> states :rename)
@@ -38,6 +38,6 @@
      :text "Pick a nickname:"}
     (fn [result d!] (d! :user/nickname (string/trim result))))
    (=< 8 nil)
-   (<> span (str "id: " (:name user)) style-id))
+   (<> (str "id: " (:name user)) style-id))
   (=< nil 80)
   (div {} (button {:inner-text "Log out", :style style/button, :on {:click on-log-out}}))))

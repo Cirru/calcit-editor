@@ -1,6 +1,8 @@
 
 (ns app.util.dom
-  (:require [respo.core :refer [style]] [respo.render.html :refer [style->string]]))
+  (:require [respo.core :refer [style]]
+            [respo.render.html :refer [style->string]]
+            [cumulo-util.core :refer [delay!]]))
 
 (defn copy-silently! [x]
   (-> js/navigator
@@ -29,11 +31,11 @@
          (println "[Editor] .cirru-focused not found" cirru-focused))))))
 
 (defn focus-search! []
-  (js/setTimeout
+  (delay!
+   0.2
    (fn [timestamp]
      (let [target (.querySelector js/document ".search-input")]
-       (if (some? target) (.focus target))))
-   200))
+       (if (some? target) (.focus target))))))
 
 (defn inject-style [class-name styles]
   (style {:innerHTML (str class-name " {" (style->string styles) "}")}))
