@@ -11,7 +11,7 @@
             [keycode.core :as keycode]
             [app.comp.file-replacer :refer [comp-file-replacer]]
             [app.util.shortcuts :refer [on-window-keydown]]
-            [respo-alerts.core :refer [comp-prompt comp-confirm]]
+            [respo-alerts.core :refer [comp-prompt comp-confirm use-prompt use-confirm]]
             [feather.core :refer [comp-icon comp-i]])
   (:require-macros [clojure.core.strint :refer [<<]]))
 
@@ -123,40 +123,48 @@
 (defcomp
  comp-ns-entry
  (states ns-text selected? ns-highlights)
- (div
-  {:class-name (if selected? "hoverable is-selected" "hoverable"),
-   :style (merge style-ns (if (contains? ns-highlights ns-text) {:color :white})),
-   :on-click (fn [e d!] (d! :session/select-ns ns-text))}
-  (let [pieces (string/split ns-text ".")]
+ (let [plugin-rm-ns (use-confirm
+                     (>> states :rm-ns)
+                     {:text (<< "Sure to remove namespace: ~{ns-text} ?")})]
+   (div
+    {:class-name (if selected? "hoverable is-selected" "hoverable"),
+     :style (merge style-ns (if (contains? ns-highlights ns-text) {:color :white})),
+     :on-click (fn [e d!] (d! :session/select-ns ns-text))}
+    (let [pieces (string/split ns-text ".")]
+      (span
+       {}
+       (<> (str (string/join "." (butlast pieces)) ".") {:color (hsl 0 0 50)})
+       (<> (last pieces))))
     (span
-     {}
-     (<> (str (string/join "." (butlast pieces)) ".") {:color (hsl 0 0 50)})
-     (<> (last pieces))))
-  (comp-confirm
-   (>> states (str :rm ns-text))
-   {:trigger (span
-              {:class-name "is-minor", :style style-remove}
-              (comp-i :x 12 (hsl 0 0 80 0.6))),
-    :text (<< "Sure to remove namespace: ~{ns-text} ?")}
-   (fn [e d!] (d! :ir/remove-ns ns-text)))))
+     {:class-name "is-minor",
+      :style style-remove,
+      :on-click (fn [e d!] ((:show plugin-rm-ns) d! (fn [] (d! :ir/remove-ns ns-text))))}
+     (comp-i :x 12 (hsl 0 0 80 0.6)))
+    (:ui plugin-rm-ns))))
 
 (def style-list {:width 280, :overflow :auto, :padding-bottom 120})
 
 (defcomp
  comp-namespace-list
  (states ns-set selected-ns ns-highlights)
- (let [cursor (:cursor states), state (or (:data states) {:ns-text ""})]
+ (let [cursor (:cursor states)
+       state (or (:data states) {:ns-text ""})
+       plugin-add-ns (use-prompt (>> states :add-ns) {:title "New namespace:"})]
    (div
     {:style style-list}
     (div
      {:style style/title}
      (<> span "Namespaces" nil)
      (=< 8 nil)
-     (comp-prompt
-      (>> states :add)
-      {:trigger (comp-i :plus 14 (hsl 0 0 70)), :text "New namespace:"}
-      (fn [result d!]
-        (let [text (string/trim result)] (when-not (string/blank? text) (d! :ir/add-ns text))))))
+     (comp-icon
+      :plus
+      {:color (hsl 0 0 70), :font-size 14, :cursor :pointer}
+      (fn [e d!]
+        ((:show plugin-add-ns)
+         d!
+         (fn [result]
+           (let [text (string/trim result)]
+             (when-not (string/blank? text) (d! :ir/add-ns text))))))))
     (comment
      div
      {}
@@ -183,7 +191,8 @@
                (>> states ns-text)
                ns-text
                (= selected-ns ns-text)
-               ns-highlights)])))))))
+               ns-highlights)]))))
+    (:ui plugin-add-ns))))
 
 (def style-empty {:width 280})
 
