@@ -39,9 +39,9 @@
              [k
               (div
                {:style style-row, :on {:click (on-watch k)}}
-               (<> span (str member-name (if (= k session-id) " (yourself)")) style-name)
+               (<> (str member-name (if (= k session-id) " (yourself)")) style-name)
                (=< 32 nil)
-               (<> span (:page member) style-page)
+               (<> (:page member) style-page)
                (=< 32 nil)
                (let [bookmark (:bookmark member)]
                  (if (some? bookmark)
@@ -65,4 +65,4 @@
                      (.toString url-obj)),
                    :target "_blank",
                    :style {:color (hsl 240 80 80)}}
-                  (<> span "Watching url" nil))))])))))))
+                  (<> "Watching url" nil))))])))))))

@@ -8,7 +8,6 @@
   },
   "scripts": {
     "watch": "shadow-cljs watch client server",
-    "serve": "http-server dist -s",
     "repl": "rlwrap shadow-cljs clj-repl",
     "build-cdn": "shadow-cljs clj-run build.main/build-cdn",
     "page": "shadow-cljs clj-run build.main/page",
@@ -24,7 +23,6 @@
   "license": "MIT",
   "devDependencies": {
     "feather-icons": "^4.26.0",
-    "http-server": "^0.12.1",
     "shadow-cljs": "^2.8.93",
     "source-map-support": "^0.5.16",
     "url-parse": "^1.4.7"

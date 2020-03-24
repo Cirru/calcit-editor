@@ -33,9 +33,9 @@
        member-name (get-in router-data [:member :nickname])
        readonly? true]
    (if (nil? router-data)
-     (div {:style style-container} (<> span "Session is missing!" nil))
+     (div {:style style-container} (<> "Session is missing!" nil))
      (if (:self? router-data)
-       (div {:style style-container} (<> span "Watching at yourself :)" style-title))
+       (div {:style style-container} (<> "Watching at yourself :)" style-title))
        (div
         {:style (merge ui/column style-container)}
         (when (:working? router-data)
@@ -57,12 +57,12 @@
         (=< nil 16)
         (div
          {}
-         (<> span "Watching mode" style-tip)
+         (<> "Watching mode" style-tip)
          (=< 16 nil)
-         (<> span member-name nil)
+         (<> member-name nil)
          (=< 16 nil)
-         (<> span (:kind bookmark) nil)
+         (<> (:kind bookmark) nil)
          (=< 16 nil)
-         (<> span (str (:ns bookmark) "/" (:extra bookmark)) nil)
+         (<> (str (:ns bookmark) "/" (:extra bookmark)) nil)
          (=< 16 nil)
          (comp-theme-menu (>> states :theme) (or theme :star-trail))))))))

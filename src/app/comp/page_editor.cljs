@@ -59,7 +59,7 @@
          (do (println "Unknown" bookmark))))
       (d! :states/clear nil))))
 
-(def style-hint {:color (hsl 0 0 100 0.6), :font-family "Josefin Sans"})
+(def style-hint {:color (hsl 0 0 100 0.6), :font-family ui/font-fancy})
 
 (def style-link
   {:font-family "Josefin Sans", :cursor :pointer, :font-size 14, :color (hsl 200 50 80)})
@@ -82,22 +82,22 @@
     {:style style-status}
     (div
      {}
-     (<> span (str "Writers(" (count (:others router-data)) ")") style-hint)
+     (<> (str "Writers(" (count (:others router-data)) ")") style-hint)
      (list->
       :div
       {:style style-watchers}
       (->> (:others router-data)
            (vals)
-           (map (fn [info] [(:session-id info) (<> span (:nickname info) style-watcher)]))))
+           (map (fn [info] [(:session-id info) (<> (:nickname info) style-watcher)]))))
      (=< 16 nil)
-     (<> span (str "Watchers(" (count (:watchers router-data)) ")") style-hint)
+     (<> (str "Watchers(" (count (:watchers router-data)) ")") style-hint)
      (list->
       :div
       {:style style-watchers}
       (->> (:watchers router-data)
            (map
             (fn [entry]
-              (let [[sid member] entry] [sid (<> span (:nickname member) style-watcher)])))))
+              (let [[sid member] entry] [sid (<> (:nickname member) style-watcher)])))))
      (=< 16 nil)
      (if (= :same (:changed router-data))
        (<> (str (:changed router-data)) {:font-family ui/font-fancy, :color (hsl 260 80 70)})

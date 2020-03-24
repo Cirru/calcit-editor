@@ -103,7 +103,7 @@
                              {:ns selected-ns, :extra def-text, :kind :def})
                           {:color :white})),
                 :on-click (on-edit-def def-text)}
-               (<> span def-text nil)
+               (<> def-text nil)
                (=< 16 nil)
                (comp-confirm
                 (>> states (str :rm def-text))
@@ -111,7 +111,7 @@
                            {:class-name "is-minor", :style style-remove}
                            (comp-i :x 12 (hsl 0 0 80 0.5))),
                  :text (<< "Sure to remove def: ~{def-text} ?")}
-                (fn [e d! ] (d! :ir/remove-def def-text))))])))))))
+                (fn [e d!] (d! :ir/remove-def def-text))))])))))))
 
 (def style-ns
   {:cursor :pointer,
@@ -187,7 +187,7 @@
 
 (def style-empty {:width 280})
 
-(defn render-empty [] (div {:style style-empty} (<> span "Empty" nil)))
+(defn render-empty [] (div {:style style-empty} (<> "Empty" nil)))
 
 (def style-inspect {:opacity 1, :background-color (hsl 0 0 100), :color :black})
 

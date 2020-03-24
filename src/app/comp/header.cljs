@@ -8,17 +8,6 @@
             [feather.core :refer [comp-i]]
             [respo-alerts.core :refer [comp-prompt]]))
 
-(defn on-editor [e d!] (d! :router/change {:name :editor}))
-
-(defn on-files [e dispatch!] (dispatch! :router/change {:name :files}))
-
-(defn on-members [e d!] (d! :router/change {:name :members}))
-
-(defn on-profile [e dispatch!]
-  (dispatch! :router/change {:name :profile, :data nil, :router nil}))
-
-(defn on-search [e d!] (d! :router/change {:name :search}) (focus-search!))
-
 (def style-entry
   {:cursor :pointer,
    :padding "0 12px",
@@ -30,7 +19,7 @@
 
 (defn render-entry [page-name this-page router-name on-click]
   (div
-   {:on {:click on-click},
+   {:on-click on-click,
     :style (merge style-entry (if (= this-page router-name) style-highlight))}
    (<> page-name nil)))
 
@@ -53,11 +42,23 @@
   {:style (merge ui/row-center style-header)}
   (div
    {:style ui/row-center}
-   (render-entry "Files" :files router-name on-files)
-   (render-entry "Editor" :editor router-name on-editor)
-   (render-entry "Search" :search router-name on-search)
+   (render-entry "Files" :files router-name (fn [e d!] (d! :router/change {:name :files})))
+   (render-entry
+    "Editor"
+    :editor
+    router-name
+    (fn [e d!] (d! :router/change {:name :editor})))
+   (render-entry
+    "Search"
+    :search
+    router-name
+    (fn [e d!] (d! :router/change {:name :search}) (focus-search!)))
    (render-entry "REPL" :repl router-name (fn [e d!] (d! :router/change {:name :repl})))
-   (render-entry (str "Members:" (:members-count stats)) :members router-name on-members)
+   (render-entry
+    (str "Members:" (:members-count stats))
+    :members
+    router-name
+    (fn [e d!] (d! :router/change {:name :members})))
    (a
     {:href "http://snippets.cirru.org", :target "_blank", :style style-entry}
     (<> "Snippets" style-link)
@@ -75,4 +76,8 @@
     {:trigger (comp-i :radio 18 (hsl 200 80 70 0.6)), :text "Message to broadcast"}
     (fn [result d!] (if (some? result) (d! :notify/broadcast result))))
    (=< 12 nil)
-   (render-entry (if logged-in? "Profile" "Guest") :profile router-name on-profile))))
+   (render-entry
+    (if logged-in? "Profile" "Guest")
+    :profile
+    router-name
+    (fn [e d!] (d! :router/change {:name :profile, :data nil, :router nil}))))))
