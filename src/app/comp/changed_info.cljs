@@ -28,8 +28,6 @@
        {:ns ns-text, :kind :def, :extra kind}))
     (d! :states/clear nil)))
 
-(defn on-reset-ns [ns-text] (fn [e d!] (d! :ir/reset-ns ns-text) (d! :states/clear nil)))
-
 (def style-reset
   {:text-decoration :underline, :font-size 12, :color (hsl 220 60 80 0.6), :cursor :pointer})
 
@@ -42,9 +40,9 @@
    {:style style-status-card,
     :title (str "Browse " kind),
     :on-click (on-preview ns-text kind status)}
-   (<> span kind nil)
+   (<> kind)
    (=< 8 nil)
-   (<> span (name status) style-status)
+   (<> (name status) style-status)
    (=< 4 nil)
    (span
     {:class-name "is-minor"}
@@ -61,11 +59,14 @@
   {:style style-info}
   (div
    {}
-   (<> span ns-text nil)
+   (<> ns-text)
    (=< 8 nil)
    (span
     {:class-name "is-minor"}
-    (comp-icon :corner-up-left style-reset (on-reset-ns ns-text)))
+    (comp-icon
+     :corner-up-left
+     style-reset
+     (fn [e d!] (d! :ir/reset-ns ns-text) (d! :states/clear nil))))
    (=< 24 nil)
    (if (not= :same (:ns info)) (render-status ns-text :ns (:ns info)))
    (=< 8 nil)

@@ -11,18 +11,9 @@
             [keycode.core :as keycode]
             [app.comp.file-replacer :refer [comp-file-replacer]]
             [app.util.shortcuts :refer [on-window-keydown]]
-            [respo-alerts.core :refer [comp-prompt comp-confirm use-prompt use-confirm]]
+            [respo-alerts.core :refer [comp-prompt use-prompt use-confirm]]
             [feather.core :refer [comp-icon comp-i]])
   (:require-macros [clojure.core.strint :refer [<<]]))
-
-(defn on-edit-def [text] (fn [e d!] (d! :writer/edit {:kind :def, :extra text})))
-
-(defn on-edit-ns [e d!] (d! :writer/edit {:kind :ns}))
-
-(defn on-edit-proc [e d!] (d! :writer/edit {:kind :proc}))
-
-(defn on-input-def [state cursor]
-  (fn [e d!] (d! cursor (assoc state :def-text (:value e)))))
 
 (def style-def {:padding "0 8px", :position :relative, :color (hsl 0 0 80)})
 
@@ -66,9 +57,15 @@
           (d! :notify/push-message [:warn (str "Not a good name: " result)])))))
     (div
      {}
-     (span {:inner-text selected-ns, :style style-link, :on-click on-edit-ns})
+     (span
+      {:inner-text selected-ns,
+       :style style-link,
+       :on-click (fn [e d!] (d! :writer/edit {:kind :ns}))})
      (=< 16 nil)
-     (span {:inner-text "proc", :style style-link, :on-click on-edit-proc})
+     (span
+      {:inner-text "proc",
+       :style style-link,
+       :on-click (fn [e d!] (d! :writer/edit {:kind :proc}))})
      (=< 16 nil)
      (comp-prompt
       (>> states :add)
@@ -83,7 +80,7 @@
       {:value (:def-text state),
        :placeholder "filter...",
        :style style-input,
-       :on-input (on-input-def state cursor)}))
+       :on-input (fn [e d!] (d! cursor (assoc state :def-text (:value e))))}))
     (=< nil 8)
     (list->
      :div
@@ -94,24 +91,27 @@
           (map
            (fn [def-text]
              [def-text
-              (div
-               {:class-name "hoverable",
-                :style (merge
-                        style-def
-                        (if (contains?
-                             highlights
-                             {:ns selected-ns, :extra def-text, :kind :def})
-                          {:color :white})),
-                :on-click (on-edit-def def-text)}
-               (<> def-text nil)
-               (=< 16 nil)
-               (comp-confirm
-                (>> states (str :rm def-text))
-                {:trigger (span
-                           {:class-name "is-minor", :style style-remove}
-                           (comp-i :x 12 (hsl 0 0 80 0.5))),
-                 :text (<< "Sure to remove def: ~{def-text} ?")}
-                (fn [e d!] (d! :ir/remove-def def-text))))])))))))
+              (let [confirm-remove-plugin (use-confirm
+                                           (>> states (str :rm def-text))
+                                           {:text (<< "Sure to remove def: ~{def-text} ?")})]
+                (div
+                 {:class-name "hoverable",
+                  :style (merge
+                          style-def
+                          (if (contains?
+                               highlights
+                               {:ns selected-ns, :extra def-text, :kind :def})
+                            {:color :white})),
+                  :on-click (fn [e d!] (d! :writer/edit {:kind :def, :extra def-text}))}
+                 (<> def-text nil)
+                 (=< 16 nil)
+                 (span
+                  {:class-name "is-minor",
+                   :style style-remove,
+                   :on-click (fn [e d!]
+                     ((:show confirm-remove-plugin) d! (fn [] (d! :ir/remove-def def-text))))}
+                  (comp-i :x 12 (hsl 0 0 80 0.5)))
+                 (:ui confirm-remove-plugin)))])))))))
 
 (def style-ns
   {:cursor :pointer,
@@ -154,7 +154,7 @@
     {:style style-list}
     (div
      {:style style/title}
-     (<> span "Namespaces" nil)
+     (<> "Namespaces")
      (=< 8 nil)
      (comp-icon
       :plus

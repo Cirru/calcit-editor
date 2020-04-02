@@ -17,7 +17,7 @@
             [app.comp.peek-def :refer [comp-peek-def]]
             [app.util :refer [tree->cirru]]
             [app.util.dom :refer [do-copy-logics!]]
-            [respo-alerts.core :refer [comp-prompt comp-confirm]]))
+            [respo-alerts.core :refer [comp-prompt use-confirm]]))
 
 (defn on-draft-box [state cursor]
   (fn [e d!]
@@ -47,17 +47,16 @@
         :ns {:from (:ns bookmark), :to ns-text},
         :extra {:from (:extra bookmark), :to def-text}}))))
 
-(defn on-reset-expr [bookmark]
-  (fn [e d!]
-    (let [kind (:kind bookmark), ns-text (:ns bookmark)]
-      (d!
-       :ir/reset-at
-       (case kind
-         :ns {:ns ns-text, :kind :ns}
-         :proc {:ns ns-text, :kind :proc}
-         :def {:ns ns-text, :kind :def, :extra (:extra bookmark)}
-         (do (println "Unknown" bookmark))))
-      (d! :states/clear nil))))
+(defn on-reset-expr [bookmark d!]
+  (let [kind (:kind bookmark), ns-text (:ns bookmark)]
+    (d!
+     :ir/reset-at
+     (case kind
+       :ns {:ns ns-text, :kind :ns}
+       :proc {:ns ns-text, :kind :proc}
+       :def {:ns ns-text, :kind :def, :extra (:extra bookmark)}
+       (do (println "Unknown" bookmark))))
+    (d! :states/clear nil)))
 
 (def style-hint {:color (hsl 0 0 100 0.6), :font-family ui/font-fancy})
 
@@ -77,7 +76,17 @@
        state (:data states)
        old-name (if (= :def (:kind bookmark))
                   (str (:ns bookmark) "/" (:extra bookmark))
-                  (:ns bookmark))]
+                  (:ns bookmark))
+       confirm-delete-plugin (use-confirm
+                              (>> states :delete)
+                              {:text (str
+                                      "Confirm deleting current path: "
+                                      (:ns bookmark)
+                                      "/"
+                                      (or (:extra bookmark) (:kind bookmark)))})
+       confirm-reset-plugin (use-confirm
+                             (>> states :reset)
+                             {:text "Confirm reset changes to this expr?"})]
    (div
     {:style style-status}
     (div
@@ -101,23 +110,22 @@
      (=< 16 nil)
      (if (= :same (:changed router-data))
        (<> (str (:changed router-data)) {:font-family ui/font-fancy, :color (hsl 260 80 70)})
-       (comp-confirm
-        (>> states :reset)
-        {:trigger (<> "Reset" style-link), :text "Confirm reset changes to this expr?"}
-        (on-reset-expr bookmark)))
+       (span
+        {:style style-link,
+         :inner-text "Reset",
+         :on-click (fn [e d!]
+           ((:show confirm-reset-plugin) d! (fn [] (on-reset-expr bookmark d!))))}))
      (=< 8 nil)
-     (comp-confirm
-      (>> states :delete)
-      {:trigger (span {:inner-text "Delete", :style style-link}),
-       :text (str
-              "Confirm deleting current path: "
-              (:ns bookmark)
-              "/"
-              (or (:extra bookmark) (:kind bookmark)))}
-      (fn [e d!]
-        (if (some? bookmark)
-          (d! :ir/delete-entry (dissoc bookmark :focus))
-          (js/console.warn "No entry to delete"))))
+     (span
+      {:inner-text "Delete",
+       :style style-link,
+       :on-click (fn [e d!]
+         ((:show confirm-delete-plugin)
+          d!
+          (fn []
+            (if (some? bookmark)
+              (d! :ir/delete-entry (dissoc bookmark :focus))
+              (js/console.warn "No entry to delete")))))})
      (=< 8 nil)
      (comp-prompt
       (>> states :rename)
@@ -153,7 +161,9 @@
           (d! :ir/expr-replace {:bookmark bookmark, :from from, :to to}))))
      (=< 8 nil)
      (span {:inner-text "Exporting", :style style-link, :on-click (on-path-gen! bookmark)}))
-    (div {:style ui/row} (comp-theme-menu (>> states :theme) theme)))))
+    (div {:style ui/row} (comp-theme-menu (>> states :theme) theme))
+    (:ui confirm-delete-plugin)
+    (:ui confirm-reset-plugin))))
 
 (def initial-state {:draft-box? false})
 
