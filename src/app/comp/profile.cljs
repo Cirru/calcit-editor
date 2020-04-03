@@ -9,7 +9,7 @@
             [app.style :as style]
             [app.config :as config]
             [feather.core :refer [comp-i comp-icon]]
-            [respo-alerts.core :refer [comp-prompt]]))
+            [respo-alerts.core :refer [use-prompt]]))
 
 (defn on-log-out [e dispatch!]
   (dispatch! :user/log-out nil)
@@ -25,19 +25,22 @@
 (defcomp
  comp-profile
  (states user)
- (div
-  {:style (merge ui/flex style-profile)}
-  (div
-   {}
-   (<> (str "Hello! " (:nickname user)) style-greet)
-   (=< 4 nil)
-   (comp-prompt
-    (>> states :rename)
-    {:trigger (comp-i :edit-2 14 (hsl 0 0 40)),
-     :initial (:nickname user),
-     :text "Pick a nickname:"}
-    (fn [result d!] (d! :user/nickname (string/trim result))))
-   (=< 8 nil)
-   (<> (str "id: " (:name user)) style-id))
-  (=< nil 80)
-  (div {} (button {:inner-text "Log out", :style style/button, :on {:click on-log-out}}))))
+ (let [rename-plugin (use-prompt
+                      (>> states :rename)
+                      {:initial (:nickname user), :text "Pick a nickname:"})]
+   (div
+    {:style (merge ui/flex style-profile)}
+    (div
+     {}
+     (<> (str "Hello! " (:nickname user)) style-greet)
+     (=< 4 nil)
+     (comp-icon
+      :edit-2
+      {:font-size 14, :color (hsl 0 0 40), :cursor :pointer}
+      (fn [e d!]
+        ((:show rename-plugin) d! (fn [result] (d! :user/nickname (string/trim result))))))
+     (=< 8 nil)
+     (<> (str "id: " (:name user)) style-id))
+    (=< nil 80)
+    (div {} (button {:inner-text "Log out", :style style/button, :on {:click on-log-out}}))
+    (:ui rename-plugin))))

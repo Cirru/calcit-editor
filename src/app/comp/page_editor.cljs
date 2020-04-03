@@ -17,7 +17,7 @@
             [app.comp.peek-def :refer [comp-peek-def]]
             [app.util :refer [tree->cirru]]
             [app.util.dom :refer [do-copy-logics!]]
-            [respo-alerts.core :refer [comp-prompt use-confirm]]))
+            [respo-alerts.core :refer [use-confirm use-prompt]]))
 
 (defn on-draft-box [state cursor]
   (fn [e d!]
@@ -86,7 +86,20 @@
                                       (or (:extra bookmark) (:kind bookmark)))})
        confirm-reset-plugin (use-confirm
                              (>> states :reset)
-                             {:text "Confirm reset changes to this expr?"})]
+                             {:text "Confirm reset changes to this expr?"})
+       rename-plugin (use-prompt
+                      (>> states :rename)
+                      {:text (str "Renaming: " old-name), :initial old-name})
+       add-plugin (use-prompt
+                   (>> states :add)
+                   {:text (str "Add function name:"), :initial ""})
+       replace-plugin (use-prompt
+                       (>> states :replace)
+                       {:text "Replace in current branch:",
+                        :initial "from=>to",
+                        :validator (fn [x]
+                          (if (= 2 (count (string/split x "=>"))) nil "Expected {from}=>{to}")),
+                        :input-style {:font-family ui/font-code}})]
    (div
     {:style style-status}
     (div
@@ -127,43 +140,44 @@
               (d! :ir/delete-entry (dissoc bookmark :focus))
               (js/console.warn "No entry to delete")))))})
      (=< 8 nil)
-     (comp-prompt
-      (>> states :rename)
-      {:trigger (span {:inner-text "Rename", :style style-link}),
-       :text (str "Renaming: " old-name),
-       :initial old-name}
-      (fn [result d!] (on-rename-def result bookmark d!)))
+     (span
+      {:inner-text "Rename",
+       :style style-link,
+       :on-click (fn [e d!]
+         ((:show rename-plugin) d! (fn [result] (on-rename-def result bookmark d!))))})
      (=< 8 nil)
-     (comp-prompt
-      (>> states :add)
-      {:trigger (span {:inner-text "Add", :style style-link}),
-       :text (str "Add function name:"),
-       :initial ""}
-      (fn [result d!]
-        (let [text (string/trim result)]
-          (when-not (string/blank? text)
-            (d! :ir/add-def text)
-            (d! :writer/edit {:kind :def, :extra text})))))
+     (span
+      {:inner-text "Add",
+       :style style-link,
+       :on-click (fn [e d!]
+         ((:show add-plugin)
+          d!
+          (fn [result]
+            (let [text (string/trim result)]
+              (when-not (string/blank? text)
+                (d! :ir/add-def text)
+                (d! :writer/edit {:kind :def, :extra text}))))))})
      (=< 8 nil)
      (span
       {:inner-text "Draft-box", :style style-link, :on-click (on-draft-box state cursor)})
      (=< 8 nil)
-     (comp-prompt
-      (>> states :replace)
-      {:trigger (span {:inner-text "Replace", :style style-link}),
-       :text "Replace in current branch:",
-       :initial "from=>to",
-       :validator (fn [x]
-         (if (= 2 (count (string/split x "=>"))) nil "Expected {from}=>{to}")),
-       :input-style {:font-family ui/font-code}}
-      (fn [result d!]
-        (let [[from to] (string/split result "=>")]
-          (d! :ir/expr-replace {:bookmark bookmark, :from from, :to to}))))
+     (span
+      {:inner-text "Replace",
+       :style style-link,
+       :on-click (fn [e d!]
+         ((:show replace-plugin)
+          d!
+          (fn [result]
+            (let [[from to] (string/split result "=>")]
+              (d! :ir/expr-replace {:bookmark bookmark, :from from, :to to})))))})
      (=< 8 nil)
      (span {:inner-text "Exporting", :style style-link, :on-click (on-path-gen! bookmark)}))
     (div {:style ui/row} (comp-theme-menu (>> states :theme) theme))
     (:ui confirm-delete-plugin)
-    (:ui confirm-reset-plugin))))
+    (:ui confirm-reset-plugin)
+    (:ui rename-plugin)
+    (:ui add-plugin)
+    (:ui replace-plugin))))
 
 (def initial-state {:draft-box? false})
 

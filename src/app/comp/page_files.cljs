@@ -11,7 +11,7 @@
             [keycode.core :as keycode]
             [app.comp.file-replacer :refer [comp-file-replacer]]
             [app.util.shortcuts :refer [on-window-keydown]]
-            [respo-alerts.core :refer [comp-prompt use-prompt use-confirm]]
+            [respo-alerts.core :refer [use-prompt use-confirm]]
             [feather.core :refer [comp-icon comp-i]])
   (:require-macros [clojure.core.strint :refer [<<]]))
 
@@ -35,7 +35,12 @@
 (defcomp
  comp-file
  (states selected-ns defs-set highlights)
- (let [cursor (:cursor states), state (or (:data states) {:def-text ""})]
+ (let [cursor (:cursor states)
+       state (or (:data states) {:def-text ""})
+       duplicate-plugin (use-prompt
+                         (>> states :duplicate)
+                         {:initial selected-ns, :text "a namespace:"})
+       add-plugin (use-prompt (>> states :add) {:text "New definition:"})]
    (div
     {:style style-file}
     (div
@@ -46,15 +51,16 @@
       {:inner-text "Draft",
        :style style/button,
        :on-click (fn [e d!] (d! :writer/draft-ns selected-ns))})
-     (comp-prompt
-      (>> states :duplicate)
-      {:trigger (span {:inner-text "Clone", :style style/button}),
-       :initial selected-ns,
-       :text "a namespace:"}
-      (fn [result d!]
-        (if (string/includes? result ".")
-          (d! :ir/clone-ns result)
-          (d! :notify/push-message [:warn (str "Not a good name: " result)])))))
+     (span
+      {:inner-text "Clone",
+       :style style/button,
+       :on-click (fn [e d!]
+         ((:show duplicate-plugin)
+          d!
+          (fn [result]
+            (if (string/includes? result ".")
+              (d! :ir/clone-ns result)
+              (d! :notify/push-message [:warn (str "Not a good name: " result)])))))}))
     (div
      {}
      (span
@@ -67,12 +73,15 @@
        :style style-link,
        :on-click (fn [e d!] (d! :writer/edit {:kind :proc}))})
      (=< 16 nil)
-     (comp-prompt
-      (>> states :add)
-      {:trigger (comp-i :plus 14 (hsl 0 0 70)), :text "New definition:"}
-      (fn [result d!]
-        (let [text (string/trim result)]
-          (when-not (string/blank? text) (d! :ir/add-def text))))))
+     (comp-icon
+      :plus
+      {:font-size 14, :color (hsl 0 0 70), :cursor :pointer}
+      (fn [e d!]
+        ((:show add-plugin)
+         d!
+         (fn [result]
+           (let [text (string/trim result)]
+             (when-not (string/blank? text) (d! :ir/add-def text))))))))
     (comment
      div
      {}
@@ -111,7 +120,9 @@
                    :on-click (fn [e d!]
                      ((:show confirm-remove-plugin) d! (fn [] (d! :ir/remove-def def-text))))}
                   (comp-i :x 12 (hsl 0 0 80 0.5)))
-                 (:ui confirm-remove-plugin)))])))))))
+                 (:ui confirm-remove-plugin)))]))))
+    (:ui duplicate-plugin)
+    (:ui add-plugin))))
 
 (def style-ns
   {:cursor :pointer,
