@@ -9,10 +9,6 @@
             [app.style :as style]
             [app.comp.changed-info :refer [comp-changed-info]]))
 
-(defn on-reset [e d!] (d! :ir/reset-files nil) (d! :states/clear nil))
-
-(defn on-save [e d!] (d! :effect/save-files nil))
-
 (def style-column {:overflow :auto, :padding-bottom 120})
 
 (def style-nothing {:font-family "Josefin Sans", :color (hsl 0 0 100 0.5)})
@@ -29,8 +25,14 @@
    (->> changed-files
         (map (fn [entry] (let [[k info] entry] [k (comp-changed-info info k)])))))
   (if (empty? changed-files)
-    (div {:style style-nothing} (<> "No changes" nil))
+    (div {:style style-nothing} (<> "No changes"))
     (div
      {}
-     (a {:inner-text "Save", :style style/button, :on-click on-save})
-     (a {:inner-text "Reset", :style style/button, :on-click on-reset})))))
+     (a
+      {:inner-text "Save",
+       :style style/button,
+       :on-click (fn [e d!] (d! :effect/save-files nil))})
+     (a
+      {:inner-text "Reset",
+       :style style/button,
+       :on-click (fn [e d!] (d! :ir/reset-files nil) (d! :states/clear nil))})))))
