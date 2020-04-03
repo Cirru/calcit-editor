@@ -5,8 +5,8 @@
             [respo.core :refer [defcomp >> <> span div a]]
             [respo.comp.space :refer [=<]]
             [app.util.dom :refer [focus-search!]]
-            [feather.core :refer [comp-i]]
-            [respo-alerts.core :refer [comp-prompt]]))
+            [feather.core :refer [comp-icon]]
+            [respo-alerts.core :refer [use-prompt]]))
 
 (def style-entry
   {:cursor :pointer,
@@ -38,46 +38,55 @@
 (defcomp
  comp-header
  (states router-name logged-in? stats)
- (div
-  {:style (merge ui/row-center style-header)}
-  (div
-   {:style ui/row-center}
-   (render-entry "Files" :files router-name (fn [e d!] (d! :router/change {:name :files})))
-   (render-entry
-    "Editor"
-    :editor
-    router-name
-    (fn [e d!] (d! :router/change {:name :editor})))
-   (render-entry
-    "Search"
-    :search
-    router-name
-    (fn [e d!] (d! :router/change {:name :search}) (focus-search!)))
-   (render-entry "REPL" :repl router-name (fn [e d!] (d! :router/change {:name :repl})))
-   (render-entry
-    (str "Members:" (:members-count stats))
-    :members
-    router-name
-    (fn [e d!] (d! :router/change {:name :members})))
-   (a
-    {:href "http://snippets.cirru.org", :target "_blank", :style style-entry}
-    (<> "Snippets" style-link)
-    (<> "↗" {:font-family ui/font-code}))
-   (a
-    {:href "https://github.com/Cirru/calcit-editor/wiki/Keyboard-Shortcuts",
-     :target "_blank",
-     :style style-entry}
-    (<> "Shortcuts" style-link)
-    (<> "↗" {:font-family ui/font-code})))
-  (div
-   {:style ui/row-middle}
-   (comp-prompt
-    (>> states :broadcast)
-    {:trigger (comp-i :radio 18 (hsl 200 80 70 0.6)), :text "Message to broadcast"}
-    (fn [result d!] (if (some? result) (d! :notify/broadcast result))))
-   (=< 12 nil)
-   (render-entry
-    (if logged-in? "Profile" "Guest")
-    :profile
-    router-name
-    (fn [e d!] (d! :router/change {:name :profile, :data nil, :router nil}))))))
+ (let [broadcast-plugin (use-prompt (>> states :broadcast) {:text "Message to broadcast"})]
+   (div
+    {:style (merge ui/row-center style-header)}
+    (div
+     {:style ui/row-center}
+     (render-entry
+      "Files"
+      :files
+      router-name
+      (fn [e d!] (d! :router/change {:name :files})))
+     (render-entry
+      "Editor"
+      :editor
+      router-name
+      (fn [e d!] (d! :router/change {:name :editor})))
+     (render-entry
+      "Search"
+      :search
+      router-name
+      (fn [e d!] (d! :router/change {:name :search}) (focus-search!)))
+     (render-entry "REPL" :repl router-name (fn [e d!] (d! :router/change {:name :repl})))
+     (render-entry
+      (str "Members:" (:members-count stats))
+      :members
+      router-name
+      (fn [e d!] (d! :router/change {:name :members})))
+     (a
+      {:href "http://snippets.cirru.org", :target "_blank", :style style-entry}
+      (<> "Snippets" style-link)
+      (<> "↗" {:font-family ui/font-code}))
+     (a
+      {:href "https://github.com/Cirru/calcit-editor/wiki/Keyboard-Shortcuts",
+       :target "_blank",
+       :style style-entry}
+      (<> "Shortcuts" style-link)
+      (<> "↗" {:font-family ui/font-code})))
+    (div
+     {:style ui/row-middle}
+     (comp-icon
+      :radio
+      {:font-size 18, :color (hsl 200 80 70 0.6), :cursor :pointer}
+      (fn [e d!]
+        ((:show broadcast-plugin)
+         d!
+         (fn [result] (if (some? result) (d! :notify/broadcast result))))))
+     (:ui broadcast-plugin)
+     (=< 12 nil)
+     (render-entry
+      (if logged-in? "Profile" "Guest")
+      :profile
+      router-name
+      (fn [e d!] (d! :router/change {:name :profile, :data nil, :router nil})))))))
