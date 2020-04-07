@@ -62,7 +62,7 @@
            (div {} (<> (str "404 page: " (pr-str router)))))
          (if (= :watching (:name router))
            (comp-watching (>> states :watching) (:data router) (:theme session))
-           (comp-login states))))
+           (comp-login (>> states :login)))))
       (when dev? (comp-inspect "Session" store style-inspector))
       (comment
        when
