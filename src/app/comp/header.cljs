@@ -83,10 +83,10 @@
         ((:show broadcast-plugin)
          d!
          (fn [result] (if (some? result) (d! :notify/broadcast result))))))
-     (:ui broadcast-plugin)
      (=< 12 nil)
      (render-entry
       (if logged-in? "Profile" "Guest")
       :profile
       router-name
-      (fn [e d!] (d! :router/change {:name :profile, :data nil, :router nil})))))))
+      (fn [e d!] (d! :router/change {:name :profile, :data nil, :router nil}))))
+    (:ui broadcast-plugin))))
