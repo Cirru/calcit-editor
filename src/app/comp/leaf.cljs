@@ -50,7 +50,7 @@
         (and meta? (= code keycode/d))
           (do
            (.preventDefault event)
-           (if (contains? #{"\"" "|"} (first (:text leaf)))
+           (if (->> ["\"" "|" "#\""] (some (fn [x] (string/starts-with? (:text leaf) x))))
              (do
               (d! :manual-state/draft-box nil)
               (js/setTimeout
