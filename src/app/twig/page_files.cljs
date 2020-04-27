@@ -39,6 +39,9 @@
   :defs-set (if (some? selected-ns)
     (do (->> (get-in files [selected-ns :defs]) (keys) (into #{})))
     #{}),
+  :file-configs (if (some? selected-ns)
+    (do (println (get-in files [selected-ns :configs])) (get-in files [selected-ns :configs]))
+    nil),
   :changed-files (render-changed-files files saved-files),
   :peeking-file (if (some? draft-ns) (file->cirru (get files draft-ns)) nil),
   :highlights (->> sessions

@@ -195,6 +195,15 @@
         data-path (bookmark->path bookmark)]
     (update-in db data-path (fn [expr] (call-replace-expr expr from to)))))
 
+(defn file-config [db op-data sid op-id op-time]
+  (let [ns-text (get-in db [:sessions sid :writer :selected-ns])]
+    (if (some? ns-text)
+      (update-in
+       db
+       [:ir :files ns-text :configs]
+       (fn [configs] (println println configs op-data) (merge configs op-data)))
+      db)))
+
 (defn indent [db op-data session-id op-id op-time]
   (let [writer (get-in db [:sessions session-id :writer])
         {stack :stack, pointer :pointer} writer

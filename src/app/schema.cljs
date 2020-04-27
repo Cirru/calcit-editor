@@ -17,7 +17,7 @@
 
 (def expr {:type :expr, :by nil, :at nil, :data {}, :id nil})
 
-(def file {:ns {}, :defs {}, :proc {}})
+(def file {:ns {}, :defs {}, :proc {}, :configs {}})
 
 (def leaf {:type :leaf, :by nil, :at nil, :text "", :id nil})
 
