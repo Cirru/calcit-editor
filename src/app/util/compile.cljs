@@ -51,13 +51,19 @@
          filter-by-ns (fn [xs]
                         (if (some? filter-ns)
                           (if (contains? xs filter-ns) (list filter-ns) nil)
-                          xs))]
+                          xs))
+         get-ext (fn [file]
+                   (let [local-ext (-> file :configs :extension)]
+                     (if (some? local-ext) (str "." (name local-ext)) extension)))]
      (doseq [ns-text (filter-by-ns added-names)]
-       (create-file! (ns->path ns-text extension) (get new-files ns-text) output-dir))
+       (let [file (get new-files ns-text)]
+         (create-file! (ns->path ns-text (get-ext file)) file output-dir)))
      (doseq [ns-text (filter-by-ns removed-names)]
-       (remove-file! (ns->path ns-text extension) output-dir))
+       (let [file (get new-files ns-text)]
+         (remove-file! (ns->path ns-text (get-ext file)) output-dir)))
      (doseq [ns-text (filter-by-ns changed-names)]
-       (modify-file! (ns->path ns-text extension) (get new-files ns-text) output-dir))
+       (let [file (get new-files ns-text)]
+         (modify-file! (ns->path ns-text (get-ext file)) file output-dir)))
      (dispatch! :writer/save-files filter-ns)
      (if save-ir?
        (js/setTimeout

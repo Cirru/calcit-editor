@@ -11,9 +11,14 @@
             [keycode.core :as keycode]
             [app.comp.file-replacer :refer [comp-file-replacer]]
             [app.util.shortcuts :refer [on-window-keydown]]
-            [respo-alerts.core :refer [use-prompt use-confirm]]
+            [respo-alerts.core :refer [use-prompt use-confirm comp-select]]
             [feather.core :refer [comp-icon comp-i]])
   (:require-macros [clojure.core.strint :refer [<<]]))
+
+(def extension-options
+  [{:value :cljs, :display "cljs"}
+   {:value :cljc, :display "cljc"}
+   {:value :clj, :display "clj"}])
 
 (def style-def {:padding "0 8px", :position :relative, :color (hsl 0 0 80)})
 
@@ -34,7 +39,7 @@
 
 (defcomp
  comp-file
- (states selected-ns defs-set highlights)
+ (states selected-ns defs-set highlights configs)
  (let [cursor (:cursor states)
        state (or (:data states) {:def-text ""})
        duplicate-plugin (use-prompt
@@ -46,6 +51,14 @@
     (div
      {}
      (<> "File" style/title)
+     (=< 8 nil)
+     (comp-select
+      (>> states :extension)
+      (or (:extension configs) :cljs)
+      extension-options
+      {:text "Select extension",
+       :style-trigger {:font-family ui/font-normal, :font-size 12}}
+      (fn [result d!] (d! :ir/file-config {:extension result})))
      (=< 16 nil)
      (span
       {:inner-text "Draft",
@@ -223,7 +236,12 @@
     (comp-namespace-list (>> states :ns) (:ns-set router-data) selected-ns ns-highlights)
     (=< 32 nil)
     (if (some? selected-ns)
-      (comp-file (>> states selected-ns) selected-ns (:defs-set router-data) highlights)
+      (comp-file
+       (>> states selected-ns)
+       selected-ns
+       (:defs-set router-data)
+       highlights
+       (:file-configs router-data))
       (render-empty))
     (=< 32 nil)
     (comp-changed-files (>> states :files) (:changed-files router-data))
