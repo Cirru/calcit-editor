@@ -59,11 +59,15 @@
        (let [file (get new-files ns-text)]
          (create-file! (ns->path ns-text (get-ext file)) file output-dir)))
      (doseq [ns-text (filter-by-ns removed-names)]
-       (let [file (get new-files ns-text)]
+       (let [file (get old-files ns-text)]
          (remove-file! (ns->path ns-text (get-ext file)) output-dir)))
      (doseq [ns-text (filter-by-ns changed-names)]
-       (let [file (get new-files ns-text)]
-         (modify-file! (ns->path ns-text (get-ext file)) file output-dir)))
+       (let [file (get new-files ns-text), old-file (get old-files ns-text)]
+         (if (= (-> file :configs :extension) (-> old-file :configs :extension))
+           (modify-file! (ns->path ns-text (get-ext file)) file output-dir)
+           (do
+            (remove-file! (ns->path ns-text (get-ext old-file)) output-dir)
+            (create-file! (ns->path ns-text (get-ext file)) file output-dir)))))
      (dispatch! :writer/save-files filter-ns)
      (if save-ir?
        (js/setTimeout
