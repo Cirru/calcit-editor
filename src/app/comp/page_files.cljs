@@ -218,9 +218,10 @@
                ns-highlights)]))))
     (:ui plugin-add-ns))))
 
-(def style-empty {:width 280})
-
-(defn render-empty [] (div {:style style-empty} (<> "Empty" nil)))
+(defn render-empty []
+  (div
+   {:style {:width 280, :font-family ui/font-fancy, :color (hsl 0 0 100 0.5)}}
+   (<> "Empty" nil)))
 
 (def style-inspect {:opacity 1, :background-color (hsl 0 0 100), :color :black})
 

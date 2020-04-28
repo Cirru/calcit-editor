@@ -198,10 +198,7 @@
 (defn file-config [db op-data sid op-id op-time]
   (let [ns-text (get-in db [:sessions sid :writer :selected-ns])]
     (if (some? ns-text)
-      (update-in
-       db
-       [:ir :files ns-text :configs]
-       (fn [configs] (println println configs op-data) (merge configs op-data)))
+      (update-in db [:ir :files ns-text :configs] (fn [configs] (merge configs op-data)))
       db)))
 
 (defn indent [db op-data session-id op-id op-time]
@@ -281,7 +278,11 @@
     (update-in db [:ir :files selected-ns :defs] (fn [defs] (dissoc defs op-data)))))
 
 (defn remove-ns [db op-data session-id op-id op-time]
-  (-> db (update-in [:ir :files] (fn [files] (dissoc files op-data)))))
+  (-> db
+      (update-in [:ir :files] (fn [files] (dissoc files op-data)))
+      (update-in
+       [:sessions session-id :writer :selected-ns]
+       (fn [x] (if (= x op-data) nil x)))))
 
 (defn rename [db op-data session-id op-id op-time]
   (let [{kind :kind, ns-info :ns, extra-info :extra} op-data
