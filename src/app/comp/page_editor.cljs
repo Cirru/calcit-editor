@@ -247,7 +247,6 @@
           {:style style-area}
           (inject-style ".cirru-expr" (base-style-expr theme))
           (inject-style ".cirru-leaf" (base-style-leaf theme))
-          (if picker-mode? element-picker-notice)
           (if (some? expr)
             (comp-expr
              (>> states (:id expr))
@@ -268,4 +267,5 @@
        (if (:draft-box? state)
          (comp-draft-box (>> states :draft-box) expr focus close-draft-box!))
        (if (:abstract? state) (comp-abstract (>> states :abstract) close-abstract!))
-       (comment comp-inspect "Expr" router-data style/inspector))))))
+       (comment comp-inspect "Expr" router-data style/inspector)))
+    (if picker-mode? element-picker-notice))))
