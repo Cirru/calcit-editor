@@ -68,6 +68,19 @@
        (fn [defs]
          (->> defs (map (fn [entry] (let [[k xs] entry] [k (tree->cirru xs)]))) (into {}))))))
 
+(defn file-tree->cirru [file]
+  (-> file
+      (update :ns tree->cirru)
+      (update :proc tree->cirru)
+      (update
+       :defs
+       (fn [defs]
+         (->> defs
+              (map
+               (fn [entry]
+                 (let [[def-text def-tree] entry] [def-text (tree->cirru def-tree)])))
+              (into {}))))))
+
 (defn find-first [f xs] (reduce (fn [_ x] (when (f x) (reduced x))) nil xs))
 
 (defn leaf? [x] (= :leaf (:type x)))
@@ -123,6 +136,18 @@
 
 (defn same-buffer? [x y]
   (and (= (:kind x) (:kind y)) (= (:ns x) (:ns y)) (= (:extra x) (:extra y))))
+
+(defn stringify-s-expr [x]
+  (if (vector? x)
+    (str
+     "("
+     (string/join
+      " "
+      (map
+       (fn [y]
+         (if (vector? y) (stringify-s-expr y) (if (string/includes? y " ") (pr-str y) y)))
+       x))
+     ")")))
 
 (defn to-bookmark [writer] (get (:stack writer) (:pointer writer)))
 

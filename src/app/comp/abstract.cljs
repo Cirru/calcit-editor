@@ -25,7 +25,9 @@
        :on-input (fn [e d!] (d! cursor (:value e))),
        :on-keydown (fn [e d!]
          (cond
-           (= keycode/return (:key-code e))
+           (=
+            keycode/return
+            (((cursor (:cursor states)) (state (or (:data states) "style-"))) e))
              (if (not (string/blank? state))
                (do (d! :analyze/abstract-def state) (d! cursor nil) (close-modal! d!)))
            (= (:keycode e) keycode/escape) (close-modal! d!)))})

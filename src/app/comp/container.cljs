@@ -54,6 +54,7 @@
               (:stack writer)
               (:data router)
               (:pointer writer)
+              (some? (:picker-mode writer))
               theme)
            :members (comp-page-members (:data router) (:id session))
            :search (comp-search (>> states :search) (:data router))

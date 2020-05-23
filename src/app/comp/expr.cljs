@@ -67,7 +67,7 @@
 
 (defcomp
  comp-expr
- (states expr focus coord others tail? after-expr? readonly? theme depth)
+ (states expr focus coord others tail? after-expr? readonly? picker-mode? theme depth)
  (let [focused? (= focus coord)
        first-id (apply min (keys (:data expr)))
        last-id (apply max (keys (:data expr)))
@@ -87,8 +87,14 @@
              depth
              theme),
      :on (if readonly?
-       {}
-       {:keydown (on-keydown coord expr), :click (fn [e d!] (d! :writer/focus coord))})}
+       {:click (fn [e d!]
+          (if picker-mode?
+            (do (.preventDefault (:event e)) (d! :writer/pick-node (tree->cirru expr)))))}
+       {:keydown (on-keydown coord expr),
+        :click (fn [e d!]
+          (if picker-mode?
+            (do (.preventDefault (:event e)) (d! :writer/pick-node (tree->cirru expr)))
+            (d! :writer/focus coord)))})}
     (loop [result [], children sorted-children, info default-info]
       (if (empty? children)
         result
@@ -112,6 +118,7 @@
                 (contains? partial-others child-coord)
                 (= first-id k)
                 readonly?
+                picker-mode?
                 theme)
                (comp-expr
                 (>> states cursor-key)
@@ -122,6 +129,7 @@
                 (= last-id k)
                 (:after-expr? info)
                 readonly?
+                picker-mode?
                 theme
                 (inc depth)))])
            (rest children)
