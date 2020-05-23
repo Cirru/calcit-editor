@@ -13,7 +13,7 @@
     [respo/alerts "0.5.1"]
     [respo/feather "0.1.1"]
     [cumulo/recollect "0.5.0"]
-    [cumulo/util "0.1.10"]
+    [cumulo/util "0.1.11-a1"]
     [fipp "0.6.23"]
     [cirru/sepal "0.2.7"]
     [cirru/bisection-key "0.1.5"]
@@ -41,7 +41,9 @@
     }
     :server {
       :target :node-script, :output-to "target/server.js", :main app.server/main!
-      :devtools {:after-load app.server/reload!}
+      :devtools {:after-load app.server/reload!,
+                 :build-notify cumulo-util.build-info/on-build!
+                 :preloads [cumulo-util.build-info]}
       :compiler-options {:infer-externs :auto}
       :release {:output-to "dist/server.js"}
     }
