@@ -41,4 +41,5 @@
         (and meta? (= code keycode/k)) (do (dispatch! :writer/finish nil))
         (and meta? (= code keycode/s))
           (do (.preventDefault event) (dispatch! :effect/save-files nil))
-        (and meta? shift? (= code keycode/f)) (dispatch! :router/change {:name :files})))))
+        (and meta? shift? (= code keycode/f)) (dispatch! :router/change {:name :files})
+        (and meta? (not shift?) (= code keycode/period)) (dispatch! :writer/picker-mode)))))

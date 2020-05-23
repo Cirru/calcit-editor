@@ -52,6 +52,7 @@
             false
             false
             readonly?
+            false
             (or theme :star-trail)
             0)))
         (=< nil 16)

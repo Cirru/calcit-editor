@@ -40,6 +40,8 @@
             :writer/finish writer/finish
             :writer/draft-ns writer/draft-ns
             :writer/hide-peek writer/hide-peek
+            :writer/picker-mode writer/picker-mode
+            :writer/pick-node writer/pick-node
             :ir/add-ns ir/add-ns
             :ir/add-def ir/add-def
             :ir/remove-def ir/remove-def

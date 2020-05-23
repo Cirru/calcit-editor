@@ -13,7 +13,11 @@
 
 (def initial-state {:text "", :at 0})
 
-(defn on-focus [coord] (fn [e d!] (d! :writer/focus coord)))
+(defn on-focus [leaf coord picker-mode?]
+  (fn [e d!]
+    (if picker-mode?
+      (do (.preventDefault (:event e)) (d! :writer/pick-node leaf))
+      (d! :writer/focus coord))))
 
 (defn on-input [state coord cursor]
   (fn [e d!]
@@ -58,7 +62,7 @@
                  (let [el (.querySelector js/document ".el-draft-box")]
                    (if (some? el) (.focus el))))))
              (d! :analyze/goto-def {:text (:text leaf), :forced? shift?})))
-        (and meta? (= code keycode/slash))
+        (and meta? (= code keycode/slash) (not shift?))
           (do
            (.open
             js/window
@@ -70,7 +74,7 @@
 
 (defcomp
  comp-leaf
- (states leaf focus coord by-other? first? readonly? theme)
+ (states leaf focus coord by-other? first? readonly? picker-mode? theme)
  (let [cursor (:cursor states)
        state (or (:data states) initial-state)
        text (or (if (> (:at state) (:at leaf)) (:text state) (:text leaf)) "")
@@ -82,7 +86,7 @@
      :read-only readonly?,
      :style (decide-leaf-theme text focused? first? by-other? theme),
      :on (if readonly?
-       {}
-       {:click (on-focus coord),
+       {:click (on-focus leaf coord picker-mode?)}
+       {:click (on-focus leaf coord picker-mode?),
         :keydown (on-keydown state leaf coord),
         :input (on-input state coord cursor)})})))

@@ -179,6 +179,24 @@
     (:ui add-plugin)
     (:ui replace-plugin))))
 
+(def element-picker-notice
+  (div
+   {:style {:font-family ui/font-fancy,
+            :font-size 20,
+            :font-weight 300,
+            :color (hsl 0 0 80),
+            :padding "0px 16px",
+            :margin "8px 0",
+            :background-color (hsl 0 0 50 0.6),
+            :position :fixed,
+            :top 8,
+            :right 40,
+            :z-index 100,
+            :border-radius "80px",
+            :cursor :pointer},
+    :on-click (fn [e d!] (d! :writer/picker-mode nil))}
+   (<> "Picker mode: pick a target...")))
+
 (def initial-state {:draft-box? false})
 
 (def style-area {:overflow :auto, :padding-bottom 240, :padding-top 80, :flex 1})
@@ -199,11 +217,12 @@
 
 (defcomp
  comp-page-editor
- (states stack router-data pointer theme)
+ (states stack router-data pointer picker-mode? theme)
  (let [cursor (:cursor states)
        state (or (:data states) initial-state)
        bookmark (get stack pointer)
        expr (:expr router-data)
+       picker-ns (:picker-ns-expr router-data)
        focus (:focus router-data)
        readonly? false
        close-draft-box! (fn [d!] (d! cursor (assoc state :draft-box? false)))
@@ -228,6 +247,7 @@
           {:style style-area}
           (inject-style ".cirru-expr" (base-style-expr theme))
           (inject-style ".cirru-leaf" (base-style-leaf theme))
+          (if picker-mode? element-picker-notice)
           (if (some? expr)
             (comp-expr
              (>> states (:id expr))
@@ -238,6 +258,7 @@
              false
              false
              readonly?
+             picker-mode?
              theme
              0)
             ui-missing)))

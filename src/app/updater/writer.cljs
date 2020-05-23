@@ -170,6 +170,28 @@
       (-> db (assoc-in data-path (cirru->tree op-data user-id op-time)))
       db)))
 
+(defn pick-node [db op-data session-id op-id op-time]
+  (let [writer (get-in db [:sessions session-id :writer])
+        bookmark (:picker-mode writer)
+        data-path (bookmark->path bookmark)]
+    (println writer)
+    (println "bookmark" bookmark)
+    (println "data path" data-path)
+    (-> db
+        (assoc-in data-path op-data)
+        (update-in
+         [:sessions session-id :writer]
+         (fn [writer] (assoc writer :picker-mode nil))))))
+
+(defn picker-mode [db op-data session-id op-id op-time]
+  (update-in
+   db
+   [:sessions session-id :writer]
+   (fn [writer]
+     (if (some? (:picker-mode writer))
+       (dissoc writer :picker-mode)
+       (assoc writer :picker-mode (to-bookmark writer))))))
+
 (defn point-to [db op-data session-id op-id op-time]
   (assoc-in db [:sessions session-id :writer :pointer] op-data))
 
