@@ -7,7 +7,7 @@
             [respo.comp.inspect :refer [comp-inspect]]
             [respo.comp.space :refer [=<]]
             [app.style :as style]
-            [app.client-util :refer [stringify-s-expr tree->cirru]]
+            [app.util :refer [stringify-s-expr tree->cirru]]
             [feather.core :refer [comp-icon]]))
 
 (defcomp

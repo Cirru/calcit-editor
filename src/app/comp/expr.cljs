@@ -88,11 +88,12 @@
              theme),
      :on (if readonly?
        {:click (fn [e d!]
-          (if picker-mode? (do (.preventDefault (:event e)) (d! :writer/pick-node expr))))}
+          (if picker-mode?
+            (do (.preventDefault (:event e)) (d! :writer/pick-node (tree->cirru expr)))))}
        {:keydown (on-keydown coord expr),
         :click (fn [e d!]
           (if picker-mode?
-            (do (.preventDefault (:event e)) (d! :writer/pick-node expr))
+            (do (.preventDefault (:event e)) (d! :writer/pick-node (tree->cirru expr)))
             (d! :writer/focus coord)))})}
     (loop [result [], children sorted-children, info default-info]
       (if (empty? children)

@@ -8,7 +8,7 @@
             [respo.comp.space :refer [=<]]
             [app.comp.modal :refer [comp-modal]]
             [app.style :as style]
-            [app.client-util :refer [tree->cirru]]
+            [app.util :refer [tree->cirru]]
             [fipp.edn :refer [pprint]]
             [keycode.core :as keycode]))
 

@@ -3,7 +3,9 @@
   (:require [app.util :refer [bookmark->path to-writer to-bookmark push-info cirru->tree]]
             [app.util.stack :refer [push-bookmark]]
             [app.util.list :refer [dissoc-idx]]
-            [app.schema :as schema]))
+            [app.schema :as schema]
+            [app.util :refer [push-info]]
+            [app.util :refer [stringify-s-expr]]))
 
 (defn collapse [db op-data session-id op-id op-time]
   (-> db
@@ -170,18 +172,25 @@
       (-> db (assoc-in data-path (cirru->tree op-data user-id op-time)))
       db)))
 
-(defn pick-node [db op-data session-id op-id op-time]
-  (let [writer (get-in db [:sessions session-id :writer])
+(defn pick-node [db op-data sid op-id op-time]
+  (let [user-id (get-in db [:sessions sid :user-id])
+        writer (get-in db [:sessions sid :writer])
         bookmark (:picker-mode writer)
         data-path (bookmark->path bookmark)]
-    (println writer)
-    (println "bookmark" bookmark)
-    (println "data path" data-path)
     (-> db
-        (assoc-in data-path op-data)
+        (assoc-in data-path (cirru->tree op-data user-id op-time))
+        (update-in [:sessions sid :writer] (fn [writer] (assoc writer :picker-mode nil)))
         (update-in
-         [:sessions session-id :writer]
-         (fn [writer] (assoc writer :picker-mode nil))))))
+         [:sessions sid :notifications]
+         (push-info
+          op-id
+          op-time
+          (str
+           "picked "
+           (if (string? op-data)
+             op-data
+             (let [code (stringify-s-expr op-data)]
+               (if (> (count code) 40) (str (subs code 0 40) "...") code)))))))))
 
 (defn picker-mode [db op-data session-id op-id op-time]
   (update-in

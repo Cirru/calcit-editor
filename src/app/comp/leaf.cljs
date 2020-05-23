@@ -9,14 +9,15 @@
             [keycode.core :as keycode]
             [app.util :as util]
             [app.util.shortcuts :refer [on-window-keydown on-paste!]]
-            [app.theme :refer [decide-leaf-theme]]))
+            [app.theme :refer [decide-leaf-theme]]
+            [app.util :refer [tree->cirru]]))
 
 (def initial-state {:text "", :at 0})
 
 (defn on-focus [leaf coord picker-mode?]
   (fn [e d!]
     (if picker-mode?
-      (do (.preventDefault (:event e)) (d! :writer/pick-node leaf))
+      (do (.preventDefault (:event e)) (d! :writer/pick-node (tree->cirru leaf)))
       (d! :writer/focus coord))))
 
 (defn on-input [state coord cursor]

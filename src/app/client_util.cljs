@@ -10,24 +10,6 @@
 
 (defn expr? [x] (= :expr (:type x)))
 
-(defn tree->cirru [x]
-  (if (= :leaf (:type x))
-    (:text x)
-    (->> (:data x) (sort-by first) (map (fn [entry] (tree->cirru (val entry)))) (vec))))
-
-(defn file-tree->cirru [file]
-  (-> file
-      (update :ns tree->cirru)
-      (update :proc tree->cirru)
-      (update
-       :defs
-       (fn [defs]
-         (->> defs
-              (map
-               (fn [entry]
-                 (let [[def-text def-tree] entry] [def-text (tree->cirru def-tree)])))
-              (into {}))))))
-
 (defn leaf? [x] (= :leaf (:type x)))
 
 (defn parse-query! []
@@ -37,18 +19,6 @@
 (defn simple? [expr]
   (let [leaf? (fn [x] (= :leaf (:type x)))]
     (and (every? leaf? (vals (:data expr))) (<= (count (:data expr)) 6))))
-
-(defn stringify-s-expr [x]
-  (if (vector? x)
-    (str
-     "("
-     (string/join
-      " "
-      (map
-       (fn [y]
-         (if (vector? y) (stringify-s-expr y) (if (string/includes? y " ") (pr-str y) y)))
-       x))
-     ")")))
 
 (def ws-host
   (if (and (exists? js/location) (not (string/blank? (.-search js/location))))
