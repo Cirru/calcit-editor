@@ -17,7 +17,8 @@
             [app.comp.peek-def :refer [comp-peek-def]]
             [app.util :refer [tree->cirru]]
             [app.util.dom :refer [do-copy-logics!]]
-            [respo-alerts.core :refer [use-confirm use-prompt]]))
+            [respo-alerts.core :refer [use-confirm use-prompt]]
+            [app.comp.replace-name :refer [use-replace-name-modal]]))
 
 (defcomp
  comp-picker-notice
@@ -134,13 +135,19 @@
        add-plugin (use-prompt
                    (>> states :add)
                    {:text (str "Add function name:"), :initial ""})
-       replace-plugin (use-prompt
+       replace-plugin-old (use-prompt
+                           (>> states :replace)
+                           {:text "Replace in current branch:",
+                            :initial "from=>to",
+                            :validator (fn [x]
+                              (if (= 2 (count (string/split x "=>")))
+                                nil
+                                "Expected {from}=>{to}")),
+                            :input-style {:font-family ui/font-code}})
+       replace-plugin (use-replace-name-modal
                        (>> states :replace)
-                       {:text "Replace in current branch:",
-                        :initial "from=>to",
-                        :validator (fn [x]
-                          (if (= 2 (count (string/split x "=>"))) nil "Expected {from}=>{to}")),
-                        :input-style {:font-family ui/font-code}})]
+                       (fn [from to d!]
+                         (d! :ir/expr-replace {:bookmark bookmark, :from from, :to to})))]
    (div
     {:style style-status}
     (div
@@ -191,13 +198,12 @@
       {:inner-text "Add",
        :style style-link,
        :on-click (fn [e d!]
-         ((:show add-plugin)
-          d!
-          (fn [result]
-            (let [text (string/trim result)]
-              (when-not (string/blank? text)
-                (d! :ir/add-def text)
-                (d! :writer/edit {:kind :def, :extra text}))))))})
+         ((:show add-plugin) d!)
+         (fn [result]
+           (let [text (string/trim result)]
+             (when-not (string/blank? text)
+               (d! :ir/add-def text)
+               (d! :writer/edit {:kind :def, :extra text})))))})
      (=< 8 nil)
      (span
       {:inner-text "Draft-box", :style style-link, :on-click (on-draft-box state cursor)})
@@ -205,14 +211,14 @@
      (span
       {:inner-text "Replace",
        :style style-link,
-       :on-click (fn [e d!]
-         ((:show replace-plugin)
-          d!
-          (fn [result]
-            (let [[from to] (string/split result "=>")]
-              (d! :ir/expr-replace {:bookmark bookmark, :from from, :to to})))))})
+       :on-click (fn [e d!] ((:show replace-plugin)  d!))})
      (=< 8 nil)
-     (span {:inner-text "Exporting", :style style-link, :on-click (on-path-gen! bookmark)}))
+     (span {:inner-text "Exporting", :style style-link, :on-click (on-path-gen! bookmark)})
+     (=< 8 nil)
+     (span
+      {:inner-text "Picker-mode",
+       :style style-link,
+       :on-click (fn [e d!] (d! :writer/picker-mode nil))}))
     (div {:style ui/row} (comp-theme-menu (>> states :theme) theme))
     (:ui confirm-delete-plugin)
     (:ui confirm-reset-plugin)
