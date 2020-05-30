@@ -13,7 +13,7 @@
             [app.util :refer [tree->cirru]]
             [app.util.dom :refer [do-copy-logics!]]))
 
-(defn on-keydown [coord expr]
+(defn on-keydown [coord expr picker-mode?]
   (fn [e d!]
     (let [event (:original-event e)
           shift? (.-shiftKey event)
@@ -60,6 +60,7 @@
                  (let [el (.querySelector js/document ".el-abstract")]
                    (if (some? el) (.focus el)))))))
            (.preventDefault event))
+        (and picker-mode? (= code keycode/escape)) (d! :writer/picker-mode nil)
         :else
           (do
            (comment println "Keydown" (:key-code e))
@@ -90,7 +91,7 @@
        {:click (fn [e d!]
           (if picker-mode?
             (do (.preventDefault (:event e)) (d! :writer/pick-node (tree->cirru expr)))))}
-       {:keydown (on-keydown coord expr),
+       {:keydown (on-keydown coord expr picker-mode?),
         :click (fn [e d!]
           (if picker-mode?
             (do (.preventDefault (:event e)) (d! :writer/pick-node (tree->cirru expr)))

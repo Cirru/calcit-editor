@@ -19,6 +19,47 @@
             [app.util.dom :refer [do-copy-logics!]]
             [respo-alerts.core :refer [use-confirm use-prompt]]))
 
+(defcomp
+ comp-picker-notice
+ (choices)
+ (let [imported-names (:imported choices)
+       defined-names (:defined choices)
+       render-code (fn [x]
+                     (span
+                      {:inner-text x,
+                       :style {:font-family ui/font-code,
+                               :cursor :pointer,
+                               :font-size 11,
+                               :margin-right 3,
+                               :margin-bottom 3,
+                               :word-break :none,
+                               :line-height "14px",
+                               :background-color (hsl 0 0 30),
+                               :padding "1px 3px",
+                               :display :inline-block},
+                       :on-click (fn [e d!] (d! :writer/pick-node x))}))]
+   (div
+    {:style {:padding "4px 8px",
+             :margin "8px 0",
+             :background-color (hsl 0 0 30 0.5),
+             :position :fixed,
+             :top 8,
+             :right 20,
+             :z-index 100,
+             :border-radius "4px",
+             :max-width "32vw"}}
+    (div
+     {:style {:font-family ui/font-fancy,
+              :font-size 16,
+              :font-weight 300,
+              :color (hsl 0 0 80),
+              :cursor :pointer},
+      :on-click (fn [e d!] (d! :writer/picker-mode nil))}
+     (<> "Picker mode: pick a target..."))
+    (list-> {} (->> imported-names sort (map (fn [x] [x (render-code x)]))))
+    (=< nil 8)
+    (list-> {} (->> defined-names sort (map (fn [x] [x (render-code x)])))))))
+
 (defn on-draft-box [state cursor]
   (fn [e d!]
     (d! cursor (update state :draft-box? not))
@@ -179,24 +220,6 @@
     (:ui add-plugin)
     (:ui replace-plugin))))
 
-(def element-picker-notice
-  (div
-   {:style {:font-family ui/font-fancy,
-            :font-size 20,
-            :font-weight 300,
-            :color (hsl 0 0 80),
-            :padding "0px 16px",
-            :margin "8px 0",
-            :background-color (hsl 0 0 50 0.6),
-            :position :fixed,
-            :top 8,
-            :right 40,
-            :z-index 100,
-            :border-radius "80px",
-            :cursor :pointer},
-    :on-click (fn [e d!] (d! :writer/picker-mode nil))}
-   (<> "Picker mode: pick a target...")))
-
 (def initial-state {:draft-box? false})
 
 (def style-area {:overflow :auto, :padding-bottom 240, :padding-top 80, :flex 1})
@@ -222,7 +245,6 @@
        state (or (:data states) initial-state)
        bookmark (get stack pointer)
        expr (:expr router-data)
-       picker-ns (:picker-ns-expr router-data)
        focus (:focus router-data)
        readonly? false
        close-draft-box! (fn [d!] (d! cursor (assoc state :draft-box? false)))
@@ -268,4 +290,4 @@
          (comp-draft-box (>> states :draft-box) expr focus close-draft-box!))
        (if (:abstract? state) (comp-abstract (>> states :abstract) close-abstract!))
        (comment comp-inspect "Expr" router-data style/inspector)))
-    (if picker-mode? element-picker-notice))))
+    (if picker-mode? (comp-picker-notice (:picker-choices router-data))))))
