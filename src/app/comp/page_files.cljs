@@ -20,7 +20,7 @@
    {:value :cljc, :display "cljc"}
    {:value :clj, :display "clj"}])
 
-(def style-def {:padding "0 8px", :position :relative, :color (hsl 0 0 80)})
+(def style-def {:padding "0 8px", :position :relative, :color (hsl 0 0 74)})
 
 (def style-file {:width 280, :overflow :auto, :padding-bottom 120})
 
@@ -142,22 +142,25 @@
    :vertical-align :middle,
    :position :relative,
    :padding "0 8px",
-   :color (hsl 0 0 80)})
+   :color (hsl 0 0 74)})
 
 (defcomp
  comp-ns-entry
  (states ns-text selected? ns-highlights)
  (let [plugin-rm-ns (use-confirm
                      (>> states :rm-ns)
-                     {:text (<< "Sure to remove namespace: ~{ns-text} ?")})]
+                     {:text (<< "Sure to remove namespace: ~{ns-text} ?")})
+       has-highlight? (contains? ns-highlights ns-text)]
    (div
     {:class-name (if selected? "hoverable is-selected" "hoverable"),
-     :style (merge style-ns (if (contains? ns-highlights ns-text) {:color :white})),
+     :style (merge style-ns (if has-highlight? {:color :white})),
      :on-click (fn [e d!] (d! :session/select-ns ns-text))}
     (let [pieces (string/split ns-text ".")]
       (span
        {}
-       (<> (str (string/join "." (butlast pieces)) ".") {:color (hsl 0 0 50)})
+       (<>
+        (str (string/join "." (butlast pieces)) ".")
+        {:color (if has-highlight? (hsl 0 0 76) (hsl 0 0 50))})
        (<> (last pieces))))
     (span
      {:class-name "is-minor",
