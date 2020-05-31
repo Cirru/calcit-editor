@@ -5,6 +5,25 @@
             [app.twig.user :refer [twig-user]]
             [app.util.list :refer [compare-entry]]))
 
+(defn pick-from-ns [ns-info]
+  (let [var-names (set (keys (:defs ns-info)))
+        rules (->> (tree->cirru (:ns ns-info))
+                   (drop 2)
+                   (mapcat
+                    (fn [rule]
+                      (if (and (vector? rule)
+                               (contains? #{":require" ":require-macros"} (first rule)))
+                        (rest rule)
+                        nil))))
+        import-names (->> rules
+                          (mapcat
+                           (fn [rule]
+                             (filter
+                              (fn [x] (not= x "[]"))
+                              (if (string? (last rule)) (list (last rule)) (last rule)))))
+                          set)]
+    {:imported import-names, :defined var-names}))
+
 (deftwig
  twig-page-editor
  (files old-files sessions users writer session-id)
@@ -46,6 +65,8 @@
           :def (get-in files [ns-text :defs (:extra bookmark)])),
         :peek-def (let [peek-def (:peek-def writer)]
           (if (some? peek-def) (get-in files [(:ns peek-def) :defs (:def peek-def)]) nil)),
+        :picker-choices (if (some? (:picker-mode writer))
+          (pick-from-ns (get files (:ns bookmark)))),
         :changed (let [file (get files ns-text), old-file (get old-files ns-text)]
           (case (:kind bookmark)
             :ns (compare-entry (:ns file) (:ns old-file))

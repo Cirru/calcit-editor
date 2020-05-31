@@ -17,7 +17,49 @@
             [app.comp.peek-def :refer [comp-peek-def]]
             [app.util :refer [tree->cirru]]
             [app.util.dom :refer [do-copy-logics!]]
-            [respo-alerts.core :refer [use-confirm use-prompt]]))
+            [respo-alerts.core :refer [use-confirm use-prompt]]
+            [app.comp.replace-name :refer [use-replace-name-modal]]))
+
+(defcomp
+ comp-picker-notice
+ (choices)
+ (let [imported-names (:imported choices)
+       defined-names (:defined choices)
+       render-code (fn [x]
+                     (span
+                      {:inner-text x,
+                       :style {:font-family ui/font-code,
+                               :cursor :pointer,
+                               :font-size 11,
+                               :margin-right 3,
+                               :margin-bottom 3,
+                               :word-break :none,
+                               :line-height "14px",
+                               :background-color (hsl 0 0 30),
+                               :padding "1px 3px",
+                               :display :inline-block},
+                       :on-click (fn [e d!] (d! :writer/pick-node x))}))]
+   (div
+    {:style {:padding "4px 8px",
+             :margin "8px 0",
+             :background-color (hsl 0 0 30 0.5),
+             :position :fixed,
+             :top 8,
+             :right 20,
+             :z-index 100,
+             :border-radius "4px",
+             :max-width "32vw"}}
+    (div
+     {:style {:font-family ui/font-fancy,
+              :font-size 16,
+              :font-weight 300,
+              :color (hsl 0 0 80),
+              :cursor :pointer},
+      :on-click (fn [e d!] (d! :writer/picker-mode nil))}
+     (<> "Picker mode: pick a target..."))
+    (list-> {} (->> imported-names sort (map (fn [x] [x (render-code x)]))))
+    (=< nil 8)
+    (list-> {} (->> defined-names sort (map (fn [x] [x (render-code x)])))))))
 
 (defn on-draft-box [state cursor]
   (fn [e d!]
@@ -93,13 +135,19 @@
        add-plugin (use-prompt
                    (>> states :add)
                    {:text (str "Add function name:"), :initial ""})
-       replace-plugin (use-prompt
+       replace-plugin-old (use-prompt
+                           (>> states :replace)
+                           {:text "Replace in current branch:",
+                            :initial "from=>to",
+                            :validator (fn [x]
+                              (if (= 2 (count (string/split x "=>")))
+                                nil
+                                "Expected {from}=>{to}")),
+                            :input-style {:font-family ui/font-code}})
+       replace-plugin (use-replace-name-modal
                        (>> states :replace)
-                       {:text "Replace in current branch:",
-                        :initial "from=>to",
-                        :validator (fn [x]
-                          (if (= 2 (count (string/split x "=>"))) nil "Expected {from}=>{to}")),
-                        :input-style {:font-family ui/font-code}})]
+                       (fn [from to d!]
+                         (d! :ir/expr-replace {:bookmark bookmark, :from from, :to to})))]
    (div
     {:style style-status}
     (div
@@ -150,13 +198,12 @@
       {:inner-text "Add",
        :style style-link,
        :on-click (fn [e d!]
-         ((:show add-plugin)
-          d!
-          (fn [result]
-            (let [text (string/trim result)]
-              (when-not (string/blank? text)
-                (d! :ir/add-def text)
-                (d! :writer/edit {:kind :def, :extra text}))))))})
+         ((:show add-plugin) d!)
+         (fn [result]
+           (let [text (string/trim result)]
+             (when-not (string/blank? text)
+               (d! :ir/add-def text)
+               (d! :writer/edit {:kind :def, :extra text})))))})
      (=< 8 nil)
      (span
       {:inner-text "Draft-box", :style style-link, :on-click (on-draft-box state cursor)})
@@ -164,38 +211,20 @@
      (span
       {:inner-text "Replace",
        :style style-link,
-       :on-click (fn [e d!]
-         ((:show replace-plugin)
-          d!
-          (fn [result]
-            (let [[from to] (string/split result "=>")]
-              (d! :ir/expr-replace {:bookmark bookmark, :from from, :to to})))))})
+       :on-click (fn [e d!] ((:show replace-plugin)  d!))})
      (=< 8 nil)
-     (span {:inner-text "Exporting", :style style-link, :on-click (on-path-gen! bookmark)}))
+     (span {:inner-text "Exporting", :style style-link, :on-click (on-path-gen! bookmark)})
+     (=< 8 nil)
+     (span
+      {:inner-text "Picker-mode",
+       :style style-link,
+       :on-click (fn [e d!] (d! :writer/picker-mode nil))}))
     (div {:style ui/row} (comp-theme-menu (>> states :theme) theme))
     (:ui confirm-delete-plugin)
     (:ui confirm-reset-plugin)
     (:ui rename-plugin)
     (:ui add-plugin)
     (:ui replace-plugin))))
-
-(def element-picker-notice
-  (div
-   {:style {:font-family ui/font-fancy,
-            :font-size 20,
-            :font-weight 300,
-            :color (hsl 0 0 80),
-            :padding "0px 16px",
-            :margin "8px 0",
-            :background-color (hsl 0 0 50 0.6),
-            :position :fixed,
-            :top 8,
-            :right 40,
-            :z-index 100,
-            :border-radius "80px",
-            :cursor :pointer},
-    :on-click (fn [e d!] (d! :writer/picker-mode nil))}
-   (<> "Picker mode: pick a target...")))
 
 (def initial-state {:draft-box? false})
 
@@ -222,7 +251,6 @@
        state (or (:data states) initial-state)
        bookmark (get stack pointer)
        expr (:expr router-data)
-       picker-ns (:picker-ns-expr router-data)
        focus (:focus router-data)
        readonly? false
        close-draft-box! (fn [d!] (d! cursor (assoc state :draft-box? false)))
@@ -268,4 +296,4 @@
          (comp-draft-box (>> states :draft-box) expr focus close-draft-box!))
        (if (:abstract? state) (comp-abstract (>> states :abstract) close-abstract!))
        (comment comp-inspect "Expr" router-data style/inspector)))
-    (if picker-mode? element-picker-notice))))
+    (if picker-mode? (comp-picker-notice (:picker-choices router-data))))))

@@ -25,7 +25,7 @@
     (d! :ir/update-leaf (:value e))
     (d! cursor (assoc state :text (:value e) :at (util/now!)))))
 
-(defn on-keydown [state leaf coord]
+(defn on-keydown [state leaf coord picker-mode?]
   (fn [e d!]
     (let [event (:original-event e)
           code (:key-code e)
@@ -68,6 +68,7 @@
            (.open
             js/window
             (str "https://clojuredocs.org/search?q=" (last (string/split (:text leaf) "/")))))
+        (and picker-mode? (= code keycode/escape)) (d! :writer/picker-mode nil)
         :else
           (do
            (comment println "Keydown leaf" code)
@@ -89,5 +90,5 @@
      :on (if readonly?
        {:click (on-focus leaf coord picker-mode?)}
        {:click (on-focus leaf coord picker-mode?),
-        :keydown (on-keydown state leaf coord),
+        :keydown (on-keydown state leaf coord picker-mode?),
         :input (on-input state coord cursor)})})))
