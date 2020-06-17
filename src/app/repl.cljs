@@ -60,10 +60,23 @@
           handle-data! (fn [data]
                          (cond
                            (some? (:err data))
-                             (dispatch! :repl/error (str "Error " (:err data)))
-                           (some? (:out data)) (dispatch! :repl/log (:out data))
-                           (some? (:value data)) (dispatch! :repl/log (:value data))
-                           :else (println "Unknown message:" (pr-str data))))]
+                             (do
+                              (dispatch! :repl/error (str "Error " (:err data)))
+                              (dispatch! :notify/push-message [:error (:err data)]))
+                           (some? (:out data))
+                             (do
+                              (dispatch! :repl/log (:out data))
+                              (dispatch! :notify/push-message [:info (:out data)]))
+                           (some? (:value data))
+                             (do
+                              (dispatch! :repl/log (:value data))
+                              (dispatch! :notify/push-message [:info (:value data)]))
+                           :else
+                             (do
+                              (println "Unknown message:" (pr-str data))
+                              (dispatch!
+                               :notify/push-message
+                               [:warn (str "Unknown message:" (pr-str data))]))))]
       (if (= "done" (first (:status (last result))))
         (doseq [x (butlast result)] (handle-data! x))
         (println "Unknown state:" (pr-str (last result)))))))
@@ -82,6 +95,7 @@
         code (sepal/make-string cirru-piece)]
     (println "code to eval:" code)
     (dispatch! :repl/log (str "eval code: " code))
+    (dispatch! :notify/push-message [:info code])
     (send-raw-code! {:code (str code "\n"), :ns (:ns bookmark)} dispatch!)))
 
 (defn load-nrepl! [d2!]
