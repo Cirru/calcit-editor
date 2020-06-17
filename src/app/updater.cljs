@@ -78,6 +78,7 @@
             :watcher/file-change watcher/file-change
             :repl/start repl/on-start
             :repl/log repl/on-log
+            :repl/value repl/log-value
             :repl/error repl/on-error
             :repl/exit repl/on-exit
             :repl/clear-logs repl/clear-logs

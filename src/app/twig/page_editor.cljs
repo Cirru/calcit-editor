@@ -26,7 +26,7 @@
 
 (deftwig
  twig-page-editor
- (files old-files sessions users writer session-id)
+ (files old-files sessions users writer session-id repl)
  (let [pointer (:pointer writer), stack (:stack writer), bookmark (get stack pointer)]
    (if (some? bookmark)
      (let [ns-text (:ns bookmark)]
@@ -75,5 +75,6 @@
               (compare-entry
                (get (:defs file) (:extra bookmark))
                (get (:defs old-file) (:extra bookmark)))
-            (do :unknown)))})
+            (do :unknown))),
+        :repl repl})
      nil)))

@@ -18,7 +18,8 @@
             [app.util :refer [tree->cirru]]
             [app.util.dom :refer [do-copy-logics!]]
             [respo-alerts.core :refer [use-confirm use-prompt]]
-            [app.comp.replace-name :refer [use-replace-name-modal]]))
+            [app.comp.replace-name :refer [use-replace-name-modal]]
+            [app.comp.repl-preview :refer [comp-repl-preview]]))
 
 (defcomp
  comp-picker-notice
@@ -296,4 +297,5 @@
          (comp-draft-box (>> states :draft-box) expr focus close-draft-box!))
        (if (:abstract? state) (comp-abstract (>> states :abstract) close-abstract!))
        (comment comp-inspect "Expr" router-data style/inspector)))
-    (if picker-mode? (comp-picker-notice (:picker-choices router-data))))))
+    (if picker-mode? (comp-picker-notice (:picker-choices router-data)))
+    (if (-> router-data :repl :alive?) (comp-repl-preview (-> router-data :repl :logs))))))
