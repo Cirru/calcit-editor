@@ -38,7 +38,8 @@
                     (:sessions db)
                     (:users db)
                     writer
-                    (:id session))
+                    (:id session)
+                    (:repl db))
                  :members (twig-page-members (:sessions db) (:users db))
                  :search (twig-search (:files ir))
                  :watching
