@@ -38,6 +38,24 @@
          (assoc schema/file :ns default-expr :proc empty-expr))
         (assoc-in [:sessions session-id :writer :selected-ns] op-data))))
 
+(defn append-leaf [db op-data session-id op-id op-time]
+  (let [writer (get-in db [:sessions session-id :writer])
+        {stack :stack, pointer :pointer} writer
+        bookmark (get stack pointer)
+        focus (:focus bookmark)
+        user-id (get-in db [:sessions session-id :user-id])
+        new-leaf (assoc schema/leaf :by user-id :at op-time :id op-id)
+        expr-path (bookmark->path bookmark)
+        target-expr (get-in db expr-path)
+        new-id (key-append (:data target-expr))]
+    (-> db
+        (update-in
+         expr-path
+         (fn [expr] (if (expr? expr) (assoc-in expr [:data new-id] new-leaf) expr)))
+        (update-in
+         [:sessions session-id :writer :stack (:pointer writer) :focus]
+         (fn [focus] (conj focus new-id))))))
+
 (defn call-replace-expr [expr from to]
   (case (:type expr)
     :expr
