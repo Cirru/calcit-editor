@@ -20,6 +20,8 @@
           meta? (or (.-metaKey event) (.-ctrlKey event))
           code (:key-code e)]
       (cond
+        (and meta? (= code keycode/return))
+          (d! (if shift? :ir/append-leaf :ir/prepend-leaf) nil)
         (and meta? (= code keycode/return)) (d! :ir/prepend-leaf nil)
         (= code keycode/return)
           (if (empty? coord)

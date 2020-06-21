@@ -47,6 +47,7 @@
             :ir/remove-def ir/remove-def
             :ir/remove-ns ir/remove-ns
             :ir/prepend-leaf ir/prepend-leaf
+            :ir/append-leaf ir/append-leaf
             :ir/delete-node ir/delete-node
             :ir/leaf-after ir/leaf-after
             :ir/leaf-before ir/leaf-before

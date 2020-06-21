@@ -10,7 +10,8 @@
             [app.util :as util]
             [app.util.shortcuts :refer [on-window-keydown on-paste!]]
             [app.theme :refer [decide-leaf-theme]]
-            [app.util :refer [tree->cirru]]))
+            [app.util :refer [tree->cirru]]
+            [app.util.dom :refer [do-copy-logics!]]))
 
 (def initial-state {:text "", :at 0})
 
@@ -51,6 +52,10 @@
         (and (not selected?) (= code keycode/right))
           (if (= text-length event.target.selectionEnd)
             (do (d! :writer/go-right nil) (.preventDefault event)))
+        (and meta?
+             (= code keycode/c)
+             (= (.-selectionStart (.-target event)) (.-selectionEnd (.-target event))))
+          (do-copy-logics! d! (pr-str (tree->cirru leaf)) "Copied!")
         (and meta? shift? (= code keycode/v)) (do (on-paste! d!) (.preventDefault event))
         (and meta? (= code keycode/d))
           (do
