@@ -20,7 +20,7 @@
    (merge
     base-info
     {:styles [(<< "http://~(get-ip!):8100/main-fonts.css") "/entry/main.css"],
-     :scripts ["/client.js"],
+     :scripts [{:src "/client.js", :defer? true}],
      :inline-styles []})))
 
 (defn prod-page []
@@ -35,9 +35,10 @@
      html-content
      (merge
       base-info
-      {:styles [font-styles], :scripts (map #(-> % :output-name prefix-cdn) assets)}))))
+      {:styles [font-styles],
+       :scripts (map (fn [x] {:src (-> x :output-name prefix-cdn), :defer? true}) assets)}))))
 
 (defn main! []
-  (if (= js/process.env.env "dev")
-    (spit "target/index.html" (dev-page))
-    (spit "dist/index.html" (prod-page))))
+  (if (= js/process.env.release "true")
+    (spit "dist/index.html" (prod-page))
+    (spit "target/index.html" (dev-page))))
