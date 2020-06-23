@@ -55,7 +55,7 @@
         (and meta?
              (= code keycode/c)
              (= (.-selectionStart (.-target event)) (.-selectionEnd (.-target event))))
-          (do-copy-logics! d! (pr-str (tree->cirru leaf)) "Copied!")
+          (do-copy-logics! d! (tree->cirru leaf) "Copied!")
         (and meta? shift? (= code keycode/v)) (do (on-paste! d!) (.preventDefault event))
         (and meta? (= code keycode/d))
           (do
