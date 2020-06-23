@@ -24680,13 +24680,9 @@
                                   |j $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1592690927250) (:text |d!) (:id |onhfSwF_op)
                                   |r $ {} (:type :expr) (:by |S1lNv50FW) (:at 1592690927250)
                                     :data $ {}
-                                      |T $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1592690927250) (:text |pr-str) (:id |O7TVR0b-Nc)
-                                      |j $ {} (:type :expr) (:by |S1lNv50FW) (:at 1592690927250)
-                                        :data $ {}
-                                          |T $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1592690927250) (:text |tree->cirru) (:id |wNLOZhhTho)
-                                          |j $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1592690936526) (:text |leaf) (:id |ZgOhrP14AR)
-                                        :id |B6F9x4IrW7
-                                    :id |Iijjg4fv0F
+                                      |T $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1592690927250) (:text |tree->cirru) (:id |wNLOZhhTho)
+                                      |j $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1592690936526) (:text |leaf) (:id |ZgOhrP14AR)
+                                    :id |B6F9x4IrW7
                                   |v $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1592690927250) (:text "|\"Copied!") (:id |K3_jv6GJML)
                                 :id |Jq68N1mhJS
                             :id |yDF6kAMwG
