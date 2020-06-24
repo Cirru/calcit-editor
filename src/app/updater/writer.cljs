@@ -51,6 +51,7 @@
 
 (defn go-down [db op-data session-id op-id op-time]
   (let [writer (get-in db [:sessions session-id :writer])
+        tail? (:tail? op-data)
         bookmark (get (:stack writer) (:pointer writer))
         target-expr (get-in db (bookmark->path bookmark))]
     (if (zero? (count (:data target-expr)))
@@ -58,7 +59,7 @@
       (-> db
           (update-in
            [:sessions session-id :writer :stack (:pointer writer) :focus]
-           (fn [focus] (conj focus (apply min (keys (:data target-expr))))))))))
+           (fn [focus] (conj focus (apply (if tail? max min) (keys (:data target-expr))))))))))
 
 (defn go-left [db op-data session-id op-id op-time]
   (let [writer (get-in db [:sessions session-id :writer])
