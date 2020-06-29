@@ -19,11 +19,7 @@
  (div
   {:style style-column}
   (<> div "Changes" style/title)
-  (list->
-   :div
-   {}
-   (->> changed-files
-        (map (fn [entry] (let [[k info] entry] [k (comp-changed-info info k)])))))
+  (list-> :div {} (->> changed-files (map (fn [[k info]] [k (comp-changed-info info k)]))))
   (if (empty? changed-files)
     (div {:style style-nothing} (<> "No changes"))
     (div

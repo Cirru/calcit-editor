@@ -251,7 +251,7 @@
                 (into {})))))))
 
 (defn select [db op-data session-id op-id op-time]
-  (let [bookmark op-data]
+  (let [bookmark (assoc op-data :focus [])]
     (-> db
         (update-in [:sessions session-id :writer] (push-bookmark bookmark))
         (assoc-in [:sessions session-id :router] {:name :editor}))))
