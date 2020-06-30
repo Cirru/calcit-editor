@@ -18,7 +18,7 @@
             ["gaze" :as gaze]
             [ws-edn.server :refer [wss-serve! wss-send! wss-each!]]
             ["shortid" :as shortid]
-            [recollect.twig :refer [render-twig]]
+            [recollect.twig :refer [clear-twig-caches! new-twig-loop!]]
             [recollect.diff :refer [diff-twig]]
             [app.twig.container :refer [twig-container]]
             [app.util.env :refer [check-version!]]
@@ -101,13 +101,14 @@
    (fn [sid socket]
      (let [session (get-in db [:sessions sid])
            old-store (or (get @*client-caches sid) nil)
-           new-store (render-twig (twig-container db session) old-store)
+           new-store (twig-container db session)
            changes (diff-twig old-store new-store {:key :id})]
        (when config/dev? (println "Changes for" sid ":" (count changes)))
        (if (not= changes [])
          (do
           (wss-send! sid {:kind :patch, :data changes})
-          (swap! *client-caches assoc sid new-store)))))))
+          (swap! *client-caches assoc sid new-store))))))
+  (new-twig-loop!))
 
 (defn render-loop! []
   (if (not= @*reader-db @*writer-db)
@@ -178,4 +179,7 @@
        (when (:local-ui? cli-configs) (serve-app! (:port configs)))
        (check-version!)))))
 
-(defn reload! [] (println (.gray chalk "code updated.")) (sync-clients! @*reader-db))
+(defn reload! []
+  (println (.gray chalk "code updated."))
+  (clear-twig-caches!)
+  (sync-clients! @*reader-db))

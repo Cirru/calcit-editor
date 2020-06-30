@@ -30,6 +30,9 @@
                         [def-text
                          (compare-entry (get defs def-text) (get saved-defs def-text))]))
                      (into {})))}])))
+       (filter
+        (fn [[k info]]
+          (not (and (= :same (:ns info)) (= :same (:proc info)) (empty? (:defs info))))))
        (into {})))
 
 (deftwig
