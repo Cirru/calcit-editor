@@ -136,15 +136,6 @@
        add-plugin (use-prompt
                    (>> states :add)
                    {:text (str "Add function name:"), :initial ""})
-       replace-plugin-old (use-prompt
-                           (>> states :replace)
-                           {:text "Replace in current branch:",
-                            :initial "from=>to",
-                            :validator (fn [x]
-                              (if (= 2 (count (string/split x "=>")))
-                                nil
-                                "Expected {from}=>{to}")),
-                            :input-style {:font-family ui/font-code}})
        replace-plugin (use-replace-name-modal
                        (>> states :replace)
                        (fn [from to d!]
