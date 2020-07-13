@@ -63,7 +63,11 @@
        expr
        :data
        (fn [data] (->> data (map (fn [[k v]] [k (call-replace-expr v from to)])) (into {}))))
-    :leaf (if (= (:text expr) from) (assoc expr :text to) expr)
+    :leaf
+      (cond
+        (= (:text expr) from) (assoc expr :text to)
+        (= (:text expr) (str "@" from)) (assoc expr :text (str "@" to))
+        :else expr)
     (do (println "Unknown expr" expr))))
 
 (defn clone-ns [db op-data sid op-id op-time]
