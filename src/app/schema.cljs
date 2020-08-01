@@ -3,7 +3,8 @@
 
 (def bookmark {:kind :def, :ns nil, :extra nil, :focus []})
 
-(def configs {:extension ".cljs", :output "src", :port 6001, :local-ui? false})
+(def configs
+  {:extension ".cljs", :output "src", :port 6001, :local-ui? false, :compact-output? true})
 
 (def ir-file {:package "app", :files {}})
 
