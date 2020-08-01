@@ -14,9 +14,12 @@
               pick-second-key
               cirru->file]]
             [app.util.list :refer [dissoc-idx]]
-            [bisection-key.util :refer [key-before key-after key-prepend key-append]]
+            [bisection-key.util
+             :refer
+             [key-before key-after key-prepend key-append assoc-prepend]]
             [clojure.string :as string]
-            [app.util :refer [push-warning]]))
+            [app.util :refer [push-warning]]
+            [medley.core :refer [dissoc-in]]))
 
 (defn add-def [db op-data session-id op-id op-time]
   (let [selected-ns (get-in db [:sessions session-id :writer :selected-ns])
@@ -375,6 +378,25 @@
 (defn reset-ns [db op-data session-id op-id op-time]
   (let [ns-text op-data]
     (assoc-in db [:ir :files ns-text] (get-in db [:saved-files ns-text]))))
+
+(defn toggle-comment [db op-data sid op-id op-time]
+  (let [writer (to-writer db sid)
+        bookmark (to-bookmark writer)
+        data-path (bookmark->path bookmark)
+        user-id (get-in db [:sessions sid :user-id])]
+    (update-in
+     db
+     data-path
+     (fn [node]
+       (if (= :expr (:type node))
+         (let [k0 (apply min (keys (:data node)))]
+           (if (and (some? k0) (= ";" (get-in node [:data k0 :text])))
+             (dissoc-in node [:data k0])
+             (update
+              node
+              :data
+              (fn [data] (assoc-prepend data (cirru->tree ";" user-id op-time))))))
+         (do (println "Toggle comment at wrong place," node) node))))))
 
 (defn unindent [db op-data session-id op-id op-time]
   (let [writer (get-in db [:sessions session-id :writer])

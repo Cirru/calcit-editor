@@ -63,6 +63,7 @@
                  (let [el (.querySelector js/document ".el-abstract")]
                    (if (some? el) (.focus el)))))))
            (.preventDefault event))
+        (and meta? (= code keycode/slash) (not shift?)) (d! :ir/toggle-comment nil)
         (and picker-mode? (= code keycode/escape)) (d! :writer/picker-mode nil)
         :else
           (do
