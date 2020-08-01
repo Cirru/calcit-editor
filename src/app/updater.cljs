@@ -70,6 +70,7 @@
             :ir/replace-file ir/replace-file
             :ir/file-config ir/file-config
             :ir/clone-ns ir/clone-ns
+            :ir/toggle-comment ir/toggle-comment
             :notify/push-message notify/push-message
             :notify/clear notify/clear
             :notify/broadcast notify/broadcast
