@@ -2,7 +2,9 @@
 (ns app.util.compile
   (:require [clojure.set :refer [difference intersection]]
             [cirru-sepal.analyze :refer [write-file]]
-            [app.util :refer [ns->path file->cirru db->string tree->cirru now!]]
+            [app.util
+             :refer
+             [ns->path file->cirru db->string tree->cirru now! hide-empty-fields]]
             ["chalk" :as chalk]
             ["path" :as path]
             ["fs" :as fs]
@@ -19,20 +21,78 @@
     (fs/writeFileSync project-path (write-file (file->cirru file)))
     (println (.gray chalk (str "created " project-path)))))
 
-(defn handle-compact-files! [ir added-names removed-names changed-names]
-  (let [content (cirru-edn/write
-                 {:package (:package ir),
-                  :files (->> ir
-                              :files
-                              (map (fn [[ns-text file]] [ns-text (file->cirru file)]))
-                              (into {}))})]
+(defn handle-compact-files! [pkg
+                             old-files
+                             new-files
+                             added-names
+                             removed-names
+                             changed-names]
+  (let [compact-data {:package pkg,
+                      :files (->> new-files
+                                  (map (fn [[ns-text file]] [ns-text (file->cirru file)]))
+                                  (into {}))}
+        inc-data (hide-empty-fields
+                  {:removed removed-names,
+                   :added (->> added-names
+                               (map
+                                (fn [ns-text]
+                                  [ns-text (file->cirru (get new-files ns-text))]))
+                               (into {})),
+                   :changed (->> changed-names
+                                 (map
+                                  (fn [ns-text]
+                                    [ns-text
+                                     (let [old-file (get old-files ns-text)
+                                           new-file (get new-files ns-text)
+                                           old-defs (:defs old-file)
+                                           new-defs (:defs new-file)
+                                           old-def-names (set (keys old-defs))
+                                           new-def-names (set (keys new-defs))
+                                           added-defs (difference
+                                                       new-def-names
+                                                       old-def-names)
+                                           removed-defs (difference
+                                                         old-def-names
+                                                         new-def-names)
+                                           changed-defs (->> (intersection
+                                                              old-def-names
+                                                              new-def-names)
+                                                             (filter
+                                                              (fn [x]
+                                                                (println)
+                                                                (not=
+                                                                 (get old-defs x)
+                                                                 (get new-defs x)))))]
+                                       (hide-empty-fields
+                                        {:ns (if (= (:ns old-file) (:ns new-file))
+                                           nil
+                                           (file->cirru (:ns new-file))),
+                                         :proc (if (= (:proc old-file) (:proc new-file))
+                                           nil
+                                           (file->cirru (:proc new-file))),
+                                         :removed-defs removed-defs,
+                                         :added-defs (->> added-defs
+                                                          (map
+                                                           (fn [x]
+                                                             [x
+                                                              (tree->cirru (get new-defs x))]))
+                                                          (hide-empty-fields)),
+                                         :changed-defs (->> changed-defs
+                                                            (map
+                                                             (fn [x]
+                                                               (println "x" (get new-defs x))
+                                                               [x
+                                                                (tree->cirru
+                                                                 (get new-defs x))]))
+                                                            (hide-empty-fields))}))]))
+                                 (into {}))})]
     (fs/writeFile
      "compact.cirru"
-     content
+     (cirru-edn/write compact-data)
      (fn [err] (if (some? err) (js/console.log "Failed to write!" err))))
     (fs/writeFile
      ".compact-inc.cirru"
-     "TODO"
+     (cirru-edn/write inc-data)
      (fn [err] (if (some? err) (js/console.log "Failed to write!" err))))))
 
 (defn modify-file! [file-path file output-dir]
@@ -100,7 +160,13 @@
                    (let [local-ext (-> file :configs :extension)]
                      (if (some? local-ext) (str "." (name local-ext)) extension)))]
      (if (:compact-output? configs)
-       (handle-compact-files! (:ir db) added-names removed-names changed-names)
+       (handle-compact-files!
+        (get-in db [:ir :package])
+        old-files
+        new-files
+        added-names
+        removed-names
+        changed-names)
        (handle-file-writing!
         old-files
         new-files

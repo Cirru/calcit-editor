@@ -82,6 +82,16 @@ ui=local calcit-editor
 # serving UI at http://localhost:6101
 ```
 
+### Compact output
+
+When `:compact-output? true` is specified in `calcit.cirru`, "Compact Mode" is activated. Clojure(Script) will no longer be emitted,
+instead two files will be emitted:
+
+* `compact.cirru` contains a compact version of data tree of the program.
+* `.compact-inc.cirru` contains diff information from latest modification of per definition.
+
+It's not useful for Clojure but would can be used for other experiments.
+
 ### Workflow
 
 Based on https://github.com/Cumulo/cumulo-workflow
