@@ -83,6 +83,9 @@
 
 (defn find-first [f xs] (reduce (fn [_ x] (when (f x) (reduced x))) nil xs))
 
+(defn hide-empty-fields [x]
+  (->> x (remove (fn [[k v]] (or (nil? v) (empty? v)))) (into {})))
+
 (defn leaf? [x] (= :leaf (:type x)))
 
 (defn now! [] (.now js/Date))
