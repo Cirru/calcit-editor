@@ -125,8 +125,6 @@
              (merge result (parse-require (if (= (first rule) "[]") (subvec rule 1) rule)))
              (rest xs))))))))
 
-(defn pick-second-key [m] (first (rest (sort (keys m)))))
-
 (defn push-info [op-id op-time text]
   (fn [xs]
     (conj xs (merge schema/notification {:id op-id, :kind :info, :text text, :time op-time}))))

@@ -11,12 +11,18 @@
               to-bookmark
               to-keys
               cirru->tree
-              pick-second-key
               cirru->file]]
             [app.util.list :refer [dissoc-idx]]
             [bisection-key.util
              :refer
-             [key-before key-after key-prepend key-append assoc-prepend]]
+             [key-before
+              key-after
+              key-prepend
+              key-append
+              assoc-prepend
+              key-nth
+              assoc-nth
+              val-nth]]
             [clojure.string :as string]
             [app.util :refer [push-warning]]))
 
@@ -94,7 +100,7 @@
                                the-file
                                :ns
                                (fn [expr]
-                                 (let [name-field (pick-second-key (:data ns-expr))]
+                                 (let [name-field (key-nth (:data ns-expr) 1)]
                                    (assert
                                     (=
                                      selected-ns
@@ -310,12 +316,13 @@
 
 (defn rename [db op-data session-id op-id op-time]
   (let [{kind :kind, ns-info :ns, extra-info :extra} op-data
-        idx (get-in db [:sessions session-id :writer :pointer])]
+        idx (get-in db [:sessions session-id :writer :pointer])
+        user-id (get-in db [:sessions session-id :user-id])]
     (cond
       (= :ns kind)
         (let [{old-ns :from, new-ns :to} ns-info
               expr (get-in db [:ir :files old-ns :ns])
-              next-id (pick-second-key (:data expr))]
+              next-id (key-nth (:data expr) 1)]
           (-> db
               (update-in
                [:ir :files]
@@ -326,7 +333,7 @@
         (let [{old-ns :from, new-ns :to} ns-info
               {old-def :from, new-def :to} extra-info
               expr (get-in db [:ir :files old-ns :defs old-def])
-              next-id (pick-second-key (:data expr))
+              next-id (key-nth (:data expr) 1)
               files (get-in db [:ir :files])]
           (if (contains? files new-ns)
             (-> db
@@ -342,8 +349,12 @@
                  [:sessions session-id :writer :stack idx]
                  (fn [bookmark] (-> bookmark (assoc :ns new-ns) (assoc :extra new-def))))
                 (update-in
-                 [:ir :files new-ns :defs new-def :data next-id :text]
-                 (fn [x] new-def)))
+                 [:ir :files new-ns :defs new-def :data]
+                 (fn [def-data]
+                   (let [try-1 (:text (val-nth def-data 1))]
+                     (if (and (string? try-1) (= "^" (first try-1)))
+                       (assoc-nth def-data 2 (cirru->tree new-def user-id op-time))
+                       (assoc-nth def-data 1 (cirru->tree new-def user-id op-time)))))))
             (-> db
                 (update-in
                  [:sessions session-id :notifications]
