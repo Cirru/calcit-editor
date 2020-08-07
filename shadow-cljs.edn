@@ -15,7 +15,7 @@
     [cumulo/recollect "0.6.3"]
     [cumulo/util "0.1.12"]
     [fipp "0.6.23"]
-    [cirru/sepal "0.2.8"]
+    [cirru/sepal "0.2.9-a1"]
     [cirru/writer "0.1.7"]
     [cirru/bisection-key "0.1.6-a2"]
     [cirru/edn "0.0.9"]
