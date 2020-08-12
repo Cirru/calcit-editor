@@ -15,7 +15,7 @@
             [app.comp.abstract :refer [comp-abstract]]
             [app.comp.theme-menu :refer [comp-theme-menu]]
             [app.comp.peek-def :refer [comp-peek-def]]
-            [app.util :refer [tree->cirru]]
+            [app.util :refer [tree->cirru prepend-data]]
             [app.util.dom :refer [do-copy-logics!]]
             [respo-alerts.core :refer [use-confirm use-prompt]]
             [app.comp.replace-name :refer [use-replace-name-modal]]
@@ -23,7 +23,7 @@
 
 (defcomp
  comp-picker-notice
- (choices)
+ (choices target-node)
  (let [imported-names (:imported choices)
        defined-names (:defined choices)
        render-code (fn [x]
@@ -39,7 +39,9 @@
                                :background-color (hsl 0 0 30),
                                :padding "1px 3px",
                                :display :inline-block},
-                       :on-click (fn [e d!] (d! :writer/pick-node x))}))]
+                       :on-click (fn [e d!] (d! :writer/pick-node x))}))
+       hint (if (some? target-node) (:text target-node) nil)
+       hint-fn (fn [x] (if (string/blank? hint) false (string/includes? x hint)))]
    (div
     {:style {:padding "4px 8px",
              :margin "8px 0",
@@ -58,9 +60,25 @@
               :cursor :pointer},
       :on-click (fn [e d!] (d! :writer/picker-mode nil))}
      (<> "Picker mode: pick a target..."))
-    (list-> {} (->> imported-names sort (map (fn [x] [x (render-code x)]))))
-    (=< nil 8)
-    (list-> {} (->> defined-names sort (map (fn [x] [x (render-code x)])))))))
+    (let [possible-names (->> (concat imported-names defined-names)
+                              distinct
+                              (filter hint-fn))]
+      (if-not (empty? possible-names)
+        (div
+         {}
+         (list->
+          {}
+          (->> possible-names
+               (sort-by (fn [x] (string/index-of x hint)))
+               (map (fn [x] [x (render-code x)]))))
+         (=< nil 8))))
+    (let [filtered-names (->> imported-names (remove hint-fn))]
+      (if-not (empty? filtered-names)
+        (div
+         {}
+         (list-> {} (->> filtered-names sort (map (fn [x] [x (render-code x)]))))
+         (=< nil 8))))
+    (list-> {} (->> defined-names (remove hint-fn) sort (map (fn [x] [x (render-code x)])))))))
 
 (defn on-draft-box [state cursor]
   (fn [e d!]
@@ -289,5 +307,8 @@
          (comp-draft-box (>> states :draft-box) expr focus close-draft-box!))
        (if (:abstract? state) (comp-abstract (>> states :abstract) close-abstract!))
        (comment comp-inspect "Expr" router-data style/inspector)))
-    (if picker-mode? (comp-picker-notice (:picker-choices router-data)))
+    (if picker-mode?
+      (comp-picker-notice
+       (:picker-choices router-data)
+       (get-in expr (mapcat prepend-data focus))))
     (if (-> router-data :repl :alive?) (comp-repl-preview (-> router-data :repl :logs))))))
