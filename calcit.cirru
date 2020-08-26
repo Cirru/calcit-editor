@@ -23288,17 +23288,6 @@
                                                                                           |D $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1596343624921) (:text |tree->cirru) (:id |KDdiz5REru)
                                                                                         :id |encpN3OA6
                                                                                     :id |hcCsX3Oas
-                                                                                  |n $ {} (:type :expr) (:by |S1lNv50FW) (:at 1596344305884)
-                                                                                    :data $ {}
-                                                                                      |T $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1596344307559) (:text |println) (:id |Lq9-UeCZGleaf)
-                                                                                      |j $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1596344308933) (:text "|\"x") (:id |MWBEOnIpHp)
-                                                                                      |r $ {} (:type :expr) (:by |S1lNv50FW) (:at 1596344312141)
-                                                                                        :data $ {}
-                                                                                          |T $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1596344312141) (:text |get) (:id |xxdYWwx-mF)
-                                                                                          |j $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1596344312141) (:text |new-defs) (:id |QgKIkufEsN)
-                                                                                          |r $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1596344312141) (:text |x) (:id |hiM_q7jg7o)
-                                                                                        :id |3pAWyQWqBC
-                                                                                    :id |Lq9-UeCZG
                                                                                 :id |rltTvw4M0
                                                                             :id |3is2NIqxwj
                                                                           |v $ {} (:type :expr) (:by |S1lNv50FW) (:at 1596345062653)
@@ -23374,10 +23363,6 @@
                                                                                       |r $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1596343700027) (:text |x) (:id |f2DRqwBf9R)
                                                                                     :id |laO6HJify
                                                                                 :id |qAYmQ3_ZMl
-                                                                              |n $ {} (:type :expr) (:by |S1lNv50FW) (:at 1596344358305)
-                                                                                :data $ {}
-                                                                                  |T $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1596344359217) (:text |println) (:id |nme49RpPfleaf)
-                                                                                :id |nme49RpPf
                                                                             :id |QJE3SSUHj3
                                                                         :id |ZDF9AedqZ
                                                                     :id |4GIYklP93c

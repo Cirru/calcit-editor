@@ -59,7 +59,6 @@
                                                               new-def-names)
                                                              (filter
                                                               (fn [x]
-                                                                (println)
                                                                 (not=
                                                                  (get old-defs x)
                                                                  (get new-defs x)))))]
@@ -80,7 +79,6 @@
                                          :changed-defs (->> changed-defs
                                                             (map
                                                              (fn [x]
-                                                               (println "x" (get new-defs x))
                                                                [x
                                                                 (tree->cirru
                                                                  (get new-defs x))]))
