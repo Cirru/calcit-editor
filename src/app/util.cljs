@@ -57,7 +57,9 @@
 (defn tree->cirru [x]
   (if (= :leaf (:type x))
     (:text x)
-    (->> (:data x) (sort-by first) (map (fn [entry] (tree->cirru (val entry)))) (vec))))
+    (with-meta
+     (->> (:data x) (sort-by first) (map (fn [entry] (tree->cirru (val entry)))) (vec))
+     :quoted-cirru)))
 
 (defn file->cirru [file]
   (-> file
