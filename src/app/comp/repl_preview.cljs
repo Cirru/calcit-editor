@@ -56,7 +56,7 @@
                  :value {:color (hsl 220 80 70)}
                  :error {:color (hsl 0 80 60)}
                  {})}
-              (<> (:text log)))))))
+              (<> (:text log) {:white-space :pre}))))))
     (div
      {:style (merge
               ui/row-middle
