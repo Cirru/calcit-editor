@@ -26,8 +26,11 @@
                              new-files
                              added-names
                              removed-names
-                             changed-names]
+                             changed-names
+                             configs]
   (let [compact-data {:package pkg,
+                      :configs {:init-fn (:init-fn configs),
+                                :reload-fn (:reload-fn configs)},
                       :files (->> new-files
                                   (map (fn [[ns-text file]] [ns-text (file->cirru file)]))
                                   (into {}))}
@@ -164,7 +167,8 @@
         new-files
         added-names
         removed-names
-        changed-names)
+        changed-names
+        (:configs db))
        (handle-file-writing!
         old-files
         new-files

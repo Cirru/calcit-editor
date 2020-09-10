@@ -4,7 +4,13 @@
 (def bookmark {:kind :def, :ns nil, :extra nil, :focus []})
 
 (def configs
-  {:extension ".cljs", :output "src", :port 6001, :local-ui? false, :compact-output? true})
+  {:extension ".cljs",
+   :output "src",
+   :port 6001,
+   :local-ui? false,
+   :compact-output? false,
+   :init-fn "app.main/main!",
+   :reload-fn "app.main/reload!"})
 
 (def ir-file {:package "app", :files {}})
 
