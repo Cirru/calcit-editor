@@ -13,10 +13,9 @@
 
 (defn bookmark->str [bookmark]
   (case (:kind bookmark)
-    :def (str (:ns bookmark) " " (:extra bookmark))
-    :ns (str (:kind bookmark) " " (:ns bookmark) " " (:extra bookmark))
-    :proc (str (:kind bookmark) " " (:ns bookmark) " " (:extra bookmark))
-    (str "Unknown" (pr-str bookmark))))
+    :def (:extra bookmark)
+    :ns (:ns bookmark)
+    (do (js/console.warn (str "Unknown" (pr-str bookmark))) "")))
 
 (defcomp
  comp-no-results
@@ -55,6 +54,12 @@
 (defn on-select [bookmark cursor]
   (fn [e d!] (d! :writer/select bookmark) (d! cursor {:position :0, :query ""})))
 
+(defn query-length [bookmark]
+  (case (:kind bookmark)
+    :def (count (:extra bookmark))
+    :ns (count (:ns bookmark))
+    (do (js/console.warn (str "Unknown" (pr-str bookmark))) 0)))
+
 (def style-body {:overflow :auto, :padding-bottom 80})
 
 (def style-candidate {:padding "0 8px", :color (hsl 0 0 100 0.6), :cursor :pointer})
@@ -74,7 +79,8 @@
                                    (every?
                                     (fn [y] (string/includes? (:extra bookmark) y))
                                     queries))))
-                           (sort-by bookmark->str))
+                           (sort-by
+                            (if (string/blank? (:query state)) bookmark->str query-length)))
        ns-candidates (->> router-data
                           (filter
                            (fn [bookmark]
@@ -82,7 +88,8 @@
                                   (every?
                                    (fn [y] (string/includes? (:ns bookmark) y))
                                    queries))))
-                          (sort-by bookmark->str))]
+                          (sort-by
+                           (if (string/blank? (:query state)) bookmark->str query-length)))]
    (div
     {:style (merge ui/expand ui/row-middle {:height "100%", :padding "0 16px"})}
     (div
