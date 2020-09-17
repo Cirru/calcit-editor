@@ -96,8 +96,8 @@
                    (cirru->tree new-expr user-id op-time))
                   (update-in [:sessions sid :writer] (push-bookmark new-bookmark))))
             (warn (str "Does not exist: " (:ns new-bookmark) " " (:extra new-bookmark)))))
-        (warn (str "External dep:" (:ns new-bookmark))))
-      (warn (str "Cannot locate:" def-info)))))
+        (warn (str "From external ns: " (:ns new-bookmark))))
+      (warn (str "Cannot locate: " def-info)))))
 
 (defn peek-def [db op-data sid op-id op-time]
   (let [writer (to-writer db sid)
