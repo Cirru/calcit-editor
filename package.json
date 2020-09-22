@@ -1,6 +1,6 @@
 {
   "name": "calcit-editor",
-  "version": "0.5.17-a10",
+  "version": "0.5.17-a11",
   "description": "Cirru Calcit Editor",
   "bin": {
     "calcit-editor": "dist/server.js",
@@ -29,7 +29,7 @@
   },
   "dependencies": {
     "chalk": "^4.1.0",
-    "dayjs": "^1.8.35",
+    "dayjs": "^1.8.36",
     "express": "^4.17.1",
     "gaze": "^1.1.3",
     "latest-version": "^5.1.0",
