@@ -21,13 +21,18 @@
      [:ir :files (:ns bookmark) (:kind bookmark)]
      (mapcat prepend-data (:focus bookmark)))))
 
+(defn bookmark-full-str [bookmark]
+  (case (:kind bookmark)
+    :def (str (:ns bookmark) "/" (:extra bookmark))
+    :ns (str (:ns bookmark) "/")
+    (do (js/console.warn (str "Unknown" (pr-str bookmark))) "")))
+
 (defn cirru->tree [xs author timestamp]
   (if (vector? xs)
     (merge
      schema/expr
      {:at timestamp,
       :by author,
-      :id (.generate shortid),
       :data (loop [result {}, ys xs, next-id bisection/mid-id]
         (if (empty? ys)
           result
@@ -36,7 +41,7 @@
              (assoc result next-id (cirru->tree y author timestamp))
              (rest ys)
              (bisection/bisect next-id bisection/max-id)))))})
-    (merge schema/leaf {:at timestamp, :by author, :text xs, :id (.generate shortid)})))
+    (merge schema/leaf {:at timestamp, :by author, :text xs})))
 
 (defn cirru->file [file author timestamp]
   (-> file

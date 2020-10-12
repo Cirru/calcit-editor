@@ -41,16 +41,17 @@
 
 (defn sign-up [db op-data session-id op-id op-time]
   (let [[username password] op-data
-        maybe-user (find-first (fn [user] (= username (:name user))) (vals (:users db)))]
+        maybe-user (find-first (fn [user] (= username (:name user))) (vals (:users db)))
+        new-user-id (str "u" (count (:users db)))]
     (if (some? maybe-user)
       (update-in
        db
        [:sessions session-id :notifications]
        (push-warning op-id op-time (str "Name is token: " username)))
       (-> db
-          (assoc-in [:sessions session-id :user-id] op-id)
+          (assoc-in [:sessions session-id :user-id] new-user-id)
           (assoc-in
-           [:users op-id]
+           [:users new-user-id]
            (merge
             schema/user
-            {:id op-id, :name username, :nickname username, :password (md5 password)}))))))
+            {:id new-user-id, :name username, :nickname username, :password (md5 password)}))))))

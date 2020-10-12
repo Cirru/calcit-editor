@@ -52,7 +52,7 @@
         bookmark (get stack pointer)
         focus (:focus bookmark)
         user-id (get-in db [:sessions session-id :user-id])
-        new-leaf (assoc schema/leaf :by user-id :at op-time :id op-id)
+        new-leaf (assoc schema/leaf :by user-id :at op-time)
         expr-path (bookmark->path bookmark)
         target-expr (get-in db expr-path)
         new-id (key-append (:data target-expr))]
@@ -170,7 +170,7 @@
 (defn duplicate [db op-data session-id op-id op-time]
   (let [writer (to-writer db session-id)
         bookmark (to-bookmark writer)
-        target-expr (assoc (get-in db (bookmark->path bookmark)) :id op-id)
+        target-expr (get-in db (bookmark->path bookmark))
         parent-path (bookmark->path (update bookmark :focus butlast))
         parent-expr (get-in db parent-path)
         next-id (key-after (:data parent-expr) (last (:focus bookmark)))]
@@ -190,9 +190,9 @@
         target-expr (get-in db data-path)
         next-id (key-after (:data target-expr) (last (:focus bookmark)))
         user-id (get-in db [:sessions session-id :user-id])
-        new-leaf (assoc schema/leaf :at op-time :by user-id :id (str op-id "leaf"))
+        new-leaf (assoc schema/leaf :at op-time :by user-id)
         new-expr (-> schema/expr
-                     (assoc :at op-time :by user-id :id op-id)
+                     (assoc :at op-time :by user-id)
                      (assoc-in [:data bisection/mid-id] new-leaf))]
     (-> db
         (update-in data-path (fn [expr] (assoc-in expr [:data next-id] new-expr)))
@@ -208,9 +208,9 @@
         target-expr (get-in db data-path)
         next-id (key-before (:data target-expr) (last (:focus bookmark)))
         user-id (get-in db [:sessions session-id :user-id])
-        new-leaf (assoc schema/leaf :at op-time :by user-id :id (str op-id "leaf"))
+        new-leaf (assoc schema/leaf :at op-time :by user-id)
         new-expr (-> schema/expr
-                     (assoc :at op-time :by user-id :id op-id)
+                     (assoc :at op-time :by user-id)
                      (assoc-in [:data bisection/mid-id] new-leaf))]
     (-> db
         (update-in data-path (fn [expr] (assoc-in expr [:data next-id] new-expr)))
@@ -237,7 +237,7 @@
         bookmark (get stack pointer)
         data-path (bookmark->path bookmark)
         user-id (get-in db [:sessions session-id :user-id])
-        new-expr (assoc schema/expr :at op-time :by user-id :id op-id)]
+        new-expr (assoc schema/expr :at op-time :by user-id)]
     (-> db
         (update-in data-path (fn [node] (assoc-in new-expr [:data bisection/mid-id] node)))
         (update-in
@@ -256,7 +256,7 @@
         target-expr (get-in db data-path)
         next-id (key-after (:data target-expr) (last (:focus bookmark)))
         user-id (get-in db [:sessions session-id :user-id])
-        new-leaf (assoc schema/leaf :at op-time :by user-id :id op-id)]
+        new-leaf (assoc schema/leaf :at op-time :by user-id)]
     (-> db
         (update-in data-path (fn [expr] (assoc-in expr [:data next-id] new-leaf)))
         (update-in
@@ -271,7 +271,7 @@
         target-expr (get-in db data-path)
         next-id (key-before (:data target-expr) (last (:focus bookmark)))
         user-id (get-in db [:sessions session-id :user-id])
-        new-leaf (assoc schema/leaf :at op-time :by user-id :id op-id)]
+        new-leaf (assoc schema/leaf :at op-time :by user-id)]
     (-> db
         (update-in data-path (fn [expr] (assoc-in expr [:data next-id] new-leaf)))
         (update-in
@@ -291,7 +291,7 @@
         bookmark (get stack pointer)
         focus (:focus bookmark)
         user-id (get-in db [:sessions session-id :user-id])
-        new-leaf (assoc schema/leaf :by user-id :at op-time :id op-id)
+        new-leaf (assoc schema/leaf :by user-id :at op-time)
         expr-path (bookmark->path bookmark)
         target-expr (get-in db expr-path)
         new-id (key-prepend (:data target-expr))]

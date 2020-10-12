@@ -108,8 +108,8 @@
               partial-others (->> others
                                   (filter (fn [x] (coord-contains? x child-coord)))
                                   (into #{}))
-              cursor-key (:id child)]
-          (if (nil? cursor-key) (.warn js/console "[Editor] missing :id" (clj->js child)))
+              cursor-key k]
+          (if (nil? cursor-key) (.warn js/console "[Editor] missing cursor key" k child))
           (recur
            (conj
             result
