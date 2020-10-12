@@ -11,6 +11,7 @@
             [app.comp.expr :refer [comp-expr]]
             [app.theme :refer [base-style-leaf base-style-expr]]
             [app.util.dom :refer [inject-style]]
+            [app.util :refer [bookmark-full-str]]
             [app.comp.theme-menu :refer [comp-theme-menu]]))
 
 (def style-container {:padding "0 16px"})
@@ -44,7 +45,7 @@
            (inject-style ".cirru-expr" (base-style-expr (or theme :star-trail)))
            (inject-style ".cirru-leaf" (base-style-leaf (or theme :star-trail)))
            (comp-expr
-            (>> states (:id expr))
+            (>> states (bookmark-full-str bookmark))
             expr
             focus
             []

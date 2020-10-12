@@ -15,7 +15,7 @@
             [app.comp.abstract :refer [comp-abstract]]
             [app.comp.theme-menu :refer [comp-theme-menu]]
             [app.comp.peek-def :refer [comp-peek-def]]
-            [app.util :refer [tree->cirru prepend-data]]
+            [app.util :refer [tree->cirru prepend-data bookmark-full-str]]
             [app.util.dom :refer [do-copy-logics!]]
             [respo-alerts.core :refer [use-confirm use-prompt]]
             [app.comp.replace-name :refer [use-replace-name-modal]]
@@ -230,7 +230,7 @@
           (inject-style ".cirru-leaf" (base-style-leaf theme))
           (if (some? expr)
             (comp-expr
-             (>> states (:id expr))
+             (>> states (bookmark-full-str bookmark))
              expr
              focus
              []

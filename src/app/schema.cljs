@@ -22,11 +22,11 @@
    :configs configs,
    :repl {:alive? false, :logs {}}})
 
-(def expr {:type :expr, :by nil, :at nil, :data {}, :id nil})
+(def expr {:type :expr, :by nil, :at nil, :data {}})
 
 (def file {:ns {}, :defs {}, :proc {}, :configs {}})
 
-(def leaf {:type :leaf, :by nil, :at nil, :text "", :id nil})
+(def leaf {:type :leaf, :by nil, :at nil, :text ""})
 
 (def notification {:id nil, :kind nil, :text nil, :time nil})
 
