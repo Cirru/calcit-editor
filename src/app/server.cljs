@@ -38,7 +38,7 @@
 (defonce initial-db
   (merge
    schema/database
-   (let [found? (fs/existsSync storage-file)]
+   (let [found? (fs/existsSync storage-file), configs (:configs schema/database)]
      (if found?
        (println (.gray chalk "Loading calcit.cirru"))
        (println (.yellow chalk "Using default schema.")))
@@ -48,7 +48,8 @@
              cost (- (unix-time!) started-at)]
          (println (chalk/gray (str "Took " cost "ms to load.")))
          data)
-       nil))))
+       (if (some? configs)
+         {:configs (assoc configs :compact-output? (:compact? (get-cli-configs!)))})))))
 
 (defonce *writer-db
   (atom
