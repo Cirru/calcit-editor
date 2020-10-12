@@ -84,13 +84,17 @@ ui=local calcit-editor
 
 ### Compact output
 
+```bash
+compact=true caclcit-editor
+```
+
 When `:compact-output? true` is specified in `calcit.cirru`, "Compact Mode" is activated. Clojure(Script) will no longer be emitted,
 instead two files will be emitted:
 
 * `compact.cirru` contains a compact version of data tree of the program.
 * `.compact-inc.cirru` contains diff information from latest modification of per definition.
 
-It's not useful for Clojure but would can be used for other experiments.
+It's not useful for Clojure but would can be used for other experiments in [calcit-runner](https://github.com/Cirru/calcit-runner.nim).
 
 ### Workflow
 

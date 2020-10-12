@@ -23,7 +23,9 @@
 
 (defn get-cli-configs! []
   (let [env js/process.env]
-    {:compile? (= "compile" (j/get env :op)), :local-ui? (= "local" (j/get env :ui))}))
+    {:compile? (= "compile" (j/get env :op)),
+     :local-ui? (= "local" (j/get env :ui)),
+     :compact? (= "true" (j/get env :compact))}))
 
 (defn pick-port! [port next-fn]
   (port-taken?
