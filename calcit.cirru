@@ -17442,6 +17442,25 @@
                               |T $ {} (:type :leaf) (:by |root) (:at 1546171356956) (:text |send-op!)
                               |j $ {} (:type :leaf) (:by |root) (:at 1546171366290) (:text |op)
                               |r $ {} (:type :leaf) (:by |root) (:at 1546171368224) (:text |op-data)
+                  |uf $ {} (:type :expr) (:by |S1lNv50FW) (:at 1605165105854)
+                    :data $ {}
+                      |T $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1605165107697) (:text |:ir/unindent)
+                      |j $ {} (:type :expr) (:by |S1lNv50FW) (:at 1605165111748)
+                        :data $ {}
+                          |T $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1605165111748) (:text |do)
+                          |j $ {} (:type :expr) (:by |S1lNv50FW) (:at 1605165111748)
+                            :data $ {}
+                              |T $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1605165111748) (:text |reset!)
+                              |j $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1605165111748) (:text |*states)
+                              |r $ {} (:type :expr) (:by |S1lNv50FW) (:at 1605165111748)
+                                :data $ {}
+                                  |T $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1605165111748) (:text |updater/clear-editor)
+                                  |j $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1605165111748) (:text |@*states)
+                          |r $ {} (:type :expr) (:by |S1lNv50FW) (:at 1605165111748)
+                            :data $ {}
+                              |T $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1605165111748) (:text |send-op!)
+                              |j $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1605165111748) (:text |op)
+                              |r $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1605165111748) (:text |op-data)
                   |uj $ {} (:type :expr) (:by |root) (:at 1534438952521)
                     :data $ {}
                       |T $ {} (:type :leaf) (:by |root) (:at 1534438964300) (:text |:ir/reset-files)
@@ -17519,6 +17538,25 @@
                             :data $ {}
                               |T $ {} (:type :leaf) (:text |updater/draft-box) (:by |root) (:at 1522430104731)
                               |j $ {} (:type :leaf) (:text |@*states) (:by |S1lNv50FW) (:at 1505991648486)
+                  |ub $ {} (:type :expr) (:by |S1lNv50FW) (:at 1605165105854)
+                    :data $ {}
+                      |T $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1605165118764) (:text |:ir/indent)
+                      |j $ {} (:type :expr) (:by |S1lNv50FW) (:at 1605165111748)
+                        :data $ {}
+                          |T $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1605165111748) (:text |do)
+                          |j $ {} (:type :expr) (:by |S1lNv50FW) (:at 1605165111748)
+                            :data $ {}
+                              |T $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1605165111748) (:text |reset!)
+                              |j $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1605165111748) (:text |*states)
+                              |r $ {} (:type :expr) (:by |S1lNv50FW) (:at 1605165111748)
+                                :data $ {}
+                                  |T $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1605165111748) (:text |updater/clear-editor)
+                                  |j $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1605165111748) (:text |@*states)
+                          |r $ {} (:type :expr) (:by |S1lNv50FW) (:at 1605165111748)
+                            :data $ {}
+                              |T $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1605165111748) (:text |send-op!)
+                              |j $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1605165111748) (:text |op)
+                              |r $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1605165111748) (:text |op-data)
           |*connecting? $ {} (:type :expr) (:by |root) (:at 1534180490240)
             :data $ {}
               |T $ {} (:type :leaf) (:by |root) (:at 1534180493141) (:text |defonce)

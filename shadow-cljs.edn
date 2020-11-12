@@ -9,7 +9,7 @@
     [mvc-works/ws-edn "0.1.4"]
     [respo "0.13.4"]
     [respo/ui "0.3.16"]
-    [respo/markdown "0.2.5"]
+    [respo/markdown "0.2.6-a1"]
     [respo/alerts "0.5.5"]
     [respo/feather "0.1.1"]
     [cumulo/recollect "0.6.3"]

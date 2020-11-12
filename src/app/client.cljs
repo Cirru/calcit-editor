@@ -33,6 +33,8 @@
     :manual-state/draft-box (reset! *states (updater/draft-box @*states))
     :effect/save-files
       (do (reset! *states (updater/clear-editor @*states)) (send-op! op op-data))
+    :ir/indent (do (reset! *states (updater/clear-editor @*states)) (send-op! op op-data))
+    :ir/unindent (do (reset! *states (updater/clear-editor @*states)) (send-op! op op-data))
     :ir/reset-files
       (do (reset! *states (updater/clear-editor @*states)) (send-op! op op-data))
     (send-op! op op-data)))
