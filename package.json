@@ -1,6 +1,6 @@
 {
   "name": "calcit-editor",
-  "version": "0.5.18-a4",
+  "version": "0.5.18-a5",
   "description": "Cirru Calcit Editor",
   "bin": {
     "calcit-editor": "dist/server.js",

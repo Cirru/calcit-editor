@@ -68,10 +68,10 @@
                                        (hide-empty-fields
                                         {:ns (if (= (:ns old-file) (:ns new-file))
                                            nil
-                                           (file->cirru (:ns new-file))),
+                                           (tree->cirru (:ns new-file))),
                                          :proc (if (= (:proc old-file) (:proc new-file))
                                            nil
-                                           (file->cirru (:proc new-file))),
+                                           (tree->cirru (:proc new-file))),
                                          :removed-defs removed-defs,
                                          :added-defs (->> added-defs
                                                           (map
