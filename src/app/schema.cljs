@@ -10,7 +10,8 @@
    :local-ui? false,
    :compact-output? false,
    :init-fn "app.main/main!",
-   :reload-fn "app.main/reload!"})
+   :reload-fn "app.main/reload!",
+   :modules []})
 
 (def ir-file {:package "app", :files {}})
 
