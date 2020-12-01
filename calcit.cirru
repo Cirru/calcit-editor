@@ -13643,6 +13643,10 @@
                     :data $ {}
                       |T $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1596297332084) (:text |:compact-output?)
                       |j $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1599733023435) (:text |false)
+                  |yv $ {} (:type :expr) (:by |S1lNv50FW) (:at 1606792813181)
+                    :data $ {}
+                      |T $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1606792814880) (:text |:version)
+                      |j $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1606792816936) (:text "|\"0.0.1")
           |user $ {} (:type :expr) (:at 1504777570689)
             :data $ {}
               |T $ {} (:type :leaf) (:by |root) (:at 1504777570689) (:text |def)
@@ -22136,6 +22140,13 @@
                                             :data $ {}
                                               |T $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1606286829014) (:text |:modules)
                                               |j $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1606286831681) (:text |configs)
+                                      |v $ {} (:type :expr) (:by |S1lNv50FW) (:at 1606792829464)
+                                        :data $ {}
+                                          |T $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1606792830583) (:text |:version)
+                                          |j $ {} (:type :expr) (:by |S1lNv50FW) (:at 1606792831019)
+                                            :data $ {}
+                                              |T $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1606792832167) (:text |:version)
+                                              |j $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1606792833074) (:text |configs)
                       |j $ {} (:type :expr) (:by |S1lNv50FW) (:at 1596336845843)
                         :data $ {}
                           |T $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1596336850628) (:text |inc-data)
@@ -36463,4 +36474,4 @@
                   |j $ {} (:type :leaf) (:by |root) (:at 1504777570689) (:text |render-loop!)
                   |r $ {} (:type :leaf) (:by |root) (:at 1511497291704) (:text |20)
         :proc $ {} (:type :expr) (:at 1504777570689) (:data $ {})
-  :configs $ {} (:storage-key |calcit.edn) (:extension |.cljs) (:output |src) (:port 6001)
+  :configs $ {} (:storage-key |calcit.edn) (:extension |.cljs) (:output |src) (:port 6001) (:modules ([])) :version |0.0.2
