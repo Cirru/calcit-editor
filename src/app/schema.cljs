@@ -11,7 +11,8 @@
    :compact-output? false,
    :init-fn "app.main/main!",
    :reload-fn "app.main/reload!",
-   :modules []})
+   :modules [],
+   :version "0.0.1"})
 
 (def ir-file {:package "app", :files {}})
 

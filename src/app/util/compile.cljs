@@ -31,7 +31,8 @@
   (let [compact-data {:package pkg,
                       :configs {:init-fn (:init-fn configs),
                                 :reload-fn (:reload-fn configs),
-                                :modules (:modules configs)},
+                                :modules (:modules configs),
+                                :version (:version configs)},
                       :files (->> new-files
                                   (map (fn [[ns-text file]] [ns-text (file->cirru file)]))
                                   (into {}))}
