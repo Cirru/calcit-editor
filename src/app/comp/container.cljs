@@ -15,6 +15,7 @@
             [app.comp.watching :refer [comp-watching]]
             [app.comp.about :refer [comp-about]]
             [app.comp.repl-page :refer [comp-repl-page]]
+            [app.comp.configs :refer [comp-configs]]
             [app.config :refer [dev?]]))
 
 (def style-body {:padding-top 16})
@@ -60,6 +61,7 @@
            :search (comp-search (>> states :search) (:data router))
            :watching (comp-watching (>> states :watching) (:data router) (:theme session))
            :repl (comp-repl-page (>> states :repl) router)
+           :configs (comp-configs (>> states :configs) (:data router))
            (div {} (<> (str "404 page: " (pr-str router)))))
          (if (= :watching (:name router))
            (comp-watching (>> states :watching) (:data router) (:theme session))
