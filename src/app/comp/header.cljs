@@ -64,6 +64,11 @@
       :members
       router-name
       (fn [e d!] (d! :router/change {:name :members})))
+     (render-entry
+      "Configs"
+      :configs
+      router-name
+      (fn [e d!] (d! :router/change {:name :configs})))
      (a
       {:href "http://snippets.cirru.org", :target "_blank", :style style-entry}
       (<> "Snippets" style-link)

@@ -8,7 +8,8 @@
             [app.updater.notify :as notify]
             [app.updater.analyze :as analyze]
             [app.updater.watcher :as watcher]
-            [app.updater.repl :as repl]))
+            [app.updater.repl :as repl]
+            [app.updater.configs :as configs]))
 
 (defn updater [db op op-data sid op-id op-time]
   (let [f (case op
@@ -85,5 +86,6 @@
             :repl/exit repl/on-exit
             :repl/clear-logs repl/clear-logs
             :ping identity
+            :configs/update configs/update-configs
             (do (println "Unknown op:" op) identity))]
     (f db op-data sid op-id op-time)))

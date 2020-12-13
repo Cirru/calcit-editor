@@ -52,6 +52,7 @@
                         (:users db))
                        nil))
                  :repl (:repl db)
+                 :configs (:configs db)
                  {})),
       :stats {:members-count (count (:sessions db))}}
      {:session session, :logged-in? false, :stats {:members-count 0}})))
