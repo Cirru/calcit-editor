@@ -193,7 +193,7 @@
 (def style-nothing
   {:color (hsl 0 0 100 0.4), :padding "0 16px", :font-family "Josefin Sans"})
 
-(def style-stack {:width 200, :overflow :auto, :padding-bottom 120})
+(def style-stack {:max-width 200, :overflow :auto, :padding-bottom 120})
 
 (def ui-missing (div {:style style-missing} (<> span "Expression is missing!" nil)))
 
@@ -218,7 +218,6 @@
        (->> stack
             (map-indexed
              (fn [idx bookmark] [idx (comp-bookmark bookmark idx (= idx pointer))])))))
-    (=< 8 nil)
     (if (empty? stack)
       (div {} (<> "Nothing to edit" style-nothing))
       (div

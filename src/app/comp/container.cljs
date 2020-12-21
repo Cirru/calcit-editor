@@ -18,7 +18,7 @@
             [app.comp.configs :refer [comp-configs]]
             [app.config :refer [dev?]]))
 
-(def style-body {:padding-top 16})
+(def style-body {:padding-top 12})
 
 (def style-container {:background-color :black, :color :white})
 

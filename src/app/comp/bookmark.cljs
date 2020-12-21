@@ -58,7 +58,7 @@
         (span
          {:inner-text (:extra bookmark),
           :style (merge style-main (if selected? style-highlight))}))
-       (div {:style ui/row-middle} (=< 8 nil) (<> (:ns bookmark) style-minor)))
+       (div {:style ui/row-middle} (=< 4 nil) (<> (:ns bookmark) style-minor)))
     (div
      {:style (merge style-bookmark {:padding "8px"})}
      (<> span (str (:kind bookmark)) style-kind)

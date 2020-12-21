@@ -45,7 +45,9 @@
          ((:show modules-plugin)
           d!
           (fn [text]
-            (d! :configs/update {:modules (remove string/blank? (string/split text " "))}))))}
+            (d!
+             :configs/update
+             {:modules (vec (remove string/blank? (string/split text " ")))}))))}
       (<>
        (let [content (string/join " " (:modules configs))]
          (if (string/blank? content) "-" content))
