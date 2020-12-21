@@ -1,4 +1,3 @@
 
-calcit.edn -diff linguist-generated
 calcit.cirru -diff
 yarn.lock -diff linguist-generated

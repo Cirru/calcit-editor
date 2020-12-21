@@ -24,14 +24,14 @@
    (<> page-name nil)))
 
 (def style-header
-  {:height 40,
+  {:height 32,
    :justify-content :space-between,
    :padding "0 16px",
-   :font-size 18,
+   :font-size 16,
    :color :white,
    :border-bottom (str "1px solid " (hsl 0 0 100 0.2)),
    :font-family "Josefin Sans",
-   :font-weight 100})
+   :font-weight 300})
 
 (def style-link {:font-size 14, :font-weight 100})
 

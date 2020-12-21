@@ -34,7 +34,7 @@
     "gaze": "^1.1.3",
     "latest-version": "^5.1.0",
     "md5": "^2.3.0",
-    "node-notifier": "8.0.1",
+    "node-notifier": "9.0.0",
     "nrepl-client": "^0.3.0",
     "serve-index": "^1.9.1",
     "shortid": "^2.2.16",
