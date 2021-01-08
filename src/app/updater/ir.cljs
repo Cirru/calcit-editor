@@ -30,6 +30,9 @@
   (let [selected-ns (get-in db [:sessions session-id :writer :selected-ns])
         user-id (get-in db [:sessions session-id :user-id])
         cirru-expr ["defn" op-data []]]
+    (when (nil? selected-ns)
+      (println (get-in db [:sessions session-id :writer]))
+      (throw (js/Error. "Empty ns target.")))
     (assoc-in
      db
      [:ir :files selected-ns :defs op-data]

@@ -191,7 +191,7 @@ buffer-xor@^1.0.3:
 
 buffer@^4.3.0:
   version "4.9.2"
-  resolved "https://registry.npm.taobao.org/buffer/download/buffer-4.9.2.tgz?cache=0&sync_timestamp=1606098100352&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fbuffer%2Fdownload%2Fbuffer-4.9.2.tgz#230ead344002988644841ab0244af8c44bbe3ef8"
+  resolved "https://registry.npm.taobao.org/buffer/download/buffer-4.9.2.tgz#230ead344002988644841ab0244af8c44bbe3ef8"
   integrity sha1-Iw6tNEACmIZEhBqwJEr4xEu+Pvg=
   dependencies:
     base64-js "^1.0.2"
@@ -304,9 +304,9 @@ cookie@0.4.0:
   integrity sha1-vrQ35wIrO21JAZ0IhmUwPr6cFLo=
 
 core-js@^3.1.3:
-  version "3.8.1"
-  resolved "https://registry.npm.taobao.org/core-js/download/core-js-3.8.1.tgz?cache=0&sync_timestamp=1607215907966&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fcore-js%2Fdownload%2Fcore-js-3.8.1.tgz#f51523668ac8a294d1285c3b9db44025fda66d47"
-  integrity sha1-9RUjZorIopTRKFw7nbRAJf2mbUc=
+  version "3.8.2"
+  resolved "https://registry.npm.taobao.org/core-js/download/core-js-3.8.2.tgz?cache=0&sync_timestamp=1609682099238&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fcore-js%2Fdownload%2Fcore-js-3.8.2.tgz#0a1fd6709246da9ca8eff5bb0cbd15fba9ac7044"
+  integrity sha1-Ch/WcJJG2pyo7/W7DL0V+6mscEQ=
 
 core-util-is@~1.0.0:
   version "1.0.2"
@@ -366,10 +366,10 @@ crypto-browserify@^3.11.0:
     randombytes "^2.0.0"
     randomfill "^1.0.3"
 
-dayjs@^1.9.7:
-  version "1.9.7"
-  resolved "https://registry.npm.taobao.org/dayjs/download/dayjs-1.9.7.tgz#4b260bb17dceed2d5f29038dfee03c65a6786fc0"
-  integrity sha1-SyYLsX3O7S1fKQON/uA8ZaZ4b8A=
+dayjs@^1.10.2:
+  version "1.10.2"
+  resolved "https://registry.npm.taobao.org/dayjs/download/dayjs-1.10.2.tgz#8f3a424ceb944a8193506804b0045a773d2d0672"
+  integrity sha1-jzpCTOuUSoGTUGgEsARadz0tBnI=
 
 debug@2.6.9:
   version "2.6.9"
@@ -848,17 +848,17 @@ miller-rabin@^4.0.0:
     bn.js "^4.0.0"
     brorand "^1.0.1"
 
-mime-db@1.44.0:
-  version "1.44.0"
-  resolved "https://registry.npm.taobao.org/mime-db/download/mime-db-1.44.0.tgz?cache=0&sync_timestamp=1600831175828&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fmime-db%2Fdownload%2Fmime-db-1.44.0.tgz#fa11c5eb0aca1334b4233cb4d52f10c5a6272f92"
-  integrity sha1-+hHF6wrKEzS0Izy01S8QxaYnL5I=
+mime-db@1.45.0:
+  version "1.45.0"
+  resolved "https://registry.npm.taobao.org/mime-db/download/mime-db-1.45.0.tgz?cache=0&sync_timestamp=1600831175828&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fmime-db%2Fdownload%2Fmime-db-1.45.0.tgz#cceeda21ccd7c3a745eba2decd55d4b73e7879ea"
+  integrity sha1-zO7aIczXw6dF66LezVXUtz54eeo=
 
 mime-types@~2.1.17, mime-types@~2.1.24:
-  version "2.1.27"
-  resolved "https://registry.npm.taobao.org/mime-types/download/mime-types-2.1.27.tgz?cache=0&sync_timestamp=1606706851425&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fmime-types%2Fdownload%2Fmime-types-2.1.27.tgz#47949f98e279ea53119f5722e0f34e529bec009f"
-  integrity sha1-R5SfmOJ56lMRn1ci4PNOUpvsAJ8=
+  version "2.1.28"
+  resolved "https://registry.npm.taobao.org/mime-types/download/mime-types-2.1.28.tgz?cache=0&sync_timestamp=1609559952590&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fmime-types%2Fdownload%2Fmime-types-2.1.28.tgz#1160c4757eab2c5363888e005273ecf79d2a0ecd"
+  integrity sha1-EWDEdX6rLFNjiI4AUnPs950qDs0=
   dependencies:
-    mime-db "1.44.0"
+    mime-db "1.45.0"
 
 mime@1.6.0:
   version "1.6.0"
@@ -904,7 +904,7 @@ ms@2.1.1:
 
 nanoid@^2.1.0:
   version "2.1.11"
-  resolved "https://registry.npm.taobao.org/nanoid/download/nanoid-2.1.11.tgz?cache=0&sync_timestamp=1606833976706&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fnanoid%2Fdownload%2Fnanoid-2.1.11.tgz#ec24b8a758d591561531b4176a01e3ab4f0f0280"
+  resolved "https://registry.npm.taobao.org/nanoid/download/nanoid-2.1.11.tgz#ec24b8a758d591561531b4176a01e3ab4f0f0280"
   integrity sha1-7CS4p1jVkVYVMbQXagHjq08PAoA=
 
 negotiator@0.6.2:
@@ -1038,7 +1038,7 @@ path-is-absolute@^1.0.0:
 
 path-to-regexp@0.1.7:
   version "0.1.7"
-  resolved "https://registry.npm.taobao.org/path-to-regexp/download/path-to-regexp-0.1.7.tgz#df604178005f522f15eb4490e7247a1bfaa67f8c"
+  resolved "https://registry.npm.taobao.org/path-to-regexp/download/path-to-regexp-0.1.7.tgz?cache=0&sync_timestamp=1601400247487&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fpath-to-regexp%2Fdownload%2Fpath-to-regexp-0.1.7.tgz#df604178005f522f15eb4490e7247a1bfaa67f8c"
   integrity sha1-32BBeABfUi8V60SQ5yR6G/qmf4w=
 
 pbkdf2@^3.0.3:
@@ -1323,10 +1323,10 @@ shadow-cljs-jar@1.3.2:
   resolved "https://registry.npm.taobao.org/shadow-cljs-jar/download/shadow-cljs-jar-1.3.2.tgz#97273afe1747b6a2311917c1c88d9e243c81957b"
   integrity sha1-lyc6/hdHtqIxGRfByI2eJDyBlXs=
 
-shadow-cljs@^2.11.8:
-  version "2.11.8"
-  resolved "https://registry.npm.taobao.org/shadow-cljs/download/shadow-cljs-2.11.8.tgz#34f579a96f90f79f6fac46ff901d81695c2ea0c0"
-  integrity sha1-NPV5qW+Q959vrEb/kB2BaVwuoMA=
+shadow-cljs@^2.11.11:
+  version "2.11.11"
+  resolved "https://registry.npm.taobao.org/shadow-cljs/download/shadow-cljs-2.11.11.tgz#1e549e8422d7754c8969af5caf7c0e712e1337e1"
+  integrity sha1-HlSehCLXdUyJaa9cr3wOcS4TN+E=
   dependencies:
     node-libs-browser "^2.2.1"
     readline-sync "^1.4.7"
@@ -1374,7 +1374,7 @@ source-map@^0.6.0:
 
 "statuses@>= 1.4.0 < 2", "statuses@>= 1.5.0 < 2", statuses@~1.5.0:
   version "1.5.0"
-  resolved "https://registry.npm.taobao.org/statuses/download/statuses-1.5.0.tgz#161c7dac177659fd9811f43771fa99381478628c"
+  resolved "https://registry.npm.taobao.org/statuses/download/statuses-1.5.0.tgz?cache=0&sync_timestamp=1609653993999&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fstatuses%2Fdownload%2Fstatuses-1.5.0.tgz#161c7dac177659fd9811f43771fa99381478628c"
   integrity sha1-Fhx9rBd2Wf2YEfQ3cfqZOBR4Yow=
 
 stream-browserify@^2.0.1:
@@ -1562,10 +1562,10 @@ ws@^3.0.0:
     safe-buffer "~5.1.0"
     ultron "~1.1.0"
 
-ws@^7.4.1:
-  version "7.4.1"
-  resolved "https://registry.npm.taobao.org/ws/download/ws-7.4.1.tgz#a333be02696bd0e54cea0434e21dcc8a9ac294bb"
-  integrity sha1-ozO+Amlr0OVM6gQ04h3MiprClLs=
+ws@^7.4.2:
+  version "7.4.2"
+  resolved "https://registry.npm.taobao.org/ws/download/ws-7.4.2.tgz#782100048e54eb36fe9843363ab1c68672b261dd"
+  integrity sha1-eCEABI5U6zb+mEM2OrHGhnKyYd0=
 
 xtend@^4.0.0:
   version "4.0.2"

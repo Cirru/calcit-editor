@@ -26022,6 +26022,33 @@
                           |j $ {} (:type :leaf) (:by |root) (:at 1504777570689) (:text |cirru-expr)
                           |r $ {} (:type :leaf) (:by |root) (:at 1504777570689) (:text |user-id)
                           |v $ {} (:type :leaf) (:by |root) (:at 1504777570689) (:text |op-time)
+                  |n $ {} (:type :expr) (:by |S1lNv50FW) (:at 1610078883834)
+                    :data $ {}
+                      |T $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1610078884548) (:text |when)
+                      |j $ {} (:type :expr) (:by |S1lNv50FW) (:at 1610078886580)
+                        :data $ {}
+                          |T $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1610078888345) (:text |nil?)
+                          |j $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1610078890746) (:text |selected-ns)
+                      |r $ {} (:type :expr) (:by |S1lNv50FW) (:at 1610078891721)
+                        :data $ {}
+                          |T $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1610078897149) (:text |println)
+                          |j $ {} (:type :expr) (:by |S1lNv50FW) (:at 1610078900074)
+                            :data $ {}
+                              |T $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1610078900074) (:text |get-in)
+                              |j $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1610078900074) (:text |db)
+                              |r $ {} (:type :expr) (:by |S1lNv50FW) (:at 1610078900074)
+                                :data $ {}
+                                  |T $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1610078900074) (:text |[])
+                                  |j $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1610078900074) (:text |:sessions)
+                                  |r $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1610078900074) (:text |session-id)
+                                  |v $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1610078900074) (:text |:writer)
+                      |v $ {} (:type :expr) (:by |S1lNv50FW) (:at 1610078920005)
+                        :data $ {}
+                          |T $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1610078920697) (:text |throw)
+                          |j $ {} (:type :expr) (:by |S1lNv50FW) (:at 1610078925008)
+                            :data $ {}
+                              |T $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1610078950293) (:text |js/Error.)
+                              |j $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1610078943744) (:text "|\"Empty ns target.")
           |leaf-before $ {} (:type :expr) (:at 1504777570689)
             :data $ {}
               |T $ {} (:type :leaf) (:by |root) (:at 1504777570689) (:text |defn)
