@@ -155,8 +155,8 @@
           (fn [result]
             (let [text (string/trim result)]
               (when-not (string/blank? text)
-                (d! :ir/add-def text)
-                (d! :writer/edit {:kind :def, :extra text}))))))})
+                (d! :ir/add-def [(:ns bookmark) text])
+                (d! :writer/edit {:kind :def, :ns (:ns bookmark), :extra text}))))))})
      (=< 8 nil)
      (span
       {:inner-text "Draft-box", :style style-link, :on-click (on-draft-box state cursor)})

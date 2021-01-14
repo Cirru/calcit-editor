@@ -27,15 +27,15 @@
             [app.util :refer [push-warning]]))
 
 (defn add-def [db op-data session-id op-id op-time]
-  (let [selected-ns (get-in db [:sessions session-id :writer :selected-ns])
+  (let [[ns-part def-part] op-data
         user-id (get-in db [:sessions session-id :user-id])
-        cirru-expr ["defn" op-data []]]
-    (when (nil? selected-ns)
+        cirru-expr ["defn" def-part []]]
+    (when (nil? ns-part)
       (println (get-in db [:sessions session-id :writer]))
       (throw (js/Error. "Empty ns target.")))
     (assoc-in
      db
-     [:ir :files selected-ns :defs op-data]
+     [:ir :files ns-part :defs def-part]
      (cirru->tree cirru-expr user-id op-time))))
 
 (defn add-ns [db op-data session-id op-id op-time]

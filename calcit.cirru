@@ -12102,7 +12102,14 @@
                                                             :data $ {}
                                                               |T $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1592815019916) (:text |d!)
                                                               |j $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1592815019916) (:text |:ir/add-def)
-                                                              |r $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1592815019916) (:text |text)
+                                                              |r $ {} (:type :expr) (:by |S1lNv50FW) (:at 1610637439797)
+                                                                :data $ {}
+                                                                  |T $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1592815019916) (:text |text)
+                                                                  |D $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1610637441284) (:text |[])
+                                                                  |L $ {} (:type :expr) (:by |S1lNv50FW) (:at 1610637466137)
+                                                                    :data $ {}
+                                                                      |T $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1610637465920) (:text |:ns)
+                                                                      |j $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1610637467702) (:text |bookmark)
                                                           |v $ {} (:type :expr) (:by |S1lNv50FW) (:at 1592815019916)
                                                             :data $ {}
                                                               |T $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1592815019916) (:text |d!)
@@ -12118,6 +12125,13 @@
                                                                     :data $ {}
                                                                       |T $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1592815019916) (:text |:extra)
                                                                       |j $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1592815019916) (:text |text)
+                                                                  |n $ {} (:type :expr) (:by |S1lNv50FW) (:at 1610638035194)
+                                                                    :data $ {}
+                                                                      |T $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1610638036935) (:text |:ns)
+                                                                      |j $ {} (:type :expr) (:by |S1lNv50FW) (:at 1610638037371)
+                                                                        :data $ {}
+                                                                          |T $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1610638037997) (:text |:ns)
+                                                                          |j $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1610638040345) (:text |bookmark)
                           |x $ {} (:type :expr) (:by nil) (:at 1504777353661)
                             :data $ {}
                               |T $ {} (:type :leaf) (:text |=<) (:by |root) (:at 1504777353661)
@@ -25966,20 +25980,6 @@
                   |T $ {} (:type :leaf) (:by |root) (:at 1504777570689) (:text |let)
                   |j $ {} (:type :expr) (:at 1504777570689)
                     :data $ {}
-                      |T $ {} (:type :expr) (:at 1504777570689)
-                        :data $ {}
-                          |T $ {} (:type :leaf) (:by |root) (:at 1504777570689) (:text |selected-ns)
-                          |j $ {} (:type :expr) (:at 1504777570689)
-                            :data $ {}
-                              |T $ {} (:type :leaf) (:by |root) (:at 1504777570689) (:text |get-in)
-                              |j $ {} (:type :leaf) (:by |root) (:at 1504777570689) (:text |db)
-                              |r $ {} (:type :expr) (:at 1504777570689)
-                                :data $ {}
-                                  |T $ {} (:type :leaf) (:by |root) (:at 1504777570689) (:text |[])
-                                  |j $ {} (:type :leaf) (:by |root) (:at 1504777570689) (:text |:sessions)
-                                  |r $ {} (:type :leaf) (:by |root) (:at 1504777570689) (:text |session-id)
-                                  |v $ {} (:type :leaf) (:by |root) (:at 1504777570689) (:text |:writer)
-                                  |x $ {} (:type :leaf) (:by |root) (:at 1504777570689) (:text |:selected-ns)
                       |j $ {} (:type :expr) (:at 1504777570689)
                         :data $ {}
                           |T $ {} (:type :leaf) (:by |root) (:at 1504777570689) (:text |user-id)
@@ -26000,10 +26000,18 @@
                             :data $ {}
                               |T $ {} (:type :leaf) (:by |root) (:at 1504777570689) (:text |[])
                               |j $ {} (:type :leaf) (:by |root) (:at 1504777570689) (:text ||defn)
-                              |r $ {} (:type :leaf) (:by |root) (:at 1504777570689) (:text |op-data)
+                              |r $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1610637404245) (:text |def-part)
                               |v $ {} (:type :expr) (:at 1504777570689)
                                 :data $ {}
                                   |T $ {} (:type :leaf) (:by |root) (:at 1504777570689) (:text |[])
+                      |D $ {} (:type :expr) (:by |S1lNv50FW) (:at 1610637763415)
+                        :data $ {}
+                          |T $ {} (:type :expr) (:by |S1lNv50FW) (:at 1610637389452)
+                            :data $ {}
+                              |T $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1610637393477) (:text |[])
+                              |j $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1610637395499) (:text |ns-part)
+                              |r $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1610637397057) (:text |def-part)
+                          |j $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1610637768709) (:text |op-data)
                   |r $ {} (:type :expr) (:at 1504777570689)
                     :data $ {}
                       |T $ {} (:type :leaf) (:by |root) (:at 1504777570689) (:text |assoc-in)
@@ -26013,9 +26021,9 @@
                           |T $ {} (:type :leaf) (:by |root) (:at 1504777570689) (:text |[])
                           |j $ {} (:type :leaf) (:by |root) (:at 1504777570689) (:text |:ir)
                           |r $ {} (:type :leaf) (:by |root) (:at 1504777570689) (:text |:files)
-                          |v $ {} (:type :leaf) (:by |root) (:at 1504777570689) (:text |selected-ns)
+                          |v $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1610637423281) (:text |ns-part)
                           |x $ {} (:type :leaf) (:by |root) (:at 1504777570689) (:text |:defs)
-                          |y $ {} (:type :leaf) (:by |root) (:at 1504777570689) (:text |op-data)
+                          |y $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1610637869531) (:text |def-part)
                       |v $ {} (:type :expr) (:at 1504777570689)
                         :data $ {}
                           |T $ {} (:type :leaf) (:by |root) (:at 1504777570689) (:text |cirru->tree)
@@ -26028,7 +26036,7 @@
                       |j $ {} (:type :expr) (:by |S1lNv50FW) (:at 1610078886580)
                         :data $ {}
                           |T $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1610078888345) (:text |nil?)
-                          |j $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1610078890746) (:text |selected-ns)
+                          |j $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1610637421101) (:text |ns-part)
                       |r $ {} (:type :expr) (:by |S1lNv50FW) (:at 1610078891721)
                         :data $ {}
                           |T $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1610078897149) (:text |println)
@@ -31951,17 +31959,38 @@
                       |T $ {} (:type :expr) (:at 1504777570689)
                         :data $ {}
                           |T $ {} (:type :leaf) (:by |root) (:at 1504777570689) (:text |ns-text)
-                          |j $ {} (:type :expr) (:at 1504777570689)
+                          |j $ {} (:type :expr) (:by |S1lNv50FW) (:at 1610637685472)
                             :data $ {}
-                              |T $ {} (:type :leaf) (:by |root) (:at 1504777570689) (:text |get-in)
-                              |j $ {} (:type :leaf) (:by |root) (:at 1504777570689) (:text |db)
-                              |r $ {} (:type :expr) (:at 1504777570689)
+                              |T $ {} (:type :expr) (:by |S1lNv50FW) (:at 1610638097984)
                                 :data $ {}
-                                  |T $ {} (:type :leaf) (:by |root) (:at 1504777570689) (:text |[])
-                                  |j $ {} (:type :leaf) (:by |root) (:at 1504777570689) (:text |:sessions)
-                                  |r $ {} (:type :leaf) (:by |root) (:at 1504777570689) (:text |session-id)
-                                  |v $ {} (:type :leaf) (:by |root) (:at 1504777570689) (:text |:writer)
-                                  |x $ {} (:type :leaf) (:by |root) (:at 1504777570689) (:text |:selected-ns)
+                                  |T $ {} (:type :expr) (:at 1504777570689)
+                                    :data $ {}
+                                      |T $ {} (:type :leaf) (:by |root) (:at 1504777570689) (:text |get-in)
+                                      |j $ {} (:type :leaf) (:by |root) (:at 1504777570689) (:text |db)
+                                      |r $ {} (:type :expr) (:at 1504777570689)
+                                        :data $ {}
+                                          |T $ {} (:type :leaf) (:by |root) (:at 1504777570689) (:text |[])
+                                          |j $ {} (:type :leaf) (:by |root) (:at 1504777570689) (:text |:sessions)
+                                          |r $ {} (:type :leaf) (:by |root) (:at 1504777570689) (:text |session-id)
+                                          |v $ {} (:type :leaf) (:by |root) (:at 1504777570689) (:text |:writer)
+                                          |x $ {} (:type :leaf) (:by |root) (:at 1504777570689) (:text |:selected-ns)
+                                  |D $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1610638099272) (:text |do)
+                                  |L $ {} (:type :expr) (:by |S1lNv50FW) (:at 1610638100747)
+                                    :data $ {}
+                                      |T $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1610638099622) (:text |;)
+                                      |j $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1610638139751) (:text "|\"in old behavoir there's a default ns, could be misleading. need to be compatible..")
+                              |D $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1610637686054) (:text |if)
+                              |L $ {} (:type :expr) (:by |S1lNv50FW) (:at 1610637686536)
+                                :data $ {}
+                                  |T $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1610637687309) (:text |some?)
+                                  |j $ {} (:type :expr) (:by |S1lNv50FW) (:at 1610637687799)
+                                    :data $ {}
+                                      |T $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1610637689293) (:text |:ns)
+                                      |j $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1610637690813) (:text |op-data)
+                              |P $ {} (:type :expr) (:by |S1lNv50FW) (:at 1610637693875)
+                                :data $ {}
+                                  |T $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1610637693875) (:text |:ns)
+                                  |j $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1610637693875) (:text |op-data)
                       |j $ {} (:type :expr) (:at 1504777570689)
                         :data $ {}
                           |T $ {} (:type :leaf) (:by |root) (:at 1504777570689) (:text |bookmark)
