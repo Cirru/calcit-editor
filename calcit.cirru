@@ -26057,6 +26057,14 @@
                             :data $ {}
                               |T $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1610078950293) (:text |js/Error.)
                               |j $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1610078943744) (:text "|\"Empty ns target.")
+              |t $ {} (:type :expr) (:by |S1lNv50FW) (:at 1610697884541)
+                :data $ {}
+                  |T $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1610697887069) (:text |assert)
+                  |j $ {} (:type :expr) (:by |S1lNv50FW) (:at 1610697887657)
+                    :data $ {}
+                      |T $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1610697891930) (:text |vector?)
+                      |j $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1610697890955) (:text |op-data)
+                  |r $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1610697907065) (:text "|\"expects op-data of [ns text]")
           |leaf-before $ {} (:type :expr) (:at 1504777570689)
             :data $ {}
               |T $ {} (:type :leaf) (:by |root) (:at 1504777570689) (:text |defn)
@@ -34625,7 +34633,11 @@
                                                     :data $ {}
                                                       |T $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1585933430543) (:text |d!)
                                                       |j $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1585933430543) (:text |:ir/add-def)
-                                                      |r $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1585933430543) (:text |text)
+                                                      |r $ {} (:type :expr) (:by |S1lNv50FW) (:at 1610697947367)
+                                                        :data $ {}
+                                                          |T $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1585933430543) (:text |text)
+                                                          |D $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1610697948056) (:text |[])
+                                                          |L $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1610697950270) (:text |selected-ns)
           |extension-options $ {} (:type :expr) (:by |S1lNv50FW) (:at 1588006426433)
             :data $ {}
               |T $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1588006426433) (:text |def)

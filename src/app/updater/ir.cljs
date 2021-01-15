@@ -27,6 +27,7 @@
             [app.util :refer [push-warning]]))
 
 (defn add-def [db op-data session-id op-id op-time]
+  (assert (vector? op-data) "expects op-data of [ns text]")
   (let [[ns-part def-part] op-data
         user-id (get-in db [:sessions session-id :user-id])
         cirru-expr ["defn" def-part []]]
