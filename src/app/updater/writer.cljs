@@ -18,7 +18,12 @@
   (-> db (update-in [:sessions sid :writer] (fn [writer] (assoc writer :draft-ns op-data)))))
 
 (defn edit [db op-data session-id op-id op-time]
-  (let [ns-text (get-in db [:sessions session-id :writer :selected-ns])
+  (let [ns-text (if (some? (:ns op-data))
+                  (:ns op-data)
+                  (do
+                   (comment
+                    "in old behavoir there's a default ns, could be misleading. need to be compatible..")
+                   (get-in db [:sessions session-id :writer :selected-ns])))
         bookmark (assoc op-data :ns ns-text :focus [])]
     (-> db
         (update-in [:sessions session-id :writer] (push-bookmark bookmark))

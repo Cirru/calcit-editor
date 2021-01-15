@@ -94,7 +94,7 @@
          d!
          (fn [result]
            (let [text (string/trim result)]
-             (when-not (string/blank? text) (d! :ir/add-def text))))))))
+             (when-not (string/blank? text) (d! :ir/add-def [selected-ns text]))))))))
     (comment
      div
      {}
