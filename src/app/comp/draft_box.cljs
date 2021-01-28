@@ -10,7 +10,7 @@
             [app.style :as style]
             [app.util :refer [tree->cirru]]
             [keycode.core :as keycode]
-            [favored-edn.core :refer [write-edn]]))
+            [flavored-edn.core :refer [write-edn]]))
 
 (defn on-submit [expr? text cursor close-modal! close?]
   (fn [e d!]
@@ -78,7 +78,7 @@
           :on-click (fn [e d!] (close-modal! d!))})
         (let [expr? (= :expr (:type node))
               state (or (:data states)
-                        (if expr? (write-edn (tree->cirru node)) (:text node)))]
+                        (if expr? (write-edn (tree->cirru node) {:indent 2}) (:text node)))]
           (div
            {:style ui/column}
            (div
@@ -86,7 +86,7 @@
             (if expr?
               (<> span "Cirru Mode" style-mode)
               (textarea
-               {:value (if expr? (write-edn (tree->cirru node)) (:text node)),
+               {:value (if expr? (write-edn (tree->cirru node) {:indent 2}) (:text node)),
                 :spellcheck false,
                 :style style-text})))
            (=< nil 8)
