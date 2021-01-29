@@ -9,8 +9,8 @@
             [app.comp.modal :refer [comp-modal]]
             [app.style :as style]
             [app.util :refer [tree->cirru]]
-            [fipp.edn :refer [pprint]]
-            [keycode.core :as keycode]))
+            [keycode.core :as keycode]
+            [flavored-edn.core :refer [write-edn]]))
 
 (defn on-submit [expr? text cursor close-modal! close?]
   (fn [e d!]
@@ -77,19 +77,22 @@
           :inner-text "Does not edit expression!",
           :on-click (fn [e d!] (close-modal! d!))})
         (let [expr? (= :expr (:type node))
-              original-text (if expr? (pr-str (tree->cirru node)) (:text node))
-              state (or (:data states) original-text)]
+              state (or (:data states)
+                        (if expr? (write-edn (tree->cirru node) {:indent 2}) (:text node)))]
           (div
            {:style ui/column}
            (div
             {:style style-original}
             (if expr?
               (<> span "Cirru Mode" style-mode)
-              (textarea {:value original-text, :spellcheck false, :style style-text})))
+              (textarea
+               {:value (if expr? (write-edn (tree->cirru node) {:indent 2}) (:text node)),
+                :spellcheck false,
+                :style style-text})))
            (=< nil 8)
            (textarea
             {:style style-area,
-             :value (if expr? (with-out-str (pprint (read-string state))) state),
+             :value state,
              :class-name "el-draft-box",
              :on-input (fn [e d!] (d! cursor (:value e))),
              :on-keydown (fn [e d!]

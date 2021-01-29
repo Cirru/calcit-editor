@@ -8,15 +8,13 @@
             [respo.comp.space :refer [=<]]
             [app.style :as style]
             [app.comp.modal :refer [comp-modal]]
-            [fipp.edn :refer [pprint]]
-            [cljs.reader :refer [read-string]]))
+            [cljs.reader :refer [read-string]]
+            [flavored-edn.core :refer [write-edn]]))
 
 (defcomp
  comp-file-replacer
  (states file)
- (let [initial-file (with-out-str (pprint file))
-       cursor (:cursor states)
-       state (or (:data states) initial-file)]
+ (let [cursor (:cursor states), state (or (:data states) (write-edn file {:indent 2}))]
    (comp-modal
     (fn [d!] (d! :writer/draft-ns nil))
     (div
@@ -32,6 +30,7 @@
        {:inner-text "Submit",
         :style style/button,
         :on-click (fn [e d!]
-          (if (not= state initial-file) (d! :ir/replace-file (read-string state)))
+          (if (not= state (write-edn file {:indent 2}))
+            (d! :ir/replace-file (read-string state)))
           (d! cursor nil)
           (d! :writer/draft-ns nil))}))))))
