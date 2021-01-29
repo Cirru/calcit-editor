@@ -24,7 +24,8 @@
                        {:text "Add modules:",
                         :initial (string/join " " (:modules configs)),
                         :placeholder "module/compact.cirru etc.",
-                        :input-style {:font-family ui/font-code}})]
+                        :input-style {:font-family ui/font-code},
+                        :multiline? true})]
    (div
     {:style (merge ui/expand ui/column {:padding "0 16px"})}
     (=< nil 8)
