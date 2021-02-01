@@ -6025,30 +6025,20 @@
                     :data $ {}
                       |T $ {} (:type :leaf) (:by |root) (:at 1528996537048) (:text |:border)
                       |j $ {} (:type :leaf) (:by |root) (:at 1528996537937) (:text |:none)
-                  |j $ {} (:type :expr) (:by nil) (:at 1504777353661)
+                  |f $ {} (:type :expr) (:by |S1lNv50FW) (:at 1612193468418)
                     :data $ {}
-                      |T $ {} (:type :leaf) (:text |:background-color) (:by |root) (:at 1504777353661)
-                      |j $ {} (:type :expr) (:by nil) (:at 1504777353661)
+                      |T $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1612193468418) (:text |:background-color)
+                      |j $ {} (:type :expr) (:by |S1lNv50FW) (:at 1612193468418)
                         :data $ {}
-                          |T $ {} (:type :leaf) (:text |hsl) (:by |root) (:at 1504777353661)
-                          |j $ {} (:type :leaf) (:text |0) (:by |root) (:at 1504777353661)
-                          |r $ {} (:type :leaf) (:text |0) (:by |root) (:at 1504777353661)
-                          |v $ {} (:type :leaf) (:text |100) (:by |root) (:at 1504777353661)
-                          |x $ {} (:type :leaf) (:text |0) (:by |root) (:at 1504777353661)
+                          |T $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1612193468418) (:text |hsl)
+                          |j $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1612193468418) (:text |0)
+                          |r $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1612193468418) (:text |0)
+                          |v $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1612193468418) (:text |100)
+                          |x $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1612193468418) (:text |0)
                   |x $ {} (:type :expr) (:by nil) (:at 1504777353661)
                     :data $ {}
                       |T $ {} (:type :leaf) (:text |:min-width) (:by |root) (:at 1504777353661)
                       |j $ {} (:type :leaf) (:text |40) (:by |root) (:at 1504777353661)
-                  |v $ {} (:type :expr) (:by nil) (:at 1504777353661)
-                    :data $ {}
-                      |T $ {} (:type :leaf) (:text |:color) (:by |root) (:at 1504777353661)
-                      |j $ {} (:type :expr) (:by nil) (:at 1504777353661)
-                        :data $ {}
-                          |T $ {} (:type :leaf) (:text |hsl) (:by |root) (:at 1504777353661)
-                          |j $ {} (:type :leaf) (:text |0) (:by |root) (:at 1504777353661)
-                          |r $ {} (:type :leaf) (:text |0) (:by |root) (:at 1504777353661)
-                          |v $ {} (:type :leaf) (:text |100) (:by |root) (:at 1504777353661)
-                          |x $ {} (:type :leaf) (:text |0.4) (:by |root) (:at 1504777353661)
                   |yj $ {} (:type :expr) (:by |root) (:at 1528996744889)
                     :data $ {}
                       |T $ {} (:type :leaf) (:by |root) (:at 1528996747319) (:text |:min-width)
@@ -6073,6 +6063,16 @@
                     :data $ {}
                       |T $ {} (:type :leaf) (:text |:vertical-align) (:by |root) (:at 1504777353661)
                       |j $ {} (:type :leaf) (:text |:middle) (:by |root) (:at 1504777353661)
+                  |u $ {} (:type :expr) (:by |S1lNv50FW) (:at 1612193472097)
+                    :data $ {}
+                      |T $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1612193472097) (:text |:color)
+                      |j $ {} (:type :expr) (:by |S1lNv50FW) (:at 1612193472097)
+                        :data $ {}
+                          |T $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1612193472097) (:text |hsl)
+                          |j $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1612193472097) (:text |0)
+                          |r $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1612193472097) (:text |0)
+                          |v $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1612193472097) (:text |100)
+                          |x $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1612193472097) (:text |0.4)
                   |yy $ {} (:type :expr) (:by |root) (:at 1528996774172)
                     :data $ {}
                       |T $ {} (:type :leaf) (:by |root) (:at 1528996784656) (:text |:padding)
@@ -18861,6 +18861,7 @@
                         |r $ {} (:type :leaf) (:text |simple?) (:by |root) (:at 1504777353661)
                         |v $ {} (:type :leaf) (:text |leaf?) (:by |root) (:at 1504777353661)
                         |x $ {} (:type :leaf) (:text |expr?) (:by |root) (:at 1504777353661)
+                        |y $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1612192586357) (:text |expr-many-items?)
                 |yT $ {} (:type :expr) (:by nil) (:at 1504777353661)
                   :data $ {}
                     |T $ {} (:type :leaf) (:text |[]) (:by |root) (:at 1504777353661)
@@ -19356,10 +19357,25 @@
                                           |T $ {} (:type :leaf) (:text |assoc) (:by |root) (:at 1504777353661)
                                           |j $ {} (:type :leaf) (:text |info) (:by |root) (:at 1504777353661)
                                           |r $ {} (:type :leaf) (:text |:after-expr?) (:by |root) (:at 1504777353661)
-                                          |v $ {} (:type :expr) (:by nil) (:at 1504777353661)
+                                          |v $ {} (:type :expr) (:by |S1lNv50FW) (:at 1612192490879)
                                             :data $ {}
-                                              |T $ {} (:type :leaf) (:text |expr?) (:by |root) (:at 1504777353661)
-                                              |j $ {} (:type :leaf) (:text |child) (:by |root) (:at 1504777353661)
+                                              |T $ {} (:type :expr) (:by nil) (:at 1504777353661)
+                                                :data $ {}
+                                                  |T $ {} (:type :leaf) (:text |expr?) (:by |S1lNv50FW) (:at 1612192490235)
+                                                  |j $ {} (:type :leaf) (:text |child) (:by |root) (:at 1504777353661)
+                                              |D $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1612192492811) (:text |and)
+                                              |j $ {} (:type :expr) (:by |S1lNv50FW) (:at 1612192920616)
+                                                :data $ {}
+                                                  |T $ {} (:type :expr) (:by |S1lNv50FW) (:at 1612192494076)
+                                                    :data $ {}
+                                                      |T $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1612192592294) (:text |expr-many-items?)
+                                                      |j $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1612192519416) (:text |child)
+                                                  |D $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1612192921661) (:text |if)
+                                                  |j $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1612192929530) (:text |true)
+                                                  |r $ {} (:type :expr) (:by |S1lNv50FW) (:at 1612192945151)
+                                                    :data $ {}
+                                                      |T $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1612192947904) (:text |:after-expr?)
+                                                      |j $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1612192950813) (:text |info)
           |on-keydown $ {} (:type :expr) (:by nil) (:at 1504777353661)
             :data $ {}
               |T $ {} (:type :leaf) (:text |defn) (:by |root) (:at 1504777353661)
@@ -30081,6 +30097,44 @@
                                   |T $ {} (:type :leaf) (:text |:port) (:by |root) (:at 1504777353661)
                                   |j $ {} (:type :leaf) (:text |schema/configs) (:by |S1lNv50FW) (:at 1550076894552)
                   |v $ {} (:type :leaf) (:text ||ws://localhost:6001) (:by |root) (:at 1504777353661)
+          |expr-many-items? $ {} (:type :expr) (:by |S1lNv50FW) (:at 1612192452678)
+            :data $ {}
+              |T $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1612192452678) (:text |defn)
+              |j $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1612192582601) (:text |expr-many-items?)
+              |r $ {} (:type :expr) (:by |S1lNv50FW) (:at 1612192452678)
+                :data $ {}
+                  |T $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1612192456455) (:text |x)
+              |v $ {} (:type :expr) (:by |S1lNv50FW) (:at 1612193170843)
+                :data $ {}
+                  |T $ {} (:type :expr) (:by |S1lNv50FW) (:at 1612193080890)
+                    :data $ {}
+                      |T $ {} (:type :expr) (:by |S1lNv50FW) (:at 1612192479221)
+                        :data $ {}
+                          |T $ {} (:type :expr) (:by |S1lNv50FW) (:at 1612192472959)
+                            :data $ {}
+                              |T $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1612192473725) (:text |count)
+                              |j $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1612193178134) (:text |d)
+                          |D $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1612192482312) (:text |>)
+                          |j $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1612193576377) (:text |2)
+                      |D $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1612193081781) (:text |or)
+                      |j $ {} (:type :expr) (:by |S1lNv50FW) (:at 1612193084416)
+                        :data $ {}
+                          |T $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1612193085510) (:text |some)
+                          |j $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1612193088286) (:text |expr?)
+                          |r $ {} (:type :expr) (:by |S1lNv50FW) (:at 1612193135206)
+                            :data $ {}
+                              |D $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1612193136494) (:text |vals)
+                              |b $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1612193179817) (:text |d)
+                  |D $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1612193171576) (:text |let)
+                  |L $ {} (:type :expr) (:by |S1lNv50FW) (:at 1612193172756)
+                    :data $ {}
+                      |T $ {} (:type :expr) (:by |S1lNv50FW) (:at 1612193173191)
+                        :data $ {}
+                          |T $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1612193171943) (:text |d)
+                          |j $ {} (:type :expr) (:by |S1lNv50FW) (:at 1612193175133)
+                            :data $ {}
+                              |T $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1612193175701) (:text |:data)
+                              |j $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1612193176044) (:text |x)
         :ns $ {} (:type :expr) (:by nil) (:at 1504777353661)
           :data $ {}
             |T $ {} (:type :leaf) (:text |ns) (:by |root) (:at 1504777353661)
@@ -33552,20 +33606,20 @@
                                       |T $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1585932713816) (:text |18)
                                       |D $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1585932726876) (:text |:font-size)
                                   |D $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1585932723109) (:text |{})
-                                  |j $ {} (:type :expr) (:by |S1lNv50FW) (:at 1585932728240)
+                                  |b $ {} (:type :expr) (:by |S1lNv50FW) (:at 1612192734926)
                                     :data $ {}
-                                      |T $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1585932729122) (:text |:color)
-                                      |j $ {} (:type :expr) (:by |S1lNv50FW) (:at 1585932731797)
+                                      |T $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1612192734926) (:text |:cursor)
+                                      |j $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1612192734926) (:text |:pointer)
+                                  |X $ {} (:type :expr) (:by |S1lNv50FW) (:at 1612193531973)
+                                    :data $ {}
+                                      |T $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1612193531973) (:text |:color)
+                                      |j $ {} (:type :expr) (:by |S1lNv50FW) (:at 1612193531973)
                                         :data $ {}
-                                          |T $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1585932731797) (:text |hsl)
-                                          |j $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1585932731797) (:text |200)
-                                          |r $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1585932731797) (:text |80)
-                                          |v $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1585932731797) (:text |70)
-                                          |x $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1585932731797) (:text |0.6)
-                                  |r $ {} (:type :expr) (:by |S1lNv50FW) (:at 1585932923809)
-                                    :data $ {}
-                                      |T $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1585932925216) (:text |:cursor)
-                                      |j $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1585932927968) (:text |:pointer)
+                                          |T $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1612193531973) (:text |hsl)
+                                          |j $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1612193531973) (:text |200)
+                                          |r $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1612193531973) (:text |80)
+                                          |v $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1612193531973) (:text |70)
+                                          |x $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1612193531973) (:text |0.6)
                               |v $ {} (:type :expr) (:by |S1lNv50FW) (:at 1585932733822)
                                 :data $ {}
                                   |T $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1585932735830) (:text |fn)
@@ -34760,15 +34814,6 @@
                               |j $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1585071235474) (:text |:plus)
                               |v $ {} (:type :expr) (:by |S1lNv50FW) (:at 1585071250077)
                                 :data $ {}
-                                  |T $ {} (:type :expr) (:by |S1lNv50FW) (:at 1585071251251)
-                                    :data $ {}
-                                      |T $ {} (:type :expr) (:by |S1lNv50FW) (:at 1585071235474)
-                                        :data $ {}
-                                          |T $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1585071235474) (:text |hsl)
-                                          |j $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1585071235474) (:text |0)
-                                          |r $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1585071235474) (:text |0)
-                                          |v $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1585071235474) (:text |70)
-                                      |D $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1585071253139) (:text |:color)
                                   |D $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1585071250635) (:text |{})
                                   |j $ {} (:type :expr) (:by |S1lNv50FW) (:at 1585071253670)
                                     :data $ {}
@@ -34778,6 +34823,15 @@
                                     :data $ {}
                                       |T $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1585071332145) (:text |:cursor)
                                       |j $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1585071333624) (:text |:pointer)
+                                  |T $ {} (:type :expr) (:by |S1lNv50FW) (:at 1612193503981)
+                                    :data $ {}
+                                      |T $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1612193503981) (:text |:color)
+                                      |j $ {} (:type :expr) (:by |S1lNv50FW) (:at 1612193503981)
+                                        :data $ {}
+                                          |T $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1612193503981) (:text |hsl)
+                                          |j $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1612193503981) (:text |0)
+                                          |r $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1612193503981) (:text |0)
+                                          |v $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1612193503981) (:text |70)
                               |x $ {} (:type :expr) (:by |S1lNv50FW) (:at 1585071258731)
                                 :data $ {}
                                   |T $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1585071290934) (:text |fn)

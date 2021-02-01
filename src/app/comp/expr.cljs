@@ -7,7 +7,7 @@
             [respo.comp.space :refer [=<]]
             [keycode.core :as keycode]
             [app.comp.leaf :refer [comp-leaf]]
-            [app.client-util :refer [coord-contains? simple? leaf? expr?]]
+            [app.client-util :refer [coord-contains? simple? leaf? expr? expr-many-items?]]
             [app.util.shortcuts :refer [on-window-keydown on-paste!]]
             [app.theme :refer [decide-expr-theme]]
             [app.util :refer [tree->cirru]]
@@ -138,4 +138,7 @@
                 theme
                 (inc depth)))])
            (rest children)
-           (assoc info :after-expr? (expr? child)))))))))
+           (assoc
+            info
+            :after-expr?
+            (and (expr? child) (if (expr-many-items? child) true (:after-expr? info)))))))))))

@@ -10,6 +10,8 @@
 
 (defn expr? [x] (= :expr (:type x)))
 
+(defn expr-many-items? [x] (let [d (:data x)] (or (> (count d) 2) (some expr? (vals d)))))
+
 (defn leaf? [x] (= :leaf (:type x)))
 
 (defn parse-query! []
