@@ -10,17 +10,16 @@
 
 (defn expr? [x] (= :expr (:type x)))
 
-(defn expr-many-items? [x] (let [d (:data x)] (or (> (count d) 2) (some expr? (vals d)))))
+(defn expr-many-items? [x size]
+  (if (expr? x)
+    (let [d (:data x)] (or (> (count d) size) (some? (some expr? (vals d)))))
+    false))
 
 (defn leaf? [x] (= :leaf (:type x)))
 
 (defn parse-query! []
   (let [url-obj (url-parse js/location.href true)]
     (js->clj (.-query url-obj) :keywordize-keys true)))
-
-(defn simple? [expr]
-  (let [leaf? (fn [x] (= :leaf (:type x)))]
-    (and (every? leaf? (vals (:data expr))) (<= (count (:data expr)) 6))))
 
 (def ws-host
   (if (and (exists? js/location) (not (string/blank? (.-search js/location))))

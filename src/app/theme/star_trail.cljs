@@ -57,7 +57,7 @@
    {}
    (if has-others? {:border-color (hsl 0 0 100 0.6)})
    (if focused? {:border-color (hsl 0 0 100 0.9)})
-   (if (and (pos? length) (not tail?) (= layout-mode :inline)) style-expr-simple)
+   (if (and (pos? length) (not tail?) (not= layout-mode :block)) style-expr-simple)
    (if tail? style-expr-tail)))
 
 (def style-big {:border-right (str "16px solid " (hsl 0 0 30))})

@@ -108,10 +108,14 @@
                                   (filter (fn [x] (coord-contains? x child-coord)))
                                   (into #{}))
               cursor-key k
-              mode (cond
-                     (= :leaf (:type child)) :inline
-                     (expr-many-items? child) :block
-                     :else prev-mode)]
+              mode (if (leaf? child)
+                     :inline
+                     (if (expr-many-items? child 6)
+                       :block
+                       (case prev-mode
+                         :inline :inline-block
+                         :inline-block (if (expr-many-items? child 2) :block :inline-block)
+                         :block)))]
           (if (nil? cursor-key) (.warn js/console "[Editor] missing cursor key" k child))
           (recur
            (conj
