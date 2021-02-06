@@ -2,7 +2,7 @@
 (ns app.theme.curves
   (:require [app.theme.star-trail :as star-trail] [hsl.core :refer [hsl]]))
 
-(defn decide-expr-style [expr has-others? focused? tail? after-expr? length depth]
+(defn decide-expr-style [expr has-others? focused? tail? layout-mode length depth]
   (merge
    {:border-radius "16px",
     :display :inline-block,

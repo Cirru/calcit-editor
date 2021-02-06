@@ -18,14 +18,14 @@
     :beginner beginner/style-leaf
     {}))
 
-(defn decide-expr-theme [expr has-others? focused? tail? after-expr? length depth theme]
+(defn decide-expr-theme [expr has-others? focused? tail? layout-mode length depth theme]
   (case theme
     :star-trail
-      (star-trail/decide-expr-style expr has-others? focused? tail? after-expr? length depth)
+      (star-trail/decide-expr-style expr has-others? focused? tail? layout-mode length depth)
     :curves
-      (curves/decide-expr-style expr has-others? focused? tail? after-expr? length depth)
+      (curves/decide-expr-style expr has-others? focused? tail? layout-mode length depth)
     :beginner
-      (beginner/decide-expr-style expr has-others? focused? tail? after-expr? length depth)
+      (beginner/decide-expr-style expr has-others? focused? tail? layout-mode length depth)
     {}))
 
 (defn decide-leaf-theme [text focused? first? by-other? theme]
