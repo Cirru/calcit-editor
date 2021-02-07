@@ -4,7 +4,6 @@
             [clojure.string :as string]
             [respo-ui.core :as ui]
             [polyfill.core :refer [text-width*]]
-            [app.client-util :refer [simple?]]
             [app.style :as style]))
 
 (def style-expr
@@ -53,12 +52,12 @@
 
 (def style-expr-tail {:display :inline-block, :vertical-align :top, :padding-left 10})
 
-(defn decide-expr-style [expr has-others? focused? tail? after-expr? length depth]
+(defn decide-expr-style [expr has-others? focused? tail? layout-mode length depth]
   (merge
    {}
    (if has-others? {:border-color (hsl 0 0 100 0.6)})
    (if focused? {:border-color (hsl 0 0 100 0.9)})
-   (if (and (simple? expr) (not tail?) (not after-expr?) (pos? length)) style-expr-simple)
+   (if (and (pos? length) (not tail?) (not= layout-mode :block)) style-expr-simple)
    (if tail? style-expr-tail)))
 
 (def style-big {:border-right (str "16px solid " (hsl 0 0 30))})

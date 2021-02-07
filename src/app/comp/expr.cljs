@@ -7,7 +7,7 @@
             [respo.comp.space :refer [=<]]
             [keycode.core :as keycode]
             [app.comp.leaf :refer [comp-leaf]]
-            [app.client-util :refer [coord-contains? simple? leaf? expr? expr-many-items?]]
+            [app.client-util :refer [coord-contains? leaf? expr? expr-many-items?]]
             [app.util.shortcuts :refer [on-window-keydown on-paste!]]
             [app.theme :refer [decide-expr-theme]]
             [app.util :refer [tree->cirru]]
@@ -72,12 +72,11 @@
 
 (defcomp
  comp-expr
- (states expr focus coord others tail? after-expr? readonly? picker-mode? theme depth)
+ (states expr focus coord others tail? layout-mode readonly? picker-mode? theme depth)
  (let [focused? (= focus coord)
        first-id (apply min (keys (:data expr)))
        last-id (apply max (keys (:data expr)))
-       sorted-children (->> (:data expr) (sort-by first))
-       default-info {:after-expr? false}]
+       sorted-children (->> (:data expr) (sort-by first))]
    (list->
     :div
     {:tab-index 0,
@@ -87,7 +86,7 @@
              (contains? others coord)
              focused?
              tail?
-             after-expr?
+             layout-mode
              (count coord)
              depth
              theme),
@@ -100,7 +99,7 @@
           (if picker-mode?
             (do (.preventDefault (:event e)) (d! :writer/pick-node (tree->cirru expr)))
             (d! :writer/focus coord)))})}
-    (loop [result [], children sorted-children, info default-info]
+    (loop [result [], children sorted-children, prev-mode :inline]
       (if (empty? children)
         result
         (let [[k child] (first children)
@@ -108,7 +107,15 @@
               partial-others (->> others
                                   (filter (fn [x] (coord-contains? x child-coord)))
                                   (into #{}))
-              cursor-key k]
+              cursor-key k
+              mode (if (leaf? child)
+                     :inline
+                     (if (expr-many-items? child 6)
+                       :block
+                       (case prev-mode
+                         :inline :inline-block
+                         :inline-block (if (expr-many-items? child 2) :block :inline-block)
+                         :block)))]
           (if (nil? cursor-key) (.warn js/console "[Editor] missing cursor key" k child))
           (recur
            (conj
@@ -132,13 +139,10 @@
                 child-coord
                 partial-others
                 (= last-id k)
-                (:after-expr? info)
+                mode
                 readonly?
                 picker-mode?
                 theme
                 (inc depth)))])
            (rest children)
-           (assoc
-            info
-            :after-expr?
-            (and (expr? child) (if (expr-many-items? child) true (:after-expr? info)))))))))))
+           mode)))))))
