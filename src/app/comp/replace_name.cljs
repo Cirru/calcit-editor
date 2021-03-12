@@ -27,7 +27,7 @@
                {}
                (input
                 {:placeholder "from...",
-                 :style ui/input,
+                 :style (merge ui/input {:font-family ui/font-code}),
                  :value (:old-name state),
                  :autofocus true,
                  :id "replace-input",
@@ -37,7 +37,7 @@
                {}
                (input
                 {:placeholder "to...",
-                 :style ui/input,
+                 :style (merge ui/input {:font-family ui/font-code}),
                  :on-input (fn [e d!] (d! cursor (assoc state :new-name (:value e)))),
                  :value (:new-name state),
                  :on-keydown (fn [e d!] (if (= 13 (:key-code e)) (on-submit d!)))}))
