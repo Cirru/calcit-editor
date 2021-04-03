@@ -114,7 +114,7 @@
       ":as" {(get piece 2) {:method :as, :ns ns-text}}
       ":refer"
         (->> (get piece 2)
-             (rest)
+             (filter (fn [def-text] (not= def-text "[]")))
              (map (fn [def-text] [def-text {:method :refer, :ns ns-text, :def def-text}]))
              (into {}))
       ":default" {(get piece 2) {:method :refer, :ns ns-text, :def (get piece 2)}}
