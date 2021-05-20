@@ -12,8 +12,9 @@
   (let [cursor (:cursor states)
         state (or (:data states) {:old-name "", :new-name "", :show? false})
         on-submit (fn [d!]
+                    (comment "special trick to use spaces to remove a leaf")
                     (when (and (not (string/blank? (:old-name state)))
-                               (not (string/blank? (:new-name state))))
+                               (not (= (:new-name state) "")))
                       (on-replace (:old-name state) (:new-name state) d!)
                       (d! cursor (assoc state :show? false))))]
     {:ui (comp-modal
