@@ -74,7 +74,11 @@
       (update
        expr
        :data
-       (fn [data] (->> data (map (fn [[k v]] [k (call-replace-expr v from to)])) (into {}))))
+       (fn [data]
+         (->> data
+              (map (fn [[k v]] [k (call-replace-expr v from to)]))
+              (remove (fn [[k v]] (and (= (:type v) :leaf) (string/blank? (:text v)))))
+              (into {}))))
     :leaf
       (cond
         (= (:text expr) from) (assoc expr :text to)
