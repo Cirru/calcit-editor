@@ -12,14 +12,15 @@
   (let [pkg (js/JSON.parse (fs/readFileSync (path/join js/__dirname "../package.json")))
         version (j/get pkg :version)
         pkg-name (j/get pkg :name)]
-    (.then
-     (latest-version pkg-name)
-     (fn [npm-version]
-       (println
-        (if (= version npm-version)
-          (<< "Running latest version ~{version}")
-          (chalk/yellow
-           (<< "Update is available tagged ~{npm-version}, current one is ~{version}"))))))))
+    (-> (latest-version pkg-name)
+        (.then
+         (fn [npm-version]
+           (println
+            (if (= version npm-version)
+              (<< "Running latest version ~{version}")
+              (chalk/yellow
+               (<< "Update is available tagged ~{npm-version}, current one is ~{version}"))))))
+        (.catch (fn [e] (println "failed to request version:" e))))))
 
 (defn get-cli-configs! []
   (let [env js/process.env]
