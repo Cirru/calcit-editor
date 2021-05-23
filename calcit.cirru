@@ -21306,41 +21306,58 @@
                               |T $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1564893105902) (:text |j/get)
                               |j $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1564893108537) (:text |pkg)
                               |r $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1564893110008) (:text |:name)
-                  |r $ {} (:type :expr) (:by |root) (:at 1542821187073)
+                  |r $ {} (:type :expr) (:by |S1lNv50FW) (:at 1621690732122)
                     :data $ {}
-                      |D $ {} (:type :leaf) (:by |root) (:at 1542821188995) (:text |.then)
-                      |T $ {} (:type :expr) (:by |root) (:at 1542821166298)
+                      |T $ {} (:type :expr) (:by |root) (:at 1542821187073)
                         :data $ {}
-                          |T $ {} (:type :leaf) (:by |root) (:at 1542821183086) (:text |latest-version)
-                          |j $ {} (:type :leaf) (:by |root) (:at 1542821186430) (:text |pkg-name)
-                      |j $ {} (:type :expr) (:by |root) (:at 1542821190036)
-                        :data $ {}
-                          |T $ {} (:type :leaf) (:by |root) (:at 1542821190351) (:text |fn)
-                          |j $ {} (:type :expr) (:by |root) (:at 1542821190924)
+                          |D $ {} (:type :leaf) (:by |root) (:at 1542821188995) (:text |.then)
+                          |j $ {} (:type :expr) (:by |root) (:at 1542821190036)
                             :data $ {}
-                              |T $ {} (:type :leaf) (:by |root) (:at 1542821194036) (:text |npm-version)
-                          |r $ {} (:type :expr) (:by |root) (:at 1542821357220)
-                            :data $ {}
-                              |D $ {} (:type :leaf) (:by |root) (:at 1542821358317) (:text |println)
-                              |T $ {} (:type :expr) (:by |root) (:at 1542821194980)
+                              |T $ {} (:type :leaf) (:by |root) (:at 1542821190351) (:text |fn)
+                              |j $ {} (:type :expr) (:by |root) (:at 1542821190924)
                                 :data $ {}
-                                  |T $ {} (:type :leaf) (:by |root) (:at 1542821361093) (:text |if)
-                                  |b $ {} (:type :expr) (:by |root) (:at 1542821365497)
+                                  |T $ {} (:type :leaf) (:by |root) (:at 1542821194036) (:text |npm-version)
+                              |r $ {} (:type :expr) (:by |root) (:at 1542821357220)
+                                :data $ {}
+                                  |D $ {} (:type :leaf) (:by |root) (:at 1542821358317) (:text |println)
+                                  |T $ {} (:type :expr) (:by |root) (:at 1542821194980)
                                     :data $ {}
-                                      |T $ {} (:type :leaf) (:by |root) (:at 1542821365634) (:text |=)
-                                      |j $ {} (:type :leaf) (:by |root) (:at 1542821369293) (:text |version)
-                                      |r $ {} (:type :leaf) (:by |root) (:at 1542821372953) (:text |npm-version)
-                                  |j $ {} (:type :expr) (:by |root) (:at 1542821249217)
-                                    :data $ {}
-                                      |T $ {} (:type :leaf) (:by |root) (:at 1542821250498) (:text |<<)
-                                      |j $ {} (:type :leaf) (:by |root) (:at 1542821264965) (:text "|\"Running latest version ~{version}")
-                                  |r $ {} (:type :expr) (:by |root) (:at 1542821267162)
-                                    :data $ {}
-                                      |T $ {} (:type :leaf) (:by |root) (:at 1542821279145) (:text |chalk/yellow)
-                                      |j $ {} (:type :expr) (:by |root) (:at 1542821337799)
+                                      |T $ {} (:type :leaf) (:by |root) (:at 1542821361093) (:text |if)
+                                      |b $ {} (:type :expr) (:by |root) (:at 1542821365497)
                                         :data $ {}
-                                          |D $ {} (:type :leaf) (:by |root) (:at 1542821338532) (:text |<<)
-                                          |T $ {} (:type :leaf) (:by |root) (:at 1542821521426) (:text "|\"Update is available tagged ~{npm-version}, current one is ~{version}")
+                                          |T $ {} (:type :leaf) (:by |root) (:at 1542821365634) (:text |=)
+                                          |j $ {} (:type :leaf) (:by |root) (:at 1542821369293) (:text |version)
+                                          |r $ {} (:type :leaf) (:by |root) (:at 1542821372953) (:text |npm-version)
+                                      |j $ {} (:type :expr) (:by |root) (:at 1542821249217)
+                                        :data $ {}
+                                          |T $ {} (:type :leaf) (:by |root) (:at 1542821250498) (:text |<<)
+                                          |j $ {} (:type :leaf) (:by |root) (:at 1542821264965) (:text "|\"Running latest version ~{version}")
+                                      |r $ {} (:type :expr) (:by |root) (:at 1542821267162)
+                                        :data $ {}
+                                          |T $ {} (:type :leaf) (:by |root) (:at 1542821279145) (:text |chalk/yellow)
+                                          |j $ {} (:type :expr) (:by |root) (:at 1542821337799)
+                                            :data $ {}
+                                              |D $ {} (:type :leaf) (:by |root) (:at 1542821338532) (:text |<<)
+                                              |T $ {} (:type :leaf) (:by |root) (:at 1542821521426) (:text "|\"Update is available tagged ~{npm-version}, current one is ~{version}")
+                      |D $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1621690732858) (:text |->)
+                      |L $ {} (:type :expr) (:by |S1lNv50FW) (:at 1621690733694)
+                        :data $ {}
+                          |T $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1621690733694) (:text |latest-version)
+                          |j $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1621690733694) (:text |pkg-name)
+                      |j $ {} (:type :expr) (:by |S1lNv50FW) (:at 1621690736363)
+                        :data $ {}
+                          |T $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1621690736363) (:text |.catch)
+                          |j $ {} (:type :expr) (:by |S1lNv50FW) (:at 1621690736363)
+                            :data $ {}
+                              |T $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1621690736363) (:text |fn)
+                              |j $ {} (:type :expr) (:by |S1lNv50FW) (:at 1621690736363)
+                                :data $ {}
+                                  |T $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1621690736363) (:text |e)
+                              |r $ {} (:type :expr) (:by |S1lNv50FW) (:at 1621690737974)
+                                :data $ {}
+                                  |T $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1621690758139) (:text |js/console.log)
+                                  |j $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1621690751282) (:text "|\"failed to request version:")
+                                  |r $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1621690751795) (:text |e)
           |get-cli-configs! $ {} (:type :expr) (:by |root) (:at 1546167186219)
             :data $ {}
               |T $ {} (:type :leaf) (:by |root) (:at 1546167186219) (:text |defn)
