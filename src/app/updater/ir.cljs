@@ -465,4 +465,11 @@
         data-path (bookmark->path bookmark)
         user-id (get-in db [:sessions session-id :user-id])]
     (-> db
-        (update-in data-path (fn [leaf] (assoc leaf :text op-data :at op-time :by user-id))))))
+        (update-in
+         data-path
+         (fn [leaf]
+           (if (and (some? (:at op-data))
+                    (some? (:text op-data))
+                    (> (:at op-data) (:at leaf)))
+             (assoc leaf :text (:text op-data) :at (:at op-data) :by user-id)
+             (do (println "invalid updata op:" op-data) leaf)))))))

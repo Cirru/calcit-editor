@@ -23,8 +23,9 @@
 
 (defn on-input [state coord cursor]
   (fn [e d!]
-    (d! :ir/update-leaf (:value e))
-    (d! cursor (assoc state :text (:value e) :at (util/now!)))))
+    (let [now (util/now!)]
+      (d! :ir/update-leaf {:text (:value e), :at now})
+      (d! cursor (assoc state :text (:value e) :at now)))))
 
 (defn on-keydown [state leaf coord picker-mode?]
   (fn [e d!]
