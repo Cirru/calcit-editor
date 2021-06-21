@@ -10,11 +10,14 @@
             [app.style :as style]
             [app.util :refer [tree->cirru]]
             [keycode.core :as keycode]
-            [flavored-edn.core :refer [write-edn]]))
+            [flavored-edn.core :refer [write-edn]]
+            [app.util :refer [now!]]))
 
 (defn on-submit [expr? text cursor close-modal! close?]
   (fn [e d!]
-    (if expr? (d! :ir/draft-expr (read-string text)) (d! :ir/update-leaf text))
+    (if expr?
+      (d! :ir/draft-expr (read-string text))
+      (d! :ir/update-leaf {:text text, :at (now!)}))
     (if close? (do (d! cursor nil) (close-modal! d!)))))
 
 (def style-area
@@ -103,7 +106,7 @@
                     (.preventDefault (:event e))
                     (if expr?
                       (d! :ir/draft-expr (read-string state))
-                      (d! :ir/update-leaf state))
+                      (d! :ir/update-leaf {:text state, :at (now!)}))
                     (d! cursor nil)
                     (close-modal! d!))))})
            (=< nil 8)
