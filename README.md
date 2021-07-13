@@ -84,6 +84,8 @@ ui=local calcit-editor
 
 ### Compact output
 
+> It's now also splitted into https://github.com/calcit-lang/editor .
+
 ```bash
 compact=true caclcit-editor
 ```
@@ -94,7 +96,7 @@ instead two files will be emitted:
 * `compact.cirru` contains a compact version of data tree of the program.
 * `.compact-inc.cirru` contains diff information from latest modification of per definition.
 
-It's not useful for Clojure but would can be used for other experiments in [calcit-runner](https://github.com/Cirru/calcit-runner.nim).
+It's not useful for Clojure but would can be used for other experiments in [calcit-runner](https://github.com/Cirru/calcit-runner.rs).
 
 ### Workflow
 
