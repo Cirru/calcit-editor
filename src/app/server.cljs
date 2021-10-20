@@ -33,7 +33,7 @@
 
 (defonce *client-caches (atom {}))
 
-(def storage-file (path/join (.. js/process -env -PWD) (:storage-file config/site)))
+(def storage-file (path/join (js/process.cwd) (:storage-file config/site)))
 
 (defonce initial-db
   (merge
