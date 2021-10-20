@@ -36975,16 +36975,13 @@
               |r $ {} (:type :expr) (:by |root) (:at 1546165265053)
                 :data $ {}
                   |T $ {} (:type :leaf) (:by |root) (:at 1546165265053) (:text |path/join)
-                  |j $ {} (:type :expr) (:by |root) (:at 1546165798078)
-                    :data $ {}
-                      |D $ {} (:type :leaf) (:by |root) (:at 1546165799184) (:text |..)
-                      |T $ {} (:type :leaf) (:by |root) (:at 1546165808126) (:text |js/process)
-                      |j $ {} (:type :leaf) (:by |root) (:at 1546165802651) (:text |-env)
-                      |r $ {} (:type :leaf) (:by |root) (:at 1546165804637) (:text |-PWD)
                   |r $ {} (:type :expr) (:by |root) (:at 1546165265053)
                     :data $ {}
                       |T $ {} (:type :leaf) (:by |root) (:at 1546165265053) (:text |:storage-file)
                       |j $ {} (:type :leaf) (:by |root) (:at 1546165265053) (:text |config/site)
+                  |n $ {} (:type :expr) (:by |S1lNv50FW) (:at 1634700218473)
+                    :data $ {}
+                      |T $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1634700312186) (:text |js/process.cwd)
           |initial-db $ {} (:type :expr) (:by |root) (:at 1546165527792)
             :data $ {}
               |T $ {} (:type :leaf) (:by |root) (:at 1546165527792) (:text |defonce)
