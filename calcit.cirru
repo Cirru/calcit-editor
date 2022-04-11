@@ -21388,7 +21388,7 @@
                                   |T $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1621690736363) (:text |e)
                               |r $ {} (:type :expr) (:by |S1lNv50FW) (:at 1621690737974)
                                 :data $ {}
-                                  |T $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1621690758139) (:text |js/console.log)
+                                  |T $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1649655104854) (:text |println)
                                   |j $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1621690751282) (:text "|\"failed to request version:")
                                   |r $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1621690751795) (:text |e)
           |get-cli-configs! $ {} (:type :expr) (:by |root) (:at 1546167186219)
@@ -30329,7 +30329,7 @@
                       |v $ {} (:type :expr) (:by nil) (:at 1504777353661)
                         :data $ {}
                           |T $ {} (:type :leaf) (:text |str) (:by |root) (:at 1504777353661)
-                          |j $ {} (:type :leaf) (:text ||ws://) (:by |root) (:at 1504777353661)
+                          |j $ {} (:type :leaf) (:text ||://) (:by |S1lNv50FW) (:at 1649655065374)
                           |r $ {} (:type :expr) (:by nil) (:at 1504777353661)
                             :data $ {}
                               |T $ {} (:type :leaf) (:text |or) (:by |root) (:at 1504777353661)
@@ -30350,6 +30350,14 @@
                                 :data $ {}
                                   |T $ {} (:type :leaf) (:text |:port) (:by |root) (:at 1504777353661)
                                   |j $ {} (:type :leaf) (:text |schema/configs) (:by |S1lNv50FW) (:at 1550076894552)
+                          |b $ {} (:type :expr) (:by |S1lNv50FW) (:at 1649655073310)
+                            :data $ {}
+                              |T $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1649655067455) (:text "|\"ws")
+                              |D $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1649655074426) (:text |or)
+                              |L $ {} (:type :expr) (:by |S1lNv50FW) (:at 1649655074929)
+                                :data $ {}
+                                  |T $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1649655077190) (:text |:protocol)
+                                  |j $ {} (:type :leaf) (:by |S1lNv50FW) (:at 1649655128911) (:text |query)
                   |v $ {} (:type :leaf) (:text ||ws://localhost:6001) (:by |root) (:at 1504777353661)
           |expr-many-items? $ {} (:type :expr) (:by |S1lNv50FW) (:at 1612192452678)
             :data $ {}
@@ -37465,3 +37473,4 @@
   :configs $ {} (:storage-key |calcit.edn) (:extension |.cljs) (:output |src) (:port 6001)
     :modules $ [] |a/compact.cirru
     :version |0.0.2
+  :entries $ {}
