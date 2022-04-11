@@ -26,7 +26,8 @@
     (let [query (parse-query!)]
       (js/console.log "Loading from url" query)
       (str
-       "ws://"
+       (or (:protocol query) "ws")
+       "://"
        (or (:host query) "localhost")
        ":"
        (or (:port query) (:port schema/configs))))
