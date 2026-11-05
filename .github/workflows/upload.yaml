@@ -7,18 +7,23 @@ on:
     branches:
       - master
 
+permissions:
+  contents: read
+
 jobs:
   upload-assets:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+        with:
+          persist-credentials: false
       - uses: docker://timbru31/java-node:latest
 
       - name: Get yarn cache
         id: yarn-cache
-        run: echo "::set-output name=dir::$(yarn cache dir)"
+        run: echo "dir=$(yarn cache dir)" >> "$GITHUB_OUTPUT"
 
-      - uses: actions/cache@v1
+      - uses: actions/cache@v6.1.0
         name: Cache node modules of yarn
         with:
           path: ${{ steps.yarn-cache.outputs.dir }}
@@ -27,7 +32,7 @@ jobs:
             ${{ runner.os }}-yarn-
 
       - name: Cache Clojars
-        uses: actions/cache@v1
+        uses: actions/cache@v6.1.0
         env:
           cache-name: cache-clojars
         with:
@@ -40,6 +45,7 @@ jobs:
         name: Build web assets
 
       - name: Deploy to server
+        if: github.event_name == 'push' && github.ref == 'refs/heads/master'
         id: deploy
         uses: Pendect/action-rsyncer@v1.1.0
         env:
@@ -52,4 +58,5 @@ jobs:
           dest: 'rsync-user@tiye.me:/web-assets/repo/${{ github.repository }}'
 
       - name: Display status from deploy
+        if: steps.deploy.outcome == 'success'
         run: echo "${{ steps.deploy.outputs.status }}"
